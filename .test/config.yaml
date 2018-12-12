@@ -20,6 +20,6 @@ diffexp:
       - untreated
 
 params:
-  kallisto: ""
+  kallisto: "-b 100"
   cutadapt-se: ""
   cutadapt-pe: ""

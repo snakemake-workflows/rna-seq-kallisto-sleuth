@@ -19,5 +19,5 @@ validate(units, schema="../schemas/units.schema.yaml")
 def is_single_end(sample, unit):
     return pd.isnull(units.loc[(sample, unit), "fq2"])
 
-def get_fastq(wildcards):
+def get_fastqs(wildcards):
     return units.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()

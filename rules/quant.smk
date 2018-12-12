@@ -17,12 +17,14 @@ def kallisto_params(wildcards, input):
         extra += (" --fragment-length {unit.fragment_len_mean} "
                   "--sd {unit.fragment_len_sd}").format(
                     unit=units.loc[(wildcards.sample, wildcards.unit)])
+    else:
+        extra += " --fusion"
     return extra
 
 
 rule kallisto_quant:
     input:
-        fq=get_fastq,
+        fq=get_fastqs,
         idx="kallisto/transcripts.idx"
     output:
         directory("kallisto/{sample}-{unit}")
