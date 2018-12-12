@@ -10,7 +10,7 @@ rule compose_sample_sheet:
         kallisto_output
     output:
         "sleuth/samples.tsv"
-    group: "sleuth"
+    group: "sleuth-init"
     run:
         samples_ = units[["sample", "unit"]].merge(samples)
         samples_["sample"] = samples_.apply(lambda row: "{}-{}".format(row["sample"], row["unit"]), axis=1)
@@ -25,8 +25,23 @@ rule sleuth_init:
         samples="sleuth/samples.tsv"
     output:
         "sleuth/all.rds"
+    params:
+        species=config["ref"]["species"]
     conda:
         "../envs/sleuth.yaml"
-    group: "sleuth"
+    group: "sleuth-init"
     script:
         "../scripts/sleuth-init.R"
+
+
+rule sleuth_diffexp:
+    input:
+        "sleuth/all.rds"
+    output:
+        "tables/diffexp/{model}.diffexp.tsv"
+    params:
+        model=lambda wildcards: config["diffexp"]["models"][wildcards.model]
+    conda:
+        "../envs/sleuth.yaml"
+    script:
+        "../scripts/sleuth-diffexp.R"

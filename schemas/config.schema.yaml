@@ -26,10 +26,10 @@ properties:
   diffexp:
     type: object
     properties:
-      contrasts:
+      models:
         type: object
     required:
-      - contrasts
+      - models
 
   params:
     type: object

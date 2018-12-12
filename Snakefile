@@ -4,4 +4,4 @@ include: "rules/diffexp.smk"
 
 rule all:
     input:
-        "sleuth/all.rds"
+        expand("tables/diffexp/{model}.diffexp.tsv", model=config["diffexp"]["models"])
