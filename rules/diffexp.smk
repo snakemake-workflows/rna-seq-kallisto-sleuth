@@ -57,3 +57,14 @@ rule plot_bootstrap:
         "../envs/sleuth.yaml"
     script:
         "../scripts/plot-bootstrap.R"
+
+
+rule plot_pca:
+    input:
+        "sleuth/all.rds"
+    output:
+        "plots/pca/{covariate}.pca.svg"
+    conda:
+        "../envs/sleuth.yaml"
+    script:
+        "../scripts/plot-pca.R"
