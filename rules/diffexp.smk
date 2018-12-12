@@ -45,3 +45,15 @@ rule sleuth_diffexp:
         "../envs/sleuth.yaml"
     script:
         "../scripts/sleuth-diffexp.R"
+
+
+
+rule plot_bootstrap:
+    input:
+        "sleuth/all.rds"
+    output:
+        "plots/bootstrap/{transcript}.bootstrap.svg"
+    conda:
+        "../envs/sleuth.yaml"
+    script:
+        "../scripts/plot-bootstrap.R"
