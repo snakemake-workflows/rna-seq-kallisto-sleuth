@@ -1,0 +1,55 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+
+description: snakemake configuration file
+
+type: object
+
+properties:
+  samples:
+    type: string
+  units:
+    type: string
+  adapter:
+    type: string
+    pattern: "^[ACGT]+$"
+
+  pca:
+    type: object
+    properties:
+      labels:
+        type: array
+        items:
+          type: string
+    required:
+      - labels
+
+  diffexp:
+    type: object
+    properties:
+      contrasts:
+        type: object
+    required:
+      - contrasts
+
+  params:
+    type: object
+    properties:
+      star:
+        type: string
+      cutadapt-se:
+        type: string
+      cutadapt-pe:
+        type: string
+    required:
+      - kallisto
+      - cutadapt-se
+      - cutadapt-pe
+
+required:
+  - samples
+  - units
+  - adapter
+  - ref
+  - pca
+  - diffexp
+  - params

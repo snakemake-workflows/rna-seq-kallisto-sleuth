@@ -1,0 +1,6 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - kallisto =0.44
+  - hdf5 =1.8.17

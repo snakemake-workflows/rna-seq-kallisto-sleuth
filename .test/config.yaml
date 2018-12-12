@@ -1,0 +1,25 @@
+samples: samples.tsv
+units: units.tsv
+
+# the sequencing adapter
+adapter: ACGGATCGATCGATCGATCGAT
+
+ref:
+  transcriptome: "data/ref/transcriptome.chr21.fa"
+
+pca:
+  labels:
+    # columns of sample sheet to use for PCA
+    - condition
+
+diffexp:
+  # contrasts for the deseq2 results method
+  contrasts:
+    treated-vs-untreated:
+      - treated
+      - untreated
+
+params:
+  kallisto: ""
+  cutadapt-se: ""
+  cutadapt-pe: ""
