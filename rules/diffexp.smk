@@ -1,8 +1,6 @@
 
-kallisto_output = expand("kallisto/{unit.sample}-{unit.unit}", unit=units.itertuples())
-
-
-#shell.prefix("LD_LIBRARY_PATH=/home/johannes/scms/snakemake-workflows/rna-seq-kallisto-sleuth/.test/.snakemake/conda/22006fc4/lib/R/library/Rhdf5lib/lib/")
+kallisto_output = expand(
+    "kallisto/{unit.sample}-{unit.unit}", unit=units.itertuples())
 
 
 rule compose_sample_sheet:
@@ -13,7 +11,8 @@ rule compose_sample_sheet:
     group: "sleuth-init"
     run:
         samples_ = units[["sample", "unit"]].merge(samples)
-        samples_["sample"] = samples_.apply(lambda row: "{}-{}".format(row["sample"], row["unit"]), axis=1)
+        samples_["sample"] = samples_.apply(
+            lambda row: "{}-{}".format(row["sample"], row["unit"]), axis=1)
         samples_["path"] = kallisto_output
         del samples_["unit"]
         samples_.to_csv(output[0], sep="\t")
