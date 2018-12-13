@@ -1,8 +1,8 @@
 channels:
   - conda-forge
+  - icm-iconics
   - bioconda
   - johanneskoester
-  - icm-iconics
 dependencies:
   - r-sleuth =0.30
   - bioconductor-rhdf5lib =1.4
