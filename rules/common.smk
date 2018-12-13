@@ -21,3 +21,12 @@ def is_single_end(sample, unit):
 
 def get_fastqs(wildcards):
     return units.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
+
+def get_bootstrap_plots(wildcards):
+    transcripts = set()
+    for model in config["diffexp"]["models"]:
+        results = pd.read_table(checkpoints.sleuth_diffexp.get(model=model).output[0])
+        transcripts.update(results[results.qval <= config["diffexp"]["FDR"]].target_id)
+    print(transcripts)
+    return ["plots/bootstrap/{transcript}.bootstrap.svg".format(transcript=t)
+            for t in transcripts]

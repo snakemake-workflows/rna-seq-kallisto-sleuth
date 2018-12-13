@@ -14,6 +14,8 @@ pca:
     - condition
 
 diffexp:
+  # desired false discovery rate
+  FDR: 0.2
   # contrasts for the deseq2 results method
   models:
     by-condition: ~condition

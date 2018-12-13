@@ -34,7 +34,7 @@ rule sleuth_init:
         "../scripts/sleuth-init.R"
 
 
-rule sleuth_diffexp:
+checkpoint sleuth_diffexp:
     input:
         "sleuth/all.rds"
     output:
@@ -45,7 +45,6 @@ rule sleuth_diffexp:
         "../envs/sleuth.yaml"
     script:
         "../scripts/sleuth-diffexp.R"
-
 
 
 rule plot_bootstrap:
