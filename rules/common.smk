@@ -27,6 +27,14 @@ def get_fastqs(wildcards):
     return units.loc[
         (wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
 
+def get_trimmed(wildcards):
+    if not is_single_end(**wildcards):
+        # paired-end sample
+        return expand("trimmed/{sample}-{unit}.{group}.fastq.gz",
+                      group=[1, 2], **wildcards)
+    # single end sample
+    return "trimmed/{sample}-{unit}.fastq.gz".format(**wildcards)
+
 def get_bootstrap_plots(wildcards):
     """Dynamically determine which transcripts to plot based on
        checkpoint output."""

@@ -24,7 +24,7 @@ def kallisto_params(wildcards, input):
 
 rule kallisto_quant:
     input:
-        fq=get_fastqs,
+        fq=get_trimmed,
         idx="kallisto/transcripts.idx"
     output:
         directory("kallisto/{sample}-{unit}")

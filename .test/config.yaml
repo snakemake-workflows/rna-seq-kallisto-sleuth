@@ -16,7 +16,7 @@ pca:
 diffexp:
   # desired false discovery rate
   FDR: 0.2
-  # contrasts for the deseq2 results method
+  # model for sleuth differential expression analysis
   models:
     by-condition: ~condition
 
