@@ -37,7 +37,7 @@ def get_trimmed(wildcards):
         return expand("trimmed/{sample}-{unit}.{group}.fastq.gz",
                       group=[1, 2], **wildcards)
     # single end sample
-    return "trimmed/{sample}-{unit}.fastq.gz".format(**wildcards)
+    return expand("trimmed/{sample}-{unit}.fastq.gz", **wildcards)
 
 def get_bootstrap_plots(wildcards):
     """Dynamically determine which transcripts to plot based on
