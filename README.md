@@ -47,3 +47,7 @@ in combination with any of the modes above.
 After successful execution, you can create a self-contained report with all results via:
 
     snakemake --report report.html
+
+### Step 5: Contribute back
+
+You will certainly add new stuff like plots or additional functionality to this analysis. Please consider to contribute this back, such that the community can benefit and converge towards common best practices.
