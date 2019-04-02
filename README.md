@@ -49,8 +49,6 @@ After successful execution, you can create a self-contained report with all resu
 
     snakemake --report report.html
     
-in the working directory.
-
 in the working directory. An example can be seen [here](https://cdn.rawgit.com/snakemake-workflows/rna-seq-kallisto-sleuth/master/.test/report.html).
 
 
