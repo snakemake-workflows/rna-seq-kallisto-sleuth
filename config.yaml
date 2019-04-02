@@ -1,0 +1,26 @@
+samples: samples.tsv
+units: units.tsv
+
+# the sequencing adapter
+adapter: ACGGATCGATCGATCGATCGAT
+
+ref:
+  transcriptome: "data/ref/transcriptome.chr21.fa"
+  species: hsapiens
+
+pca:
+  labels:
+    # columns of sample sheet to use for PCA
+    - condition
+
+diffexp:
+  # desired false discovery rate
+  FDR: 0.2
+  # model for sleuth differential expression analysis
+  models:
+    by-condition: ~condition
+
+params:
+  kallisto: "-b 100"
+  cutadapt-se: ""
+  cutadapt-pe: ""
