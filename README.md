@@ -47,6 +47,8 @@ in combination with any of the modes above.
 After successful execution, you can create a self-contained report with all results via:
 
     snakemake --report report.html
+    
+in the working directory.
 
 ### Step 5: Contribute back
 
