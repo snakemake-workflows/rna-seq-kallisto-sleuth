@@ -49,8 +49,8 @@ def get_bootstrap_plots(wildcards):
         # Obtain results from the sleuth_diffexp checkpoint.
         # This happens dynamically after the checkpoint is completed, and
         # is skipped automatically before completion.
-        results = pd.read_table(
-            checkpoints.sleuth_diffexp.get(model=model).output[0])
+        results = pd.read_csv(
+            checkpoints.sleuth_diffexp.get(model=model).output[0], sep="\t")
         transcripts.update(
             results[results.qval <= config["diffexp"]["FDR"]].target_id)
     # Require the respective output from the plot_bootstrap rule.
