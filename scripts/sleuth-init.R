@@ -14,6 +14,6 @@ t2g <- dplyr::rename(t2g, target_id = ensembl_transcript_id,
 samples <- read.table(snakemake@input[["samples"]])
 samples[, "path"] <- as.character(samples[, "path"])
 
-so <- sleuth_prep(samples, extra_bootstrap_summary = TRUE, target_mapping = t2g)
+so <- sleuth_prep(samples, extra_bootstrap_summary = TRUE, target_mapping = t2g, aggregation_column = "ens_gene")
 
 sleuth_save(so, snakemake@output[[1]])

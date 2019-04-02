@@ -37,7 +37,8 @@ checkpoint sleuth_diffexp:
     input:
         "sleuth/all.rds"
     output:
-        report("tables/diffexp/{model}.diffexp.tsv", caption="../report/diffexp.rst")
+        report("tables/diffexp/{model}.diffexp.tsv", caption="../report/diffexp.rst"),
+        report("tables/diffexp/{model}.aggregated.diffexp.tsv", caption="../report/diffexp.rst")
     params:
         model=lambda wildcards: config["diffexp"]["models"][wildcards.model]
     conda:
@@ -50,7 +51,7 @@ rule plot_bootstrap:
     input:
         "sleuth/all.rds"
     output:
-        report("plots/bootstrap/{transcript}.bootstrap.svg", caption="../report/plot-bootstrap.rst")
+        report("plots/bootstrap/{gene}/{transcript}.bootstrap.svg", caption="../report/plot-bootstrap.rst")
     conda:
         "../envs/sleuth.yaml"
     script:

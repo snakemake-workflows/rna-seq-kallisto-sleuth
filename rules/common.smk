@@ -44,15 +44,20 @@ def get_trimmed(wildcards):
 def get_bootstrap_plots(wildcards):
     """Dynamically determine which transcripts to plot based on
        checkpoint output."""
-    transcripts = set()
+    transcripts = dict()
+    genes = set()
     for model in config["diffexp"]["models"]:
         # Obtain results from the sleuth_diffexp checkpoint.
         # This happens dynamically after the checkpoint is completed, and
         # is skipped automatically before completion.
         results = pd.read_csv(
             checkpoints.sleuth_diffexp.get(model=model).output[0], sep="\t")
-        transcripts.update(
-            results[results.qval <= config["diffexp"]["FDR"]].target_id)
+        # group transcripts by gene
+        genes.update(results[results.qval <= config["diffexp"]["FDR"]].ext_gene)
+        for g in genes:
+            trx = set()
+            trx.update(results[results.ext_gene == g][results.qval <= config["diffexp"]["FDR"]].target_id)
+            transcripts[g] = trx
     # Require the respective output from the plot_bootstrap rule.
-    return ["plots/bootstrap/{transcript}.bootstrap.svg".format(transcript=t)
-            for t in transcripts]
+    return ["plots/bootstrap/{gene}/{transcript}.bootstrap.svg".format(gene=g, transcript=t)
+            for t in transcripts[g] for g in genes]
