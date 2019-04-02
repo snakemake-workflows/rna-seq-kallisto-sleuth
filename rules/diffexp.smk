@@ -10,7 +10,7 @@ rule compose_sample_sheet:
         "sleuth/samples.tsv"
     group: "sleuth-init"
     run:
-        samples_ = units[["sample", "unit"]].merge(samples)
+        samples_ = units[["sample", "unit"]].merge(samples, on="sample")
         samples_["sample"] = samples_.apply(
             lambda row: "{}-{}".format(row["sample"], row["unit"]), axis=1)
         samples_["path"] = kallisto_output
