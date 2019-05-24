@@ -22,6 +22,13 @@ units.index = units.index.set_levels(
 validate(units, schema="../schemas/units.schema.yaml")
 
 
+##### wildcard constraints #####
+
+wildcard_constraints:
+    sample="|".join(samples.index),
+    unit="|".join(units["unit"])
+
+
 ####### helpers ###########
 
 def is_single_end(sample, unit):
@@ -30,8 +37,9 @@ def is_single_end(sample, unit):
 
 def get_fastqs(wildcards):
     """Get raw FASTQ files from unit sheet."""
-    return units.loc[
-        (wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
+    u = units.loc[ (wildcards.sample, wildcards.unit), ["fq1", "fq2"] ].dropna()
+    data_path="data/raw"
+    return [ f"{data_path}/{u.fq1}", f"{data_path}/{u.fq2}" ]
 
 def get_trimmed(wildcards):
     if not is_single_end(**wildcards):
