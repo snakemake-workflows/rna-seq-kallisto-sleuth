@@ -5,7 +5,8 @@ kallisto_output = expand(
 
 rule compose_sample_sheet:
     input:
-        kallisto_output
+        kallisto_output,
+        report(config["samples"], caption="../report/samples.rst")
     output:
         "sleuth/samples.tsv"
     group: "sleuth-init"
@@ -18,14 +19,21 @@ rule compose_sample_sheet:
         samples_.to_csv(output[0], sep="\t")
 
 
+def get_model(wildcards):
+    if wildcards.model == "all":
+        return None
+    return config["diffexp"]["models"][wildcards.model]["full"]
+
+
 rule sleuth_init:
     input:
         kallisto=kallisto_output,
         samples="sleuth/samples.tsv"
     output:
-        "sleuth/all.rds"
+        "sleuth/{model}.rds"
     params:
-        species=config["ref"]["species"]
+        species=config["ref"]["species"],
+        model=get_model
     conda:
         "../envs/sleuth.yaml"
     group: "sleuth-init"
@@ -35,12 +43,14 @@ rule sleuth_init:
 
 checkpoint sleuth_diffexp:
     input:
-        "sleuth/all.rds"
+        "sleuth/{model}.rds"
     output:
-        report("tables/diffexp/{model}.diffexp.tsv", caption="../report/diffexp.rst"),
-        report("tables/diffexp/{model}.aggregated.diffexp.tsv", caption="../report/diffexp-genes.rst")
+        transcripts=report("tables/diffexp/{model}.diffexp.tsv", caption="../report/diffexp.rst"),
+        genes=report("tables/diffexp/{model}.aggregated.diffexp.tsv", caption="../report/diffexp-genes.rst"),
+        heatmap=report("plots/heatmap/{model}.heatmap.pdf", caption="../report/heatmap.rst")
     params:
-        model=lambda wildcards: config["diffexp"]["models"][wildcards.model]
+        model=get_model,
+        reduced_model=lambda wildcards: config["diffexp"]["models"][wildcards.model]["reduced"]
     conda:
         "../envs/sleuth.yaml"
     script:
@@ -49,9 +59,9 @@ checkpoint sleuth_diffexp:
 
 rule plot_bootstrap:
     input:
-        "sleuth/all.rds"
+        "sleuth/{model}.rds"
     output:
-        report("plots/bootstrap/{gene}/{transcript}.bootstrap.svg", caption="../report/plot-bootstrap.rst")
+        report("plots/bootstrap/{gene}.{transcript}.{model}.bootstrap.pdf", caption="../report/plot-bootstrap.rst")
     conda:
         "../envs/sleuth.yaml"
     script:
@@ -62,7 +72,7 @@ rule plot_pca:
     input:
         "sleuth/all.rds"
     output:
-        report("plots/pca/{covariate}.pca.svg", caption="../report/plot-pca.rst")
+        report("plots/pca/{covariate}.pca.pdf", caption="../report/plot-pca.rst")
     conda:
         "../envs/sleuth.yaml"
     script:

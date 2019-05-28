@@ -5,7 +5,7 @@ suppressMessages({
 so <- sleuth_load(snakemake@input[[1]])
 
 so <- sleuth_fit(so, as.formula(snakemake@params[["model"]]), 'full')
-so <- sleuth_fit(so, ~1, 'reduced')
+so <- sleuth_fit(so, as.formula(snakemake@params[["reduced_model"]]), 'reduced')
 so <- sleuth_lrt(so, 'reduced', 'full')
 
 all <- sleuth_results(so, 'reduced:full', 'lrt', show_all = FALSE, pval_aggregate = FALSE)
@@ -14,5 +14,9 @@ all <- dplyr::arrange(all, pval)
 all_aggregated <- sleuth_results(so, 'reduced:full', 'lrt', show_all = FALSE, pval_aggregate = TRUE)
 all_aggregated <- dplyr::arrange(all_aggregated, pval)
 
-write.table(all, file = snakemake@output[[1]], quote=FALSE, sep='\t', row.names = FALSE)
-write.table(all_aggregated, snakemake@output[[2]], quote=FALSE, sep='\t', row.names = FALSE)
+write.table(all, file = snakemake@output[["transcripts"]], quote=FALSE, sep='\t', row.names = FALSE)
+write.table(all_aggregated, snakemake@output[["genes"]], quote=FALSE, sep='\t', row.names = FALSE)
+
+pdf(file = snakemake@output[["heatmap"]], width=14)
+plot_transcript_heatmap(so, all[1:20, ]$target_id)
+dev.off()

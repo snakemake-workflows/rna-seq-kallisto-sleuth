@@ -1,6 +1,7 @@
 from snakemake.utils import validate
 import pandas as pd
 
+
 # this container defines the underlying OS for each job when using the workflow
 # with --use-conda --use-singularity
 singularity: "docker://continuumio/miniconda3"
@@ -21,6 +22,8 @@ units.index = units.index.set_levels(
     [i.astype(str) for i in units.index.levels])  # enforce str in index
 validate(units, schema="../schemas/units.schema.yaml")
 
+
+report: "../report/workflow.rst"
 
 ##### wildcard constraints #####
 
@@ -49,23 +52,25 @@ def get_trimmed(wildcards):
     # single end sample
     return expand("trimmed/{sample}-{unit}.fastq.gz", **wildcards)
 
-def get_bootstrap_plots(wildcards):
+def get_bootstrap_plots(model):
     """Dynamically determine which transcripts to plot based on
        checkpoint output."""
-    transcripts = dict()
-    genes = set()
-    for model in config["diffexp"]["models"]:
+    def inner(wildcards):
+        transcripts = dict()
+        genes = set()
         # Obtain results from the sleuth_diffexp checkpoint.
         # This happens dynamically after the checkpoint is completed, and
         # is skipped automatically before completion.
         results = pd.read_csv(
             checkpoints.sleuth_diffexp.get(model=model).output[0], sep="\t")
         # group transcripts by gene
-        genes.update(results[results.qval <= config["diffexp"]["FDR"]].ext_gene)
+        genes = set(results[results.qval <= config["diffexp"]["FDR"]].ext_gene)
         for g in genes:
-            trx = set()
-            trx.update(results[results.ext_gene == g][results.qval <= config["diffexp"]["FDR"]].target_id)
-            transcripts[g] = trx
-    # Require the respective output from the plot_bootstrap rule.
-    return ["plots/bootstrap/{gene}/{transcript}.bootstrap.svg".format(gene=g, transcript=t)
-            for t in transcripts[g] for g in genes]
+            if not pd.isnull(g):
+                valid = results.ext_gene == g
+                trx = set(results[valid][results.qval <= config["diffexp"]["FDR"]].target_id)
+                transcripts[g] = trx
+        # Require the respective output from the plot_bootstrap rule.
+        return ["plots/bootstrap/{gene}.{transcript}.{model}.bootstrap.pdf".format(gene=g, transcript=t, model=model)
+                for g, t in transcripts.items()]
+    return inner
