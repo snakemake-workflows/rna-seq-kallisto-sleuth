@@ -6,7 +6,8 @@ adapter: "GATCGGAAGAGCACACGTCTGAACTCCAGTCACATCACGATCTCGTATGCCGTCTTCTGCTTG"
 
 ref:
   transcriptome: "data/ref/Mus_musculus.GRCm38.cdna.all.plus_RUNX1a_GFP.fa"
-  species: mus_musculus
+  # species needs to be an identifier known to biomart, e.g. mmusculus for mmusculus_gene_ensembl
+  species: mmusculus
 
 pca:
   labels:
