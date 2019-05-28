@@ -1,21 +1,21 @@
-sample	RUNX1a	Dox	condition	donor_animal_first_passage
-RD1	1	1	1_1	1
-R9	1	0	1_0	1
-R10	1	0	1_0	1
-RD2	1	1	1_1	1
-RD3	1	1	1_1	2
-R11	1	0	1_0	3
-RD4	1	1	1_1	3
-R12	1	0	1_0	4
-CD1	0	1	0_1	3
-R13	1	0	1_0	4
-CD2	0	1	0_1	5
-CD3	0	1	0_1	3
-RD5	1	1	1_1	2
-R14	1	0	1_0	4
-C4	0	0	0_0	3
-RD6	1	1	1_1	2
-C5	0	0	0_0	4
-RD7	1	1	1_1	3
-RD8	1	1	1_1	2
-C6	0	0	0_0	5
+sample	RUNX1a	Dox	RUNX1a_plus_minus_Dox	RUNX1a_AND_Dox	condition	donor_animal_first_passage
+RD1	1	1	1	1	1_1	1
+R9	1	0	0	0	1_0	1
+R10	1	0	0	0	1_0	1
+RD2	1	1	1	1	1_1	1
+RD3	1	1	1	1	1_1	2
+R11	1	0	0	0	1_0	3
+RD4	1	1	1	1	1_1	3
+R12	1	0	0	0	1_0	4
+CD1	0	1	NA	0	0_1	3
+R13	1	0	0	0	1_0	4
+CD2	0	1	NA	0	0_1	5
+CD3	0	1	NA	0	0_1	3
+RD5	1	1	1	1	1_1	2
+R14	1	0	0	0	1_0	4
+C4	0	0	NA	0	0_0	3
+RD6	1	1	1	1	1_1	2
+C5	0	0	NA	0	0_0	4
+RD7	1	1	1	1	1_1	3
+RD8	1	1	1	1	1_1	2
+C6	0	0	NA	0	0_0	5
