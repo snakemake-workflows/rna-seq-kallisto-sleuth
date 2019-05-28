@@ -38,7 +38,7 @@ checkpoint sleuth_diffexp:
         "sleuth/all.rds"
     output:
         report("tables/diffexp/{model}.diffexp.tsv", caption="../report/diffexp.rst"),
-        report("tables/diffexp/{model}.aggregated.diffexp.tsv", caption="../report/diffexp.rst")
+        report("tables/diffexp/{model}.aggregated.diffexp.tsv", caption="../report/diffexp-genes.rst")
     params:
         model=lambda wildcards: config["diffexp"]["models"][wildcards.model]
     conda:
