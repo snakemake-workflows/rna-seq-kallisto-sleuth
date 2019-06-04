@@ -33,7 +33,8 @@ rule sleuth_init:
         "sleuth/{model}.rds"
     params:
         species=config["ref"]["species"],
-        model=get_model
+        model=get_model,
+        exclude=config["diffexp"].get("exclude", None)
     conda:
         "../envs/sleuth.yaml"
     group: "sleuth-init"

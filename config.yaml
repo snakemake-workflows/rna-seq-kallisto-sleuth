@@ -19,6 +19,9 @@ pca:
 diffexp:
   # desired false discovery rate
   FDR: 0.2
+  # samples to exclude (e.g. outliers due to technical problems)
+  exclude:
+    - CD3-CD3
   # model for sleuth differential expression analysis
   models:
     RUNX1a_only: 

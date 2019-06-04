@@ -16,6 +16,10 @@ t2g <- dplyr::rename(t2g, target_id = ensembl_transcript_id,
 samples <- read.table(snakemake@input[["samples"]], colClasses = "factor", sep = "\t", na.strings = "", header = TRUE)
 samples[, "path"] <- as.character(samples[, "path"])
 
+if(!is.null(snakemake@params[["exclude"]])) {
+    samples <- dplyr::filter(samples, !samples$sample %in% snakemake@params[["exclude"]] )
+}
+
 if(!is.null(model)) {
     formula <- as.formula(snakemake@params[["model"]])
     variables <- colnames(attr(terms(formula), "factors"))
