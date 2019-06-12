@@ -29,4 +29,8 @@ if(!is.null(model)) {
 
 so <- sleuth_prep(samples, extra_bootstrap_summary = TRUE, target_mapping = t2g, aggregation_column = "ens_gene")
 
+# add custom transcripts to target mapping
+custom_transcripts <- unique(so$obs_raw[(!so$obs_raw$target_id %in% so$target_mapping$target_id), "target_id"])
+so$target_mapping <- rbind(so$target_mapping, data.frame(ens_gene = NA, ext_gene = "Custom", target_id = custom_transcripts))
+
 sleuth_save(so, snakemake@output[[1]])
