@@ -21,15 +21,14 @@ diffexp:
   FDR: 0.2
   # samples to exclude (e.g. outliers due to technical problems)
   exclude:
-    - CD3-CD3
   # model for sleuth differential expression analysis
   models:
     RUNX1a_only: 
-      full: ~RUNX1a_plus_minus_Dox + donor_animal_first_passage
-      reduced: ~donor_animal_first_passage
+      full: ~RUNX1a_plus_minus_Dox + donor_animal_first_passage + library_prep
+      reduced: ~donor_animal_first_passage + library_prep
     RUNX1a_AND_Dox_vs_rest: 
-      full: ~RUNX1a_AND_Dox + donor_animal_first_passage
-      reduced: ~donor_animal_first_passage
+      full: ~RUNX1a_AND_Dox + donor_animal_first_passage + library_prep
+      reduced: ~donor_animal_first_passage + library_prep
 
 params:
   kallisto: "-b 100"
