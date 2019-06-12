@@ -78,3 +78,14 @@ rule plot_pca:
         "../envs/sleuth.yaml"
     script:
         "../scripts/plot-pca.R"
+
+
+rule tpm_matrix:
+    input:
+        "sleuth/{model}.rds"
+    output:
+        "sleuth/{model}.matrix.tsv"
+    conda:
+        "../envs/sleuth.yaml"
+    script:
+        "../scripts/sleuth-to-matrix.R"
