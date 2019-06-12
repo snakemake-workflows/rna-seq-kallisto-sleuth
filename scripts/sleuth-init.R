@@ -23,7 +23,8 @@ if(!is.null(snakemake@params[["exclude"]])) {
 if(!is.null(model)) {
     formula <- as.formula(snakemake@params[["model"]])
     variables <- colnames(attr(terms(formula), "factors"))
-    cols <- c("sample", "path", variables)
+    cols <- c("sample", "path", "condition", unlist(strsplit(variables, '[:*]')) )
+    # filter to all samples where the given variables are not NA
     samples <- samples[complete.cases(samples[, cols]), cols]
 }
 
