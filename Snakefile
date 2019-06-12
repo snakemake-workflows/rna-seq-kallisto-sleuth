@@ -8,4 +8,6 @@ rule all:
         expand("tables/diffexp/{model}.diffexp.tsv", model=config["diffexp"]["models"]),
         expand("plots/heatmap/{model}.heatmap.pdf", model=config["diffexp"]["models"]),
         expand("plots/pca/{covariate}.pca.pdf", covariate=samples.columns[samples.columns != "sample"]),
-        [get_bootstrap_plots(model) for model in config["diffexp"]["models"]]
+        [get_bootstrap_plots(model) for model in config["diffexp"]["models"]],
+        [get_bootstrap_plots(model, config["bootstrap_plots"]["genes_of_interest"])
+            for model in config["diffexp"]["models"] ]

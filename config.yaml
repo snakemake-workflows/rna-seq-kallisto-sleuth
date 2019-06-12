@@ -17,8 +17,6 @@ pca:
 
 
 diffexp:
-  # desired false discovery rate
-  FDR: 0.2
   # samples to exclude (e.g. outliers due to technical problems)
   exclude:
   # model for sleuth differential expression analysis
@@ -29,6 +27,22 @@ diffexp:
     RUNX1a_AND_Dox_vs_rest: 
       full: ~RUNX1a_AND_Dox + donor_animal_first_passage + library_prep
       reduced: ~donor_animal_first_passage + library_prep
+
+bootstrap_plots:
+  # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
+  FDR: 0.01
+  # maximum number of bootstrap plots to generate, i.e. top n discoveries to plot
+  top_n: 20
+  # for now, this will plot the sleuth-normalised kallisto count estimations with kallisto
+  # for all the transcripts of the respective genes
+  genes_of_interest:
+    - Mecom
+    - Hlf
+    - Cebpa
+    - Gzmb
+    - Egfl7
+    - Gimap6
+    - Gimap4
 
 params:
   kallisto: "-b 100"

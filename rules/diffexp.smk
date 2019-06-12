@@ -62,7 +62,7 @@ rule plot_bootstrap:
     input:
         "sleuth/{model}.rds"
     output:
-        report("plots/bootstrap/{gene}.{transcript}.{model}.bootstrap.pdf", caption="../report/plot-bootstrap.rst")
+        report("plots/bootstrap/{gene}/{gene}.{transcript}.{model}.bootstrap.pdf", caption="../report/plot-bootstrap.rst")
     conda:
         "../envs/sleuth.yaml"
     script:

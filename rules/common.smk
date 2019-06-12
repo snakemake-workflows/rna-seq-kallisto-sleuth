@@ -52,7 +52,7 @@ def get_trimmed(wildcards):
     # single end sample
     return expand("trimmed/{sample}-{unit}.fastq.gz", **wildcards)
 
-def get_bootstrap_plots(model):
+def get_bootstrap_plots(model, gene_list=None):
     """Dynamically determine which transcripts to plot based on
        checkpoint output."""
     def inner(wildcards):
@@ -64,13 +64,19 @@ def get_bootstrap_plots(model):
         results = pd.read_csv(
             checkpoints.sleuth_diffexp.get(model=model).output[0], sep="\t")
         # group transcripts by gene
-        genes = set(results[results.qval <= config["diffexp"]["FDR"]].ext_gene)
+        if gene_list is None:
+            results = results[results.qval <= config["bootstrap_plots"]["FDR"]][:config["bootstrap_plots"]["top_n"]] 
+            genes = set(results.ext_gene)
+        else:
+            genes = set(gene_list)
+            genes.add("Custom")
         for g in genes:
             if not pd.isnull(g):
                 valid = results.ext_gene == g
-                trx = set(results[valid][results.qval <= config["diffexp"]["FDR"]].target_id)
+                trx = set(results[valid].target_id)
                 transcripts[g] = trx
         # Require the respective output from the plot_bootstrap rule.
-        return ["plots/bootstrap/{gene}.{transcript}.{model}.bootstrap.pdf".format(gene=g, transcript=t, model=model)
-                for g, t in transcripts.items()]
+        return ["plots/bootstrap/{gene}/{gene}.{transcript}.{model}.bootstrap.pdf".format(gene=g, transcript=t, model=model)
+                for g, ts in transcripts.items()
+                for t in ts]
     return inner
