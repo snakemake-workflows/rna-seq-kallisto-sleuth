@@ -28,7 +28,7 @@ if(!is.null(model)) {
     samples <- samples[complete.cases(samples[, cols]), cols]
 }
 
-so <- sleuth_prep(samples, extra_bootstrap_summary = TRUE, target_mapping = t2g, aggregation_column = "ens_gene")
+so <- sleuth_prep(samples, extra_bootstrap_summary = TRUE, target_mapping = t2g, aggregation_column = "ens_gene", read_bootstrap_tpm = TRUE)
 
 # add custom transcripts to target mapping
 custom_transcripts <- unique(so$obs_raw[(!so$obs_raw$target_id %in% so$target_mapping$target_id), "target_id"])
