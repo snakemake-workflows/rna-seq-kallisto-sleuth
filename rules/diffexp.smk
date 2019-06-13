@@ -46,9 +46,9 @@ checkpoint sleuth_diffexp:
     input:
         "sleuth/{model}.rds"
     output:
-        transcripts=report("tables/diffexp/{model}.diffexp.tsv", caption="../report/diffexp.rst"),
-        genes=report("tables/diffexp/{model}.aggregated.diffexp.tsv", caption="../report/diffexp-genes.rst"),
-        heatmap=report("plots/heatmap/{model}.heatmap.pdf", caption="../report/heatmap.rst")
+        transcripts=report("tables/diffexp/{model}.diffexp.tsv", caption="../report/diffexp.rst", category="Differential transcript expression"),
+        genes=report("tables/diffexp/{model}.aggregated.diffexp.tsv", caption="../report/diffexp-genes.rst", category="Differential gene expression"),
+        heatmap=report("plots/heatmap/{model}.heatmap.pdf", caption="../report/heatmap.rst", category="Heatmaps")
     params:
         model=get_model,
         reduced_model=lambda wildcards: config["diffexp"]["models"][wildcards.model]["reduced"]
@@ -62,7 +62,7 @@ rule plot_bootstrap:
     input:
         "sleuth/{model}.rds"
     output:
-        report("plots/bootstrap/{gene}/{gene}.{transcript}.{model}.bootstrap.pdf", caption="../report/plot-bootstrap.rst")
+        report("plots/bootstrap/{gene}/{gene}.{transcript}.{model}.bootstrap.pdf", caption="../report/plot-bootstrap.rst", category="Counts")
     conda:
         "../envs/sleuth.yaml"
     script:
@@ -73,7 +73,7 @@ rule plot_pca:
     input:
         "sleuth/all.rds"
     output:
-        report("plots/pca/{covariate}.pca.pdf", caption="../report/plot-pca.rst")
+        report("plots/pca/{covariate}.pca.pdf", caption="../report/plot-pca.rst", category="PCA")
     conda:
         "../envs/sleuth.yaml"
     script:
