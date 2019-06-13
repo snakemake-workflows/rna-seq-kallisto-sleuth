@@ -33,6 +33,7 @@ bootstrap_plots:
   FDR: 0.01
   # maximum number of bootstrap plots to generate, i.e. top n discoveries to plot
   top_n: 20
+  color_by: condition
   # for now, this will plot the sleuth-normalised kallisto count estimations with kallisto
   # for all the transcripts of the respective genes
   genes_of_interest:

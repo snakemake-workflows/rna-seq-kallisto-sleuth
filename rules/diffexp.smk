@@ -65,6 +65,8 @@ rule plot_bootstrap:
         report("plots/bootstrap/{gene}/{gene}.{transcript}.{model}.bootstrap.pdf", caption="../report/plot-bootstrap.rst", category="Counts")
     conda:
         "../envs/sleuth.yaml"
+    params:
+        color_by=config["bootstrap_plots"]["color_by"]
     script:
         "../scripts/plot-bootstrap.R"
 
