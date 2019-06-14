@@ -16,7 +16,3 @@ all_aggregated <- dplyr::arrange(all_aggregated, pval)
 
 write.table(all, file = snakemake@output[["transcripts"]], quote=FALSE, sep='\t', row.names = FALSE)
 write.table(all_aggregated, snakemake@output[["genes"]], quote=FALSE, sep='\t', row.names = FALSE)
-
-pdf(file = snakemake@output[["heatmap"]], width=14)
-plot_transcript_heatmap(so, all[1:20, ]$target_id)
-dev.off()

@@ -48,7 +48,6 @@ checkpoint sleuth_diffexp:
     output:
         transcripts=report("tables/diffexp/{model}.diffexp.tsv", caption="../report/diffexp.rst", category="Differential transcript expression"),
         genes=report("tables/diffexp/{model}.aggregated.diffexp.tsv", caption="../report/diffexp-genes.rst", category="Differential gene expression"),
-        heatmap=report("plots/heatmap/{model}.heatmap.pdf", caption="../report/heatmap.rst", category="Heatmaps")
     params:
         model=get_model,
         reduced_model=lambda wildcards: config["diffexp"]["models"][wildcards.model]["reduced"]
@@ -80,6 +79,18 @@ rule plot_pca:
         "../envs/sleuth.yaml"
     script:
         "../scripts/plot-pca.R"
+
+
+rule plot_diffexp_heatmap:
+    input:
+        so="sleuth/{model}.rds",
+        diffexp="tables/diffexp/{model}.diffexp.tsv"
+    output:
+        report("plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf", caption="../report/heatmap.rst", category="Heatmaps")
+    conda:
+        "../envs/sleuth.yaml"
+    script:
+        "../scripts/plot-diffexp-heatmap.R"
 
 
 rule tpm_matrix:

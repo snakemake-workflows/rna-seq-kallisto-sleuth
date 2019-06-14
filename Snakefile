@@ -8,7 +8,7 @@ rule all:
         expand(
             [
                 "tables/diffexp/{model}.diffexp.tsv",
-                "plots/heatmap/{model}.heatmap.pdf",
+                "plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
                 "tables/tpm-matrix/{model}.tpm-matrix.tsv"
             ],
             model=config["diffexp"]["models"]
