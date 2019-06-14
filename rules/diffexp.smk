@@ -86,6 +86,8 @@ rule plot_diffexp_heatmap:
         diffexp="tables/diffexp/{model}.diffexp.tsv"
     output:
         report("plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf", caption="../report/heatmap.rst", category="Heatmaps")
+    params:
+        model=get_model
     conda:
         "../envs/sleuth.yaml"
     script:
