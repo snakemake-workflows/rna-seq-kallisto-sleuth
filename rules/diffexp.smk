@@ -103,3 +103,14 @@ rule tpm_matrix:
         "../envs/sleuth.yaml"
     script:
         "../scripts/sleuth-to-matrix.R"
+
+
+rule plot_fragment_length_dist:
+    input:
+        "sleuth/all.rds"
+    output:
+        report("plots/fld/{sample}-{unit}.fragment-length-dist.pdf", caption="../report/fld.rst", category="Fragment length distribution")
+    conda:
+        "../envs/sleuth.yaml"
+    script:
+        "../scripts/plot-fld.R"

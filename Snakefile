@@ -17,3 +17,4 @@ rule all:
         [get_bootstrap_plots(model) for model in config["diffexp"]["models"]],
         [get_bootstrap_plots(model, config["bootstrap_plots"]["genes_of_interest"])
             for model in config["diffexp"]["models"] ],
+        expand("plots/fld/{unit.sample}-{unit.unit}.fragment-length-dist.pdf", unit=units[["sample", "unit"]].itertuples())
