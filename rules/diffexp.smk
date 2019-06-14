@@ -21,7 +21,7 @@ rule compose_sample_sheet:
 
 def get_model(wildcards):
     if wildcards.model == "all":
-        return None
+        return {"full": None}
     return config["diffexp"]["models"][wildcards.model]
 
 
