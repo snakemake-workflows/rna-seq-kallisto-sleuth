@@ -22,7 +22,7 @@ rule compose_sample_sheet:
 def get_model(wildcards):
     if wildcards.model == "all":
         return None
-    return config["diffexp"]["models"][wildcards.model]["full"]
+    return config["diffexp"]["models"][wildcards.model]
 
 
 rule sleuth_init:
@@ -33,7 +33,7 @@ rule sleuth_init:
         "sleuth/{model}.rds"
     params:
         species=config["ref"]["species"],
-        model=get_model,
+        model=lambda w: get_model(w)["full"],
         exclude=config["diffexp"].get("exclude", None)
     conda:
         "../envs/sleuth.yaml"
@@ -50,7 +50,6 @@ checkpoint sleuth_diffexp:
         genes=report("tables/diffexp/{model}.aggregated.diffexp.tsv", caption="../report/diffexp-genes.rst", category="Differential gene expression"),
     params:
         model=get_model,
-        reduced_model=lambda wildcards: config["diffexp"]["models"][wildcards.model]["reduced"]
     conda:
         "../envs/sleuth.yaml"
     script:
