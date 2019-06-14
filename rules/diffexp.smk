@@ -62,7 +62,7 @@ rule plot_bootstrap:
     input:
         "sleuth/{model}.rds"
     output:
-        report("plots/bootstrap/{gene}/{gene}.{transcript}.{model}.bootstrap.pdf", caption="../report/plot-bootstrap.rst", category="Counts")
+        report("plots/bootstrap/{gene}/{gene}.{transcript}.{model}.bootstrap.pdf", caption="../report/plot-bootstrap.rst", category="Expression Plots")
     conda:
         "../envs/sleuth.yaml"
     params:
@@ -86,7 +86,7 @@ rule tpm_matrix:
     input:
         "sleuth/{model}.rds"
     output:
-        "sleuth/{model}.matrix.tsv"
+        report("tables/tpm-matrix/{model}.tpm-matrix.tsv", caption="../report/tpm-matrix.rst", category="Expression Matrices")
     conda:
         "../envs/sleuth.yaml"
     script:
