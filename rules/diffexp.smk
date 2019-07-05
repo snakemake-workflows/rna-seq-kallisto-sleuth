@@ -48,6 +48,7 @@ checkpoint sleuth_diffexp:
     output:
         transcripts=report("tables/diffexp/{model}.diffexp.tsv", caption="../report/diffexp.rst", category="Differential transcript expression"),
         genes=report("tables/diffexp/{model}.aggregated.diffexp.tsv", caption="../report/diffexp-genes.rst", category="Differential gene expression"),
+        gene_to_transcript="tables/diffexp/{model}.gene_to_transcript.diffexp.tsv"
     params:
         model=get_model,
     conda:

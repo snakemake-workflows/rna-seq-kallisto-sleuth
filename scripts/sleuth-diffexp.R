@@ -10,6 +10,10 @@ so <- sleuth_fit(so, as.formula(model[["full"]]), 'full')
 so <- sleuth_fit(so, as.formula(model[["reduced"]]), 'reduced')
 so <- sleuth_lrt(so, "reduced", "full")
 
+# get gene to transcript mapping
+gene_table <- sleuth_gene_table(so)
+write.table(gene_table, file = snakemake@output[["gene_to_transcript"]], sep="\t", row.names = FALSE, col.names = NA)
+
 write_results <- function(aggregate, output) {
     print("Performing likelihood ratio test")
     all <- sleuth_results(so, "reduced:full", "lrt", show_all = FALSE, pval_aggregate = aggregate)
