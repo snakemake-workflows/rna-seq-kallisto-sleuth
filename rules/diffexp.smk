@@ -30,7 +30,7 @@ rule sleuth_init:
         kallisto=kallisto_output,
         samples="sleuth/samples.tsv"
     output:
-        "sleuth/{model}.rds"
+        "sleuth/{model,[^.]}.rds"
     params:
         species=config["ref"]["species"],
         model=lambda w: get_model(w)["full"],
@@ -46,9 +46,12 @@ checkpoint sleuth_diffexp:
     input:
         "sleuth/{model}.rds"
     output:
-        transcripts=report("tables/diffexp/{model}.diffexp.tsv", caption="../report/diffexp.rst", category="Differential transcript expression"),
-        genes=report("tables/diffexp/{model}.aggregated.diffexp.tsv", caption="../report/diffexp-genes.rst", category="Differential gene expression"),
-        gene_to_transcript="tables/diffexp/{model}.gene_to_transcript.diffexp.tsv"
+        transcripts_rds="sleuth/diffexp/{model}.transcripts.diffexp.rds",
+        genes_aggregated_rds="sleuth/diffexp/{model}.genes-aggregated.diffexp.rds",
+        genes_mostsigtrans_rds="sleuth/diffexp/{model}.genes-mostsigtrans.diffexp.rds",
+        transcripts=report("tables/diffexp/{model}.transcripts.diffexp.tsv", caption="../report/diffexp.rst", category="Differential transcript expression"),
+        genes_aggregated=report("tables/diffexp/{model}.genes-aggregated.diffexp.tsv", caption="../report/diffexp-genes.rst", category="Differential gene expression"),
+        genes_mostsigtrans=report("tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv", caption="../report/diffexp-genes.rst", category="Differential gene expression"),
     params:
         model=get_model,
     conda:
@@ -84,7 +87,7 @@ rule plot_pca:
 rule plot_diffexp_heatmap:
     input:
         so="sleuth/{model}.rds",
-        diffexp="tables/diffexp/{model}.diffexp.tsv"
+        diffexp="tables/diffexp/{model}.transcripts.diffexp.tsv"
     output:
         report("plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf", caption="../report/heatmap.rst", category="Heatmaps")
     params:

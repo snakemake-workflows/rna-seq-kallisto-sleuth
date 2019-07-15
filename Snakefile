@@ -7,7 +7,7 @@ rule all:
     input:
         expand(
             [
-                "tables/diffexp/{model}.diffexp.tsv",
+                "tables/diffexp/{model}.transcripts.diffexp.tsv",
                 "plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
                 "tables/tpm-matrix/{model}.tpm-matrix.tsv"
             ],

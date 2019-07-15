@@ -62,7 +62,7 @@ def get_bootstrap_plots(model, gene_list=None):
         # This happens dynamically after the checkpoint is completed, and
         # is skipped automatically before completion.
         results = pd.read_csv(
-            checkpoints.sleuth_diffexp.get(model=model).output[0], sep="\t")
+            checkpoints.sleuth_diffexp.get(model=model).output.transcripts, sep="\t")
         # group transcripts by gene
         if gene_list is None:
             results = results[results.qval <= config["bootstrap_plots"]["FDR"]][:config["bootstrap_plots"]["top_n"]] 
