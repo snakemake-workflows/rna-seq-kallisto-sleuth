@@ -1,29 +1,46 @@
+library(sleuth)
 library(SPIA)
 library(graphite)
+library(AnnotationDbi)
+
+covariate <- snakemake@params[["covariate"]]
+#library(org.Hs.eg.db)
+#print(columns(org.Hs.eg.db))
+#annotation_db <- get(selectDb(snakemake@params[["species"]]))
+#print(columns(annotation_db))
 
 db <- pathways(snakemake@params[["species"]], "reactome")
+db <- convertIdentifiers(db, "ENSEMBL")
 
-prepareSPIA(db, "reactomeEx")
+prepareSPIA(db, "reactome")
 
 so <- sleuth_load(snakemake@input[["sleuth"]])
 
-# get gene to transcript mapping
-gene_table <- read.table(snakemake@input[["genes_to_transcripts"]], sep = "\t", header = TRUE)
-all <- gene_table$ens_gene
-significant <- gene_table[gene_table$qval <= 0.05, ]
-
-# get differentially expressed genes
 diffexp <- read.table(snakemake@input[["diffexp"]], sep = "\t", header = TRUE)
-rownames(diffexp) <- diffexp$target_id
-diffexp <- diffexp[significant$most_sig_transcript, ]
+diffexp <- diffexp[diffexp$qval <= 0.05, ]
 
-# obtain covariates of interest
-covariates <- setdiff(colnames(design_matrix(so, "full")), colnames(design_matrix(so, "reduced")))
+#diffexp$entrez_gene <- mapIds(annotation_db, keys = diffexp$ens_gene, keytype = "ENSEMBLID", columns = "ENTREZID")
 
 # get logFC equivalent (the sum of beta scores of covariates of interest)
-beta <- rowSums(diffexp[, paste0("beta.", covariates)])
+beta_col <- paste("b", covariate, sep = "_")
+
+cols <- colnames(diffexp)
+suffixes <- c("", "1", ".0")
+found <- FALSE
+for(suffix in suffixes) {
+    beta_col <- paste0(beta_col, suffix)
+    if(beta_col %in% cols) {
+        found <- TRUE
+    }
+}
+if(!found) {
+    stop(paste0("Invalid covariate ", covariate, ", not found in diffexp table."))
+}
+
+beta <- rowSums(diffexp[, beta_col, drop = FALSE])
 names(beta) <- diffexp$ens_gene
 
-res <- runSPIA(de = beta, all = all, "reactomeEx")
+save.image()
+res <- runSPIA(de = beta, all = unique(so$target_mapping$ens_gene), "reactome")
 
 write.table(res, file = snakemake@output[[1]], sep = "\t", col.names = NA, row.names = TRUE) 

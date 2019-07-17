@@ -2,6 +2,7 @@ include: "rules/common.smk"
 include: "rules/trim.smk"
 include: "rules/quant.smk"
 include: "rules/diffexp.smk"
+include: "rules/enrichment.smk"
 
 rule all:
     input:
@@ -9,7 +10,8 @@ rule all:
             [
                 "tables/diffexp/{model}.transcripts.diffexp.tsv",
                 "plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
-                "tables/tpm-matrix/{model}.tpm-matrix.tsv"
+                "tables/tpm-matrix/{model}.tpm-matrix.tsv",
+                "tables/pathways/{model}.pathways.tsv"
             ],
             model=config["diffexp"]["models"]
         ),

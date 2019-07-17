@@ -42,12 +42,11 @@ write_results <- function(mode, output, output_all) {
 
     if(mode == "mostsignificant") {
         # for each gene, find most significant (this is equivalent to sleuth_gene_table, but with bug fixes)
-        gene_table <- dplyr::arrange_(gene_table, "ext_gene", ~qval)
-        gene_table <- dplyr::group_by_(gene_table, "ext_gene")
-	gene_table <- dplyr::summarise_(gene_table, target_id = ~target_id[1], pval = ~min(pval, na.rm = TRUE), qval = ~min(qval, na.rm = TRUE),  num_transcripts = ~n(), all_target_ids = ~paste0(target_id[1:length(target_id)], collapse = ','))
+        gene_table <- dplyr::arrange_(all, "ens_gene", ~qval)
+        gene_table <- dplyr::group_by_(gene_table, "ens_gene")
+        gene_table <- dplyr::summarise_(gene_table, target_id = ~target_id[1], pval = ~min(pval, na.rm = TRUE), qval = ~min(qval, na.rm = TRUE),  num_transcripts = ~dplyr::n(), all_target_ids = ~paste0(target_id[1:length(target_id)], collapse = ','))
         # only keep those transcripts
-	all <- all[gene_table$target_id, ]
-
+        all <- all[all$target_id %in% gene_table$target_id, ]
     }
 
     write.table(all, file = output, quote=FALSE, sep='\t', row.names = FALSE)
@@ -56,4 +55,4 @@ write_results <- function(mode, output, output_all) {
 
 write_results("transcripts", snakemake@output[["transcripts"]], snakemake@output[["transcripts_rds"]])
 write_results("aggregate", snakemake@output[["genes_aggregated"]], snakemake@output[["genes_aggregated_rds"]])
-write_results("mostsigificant", snakemake@output[["genes_mostsigtrans"]], snakemake@output[["genes_mostsigtrans_rds"]])
+write_results("mostsignificant", snakemake@output[["genes_mostsigtrans"]], snakemake@output[["genes_mostsigtrans_rds"]])

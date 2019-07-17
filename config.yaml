@@ -6,7 +6,7 @@ adapter: "GATCGGAAGAGCACACGTCTGAACTCCAGTCACATCACGATCTCGTATGCCGTCTTCTGCTTG"
 
 ref:
   transcriptome: "data/ref/Mus_musculus.GRCm38.cdna.all.plus_RUNX1a_GFP.fa"
-  # species needs to be an identifier known to biomart, e.g. mmusculus for mmusculus_gene_ensembl
+  # species needs to be an identifier known to biomart, e.g. mmusculus, hsapiens
   species: mmusculus
 
 pca:
@@ -24,9 +24,15 @@ diffexp:
     RUNX1a_only: 
       full: ~RUNX1a_plus_minus_Dox + donor_animal_first_passage + library_prep
       reduced: ~donor_animal_first_passage + library_prep
+      # Binary valued covariate that shall be used for fold change/effect size
+      # based downstream analyses.
+      primary_variable: RUNX1a_plus_minus_Dox
     RUNX1a_AND_Dox_vs_rest: 
       full: ~RUNX1a_AND_Dox + donor_animal_first_passage + library_prep
       reduced: ~donor_animal_first_passage + library_prep
+      # Binary valued covariate that shall be used for fold change/effect size
+      # based downstream analyses.
+      primary_variable: RUNX1a_AND_Dox
 
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
