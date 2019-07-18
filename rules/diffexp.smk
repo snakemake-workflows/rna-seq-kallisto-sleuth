@@ -49,9 +49,15 @@ checkpoint sleuth_diffexp:
         transcripts_rds="sleuth/diffexp/{model}.transcripts.diffexp.rds",
         genes_aggregated_rds="sleuth/diffexp/{model}.genes-aggregated.diffexp.rds",
         genes_mostsigtrans_rds="sleuth/diffexp/{model}.genes-mostsigtrans.diffexp.rds",
-        transcripts=report("tables/diffexp/{model}.transcripts.diffexp.tsv", caption="../report/diffexp.rst", category="Differential transcript expression"),
-        genes_aggregated=report("tables/diffexp/{model}.genes-aggregated.diffexp.tsv", caption="../report/diffexp-genes.rst", category="Differential gene expression"),
-        genes_mostsigtrans=report("tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv", caption="../report/diffexp-genes.rst", category="Differential gene expression"),
+        transcripts=report("tables/diffexp/{model}.transcripts.diffexp.tsv",
+                            caption="../report/diffexp.rst",
+                            category="Differential transcript expression"),
+        genes_aggregated=report("tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
+                                caption="../report/diffexp-genes.rst",
+                                category="Differential gene expression"),
+        genes_mostsigtrans=report("tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
+                                    caption="../report/diffexp-genes.rst",
+                                    category="Differential gene expression")
     params:
         model=get_model,
     conda:
@@ -96,6 +102,19 @@ rule plot_diffexp_heatmap:
         "../envs/sleuth.yaml"
     script:
         "../scripts/plot-diffexp-heatmap.R"
+
+
+rule plot_diffexp_pval_hist:
+    input:
+        diffexp_rds="sleuth/diffexp/{model}.{level}.diffexp.rds"
+    output:
+        report("plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf", caption="../report/pval-hist.rst", category="QC")
+    params:
+        model=get_model
+    conda:
+        "../envs/sleuth.yaml"
+    script:
+        "../scripts/plot-diffexp-pval-hist.R"
 
 
 rule tpm_matrix:

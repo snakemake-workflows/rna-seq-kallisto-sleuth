@@ -15,6 +15,10 @@ rule all:
             ],
             model=config["diffexp"]["models"]
         ),
+        expand("plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf",
+                model=config["diffexp"]["models"],
+                level=["transcripts", "genes-aggregated", "genes-mostsigtrans" ]
+        ),
         expand("plots/pca/{covariate}.pca.pdf", covariate=samples.columns[samples.columns != "sample"]),
         [get_bootstrap_plots(model) for model in config["diffexp"]["models"]],
         [get_bootstrap_plots(model, config["bootstrap_plots"]["genes_of_interest"])

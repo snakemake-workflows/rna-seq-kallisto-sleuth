@@ -8,3 +8,6 @@ dependencies:
   - bioconductor-biomart =2.36
   - r-gridextra =2.3
   - r-pheatmap =1.0.12
+  - r-base =3.5
+  - r-ggplot2 =3.1
+  - r-tidyr =0.8.2
