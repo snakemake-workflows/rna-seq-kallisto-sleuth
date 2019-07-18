@@ -16,7 +16,7 @@ write_results <- function(mode, output, output_all) {
         aggregate <- TRUE
     }
     print("Performing likelihood ratio test")
-    all <- sleuth_results(so, "reduced:full", "lrt", show_all = FALSE, pval_aggregate = aggregate)
+    all <- sleuth_results(so, "reduced:full", "lrt", show_all = TRUE, pval_aggregate = aggregate)
     all <- dplyr::arrange(all, pval)
 
     covariates <- colnames(design_matrix(so, "full"))
