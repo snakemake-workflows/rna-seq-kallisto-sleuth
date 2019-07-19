@@ -20,3 +20,4 @@ dependencies:
   - bioconductor-org.sc.sgd.db =3.7
   - bioconductor-org.ss.eg.db =3.7
   - bioconductor-org.xl.eg.db =3.7
+  - r-tidyverse =1.2

@@ -2,14 +2,11 @@ library(sleuth)
 library(SPIA)
 library(graphite)
 library(AnnotationDbi)
+library(tidyverse)
 
 options(Ncpus = snakemake@threads)
 
 covariate <- snakemake@params[["covariate"]]
-#library(org.Hs.eg.db)
-#print(columns(org.Hs.eg.db))
-#annotation_db <- get(selectDb(snakemake@params[["species"]]))
-#print(columns(annotation_db))
 
 prefix_ens_ids <- function(ids) {
     paste("ENSEMBL", ids, sep = ":")
@@ -20,13 +17,10 @@ db <- convertIdentifiers(db, "ENSEMBL")
 
 prepareSPIA(db, "reactome")
 
-so <- sleuth_load(snakemake@input[["sleuth"]])
 
-diffexp <- read.table(snakemake@input[["diffexp"]], sep = "\t", header = TRUE)
-diffexp <- diffexp[diffexp$qval <= 0.05, ]
-diffexp$ens_gene <- prefix_ens_ids(diffexp$ens_gene)
-
-#diffexp$entrez_gene <- mapIds(annotation_db, keys = diffexp$ens_gene, keytype = "ENSEMBLID", columns = "ENTREZID")
+diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>% drop_na(ens_gene) %>% mutate(ens_gene = str_c("ENSEMBL", ens_gene))
+universe <- diffexp %>% pull(ens_gene)
+diffexp <- diffexp %>% filter(qval <= 0.05)
 
 # get logFC equivalent (the sum of beta scores of covariates of interest)
 beta_col <- paste("b", covariate, sep = "_")
@@ -38,15 +32,15 @@ for(suffix in suffixes) {
     beta_col <- paste0(beta_col, suffix)
     if(beta_col %in% cols) {
         found <- TRUE
+        break
     }
 }
 if(!found) {
     stop(paste0("Invalid covariate ", covariate, ", not found in diffexp table."))
 }
 
-beta <- rowSums(diffexp[, beta_col, drop = FALSE])
-names(beta) <- diffexp$ens_gene
+beta <- diffexp %>% select(ens_gene, beta_col) %>% deframe()
 
-res <- runSPIA(de = beta, all = prefix_ens_ids(unique(so$target_mapping$ens_gene)), "reactome")
+res <- runSPIA(de = beta, all = universe, "reactome")
 
-write.table(res, file = snakemake@output[[1]], sep = "\t", col.names = NA, row.names = TRUE) 
+write_tsv(res, snakemake@output[[1]])
