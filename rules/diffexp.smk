@@ -30,7 +30,7 @@ rule sleuth_init:
         kallisto=kallisto_output,
         samples="sleuth/samples.tsv"
     output:
-        "sleuth/{model,[^.]}.rds"
+        "sleuth/{model,[^.]+}.rds"
     params:
         species=config["ref"]["species"],
         model=lambda w: get_model(w)["full"],
