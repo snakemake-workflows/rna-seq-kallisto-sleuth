@@ -41,6 +41,6 @@ if(!found) {
 
 beta <- diffexp %>% select(ens_gene, beta_col) %>% deframe()
 
-res <- runSPIA(de = beta, all = universe, "reactome")
+res <- runSPIA(de = beta, all = universe, "reactome", plots = TRUE)
 
 write_tsv(res, snakemake@output[[1]])

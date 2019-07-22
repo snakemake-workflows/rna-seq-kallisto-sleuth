@@ -56,7 +56,7 @@ checkpoint sleuth_diffexp:
                                 caption="../report/diffexp-genes.rst",
                                 category="Differential gene expression"),
         genes_mostsigtrans=report("tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
-                                    caption="../report/diffexp-genes.rst",
+                                    caption="../report/diffexp-mostsigtrans.rst",
                                     category="Differential gene expression")
     params:
         model=get_model,
