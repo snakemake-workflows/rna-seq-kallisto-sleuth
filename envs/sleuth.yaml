@@ -3,11 +3,12 @@ channels:
   - bioconda
 dependencies:
   - r-sleuth =0.30
-  - bioconductor-rhdf5lib =1.4
+  - bioconductor-rhdf5lib =1.4.3
   - bioconductor-rhdf5 =2.26.2
-  - bioconductor-biomart =2.36
+  - bioconductor-biomart =2.36.1
   - r-gridextra =2.3
   - r-pheatmap =1.0.12
-  - r-base =3.5
-  - r-ggplot2 =3.1
-  - r-tidyr =0.8.2
+  - r-ggplot2 =3.1.1
+  - r-tidyr =0.8.3
+  - r-base =3.5.1=h271c98b_1006 # see https://github.com/conda-forge/r-base-feedstock/issues/100
+                                # TODO replace with r-base =3.6 once bioconda r-rebuilt is done.
