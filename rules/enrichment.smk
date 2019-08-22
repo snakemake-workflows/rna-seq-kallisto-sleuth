@@ -12,3 +12,15 @@ rule spia:
     threads: 16
     script:
         "../scripts/spia.R"
+
+
+rule biomart-ens_gene_to_go:
+    output:
+        "data/ref/ens_gene_to_go.tsv"
+    params:
+        species=config["ref"]["species"]
+    conda:
+        "../envs/biomart-download.yaml"
+    script:
+        "../scripts/biomart-ens_gene_to_go.R"
+
