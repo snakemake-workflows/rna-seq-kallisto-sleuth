@@ -24,3 +24,16 @@ rule biomart-ens_gene_to_go:
     script:
         "../scripts/biomart-ens_gene_to_go.R"
 
+
+rule download_go_obo:
+    output:
+        "data/ref/gene_ontology.obo"
+    params:
+        download=config["ref"]["gene_ontology"]
+    conda:
+        "../envs/curl.yaml"
+    log:
+        "logs/curl/download_go_obo.log"
+    shell:
+        "( curl --silent -o {output} {params.download} ) 2> {log}"
+

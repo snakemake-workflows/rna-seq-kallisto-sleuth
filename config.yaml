@@ -8,6 +8,8 @@ ref:
   transcriptome: "data/ref/Mus_musculus.GRCm38.cdna.all.plus_RUNX1a_GFP.fa"
   # species needs to be an identifier known to biomart, e.g. mmusculus, hsapiens
   species: mmusculus
+  # gene ontology to download, used e.g. in goatools
+  gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
 
 pca:
   labels:
