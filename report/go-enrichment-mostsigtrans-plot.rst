@@ -1,0 +1,1 @@
+**Network plot of enriched gene ontology (GO) terms** with enrichment determined and plot created by goatool, using the model ``{{ snakemake.params.model["full"] }}`` and the most significant transcript of each gene as determined by sleuth.

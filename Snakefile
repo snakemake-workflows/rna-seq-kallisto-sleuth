@@ -11,7 +11,9 @@ rule all:
                 "tables/diffexp/{model}.transcripts.diffexp.tsv",
                 "plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
                 "tables/tpm-matrix/{model}.tpm-matrix.tsv",
-                "tables/pathways/{model}.pathways.tsv"
+                "tables/pathways/{model}.pathways.tsv",
+                "tables/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.tsv",
+                "plots/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.pdf"
             ],
             model=config["diffexp"]["models"]
         ),

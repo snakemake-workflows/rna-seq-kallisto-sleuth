@@ -37,3 +37,28 @@ rule download_go_obo:
     shell:
         "( curl --silent -o {output} {params.download} ) 2> {log}"
 
+rule goatools_go_enrichment:
+    input:
+        obo="data/ref/gene_ontology.obo",
+        ens_gene_to_go="data/ref/ens_gene_to_go.tsv",
+        diffexp="tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv"
+    output:
+        enrichment=report(
+            "tables/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.tsv",
+            caption="../go-enrichment-mostsigtrans-table.rst",
+            category="Enrichment analysis"
+            ),
+        plot=report(
+            "plots/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.pdf",
+            caption="../go-enrichment-mostsigtrans-plot.rst",
+            category="Enrichment analysis"
+            )
+    params:
+        species=config["ref"]["species"]
+    conda:
+        "../envs/goatools.yaml"
+    script:
+        "../scripts/goatools-go-enrichment-analysis.py"
+
+
+
