@@ -14,7 +14,7 @@ rule spia:
         "../scripts/spia.R"
 
 
-rule biomart-ens_gene_to_go:
+rule biomart_ens_gene_to_go:
     output:
         "data/ref/ens_gene_to_go.tsv"
     params:

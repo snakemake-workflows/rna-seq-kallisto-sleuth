@@ -8,7 +8,7 @@ suppressMessages({
 # create an ensembl biomart for the species specified in the params field
 mart <- biomaRt::useMart(
   biomart = "ENSEMBL_MART_ENSEMBL",
-  dataset = paste(snakemake@params[["species"]], "_gene_ensembl", sep = ""),
+  dataset = str_c(snakemake@params[["species"]], "_gene_ensembl"),
   host = 'ensembl.org')
 
 # get all ensembl_gene_id - go_id pairs and collapse into key->values mapping:
@@ -19,5 +19,5 @@ ens_gene_to_go <- biomaRt::getBM(attributes = c("ensembl_gene_id", "go_id"), mar
                     group_by(ensembl_gene_id) %>%
                     summarise(go_ids = str_c(go_id, collapse = ";"))
 
-write_tsv(snakemake@output[[1]])
+write_tsv(ens_gene_to_go, path = snakemake@output[[1]], col_names = FALSE)
 
