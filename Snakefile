@@ -12,10 +12,13 @@ rule all:
                 "plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
                 "tables/tpm-matrix/{model}.tpm-matrix.tsv",
                 "tables/pathways/{model}.pathways.tsv",
-                "tables/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.tsv",
-                "plots/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.pdf"
+                "tables/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.tsv"
             ],
             model=config["diffexp"]["models"]
+        ),
+        expand("plots/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment_{go_ns}.pdf",
+            model=config["diffexp"]["models"],
+            go_ns=["BP", "CC", "MF"]
         ),
         expand("plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf",
                 model=config["diffexp"]["models"],

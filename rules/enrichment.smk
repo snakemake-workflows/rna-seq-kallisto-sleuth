@@ -45,16 +45,19 @@ rule goatools_go_enrichment:
     output:
         enrichment=report(
             "tables/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.tsv",
-            caption="../go-enrichment-mostsigtrans-table.rst",
+            caption="../report/go-enrichment-mostsigtrans-table.rst",
             category="Enrichment analysis"
             ),
         plot=report(
-            "plots/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.pdf",
-            caption="../go-enrichment-mostsigtrans-plot.rst",
+            expand("plots/go_terms/{{model}}.genes-mostsigtrans.diffexp.go_term_enrichment_{ns}.pdf",
+                    ns = ['BP', 'CC', 'MF']
+                    ),
+            caption="../report/go-enrichment-mostsigtrans-plot.rst",
             category="Enrichment analysis"
             )
     params:
-        species=config["ref"]["species"]
+        species=config["ref"]["species"],
+        model=get_model
     conda:
         "../envs/goatools.yaml"
     script:
