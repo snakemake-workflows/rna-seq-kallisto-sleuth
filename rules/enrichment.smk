@@ -44,20 +44,22 @@ rule goatools_go_enrichment:
         diffexp="tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv"
     output:
         enrichment=report(
-            "tables/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.tsv",
+            "tables/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
             caption="../report/go-enrichment-mostsigtrans-table.rst",
-            category="Enrichment analysis"
+            category="GO term enrichment analysis"
             ),
         plot=report(
-            expand("plots/go_terms/{{model}}.genes-mostsigtrans.diffexp.go_term_enrichment_{ns}.pdf",
+            expand("plots/go_terms/{{model}}.genes-mostsigtrans.diffexp.go_term_enrichment_{ns}.gene_fdr_{{gene_fdr}}.go_term_fdr_{{go_term_fdr}}.pdf",
                     ns = ['BP', 'CC', 'MF']
                     ),
             caption="../report/go-enrichment-mostsigtrans-plot.rst",
-            category="Enrichment analysis"
+            category="GO term enrichment analysis"
             )
     params:
         species=config["ref"]["species"],
-        model=get_model
+        model=get_model,
+        gene_fdr=lambda wc: wc.gene_fdr.replace('-','.'),
+        go_term_fdr=lambda wc: wc.go_term_fdr.replace('-','.')
     conda:
         "../envs/goatools.yaml"
     script:

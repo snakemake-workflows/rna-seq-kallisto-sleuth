@@ -19,12 +19,12 @@ ns2assoc = objanno.get_ns2assc()
 for nspc, id2gos in ns2assoc.items():
     print("{NS} {N:,} annotated mouse genes".format(NS=nspc, N=len(id2gos)))
 
-
 # read gene diffexp table
 all_genes = pd.read_table(snakemake.input.diffexp)
 
 # select genes significantly differentially expressed according to BH FDR of sleuth
-sig_genes = all_genes[all_genes['qval']<0.01]
+fdr_level_gene = float(snakemake.params.gene_fdr)
+sig_genes = all_genes[all_genes['qval']<fdr_level_gene]
 
 
 # initialize GOEA object
@@ -57,7 +57,8 @@ ensembl_id_to_symbol = dict(zip(all_genes['ens_gene'], all_genes['ext_gene']))
 # from first plot output file name, create generic file name to trigger
 # separate plots for each of the gene ontology name spaces
 outplot_generic = snakemake.output.plot[0].replace('_BP.','_{NS}.', 1).replace('_CC.','_{NS}.', 1).replace('_MF.', '_{NS}.', 1)
-goea_results_sig = [r for r in goea_results_all if r.p_fdr_bh < 0.05]
+fdr_level_go_term = float(snakemake.params.go_term_fdr)
+goea_results_sig = [r for r in goea_results_all if r.p_fdr_bh < fdr_level_go_term]
 
 plot_results(
     outplot_generic,
