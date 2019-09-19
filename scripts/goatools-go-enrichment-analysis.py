@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 from goatools.obo_parser import GODag
 from goatools.anno.idtogos_reader import IdToGosReader
 from goatools.goea.go_enrichment_ns import GOEnrichmentStudyNS
@@ -73,4 +74,15 @@ plot_results(
     # p-values to use for coloring of GO term nodes (argument name determined from code and testing against value "p_uncorrected")
     pval_name="p_fdr_bh"
     )
+
+# for all name spaces
+for ns in ns2assoc.keys():
+    # check if no GO terms were found to be significant
+    if len([r for r in goea_results_sig if r.NS == ns]) == 0:
+        fig = plt.figure(figsize=(4, 3))
+        text = fig.text(0.5, 0.5,
+                        "No plot generated, because \nno GO terms were found significant \nfor name space {}".format(ns),
+                        ha='center', va='center', size=20)
+        fig.savefig( outplot_generic.replace('_{NS}.', "_{}.".format(ns)) )
+
 
