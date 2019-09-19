@@ -29,6 +29,7 @@ sig_genes = all_genes[all_genes['qval']<fdr_level_gene]
 
 
 # initialize GOEA object
+fdr_level_go_term = float(snakemake.params.go_term_fdr)
 
 goeaobj = GOEnrichmentStudyNS(
     # list of 'population' of genes looked at in total
@@ -41,7 +42,7 @@ goeaobj = GOEnrichmentStudyNS(
     # multiple testing correction method (fdr_bh is false discovery rate control with Benjamini-Hochberg)
     methods = ['fdr_bh'],
     # standard significance cutoff for what?
-    alpha = 0.05
+    alpha = fdr_level_go_term
     )
 
 goea_results_all = goeaobj.run_study(sig_genes['ens_gene'].tolist())
@@ -58,7 +59,7 @@ ensembl_id_to_symbol = dict(zip(all_genes['ens_gene'], all_genes['ext_gene']))
 # from first plot output file name, create generic file name to trigger
 # separate plots for each of the gene ontology name spaces
 outplot_generic = snakemake.output.plot[0].replace('_BP.','_{NS}.', 1).replace('_CC.','_{NS}.', 1).replace('_MF.', '_{NS}.', 1)
-fdr_level_go_term = float(snakemake.params.go_term_fdr)
+
 goea_results_sig = [r for r in goea_results_all if r.p_fdr_bh < fdr_level_go_term]
 
 plot_results(
@@ -79,9 +80,12 @@ plot_results(
 for ns in ns2assoc.keys():
     # check if no GO terms were found to be significant
     if len([r for r in goea_results_sig if r.NS == ns]) == 0:
-        fig = plt.figure(figsize=(4, 3))
+        fig = plt.figure(figsize=(12, 2))
         text = fig.text(0.5, 0.5,
-                        "No plot generated, because \nno GO terms were found significant \nfor name space {}".format(ns),
+                        "No plot generated, because no GO terms were found significant\n"
+                        "for name space {} and significance levels: genes ({}), GO terms ({}).\n"
+                        "You might want to check those levels and/or your intermediate data.".format(
+                        ns, fdr_level_gene, fdr_level_go_term),
                         ha='center', va='center', size=20)
         fig.savefig( outplot_generic.replace('_{NS}.', "_{}.".format(ns)) )
 
