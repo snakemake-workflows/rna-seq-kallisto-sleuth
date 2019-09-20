@@ -1,5 +1,6 @@
 suppressMessages({
   library("sleuth")
+  library("tidyverse")
 })
 
 model <- snakemake@params[["model"]]
@@ -16,8 +17,8 @@ write_results <- function(mode, output, output_all) {
         aggregate <- TRUE
     }
     print("Performing likelihood ratio test")
-    all <- sleuth_results(so, "reduced:full", "lrt", show_all = TRUE, pval_aggregate = aggregate)
-    all <- dplyr::arrange(all, pval)
+    all <- sleuth_results(so, "reduced:full", "lrt", show_all = TRUE, pval_aggregate = aggregate) %>%
+            arrange(pval)
 
     covariates <- colnames(design_matrix(so, "full"))
     covariates <- covariates[covariates != "(Intercept)"]
@@ -25,32 +26,35 @@ write_results <- function(mode, output, output_all) {
     # iterate over all covariates and perform wald test in order to obtain beta estimates
     if(!aggregate) {
         for(covariate in covariates) { 
-            print(paste("Performing wald test for", covariate))
+            print(str_c("Performing wald test for ", covariate))
             so <- sleuth_wt(so, covariate, "full")
 
-            all_wald <- sleuth_results(so, covariate, "wt", show_all = TRUE, pval_aggregate = FALSE)
-            all_wald <- all_wald[, c("target_id", "b", "se_b")]
-	    beta <- paste("b", covariate, sep = "_")
-            colnames(all_wald) <- c("target_id", beta, paste(beta, "se", sep = "_"))
-
-            all <- merge(all, all_wald, on = "target_id", sort = FALSE)
-	    # calculate a signed version of the pi-value from https://dx.doi.org/10.1093/bioinformatics/btr671
-	    # e.g. useful for GSEA ranking
-	    all[, paste("signed_pi_value", covariate, sep = "_")] <- -log10(all$pval) * all[, beta]
+	      beta_col_name <- str_c("b", covariate, sep = "_")
+            beta_se_col_name <- str_c(beta_col_name, "se", sep = "_")
+            all_wald <- sleuth_results(so, covariate, "wt", show_all = TRUE, pval_aggregate = FALSE) %>%
+                        select( target_id = target_id,
+                                !!beta_col_name := b,
+                                !!beta_se_col_name := se_b)
+            signed_pi_col_name <- str_c("signed_pi_value", covariate, sep = "_")
+            all <- inner_join(all, all_wald, by = "target_id") %>%
+	              # calculate a signed version of the pi-value from:
+                    # https://dx.doi.org/10.1093/bioinformatics/btr671
+	              # e.g. useful for GSEA ranking
+	              mutate( !!signed_pi_col_name := -log10(pval) * !!sym(beta_col_name) )
         }
     }
 
     if(mode == "mostsignificant") {
-        # for each gene, find most significant (this is equivalent to sleuth_gene_table, but with bug fixes)
-        gene_table <- dplyr::arrange_(all, "ens_gene", ~qval)
-        gene_table <- dplyr::group_by_(gene_table, "ens_gene")
-        gene_table <- dplyr::summarise_(gene_table, target_id = ~target_id[1], pval = ~min(pval, na.rm = TRUE), qval = ~min(qval, na.rm = TRUE),  num_transcripts = ~dplyr::n(), all_target_ids = ~paste0(target_id[1:length(target_id)], collapse = ','))
-        # only keep those transcripts
-        all <- all[all$target_id %in% gene_table$target_id, ]
+        # for each gene, select the most significant transcript (this is equivalent to sleuth_gene_table, but with bug fixes)
+	  all <- all %>%
+                drop_na(ens_gene) %>%
+                group_by(ens_gene) %>%
+                filter( qval == min(qval, na.rm = TRUE) ) %>%
+                arrange(qval)
     }
 
-    write.table(all, file = output, quote=FALSE, sep='\t', row.names = FALSE)
-    saveRDS(all, file = output_all, compress = FALSE)
+    write_tsv(all, path = output, quote_escape = "none")
+    write_rds(all, path = output_all, compress = "none")
 }
 
 write_results("transcripts", snakemake@output[["transcripts"]], snakemake@output[["transcripts_rds"]])
