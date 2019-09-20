@@ -36,6 +36,11 @@ diffexp:
       # based downstream analyses.
       primary_variable: RUNX1a_AND_Dox
 
+enrichment:
+  goatools:
+    fdr_genes: 0.05
+    fdr_go_terms: 0.05
+
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
   FDR: 0.01
