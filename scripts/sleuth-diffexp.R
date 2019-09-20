@@ -50,6 +50,11 @@ write_results <- function(mode, output, output_all) {
                 drop_na(ens_gene) %>%
                 group_by(ens_gene) %>%
                 filter( qval == min(qval, na.rm = TRUE) ) %>%
+                # ties in qval (e.g. min(qval) == 1) can lead to multiple entries per gene
+                filter( pval == min(pval, na.rm = TRUE) ) %>%
+                # for min(qval) == 1, then usually also min(pval) == 1, and
+                # we need something else to select a unique entry per gene
+                filter( mean_obs == max(mean_obs, na.rm = TRUE) ) %>%
                 arrange(qval)
     }
 
