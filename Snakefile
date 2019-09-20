@@ -22,8 +22,8 @@ rule all:
             ],
             model=config["diffexp"]["models"],
             go_ns=["BP", "CC", "MF"],
-            gene_fdr=config["enrichment"]["goatools"]["fdr_genes"].replace('.','-'),
-            go_term_fdr=config["enrichment"]["goatools"]["fdr_go_terms"].replace('.','-')
+            gene_fdr=str(config["enrichment"]["goatools"]["fdr_genes"]).replace('.','-'),
+            go_term_fdr=str(config["enrichment"]["goatools"]["fdr_go_terms"]).replace('.','-')
         ),
         expand("plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf",
                 model=config["diffexp"]["models"],
