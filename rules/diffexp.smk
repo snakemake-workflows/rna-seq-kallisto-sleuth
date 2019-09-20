@@ -36,7 +36,7 @@ rule sleuth_init:
         model=lambda w: get_model(w)["full"],
         exclude=config["diffexp"].get("exclude", None)
     conda:
-        "../envs/sleuth-old.yaml"
+        "../envs/sleuth.yaml"
     group: "sleuth-init"
     script:
         "../scripts/sleuth-init.R"
