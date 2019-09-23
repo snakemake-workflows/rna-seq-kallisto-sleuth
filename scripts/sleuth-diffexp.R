@@ -55,6 +55,13 @@ write_results <- function(mode, output, output_all) {
                 # for min(qval) == 1, then usually also min(pval) == 1, and
                 # we need something else to select a unique entry per gene
                 filter( mean_obs == max(mean_obs, na.rm = TRUE) ) %>%
+                # sometimes we still get two transcript variants with exactly
+                # the same values, i.e. they have exactly the same sequence
+                # but (slightly) different annotations -- then we retain a string
+                # with a comma-separated list of them
+                mutate(target_id = str_c(target_id, collapse=",")) %>%
+                distinct() %>%
+                # useful sort for scrolling through output by increasing q-values
                 arrange(qval)
     }
 
