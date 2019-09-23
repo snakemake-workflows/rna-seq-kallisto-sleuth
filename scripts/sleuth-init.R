@@ -52,7 +52,7 @@ so <- sleuth_prep(  samples,
                     target_mapping = t2g,
                     aggregation_column = "ens_gene",
                     read_bootstrap_tpm = TRUE,
-                    transformation_function = function(x) log2(x + 0.5)
+                    transform_fun_counts = function(x) log2(x + 0.5)
                     )
 
 custom_transcripts <- so$obs_raw %>%
