@@ -1,7 +1,6 @@
 rule spia:
     input:
-        diffexp="tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
-        sleuth="sleuth/{model}.rds"
+        diffexp="tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv"
     output:
         "tables/pathways/{model}.pathways.tsv"
     params:

@@ -1,4 +1,3 @@
-library(sleuth)
 library(SPIA)
 library(graphite)
 library(AnnotationDbi)
