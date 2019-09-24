@@ -1,7 +1,11 @@
-library(SPIA)
-library(graphite)
-library(AnnotationDbi)
-library(tidyverse)
+suppressPackageStartupMessages({
+  library("SPIA")
+  library("graphite")
+  library("AnnotationDbi")
+}
+
+# provides library("tidyverse") and function get_beta_col()
+source('scripts/common.R')
 
 options(Ncpus = snakemake@threads)
 
@@ -20,21 +24,8 @@ universe <- diffexp %>% pull(var = ens_gene)
 sig_genes <- diffexp %>% filter(qval <= 0.05)
 
 # get logFC equivalent (the sum of beta scores of covariates of interest)
-beta_col <- str_c("b", covariate, sep = "_")
 
-cols <- colnames(sig_genes)
-suffixes <- c("", "1", ".0")
-found <- FALSE
-for(suffix in suffixes) {
-    beta_col <- str_c(beta_col, suffix)
-    if(beta_col %in% cols) {
-        found <- TRUE
-        break
-    }
-}
-if(!found) {
-    stop(str_c("Invalid covariate ", covariate, ", not found in diffexp table."))
-}
+beta_col <- get_beta_col(covariate, colnames(sig_genes))
 
 beta <- sig_genes %>%
             select(ens_gene, !!beta_col) %>%

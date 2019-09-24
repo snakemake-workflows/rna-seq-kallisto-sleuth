@@ -25,6 +25,14 @@ rule all:
             gene_fdr=str(config["enrichment"]["goatools"]["fdr_genes"]).replace('.','-'),
             go_term_fdr=str(config["enrichment"]["goatools"]["fdr_go_terms"]).replace('.','-')
         ),
+        expand(
+            [
+                "tables/gene_set_enrichment/{model}.genes-mostsigtrans.diffexp.fgsea.gene_set_enrichment.gene_set_fdr_{gene_set_fdr}.nperm_{nperm}.tsv"
+            ],
+            model=config["diffexp"]["models"],
+            gene_set_fdr=str(config["enrichment"]["fgsea"]["fdr_gene_set"]).replace('.','-'),
+            nperm=str(config["enrichment"]["fgsea"]["nperm"])
+        ),
         expand("plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf",
                 model=config["diffexp"]["models"],
                 level=["transcripts", "genes-aggregated", "genes-mostsigtrans" ]

@@ -1,0 +1,9 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base =3.6
+  - bioconductor-fgsea =1.10
+  - bioconductor-org.mm.eg.db =3.8.2
+  - bioconductor-org.hs.eg.db =3.8.2
+  - r-tidyverse =1.2

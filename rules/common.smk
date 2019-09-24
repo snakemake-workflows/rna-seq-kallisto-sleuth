@@ -22,6 +22,8 @@ units.index = units.index.set_levels(
     [i.astype(str) for i in units.index.levels])  # enforce str in index
 validate(units, schema="../schemas/units.schema.yaml")
 
+gene_sets = pd.read_csv(config["gene_sets"], sep="\t")
+validate(gene_sets, schema="../schemas/gene_sets.schema.yaml")
 
 report: "../report/workflow.rst"
 
@@ -29,7 +31,8 @@ report: "../report/workflow.rst"
 
 wildcard_constraints:
     sample="|".join(samples.index),
-    unit="|".join(units["unit"])
+    unit="|".join(units["unit"]),
+    gene_set="|".join(gene_sets["name"])
 
 
 ####### helpers ###########
@@ -42,6 +45,10 @@ def get_fastqs(wildcards):
     """Get raw FASTQ files from unit sheet."""
     u = units.loc[ (wildcards.sample, wildcards.unit), ["fq1", "fq2"] ].dropna()
     return [ f"{u.fq1}", f"{u.fq2}" ]
+
+def get_gmts():
+    """Get GMT gene set definition files from gene_set sheet."""
+    return list(gene_sets['path'])
 
 def get_trimmed(wildcards):
     if not is_single_end(**wildcards):

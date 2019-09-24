@@ -1,5 +1,6 @@
 samples: samples.tsv
 units: units.tsv
+gene_sets: gene_sets.tsv
 
 # the sequencing adapter
 adapter: "GATCGGAAGAGCACACGTCTGAACTCCAGTCACATCACGATCTCGTATGCCGTCTTCTGCTTG"
@@ -40,6 +41,9 @@ enrichment:
   goatools:
     fdr_genes: 0.05
     fdr_go_terms: 0.05
+  fgsea:
+    fdr_gene_set: 0.05
+    nperm: 100000
 
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
