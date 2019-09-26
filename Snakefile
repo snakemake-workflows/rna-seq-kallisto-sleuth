@@ -15,6 +15,7 @@ rule all:
             ],
             model=config["diffexp"]["models"]
         ),
+        # results goatools
         expand(
             [
                 "tables/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
@@ -25,18 +26,24 @@ rule all:
             gene_fdr=str(config["enrichment"]["goatools"]["fdr_genes"]).replace('.','-'),
             go_term_fdr=str(config["enrichment"]["goatools"]["fdr_go_terms"]).replace('.','-')
         ),
+        # results fgsea
         expand(
             [
-                "tables/gene_set_enrichment/{model}.genes-mostsigtrans.diffexp.fgsea.gene_set_enrichment.gene_set_fdr_{gene_set_fdr}.nperm_{nperm}.tsv"
+                "tables/fgsea/{model}.all-gene-sets.tsv",
+                "tables/fgsea/{model}.sig-gene-sets.tsv",
+                "plots/fgsea/{model}.table-plot.pdf"
             ],
             model=config["diffexp"]["models"],
             gene_set_fdr=str(config["enrichment"]["fgsea"]["fdr_gene_set"]).replace('.','-'),
             nperm=str(config["enrichment"]["fgsea"]["nperm"])
         ),
+        [get_fgsea_plots(model) for model in config["diffexp"]["models"]],
+        # sleuth p-value histogram plots
         expand("plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf",
                 model=config["diffexp"]["models"],
                 level=["transcripts", "genes-aggregated", "genes-mostsigtrans" ]
         ),
+        # PCA plots of kallisto results, each coloured for a different covariate
         expand("plots/pca/{covariate}.pca.pdf", covariate=samples.columns[samples.columns != "sample"]),
         [get_bootstrap_plots(model) for model in config["diffexp"]["models"]],
         [get_bootstrap_plots(model, config["bootstrap_plots"]["genes_of_interest"])

@@ -1,4 +1,6 @@
-library("tidyverse")
+suppressPackageStartupMessages({
+    library("tidyverse")
+})
 
 get_beta_col <- function(covariate, col_names) {
 

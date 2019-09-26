@@ -2,7 +2,7 @@ suppressPackageStartupMessages({
   library("SPIA")
   library("graphite")
   library("AnnotationDbi")
-}
+})
 
 # provides library("tidyverse") and function get_beta_col()
 source('scripts/common.R')

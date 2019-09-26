@@ -14,37 +14,36 @@ rule spia:
 
 ## gene set enrichment analysis
 
-rule concatenate_gene_sets:
-    input:
-        get_gmts()
-    output:
-        "data/ref/gene_sets/all_gene_sets.gmt"
-    shell:
-        # gmts can come without a trailing newline, which would
-        # concatenate multiple gene sets into one line using
-        # `cat` -- `awk` adds a trailing newline if missing
-        "awk 1 {input} > {output}"
-
-
-rule fgsea:
+checkpoint fgsea:
     input:
         diffexp="tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
-        gene_sets="data/ref/gene_sets/all_gene_sets.gmt"
+        gene_sets=config["enrichment"]["gene_sets_file"]
     output:
         enrichment=report(
-            "tables/gene_set_enrichment/{model}.genes-mostsigtrans.diffexp.fgsea.gene_set_enrichment.gene_set_fdr_{gene_set_fdr}.nperm_{nperm}.tsv",
-            caption="../report/fgsea-gene-set-enrichment-mostsigtrans-table.rst",
+            "tables/fgsea/{model}.all-gene-sets.tsv",
+            caption="../report/fgsea-table-all.rst",
+            category="Gene set enrichment analysis"
+            ),
+        rank_ties=report(
+            "tables/fgsea/{model}.rank-ties.tsv",
+            caption="../report/fgsea-rank-ties.rst",
+            category="Gene set enrichment analysis"
+            ),
+        significant=report(
+            "tables/fgsea/{model}.sig-gene-sets.tsv",
+            caption="../report/fgsea-table-significant.rst",
             category="Gene set enrichment analysis"
             ),
         plot=report(
-            directory("plots/gene_set_enrichment/{model}.genes-mostsigtrans.diffexp.fgsea.gene_set_enrichment.gene_set_fdr_{gene_set_fdr}.nperm_{nperm}"),
-            caption="../report/fgsea-gene-set-enrichment-mostsigtrans-plot.rst",
+            "plots/fgsea/{model}.table-plot.pdf",
+            caption="../report/fgsea-table-plot.rst",
             category="Gene set enrichment analysis"
             )
     params:
         species=config["ref"]["species"],
         model=get_model,
-        gene_set_fdr=lambda wc: wc.gene_set_fdr.replace('-','.'),
+        gene_set_fdr=config["enrichment"]["fgsea"]["fdr_gene_set"],
+        nperm=config["enrichment"]["fgsea"]["nperm"],
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"]
     conda:
         "../envs/fgsea.yaml"
@@ -52,6 +51,24 @@ rule fgsea:
     script:
         "../scripts/fgsea.R"
 
+rule fgsea_plot_gene_set:
+    input:
+        diffexp="tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
+        gene_sets="data/ref/gene_sets/all_gene_sets.gmt",
+        sig_gene_sets="tables/fgsea/{model}.sig-gene-sets.tsv"
+    output:
+        report(
+            "plots/fgsea/{model}.{gene_set}.gene-set-plot.pdf",
+            caption="../report/fgsea-gene-set-plot.rst",
+            category="Gene set enrichment analysis"
+            )
+    params:
+        model=get_model,
+        covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"]
+    conda:
+        "../envs/fgsea.yaml"
+    script:
+        "../scripts/fgsea_plot_gene_set.R"
 
 ## gene ontology term enrichment analysis
 
