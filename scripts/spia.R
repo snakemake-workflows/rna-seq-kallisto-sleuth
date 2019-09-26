@@ -4,7 +4,7 @@ suppressPackageStartupMessages({
   library("AnnotationDbi")
 })
 
-# provides library("tidyverse") and function get_beta_col()
+# provides library("tidyverse") and function get_prefix_col()
 source('scripts/common.R')
 
 options(Ncpus = snakemake@threads)
@@ -25,7 +25,7 @@ sig_genes <- diffexp %>% filter(qval <= 0.05)
 
 # get logFC equivalent (the sum of beta scores of covariates of interest)
 
-beta_col <- get_beta_col(covariate, colnames(sig_genes))
+beta_col <- get_prefix_col(covariate, "b", colnames(sig_genes))
 
 beta <- sig_genes %>%
             select(ens_gene, !!beta_col) %>%

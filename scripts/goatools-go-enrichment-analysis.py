@@ -41,7 +41,7 @@ goeaobj = GOEnrichmentStudyNS(
     propagate_counts = False,
     # multiple testing correction method (fdr_bh is false discovery rate control with Benjamini-Hochberg)
     methods = ['fdr_bh'],
-    # standard significance cutoff for what?
+    # significance cutoff for method named above
     alpha = fdr_level_go_term
     )
 

@@ -3,7 +3,7 @@ suppressPackageStartupMessages({
   library("AnnotationDbi")
 })
 
-# provides library("tidyverse") and function get_beta_col()
+# provides library("tidyverse") and function get_prefix_col()
 source('scripts/common.R')
 
 covariate <- snakemake@params[["covariate"]]
@@ -43,17 +43,17 @@ diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>%
                 	mutate(ens_gene = str_c(ens_gene, collapse=",")) %>%
                   distinct()
 
-beta_col <- get_beta_col(covariate, colnames(diffexp))
+signed_pi <- get_prefix_col(covariate, "signed_pi_value", colnames(diffexp))
 
 ranked_genes <- diffexp %>%
-                  dplyr::select(ext_gene, !!beta_col) %>%
+                  dplyr::select(ext_gene, !!signed_pi) %>%
                   deframe()
 
 # get and write out rank values that are tied -- a way to check up on respecitve warnings
 rank_ties <- enframe(ranked_genes) %>%
                mutate(dup = duplicated(value) | duplicated(value, fromLast = TRUE) ) %>%
                filter(dup == TRUE) %>%
-               dplyr::select(ext_gene = name, !!beta_col := value)
+               dplyr::select(ext_gene = name, !!signed_pi := value)
 write_tsv(rank_ties, snakemake@output[["rank_ties"]])
 
 fgsea_res <- fgsea(pathways = gene_sets, 

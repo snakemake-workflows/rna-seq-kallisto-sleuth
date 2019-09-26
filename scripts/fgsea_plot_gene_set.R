@@ -2,7 +2,7 @@ suppressPackageStartupMessages({
   library("fgsea")
 })
 
-# provides library("tidyverse") and function get_beta_col()
+# provides library("tidyverse") and function get_prefix_col()
 source('scripts/common.R')
 
 covariate <- snakemake@params[["covariate"]]
@@ -18,10 +18,10 @@ diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>%
                 	mutate(ens_gene = str_c(ens_gene, collapse=",")) %>%
 			distinct()
 
-beta_col <- get_beta_col(covariate, colnames(diffexp))
+signed_pi <- get_prefix_col(covariate, "signed_pi_value", colnames(diffexp))
 
 ranked_genes <- diffexp %>%
-                  dplyr::select(ext_gene, !!beta_col) %>%
+                  dplyr::select(ext_gene, !!signed_pi) %>%
                   deframe()
 
 set <- snakemake@wildcards[["gene_set"]]
