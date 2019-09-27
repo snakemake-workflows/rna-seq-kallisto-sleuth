@@ -29,19 +29,19 @@ diffexp:
       primary_variable: condition
 
 enrichment:
-  gene_sets_file: "data/ref/gene_sets_of_interest.gmt"
+  gene_sets_file: "data/ref/dummy.gmt"
   goatools:
     fdr_genes: 0.05
     fdr_go_terms: 0.05
   fgsea:
     fdr_gene_set: 0.05
-    nperm: 100000
+    nperm: 10000
 
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
   FDR: 0.01
   # maximum number of bootstrap plots to generate, i.e. top n discoveries to plot
-  top_n: 20
+  top_n: 3
   color_by: condition
   # for now, this will plot the sleuth-normalised kallisto count estimations with kallisto
   # for all the transcripts of the respective genes
