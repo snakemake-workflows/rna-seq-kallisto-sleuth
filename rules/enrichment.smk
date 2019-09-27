@@ -54,7 +54,7 @@ checkpoint fgsea:
 rule fgsea_plot_gene_set:
     input:
         diffexp="tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
-        gene_sets="data/ref/gene_sets/all_gene_sets.gmt",
+        gene_sets=config["enrichment"]["gene_sets_file"],
         sig_gene_sets="tables/fgsea/{model}.sig-gene-sets.tsv"
     output:
         report(
