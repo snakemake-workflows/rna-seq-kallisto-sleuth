@@ -1,6 +1,5 @@
 samples: samples.tsv
 units: units.tsv
-gene_sets: gene_sets.tsv
 
 # the sequencing adapter
 adapter: "GATCGGAAGAGCACACGTCTGAACTCCAGTCACATCACGATCTCGTATGCCGTCTTCTGCTTG"
