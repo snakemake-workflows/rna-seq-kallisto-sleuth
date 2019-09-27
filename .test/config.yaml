@@ -5,9 +5,9 @@ units: units.tsv
 adapter: "ACGGATCGATCGATCGATCGAT"
 
 ref:
-  transcriptome: "data/ref/Mus_musculus.GRCm38.cdna.all.plus_RUNX1a_GFP.fa"
+  transcriptome: "data/ref/transcriptome.chr21.fa"
   # species needs to be an identifier known to biomart, e.g. mmusculus, hsapiens
-  species: mmusculus
+  species: hsapiens
   # gene ontology to download, used e.g. in goatools
   gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
 
