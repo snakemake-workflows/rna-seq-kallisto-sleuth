@@ -48,10 +48,10 @@ def get_fastqs(wildcards):
 def get_trimmed(wildcards):
     if not is_single_end(**wildcards):
         # paired-end sample
-        return expand("trimmed/{sample}-{unit}.{group}.fastq.gz",
+        return expand("analysis/trimmed/{sample}-{unit}.{group}.fastq.gz",
                       group=[1, 2], **wildcards)
     # single end sample
-    return expand("trimmed/{sample}-{unit}.fastq.gz", **wildcards)
+    return expand("analysis/trimmed/{sample}-{unit}.fastq.gz", **wildcards)
 
 def get_bootstrap_plots(model, gene_list=None):
     """Dynamically determine which transcripts to plot based on
@@ -77,7 +77,7 @@ def get_bootstrap_plots(model, gene_list=None):
                 trx = set(results[valid].target_id)
                 transcripts[g] = trx
         # Require the respective output from the plot_bootstrap rule.
-        return ["plots/bootstrap/{gene}/{gene}.{transcript}.{model}.bootstrap.pdf".format(gene=g, transcript=t, model=model)
+        return ["analysis/plots/bootstrap/{gene}/{gene}.{transcript}.{model}.bootstrap.pdf".format(gene=g, transcript=t, model=model)
                 for g, ts in transcripts.items()
                 for t in ts]
     return inner
@@ -91,7 +91,7 @@ def get_fgsea_plots(model):
         gs = set(table['pathway'])
         for gene_set in gs:
             plots.add(
-                "plots/fgsea/{model}.{gene_set}.gene-set-plot.pdf".format(
+                "analysis/plots/fgsea/{model}.{gene_set}.gene-set-plot.pdf".format(
                     model=model,
                     gene_set=gene_set
                     )

@@ -1,6 +1,6 @@
 
 kallisto_output = expand(
-    "kallisto/{unit.sample}-{unit.unit}", unit=units.itertuples())
+    "analysis/kallisto/{unit.sample}-{unit.unit}", unit=units.itertuples())
 
 
 rule compose_sample_sheet:
@@ -8,7 +8,7 @@ rule compose_sample_sheet:
         kallisto_output,
         report(config["samples"], caption="../report/samples.rst")
     output:
-        "sleuth/samples.tsv"
+        "analysis/sleuth/samples.tsv"
     group: "sleuth-init"
     run:
         samples_ = units[["sample", "unit"]].merge(samples, on="sample")
@@ -28,11 +28,11 @@ def get_model(wildcards):
 rule sleuth_init:
     input:
         kallisto=kallisto_output,
-        samples="sleuth/samples.tsv"
+        samples="analysis/sleuth/samples.tsv"
     output:
-        "sleuth/{model,[^.]+}.rds"
+        "analysis/sleuth/{model,[^.]+}.rds"
     params:
-        species=config["ref"]["species"],
+        species=config["resources"]["ref"]["species"],
         model=lambda w: get_model(w)["full"],
         exclude=config["diffexp"].get("exclude", None)
     conda:
@@ -44,18 +44,18 @@ rule sleuth_init:
 
 checkpoint sleuth_diffexp:
     input:
-        "sleuth/{model}.rds"
+        "analysis/sleuth/{model}.rds"
     output:
-        transcripts_rds="sleuth/diffexp/{model}.transcripts.diffexp.rds",
-        genes_aggregated_rds="sleuth/diffexp/{model}.genes-aggregated.diffexp.rds",
-        genes_mostsigtrans_rds="sleuth/diffexp/{model}.genes-mostsigtrans.diffexp.rds",
-        transcripts=report("tables/diffexp/{model}.transcripts.diffexp.tsv",
+        transcripts_rds="analysis/sleuth/diffexp/{model}.transcripts.diffexp.rds",
+        genes_aggregated_rds="analysis/sleuth/diffexp/{model}.genes-aggregated.diffexp.rds",
+        genes_mostsigtrans_rds="analysis/sleuth/diffexp/{model}.genes-mostsigtrans.diffexp.rds",
+        transcripts=report("analysis/tables/diffexp/{model}.transcripts.diffexp.tsv",
                             caption="../report/diffexp.rst",
                             category="Differential transcript expression"),
-        genes_aggregated=report("tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
+        genes_aggregated=report("analysis/tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
                                 caption="../report/diffexp-genes.rst",
                                 category="Differential gene expression"),
-        genes_mostsigtrans=report("tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
+        genes_mostsigtrans=report("analysis/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
                                     caption="../report/diffexp-mostsigtrans.rst",
                                     category="Differential gene expression")
     params:
@@ -68,9 +68,9 @@ checkpoint sleuth_diffexp:
 
 rule plot_bootstrap:
     input:
-        "sleuth/{model}.rds"
+        "analysis/sleuth/{model}.rds"
     output:
-        report("plots/bootstrap/{gene}/{gene}.{transcript}.{model}.bootstrap.pdf", caption="../report/plot-bootstrap.rst", category="Expression Plots")
+        report("analysis/plots/bootstrap/{gene}/{gene}.{transcript}.{model}.bootstrap.pdf", caption="../report/plot-bootstrap.rst", category="Expression Plots")
     conda:
         "../envs/sleuth.yaml"
     params:
@@ -81,9 +81,9 @@ rule plot_bootstrap:
 
 rule plot_pca:
     input:
-        "sleuth/all.rds"
+        "analysis/sleuth/all.rds"
     output:
-        report("plots/pca/{covariate}.pca.pdf", caption="../report/plot-pca.rst", category="PCA")
+        report("analysis/plots/pca/{covariate}.pca.pdf", caption="../report/plot-pca.rst", category="PCA")
     conda:
         "../envs/sleuth.yaml"
     script:
@@ -92,10 +92,10 @@ rule plot_pca:
 
 rule plot_diffexp_heatmap:
     input:
-        so="sleuth/{model}.rds",
-        diffexp="tables/diffexp/{model}.transcripts.diffexp.tsv"
+        so="analysis/sleuth/{model}.rds",
+        diffexp="analysis/tables/diffexp/{model}.transcripts.diffexp.tsv"
     output:
-        report("plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf", caption="../report/heatmap.rst", category="Heatmaps")
+        report("analysis/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf", caption="../report/heatmap.rst", category="Heatmaps")
     params:
         model=get_model
     conda:
@@ -106,9 +106,9 @@ rule plot_diffexp_heatmap:
 
 rule plot_diffexp_pval_hist:
     input:
-        diffexp_rds="sleuth/diffexp/{model}.{level}.diffexp.rds"
+        diffexp_rds="analysis/sleuth/diffexp/{model}.{level}.diffexp.rds"
     output:
-        report("plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf", caption="../report/pval-hist.rst", category="QC")
+        report("analysis/plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf", caption="../report/pval-hist.rst", category="QC")
     params:
         model=get_model
     conda:
@@ -119,9 +119,9 @@ rule plot_diffexp_pval_hist:
 
 rule tpm_matrix:
     input:
-        "sleuth/{model}.rds"
+        "analysis/sleuth/{model}.rds"
     output:
-        report("tables/tpm-matrix/{model}.tpm-matrix.tsv", caption="../report/tpm-matrix.rst", category="Expression Matrices")
+        report("analysis/tables/tpm-matrix/{model}.tpm-matrix.tsv", caption="../report/tpm-matrix.rst", category="Expression Matrices")
     conda:
         "../envs/sleuth.yaml"
     script:
@@ -130,9 +130,9 @@ rule tpm_matrix:
 
 rule plot_fragment_length_dist:
     input:
-        "sleuth/all.rds"
+        "analysis/sleuth/all.rds"
     output:
-        report("plots/fld/{sample}-{unit}.fragment-length-dist.pdf", caption="../report/fld.rst", category="Fragment length distribution")
+        report("analysis/plots/fld/{sample}-{unit}.fragment-length-dist.pdf", caption="../report/fld.rst", category="Fragment length distribution")
     conda:
         "../envs/sleuth.yaml"
     script:

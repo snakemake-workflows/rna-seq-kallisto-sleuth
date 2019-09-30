@@ -8,18 +8,18 @@ rule all:
     input:
         expand(
             [
-                "tables/diffexp/{model}.transcripts.diffexp.tsv",
-                "plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
-                "tables/tpm-matrix/{model}.tpm-matrix.tsv",
-                "tables/pathways/{model}.pathways.tsv"
+                "analysis/tables/diffexp/{model}.transcripts.diffexp.tsv",
+                "analysis/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
+                "analysis/tables/tpm-matrix/{model}.tpm-matrix.tsv",
+                "analysis/tables/pathways/{model}.pathways.tsv"
             ],
             model=config["diffexp"]["models"]
         ),
         # results goatools
         expand(
             [
-                "tables/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
-                "plots/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment_{go_ns}.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.pdf"
+                "analysis/tables/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
+                "analysis/plots/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment_{go_ns}.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.pdf"
             ],
             model=config["diffexp"]["models"],
             go_ns=["BP", "CC", "MF"],
@@ -29,9 +29,9 @@ rule all:
         # results fgsea
         expand(
             [
-                "tables/fgsea/{model}.all-gene-sets.tsv",
-                "tables/fgsea/{model}.sig-gene-sets.tsv",
-                "plots/fgsea/{model}.table-plot.pdf"
+                "analysis/tables/fgsea/{model}.all-gene-sets.tsv",
+                "analysis/tables/fgsea/{model}.sig-gene-sets.tsv",
+                "analysis/plots/fgsea/{model}.table-plot.pdf"
             ],
             model=config["diffexp"]["models"],
             gene_set_fdr=str(config["enrichment"]["fgsea"]["fdr_gene_set"]).replace('.','-'),
@@ -39,13 +39,13 @@ rule all:
         ),
         [get_fgsea_plots(model) for model in config["diffexp"]["models"]],
         # sleuth p-value histogram plots
-        expand("plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf",
+        expand("analysis/plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf",
                 model=config["diffexp"]["models"],
                 level=["transcripts", "genes-aggregated", "genes-mostsigtrans" ]
         ),
         # PCA plots of kallisto results, each coloured for a different covariate
-        expand("plots/pca/{covariate}.pca.pdf", covariate=samples.columns[samples.columns != "sample"]),
+        expand("analysis/plots/pca/{covariate}.pca.pdf", covariate=samples.columns[samples.columns != "sample"]),
         [get_bootstrap_plots(model) for model in config["diffexp"]["models"]],
         [get_bootstrap_plots(model, config["bootstrap_plots"]["genes_of_interest"])
             for model in config["diffexp"]["models"] ],
-        expand("plots/fld/{unit.sample}-{unit.unit}.fragment-length-dist.pdf", unit=units[["sample", "unit"]].itertuples())
+        expand("analysis/plots/fld/{unit.sample}-{unit.unit}.fragment-length-dist.pdf", unit=units[["sample", "unit"]].itertuples())

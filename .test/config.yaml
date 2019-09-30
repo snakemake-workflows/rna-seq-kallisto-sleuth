@@ -4,12 +4,18 @@ units: units.tsv
 # the sequencing adapter
 adapter: "ACGGATCGATCGATCGATCGAT"
 
-ref:
-  transcriptome: "data/ref/transcriptome.chr21.fa"
-  # species needs to be an identifier known to biomart, e.g. mmusculus, hsapiens
-  species: hsapiens
-  # gene ontology to download, used e.g. in goatools
-  gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
+resources:
+  ref:
+    transcriptome: "data/ref/transcriptome.chr21.fa"
+    # species needs to be an identifier known to biomart, e.g. mmusculus, hsapiens
+    species: hsapiens
+  ontology:
+    # gene ontology to download, used e.g. in goatools
+    gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
+    # file name to use for downloaded gene ontology
+    gene_ontology_file: "resources/ontology/gene_ontology.obo"
+    # filename to save ensemble gene to GO term mapping to (downloaded via biomart)
+    ens_gene_to_go_file: "resources/ontology/ens_gene_to_go.tsv"
 
 pca:
   labels:
