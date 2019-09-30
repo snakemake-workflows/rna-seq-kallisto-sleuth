@@ -5,7 +5,7 @@ units: units.tsv
 adapter: "ACGGATCGATCGATCGATCGAT"
 
 ref:
-  transcriptome: "data/ref/Mus_musculus.GRCm38.cdna.all.plus_RUNX1a_GFP.fa"
+  transcriptome: "resources/ref/Mus_musculus.GRCm38.cdna.all.plus_RUNX1a_GFP.fa"
   # species needs to be an identifier known to biomart, e.g. mmusculus, hsapiens
   species: mmusculus
   # gene ontology to download, used e.g. in goatools
@@ -29,7 +29,7 @@ diffexp:
       primary_variable: condition
 
 enrichment:
-  gene_sets_file: "data/ref/gene_sets_of_interest.gmt"
+  gene_sets_file: "resources/gene_sets/dummy.gmt"
   goatools:
     fdr_genes: 0.05
     fdr_go_terms: 0.05
