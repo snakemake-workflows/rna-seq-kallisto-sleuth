@@ -49,7 +49,7 @@ required:
   - samples
   - units
   - adapter
-  - ref
+  - resources
   - pca
   - diffexp
   - params
