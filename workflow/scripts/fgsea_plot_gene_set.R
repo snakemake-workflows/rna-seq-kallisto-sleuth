@@ -3,7 +3,7 @@ suppressPackageStartupMessages({
 })
 
 # provides library("tidyverse") and function get_prefix_col()
-source('common.R')
+source('workflow/scripts/common.R')
 
 covariate <- snakemake@params[["covariate"]]
 
