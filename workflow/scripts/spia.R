@@ -5,7 +5,7 @@ suppressPackageStartupMessages({
 })
 
 # provides library("tidyverse") and function get_prefix_col()
-source('scripts/common.R')
+source('workflow/scripts/common.R')
 
 options(Ncpus = snakemake@threads)
 
