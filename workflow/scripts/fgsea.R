@@ -4,9 +4,9 @@ suppressPackageStartupMessages({
 })
 
 # provides library("tidyverse") and function get_prefix_col()
-source('common.R')
-
-covariate <- snakemake@params[["covariate"]]
+# the latter requires snakemake@output[["samples"]] and
+# snakemake@params[["covariate"]]
+source( file.path(snakemake@scriptdir, 'common.R') )
 
 # get the species for adding annotations below
 species <- str_to_title( str_sub(snakemake@params[["species"]], 1, 2) )
@@ -43,7 +43,7 @@ diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>%
                 	mutate(ens_gene = str_c(ens_gene, collapse=",")) %>%
                   distinct()
 
-signed_pi <- get_prefix_col(covariate, "signed_pi_value", colnames(diffexp))
+signed_pi <- get_prefix_col("signed_pi_value", colnames(diffexp))
 
 ranked_genes <- diffexp %>%
                   dplyr::select(ext_gene, !!signed_pi) %>%
@@ -65,36 +65,45 @@ fgsea_res <- fgsea(pathways = gene_sets,
                     ) %>%
                 as_tibble() 
 
-# add further annotation
-annotated <- fgsea_res %>%
-                unnest(leadingEdge) %>%
-                mutate(
-                    leading_edge_symbol = str_to_title(leadingEdge),
-                    leading_edge_entrez_id = mapIds(leading_edge_symbol, x=get(pkg), keytype="SYMBOL", column="ENTREZID"),
-                    leading_edge_ens_gene = mapIds(leading_edge_symbol, x=get(pkg), keytype="SYMBOL", column="ENSEMBL")
+# Annotation is impossible without any entries, so then just write out empty files
+if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
+
+    write_tsv(fgsea_res, path = snakemake@output[["enrichment"]])
+    write_tsv(fgsea_res, path = snakemake@output[["significant"]])
+
+} else {
+
+    # add further annotation
+    annotated <- fgsea_res %>%
+                    unnest(leadingEdge) %>%
+                    mutate(
+                        leading_edge_symbol = str_to_title(leadingEdge),
+                        leading_edge_entrez_id = mapIds(leading_edge_symbol, x=get(pkg), keytype="SYMBOL", column="ENTREZID"),
+                        leading_edge_ens_gene = mapIds(leading_edge_symbol, x=get(pkg), keytype="SYMBOL", column="ENSEMBL")
+                        ) %>%
+                    group_by(pathway) %>%
+                    summarise(
+                        leadingEdge = str_c(leadingEdge, collapse = ','),
+                        leading_edge_symbol = str_c(leading_edge_symbol, collapse = ','),
+                        leading_edge_entrez_id = str_c(leading_edge_entrez_id, collapse = ','),
+                        leading_edge_ens_gene = str_c(leading_edge_ens_gene, collapse = ',')
                     ) %>%
-                group_by(pathway) %>%
-                summarise(
-                    leadingEdge = str_c(leadingEdge, collapse = ','),
-                    leading_edge_symbol = str_c(leading_edge_symbol, collapse = ','),
-                    leading_edge_entrez_id = str_c(leading_edge_entrez_id, collapse = ','),
-                    leading_edge_ens_gene = str_c(leading_edge_ens_gene, collapse = ',')
-                ) %>%
-                inner_join(fgsea_res %>% select(-leadingEdge), by = "pathway") %>%
-                select(-leadingEdge, -leading_edge_symbol,
-                       -leading_edge_entrez_id, -leading_edge_ens_gene,
-                        leading_edge_symbol, leading_edge_ens_gene,
-                        leading_edge_entrez_id, leadingEdge)
-
-# write out fgsea results for all gene sets
-write_tsv(annotated, path = snakemake@output[["enrichment"]])
-
-# select significant pathways
-sig_gene_sets <- annotated %>%
-                   filter( padj < snakemake@params[["gene_set_fdr"]] )
-
-# write out fgsea results for gene sets found to be significant
-write_tsv(sig_gene_sets, path = snakemake@output[["significant"]])
+                    inner_join(fgsea_res %>% select(-leadingEdge), by = "pathway") %>%
+                    select(-leadingEdge, -leading_edge_symbol,
+                           -leading_edge_entrez_id, -leading_edge_ens_gene,
+                            leading_edge_symbol, leading_edge_ens_gene,
+                            leading_edge_entrez_id, leadingEdge)
+    
+    # write out fgsea results for all gene sets
+    write_tsv(annotated, path = snakemake@output[["enrichment"]])
+    
+    # select significant pathways
+    sig_gene_sets <- annotated %>%
+                       filter( padj < snakemake@params[["gene_set_fdr"]] )
+    
+    # write out fgsea results for gene sets found to be significant
+    write_tsv(sig_gene_sets, path = snakemake@output[["significant"]])
+}
 
 height = .7 * (length(gene_sets) + 2)
 

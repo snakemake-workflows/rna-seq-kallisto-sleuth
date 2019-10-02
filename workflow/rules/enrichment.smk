@@ -1,5 +1,6 @@
 rule spia:
     input:
+        samples="analysis/sleuth/samples.tsv",
         diffexp="analysis/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv"
     output:
         "analysis/tables/pathways/{model}.pathways.tsv"
@@ -16,6 +17,7 @@ rule spia:
 
 checkpoint fgsea:
     input:
+        samples="analysis/sleuth/samples.tsv",
         diffexp="analysis/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
         gene_sets=config["enrichment"]["gene_sets_file"]
     output:
@@ -53,6 +55,7 @@ checkpoint fgsea:
 
 rule fgsea_plot_gene_set:
     input:
+        samples="analysis/sleuth/samples.tsv",
         diffexp="analysis/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
         gene_sets=config["enrichment"]["gene_sets_file"],
         sig_gene_sets="analysis/tables/fgsea/{model}.sig-gene-sets.tsv"

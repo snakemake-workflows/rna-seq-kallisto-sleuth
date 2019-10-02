@@ -2,28 +2,34 @@ suppressPackageStartupMessages({
     library("tidyverse")
 })
 
-get_prefix_col <- function(covariate, prefix, col_names) {
+get_prefix_col <- function(prefix, col_names) {
 
+    covariate <- snakemake@params[["covariate"]]
     # add standard prefix to covariate
     col <- str_c(prefix, covariate, sep = "_")
 
+    levels <- read_tsv(snakemake@input[["samples"]]) %>%
+                select( !!covariate ) %>%
+                distinct( ) %>%
+                pull( !!covariate )
+
     # possible suffixes, cumulatively added on
-    suffixes <- c("", "1", ".0")
-    found <- FALSE
-    for(suffix in suffixes) {
-        col <- str_c(col, suffix)
-        # at the shortest hit possible, we break
-        if(col %in% col_names) {
-            found <- TRUE
-            break
+    for (level in levels) {
+        test_col <- col
+        suffixes <- c("", level, ".0")
+        found <- FALSE
+        for(suffix in suffixes) {
+            test_col <- str_c(test_col, suffix)
+            # at the shortest hit possible, we break
+            if(test_col %in% col_names) {
+                return(test_col)
+            }
         }
     }
 
     if(!found) {
-        stop(str_c("Invalid covariate ", covariate, ", not found in diffexp table."))
-    } else {
-        return(col)
-    }
+        stop(str_c("Invalid covariate '", covariate, "', not found in diffexp table."))
+    } 
 
 }
   
