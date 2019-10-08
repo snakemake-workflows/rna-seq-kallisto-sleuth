@@ -3,7 +3,6 @@ channels:
   - bioconda
 dependencies:
   - r-base =3.5
-  - r-sleuth =0.30
   - bioconductor-spia =2.34
   - bioconductor-graphite =1.28
   - bioconductor-org.mm.eg.db =3.7
