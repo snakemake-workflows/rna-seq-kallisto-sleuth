@@ -1,7 +1,6 @@
 suppressPackageStartupMessages({
   library("SPIA")
   library("graphite")
-  library("AnnotationDbi")
 })
 
 # provides library("tidyverse") and function get_prefix_col()
