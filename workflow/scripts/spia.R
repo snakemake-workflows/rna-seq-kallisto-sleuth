@@ -2,6 +2,7 @@ suppressPackageStartupMessages({
   library("httr") # only needed for the ssl_verifypeer = FALSE hack below
   library("SPIA")
   library("graphite")
+  library("AnnotationDbi")
 })
 
 # provides library("tidyverse") and function get_prefix_col()
