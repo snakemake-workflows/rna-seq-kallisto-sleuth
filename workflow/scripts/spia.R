@@ -1,5 +1,4 @@
 suppressPackageStartupMessages({
-  library("httr") # only needed for the ssl_verifypeer = FALSE hack below
   library("SPIA")
   library("graphite")
   library("AnnotationDbi")
@@ -11,12 +10,6 @@ suppressPackageStartupMessages({
 source( file.path(snakemake@scriptdir, 'common.R') )
 
 options(Ncpus = snakemake@threads)
-
-# TODO: This creates a security vulnerability, but it seems like
-# something is currently wrong with the certificate chain for the
-# downloads that bioconductor-graphite performs. To reproduce:
-# `curl -vs "https://graphiteweb.bio.unipd.it/pathways/12/mmusculus.rda"`
-httr::set_config(config(ssl_verifypeer = FALSE))
 
 db <- pathways(snakemake@params[["species"]], "reactome")
 db <- convertIdentifiers(db, "ENSEMBL")
