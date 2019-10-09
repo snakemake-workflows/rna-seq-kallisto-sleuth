@@ -6,6 +6,7 @@ rule spia:
         "analysis/tables/pathways/{model}.pathways.tsv"
     params:
         species=config["resources"]["ref"]["species"],
+        pathway_db=config["enrichment"]["spia"]["pathway_database"],
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"]
     conda:
         "../envs/spia.yaml"

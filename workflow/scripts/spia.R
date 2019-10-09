@@ -11,10 +11,12 @@ source( file.path(snakemake@scriptdir, 'common.R') )
 
 options(Ncpus = snakemake@threads)
 
-db <- pathways(snakemake@params[["species"]], "reactome")
+pw_db <- snakemake@params[["pathway_db"]]
+
+db <- pathways(snakemake@params[["species"]], pw_db)
 db <- convertIdentifiers(db, "ENSEMBL")
 
-prepareSPIA(db, "reactome")
+prepareSPIA(db, pw_db)
 
 
 diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>%
@@ -31,6 +33,6 @@ beta <- sig_genes %>%
             select(ens_gene, !!beta_col) %>%
             deframe()
 
-res <- runSPIA(de = beta, all = universe, "reactome", plots = TRUE)
+res <- runSPIA(de = beta, all = universe, pw_db, plots = TRUE)
 
 write_tsv(res, snakemake@output[[1]])

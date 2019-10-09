@@ -42,6 +42,10 @@ enrichment:
   fgsea:
     fdr_gene_set: 0.05
     nperm: 100000
+  spia:
+    # pathway database to use in SPIA, needs to be available for
+    # the species specified by resources -> ref -> species above
+    pathway_database: "reactome"
 
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
