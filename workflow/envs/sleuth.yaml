@@ -9,5 +9,4 @@ dependencies:
   - r-gridextra =2.3
   - r-pheatmap =1.0.12
   - r-tidyverse =1.2.1
-  - r-base =3.5.1=h271c98b_1006 # see https://github.com/conda-forge/r-base-feedstock/issues/100
-                                # TODO replace with r-base =3.6 once bioconda r-rebuilt is done.
+  - r-base =3.6.1
