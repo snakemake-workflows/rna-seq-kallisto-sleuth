@@ -11,6 +11,8 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@2.0.0
     - name: Setup snakemake
       run: |
         conda create -c bioconda -c conda-forge -n snakemake snakemake
