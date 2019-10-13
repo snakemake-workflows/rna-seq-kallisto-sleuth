@@ -12,9 +12,10 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Setup snakemake
-      run: conda create -c bioconda -c conda-forge -n snakemake snakemake
+      run: |
+        conda create -c bioconda -c conda-forge -n snakemake snakemake
+        conda init
     - name: Run tests
       run: |
-        conda init
         conda activate snakemake
         snakemake --use-conda --directory .test || (for f in .test/logs/*; do echo $f; cat $f; done; for f in .test/logs/*/*; do echo $f; cat $f; done; exit 1)
