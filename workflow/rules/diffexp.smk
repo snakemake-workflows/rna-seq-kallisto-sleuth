@@ -153,3 +153,19 @@ rule plot_fragment_length_dist:
         "logs/plots/fld/{sample}-{unit}.fragment-length-dist.log"
     script:
         "../scripts/plot-fld.R"
+
+rule plot_vars:
+    input:
+        "results/sleuth/diffexp/{model}.transcripts.diffexp.rds"
+    output:
+        report("results/plots/variance/{model}.transcripts.plot_vars.pdf", caption="../report/plot-vars.rst", category="QC")
+    params:
+        model = get_model,
+        sig_level = config["plot_vars"]["sig_level"]
+    conda:
+        "../envs/sleuth.yaml"
+    log:
+        "logs/plots/variance/{model}.plot_vars.log"
+    script:
+        "../scripts/plot-variances.R"
+
