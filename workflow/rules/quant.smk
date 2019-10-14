@@ -2,9 +2,9 @@ rule kallisto_index:
     input:
         config["resources"]["ref"]["transcriptome"]
     output:
-        "analysis/kallisto/transcripts.idx"
+        "results/kallisto/transcripts.idx"
     log:
-        "analysis/logs/kallisto/index.log"
+        "results/logs/kallisto/index.log"
     conda:
         "../envs/kallisto.yaml"
     shell:
@@ -27,11 +27,11 @@ def kallisto_params(wildcards, input):
 rule kallisto_quant:
     input:
         fq=get_trimmed,
-        idx="analysis/kallisto/transcripts.idx"
+        idx="results/kallisto/transcripts.idx"
     output:
-        directory("analysis/kallisto/{sample}-{unit}")
+        directory("results/kallisto/{sample}-{unit}")
     log:
-        "analysis/logs/kallisto/quant/{sample}-{unit}.log"
+        "results/logs/kallisto/quant/{sample}-{unit}.log"
     params:
         extra=kallisto_params
     conda:
