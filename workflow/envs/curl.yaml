@@ -3,17 +3,5 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - _libgcc_mutex=0.1=main
-  - ca-certificates=2019.6.16=hecc5488_0
-  - curl=7.65.3=hf8cf82a_0
-  - krb5=1.16.3=h05b26f9_1001
-  - libcurl=7.65.3=hda55be3_0
-  - libedit=3.1.20170329=hf8c457e_1001
-  - libgcc-ng=9.1.0=hdf63c60_0
-  - libssh2=1.8.2=h22169c7_2
-  - libstdcxx-ng=9.1.0=hdf63c60_0
-  - ncurses=6.1=hf484d3e_1002
-  - openssl=1.1.1c=h516909a_0
-  - tk=8.6.9=hed695b0_1002
-  - zlib=1.2.11=h516909a_1005
+  - curl=7.65.3
 
