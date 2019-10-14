@@ -1,9 +1,6 @@
 samples: config/samples.tsv
 units: config/units.tsv
 
-# the sequencing adapter
-adapter: "ACGGATCGATCGATCGATCGAT"
-
 resources:
   ref:
     transcriptome: "resources/ref/Mus_musculus.GRCm38.cdna.all.plus_RUNX1a_GFP.fa"
@@ -66,4 +63,14 @@ params:
   # the reverse reads of paired end sequencing:
   # * https://cutadapt.readthedocs.io/en/stable/guide.html#trimming-paired-end-reads
   cutadapt-se: ""
-  cutadapt-pe: "-g GGATCGATCGATCGATCGAT -A ACGGATCGATCGATCGATCGAT -G GGATCGATCGATCGATCGAT --minimum-length 33 -e 0.005 --overlap 7"
+  # reasoning behind parameters:
+  #   * `--minimum-length 33`:
+  #     * kallisto needs non-empty reads in current versions (fixed for future releases:
+  #       https://github.com/pachterlab/kallisto/commit/64fe837ca86f3664496483bcd2787c9376584fed)
+  #     * kallisto default k-mer length is 31 and 33 should give at least 3 k-mers for a read
+  #   * `-e 0.005`: the default cutadapt maximum error rate of `0.2` is far too high, for Illumina
+  #     data the error rate is more in the range of `0.005` and setting it accordingly should avoid
+  #     false positive adapter matches
+  #   * `--minimum-overlap 7`: the cutadapt default minimum overlap of `5` did trimming on the level
+  #     of expected adapter matches by chance
+  cutadapt-pe: "-a ACGGATCGATCGATCGATCGAT -g GGATCGATCGATCGATCGAT -A ACGGATCGATCGATCGATCGAT -G GGATCGATCGATCGATCGAT --minimum-length 33 -e 0.005 --overlap 7"
