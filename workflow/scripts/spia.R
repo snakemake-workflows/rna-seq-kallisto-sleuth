@@ -1,8 +1,10 @@
-suppressPackageStartupMessages({
-  library("SPIA")
-  library("graphite")
-  library("AnnotationDbi")
-})
+log <- file(snakemake@log[[1]], open="wt")
+sink(log)
+sink(log, type="message")
+
+library("SPIA")
+library("graphite")
+library("AnnotationDbi")
 
 # provides library("tidyverse") and function get_prefix_col()
 # the latter requires snakemake@output[["samples"]] and

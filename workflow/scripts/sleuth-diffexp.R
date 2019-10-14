@@ -1,7 +1,9 @@
-suppressMessages({
-  library("sleuth")
-  library("tidyverse")
-})
+log <- file(snakemake@log[[1]], open="wt")
+sink(log)
+sink(log, type="message")
+
+library("sleuth")
+library("tidyverse")
 
 model <- snakemake@params[["model"]]
 

@@ -1,6 +1,8 @@
-suppressPackageStartupMessages({
-  library("fgsea")
-})
+log <- file(snakemake@log[[1]], open="wt")
+sink(log)
+sink(log, type="message")
+
+library("fgsea")
 
 # provides library("tidyverse") and function get_prefix_col()
 # the latter requires snakemake@output[["samples"]] and

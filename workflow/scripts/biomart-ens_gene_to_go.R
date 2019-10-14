@@ -1,9 +1,11 @@
-suppressMessages({
-  library("biomaRt")
-  library("dplyr")
-  library("stringr")
-  library("readr")
-})
+log <- file(snakemake@log[[1]], open="wt")
+sink(log)
+sink(log, type="message")
+
+library("biomaRt")
+library("dplyr")
+library("stringr")
+library("readr")
 
 # create an ensembl biomart for the species specified in the params field
 mart <- biomaRt::useMart(

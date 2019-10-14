@@ -37,6 +37,8 @@ rule sleuth_init:
         exclude=config["diffexp"].get("exclude", None)
     conda:
         "../envs/sleuth.yaml"
+    log:
+        "logs/sleuth/{model}.init.log
     group: "sleuth-init"
     script:
         "../scripts/sleuth-init.R"
@@ -62,6 +64,8 @@ checkpoint sleuth_diffexp:
         model=get_model,
     conda:
         "../envs/sleuth.yaml"
+    log:
+        "logs/sleuth/{model}.diffexp.log
     script:
         "../scripts/sleuth-diffexp.R"
 
@@ -75,6 +79,8 @@ rule plot_bootstrap:
         "../envs/sleuth.yaml"
     params:
         color_by=config["bootstrap_plots"]["color_by"]
+    log:
+        "logs/plots/bootstrap/{gene}.{transcript}.{model}.plot_bootstrap.log
     script:
         "../scripts/plot-bootstrap.R"
 
@@ -86,6 +92,8 @@ rule plot_pca:
         report("analysis/plots/pca/{covariate}.pca.pdf", caption="../report/plot-pca.rst", category="PCA")
     conda:
         "../envs/sleuth.yaml"
+    log:
+        "logs/plots/pca/{covariate}.plot_pca.log
     script:
         "../scripts/plot-pca.R"
 
@@ -100,6 +108,8 @@ rule plot_diffexp_heatmap:
         model=get_model
     conda:
         "../envs/sleuth.yaml"
+    log:
+        "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.log
     script:
         "../scripts/plot-diffexp-heatmap.R"
 
@@ -113,6 +123,8 @@ rule plot_diffexp_pval_hist:
         model=get_model
     conda:
         "../envs/sleuth.yaml"
+    log:
+        "logs/plots/diffexp/{model}.{level}.diffexp-pval-hist.log
     script:
         "../scripts/plot-diffexp-pval-hist.R"
 
@@ -124,6 +136,8 @@ rule tpm_matrix:
         report("analysis/tables/tpm-matrix/{model}.tpm-matrix.tsv", caption="../report/tpm-matrix.rst", category="Expression Matrices")
     conda:
         "../envs/sleuth.yaml"
+    log:
+        "logs/tables/tpm-matrix/{model}.tpm-matrix.log
     script:
         "../scripts/sleuth-to-matrix.R"
 
@@ -135,5 +149,7 @@ rule plot_fragment_length_dist:
         report("analysis/plots/fld/{sample}-{unit}.fragment-length-dist.pdf", caption="../report/fld.rst", category="Fragment length distribution")
     conda:
         "../envs/sleuth.yaml"
+    log:
+        "logs/plots/fld/{sample}-{unit}.fragment-length-dist.log
     script:
         "../scripts/plot-fld.R"

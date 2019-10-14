@@ -1,6 +1,8 @@
-suppressMessages({
-  library("sleuth")
-})
+log <- file(snakemake@log[[1]], open="wt")
+sink(log)
+sink(log, type="message")
+
+library("sleuth")
 
 so <- sleuth_load(snakemake@input[[1]])
 

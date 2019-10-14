@@ -1,6 +1,4 @@
-suppressPackageStartupMessages({
-    library("tidyverse")
-})
+library("tidyverse")
 
 get_prefix_col <- function(prefix, col_names) {
 
