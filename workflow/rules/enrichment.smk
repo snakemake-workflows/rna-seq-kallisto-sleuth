@@ -109,7 +109,7 @@ rule download_go_obo:
 
 rule goatools_go_enrichment:
     input:
-        obo="resources/ontology/gene_ontology.obo"
+        obo="resources/ontology/gene_ontology.obo",
         ens_gene_to_go="resources/ontology/ens_gene_to_go.tsv",
         diffexp="results/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv"
     output:
