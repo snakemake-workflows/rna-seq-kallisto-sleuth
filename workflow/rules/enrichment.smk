@@ -26,22 +26,22 @@ checkpoint fgsea:
             "analysis/tables/fgsea/{model}.all-gene-sets.tsv",
             caption="../report/fgsea-table-all.rst",
             category="Gene set enrichment analysis"
-            ),
+        ),
         rank_ties=report(
             "analysis/tables/fgsea/{model}.rank-ties.tsv",
             caption="../report/fgsea-rank-ties.rst",
             category="Gene set enrichment analysis"
-            ),
+        ),
         significant=report(
             "analysis/tables/fgsea/{model}.sig-gene-sets.tsv",
             caption="../report/fgsea-table-significant.rst",
             category="Gene set enrichment analysis"
-            ),
+        ),
         plot=report(
             "analysis/plots/fgsea/{model}.table-plot.pdf",
             caption="../report/fgsea-table-plot.rst",
             category="Gene set enrichment analysis"
-            )
+        )
     params:
         species=config["resources"]["ref"]["species"],
         model=get_model,
@@ -65,7 +65,7 @@ rule fgsea_plot_gene_set:
             "analysis/plots/fgsea/{model}.{gene_set}.gene-set-plot.pdf",
             caption="../report/fgsea-gene-set-plot.rst",
             category="Gene set enrichment analysis"
-            )
+        )
     params:
         model=get_model,
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"]
@@ -109,14 +109,14 @@ rule goatools_go_enrichment:
             "analysis/tables/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
             caption="../report/go-enrichment-mostsigtrans-table.rst",
             category="GO term enrichment analysis"
-            ),
+        ),
         plot=report(
             expand("analysis/plots/go_terms/{{model}}.genes-mostsigtrans.diffexp.go_term_enrichment_{ns}.gene_fdr_{{gene_fdr}}.go_term_fdr_{{go_term_fdr}}.pdf",
                     ns = ['BP', 'CC', 'MF']
-                    ),
+            ),
             caption="../report/go-enrichment-mostsigtrans-plot.rst",
             category="GO term enrichment analysis"
-            )
+        )
     params:
         species=config["resources"]["ref"]["species"],
         model=get_model,
