@@ -96,7 +96,9 @@ properties:
       color_by:
         type: string
       genes_of_interest:
-        type: string
+        type: array
+        items:
+          type: string
     required:
       - FDR
       - top_n
