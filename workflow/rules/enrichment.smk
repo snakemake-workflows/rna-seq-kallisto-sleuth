@@ -78,7 +78,7 @@ rule fgsea_plot_gene_set:
 
 rule biomart_ens_gene_to_go:
     output:
-        config["resources"]["ontology"]["ens_gene_to_go_file"]
+        "resources/ontology/ens_gene_to_go.tsv"
     params:
         species=config["resources"]["ref"]["species"]
     conda:
@@ -89,7 +89,7 @@ rule biomart_ens_gene_to_go:
 
 rule download_go_obo:
     output:
-        config["resources"]["ontology"]["gene_ontology_file"]
+        "resources/ontology/gene_ontology.obo"
     params:
         download=config["resources"]["ontology"]["gene_ontology"]
     conda:
@@ -101,8 +101,8 @@ rule download_go_obo:
 
 rule goatools_go_enrichment:
     input:
-        obo=config["resources"]["ontology"]["gene_ontology_file"],
-        ens_gene_to_go=config["resources"]["ontology"]["ens_gene_to_go_file"],
+        obo="resources/ontology/gene_ontology.obo"
+        ens_gene_to_go="resources/ontology/ens_gene_to_go.tsv",
         diffexp="analysis/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv"
     output:
         enrichment=report(
