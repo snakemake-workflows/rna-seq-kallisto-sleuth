@@ -1,0 +1,1 @@
+**Gene ontology (GO) term enrichment analysis** performed by goatool, using the model ``{{ snakemake.params.model["full"] }}`` and the most significant transcript of each gene as determined by sleuth.

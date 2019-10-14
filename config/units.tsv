@@ -1,0 +1,4 @@
+sample	unit	fq1	fq2
+A	lane1	raw/A.1.fq.gz	raw/A.2.fq.gz
+A	lane2	raw/A2.1.fq.gz	raw/A2.2.fq.gz
+B	rep1	raw/B.1.fq.gz	raw/B.2.fq.gz

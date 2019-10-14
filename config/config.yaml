@@ -1,0 +1,80 @@
+samples: config/samples.tsv
+units: config/units.tsv
+
+resources:
+  ref:
+    transcriptome: "resources/ref/Mus_musculus.GRCm38.cdna.all.plus_RUNX1a_GFP.fa"
+    # species needs to be an identifier known to biomart, e.g. mmusculus, hsapiens
+    species: mmusculus
+  ontology:
+    # gene ontology to download, used e.g. in goatools
+    gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
+
+pca:
+  labels:
+    # columns of sample sheet to use for PCA
+    - condition
+
+diffexp:
+  # samples to exclude (e.g. outliers due to technical problems)
+  exclude:
+  # model for sleuth differential expression analysis
+  models:
+    model_X: 
+      full: ~condition + batch_effect
+      reduced: ~batch_effect
+      # Binary valued covariate that shall be used for fold change/effect size
+      # based downstream analyses.
+      primary_variable: condition
+
+enrichment:
+  gene_sets_file: "resources/gene_sets/dummy.gmt"
+  goatools:
+    fdr_genes: 0.05
+    fdr_go_terms: 0.05
+  fgsea:
+    fdr_gene_set: 0.05
+    nperm: 100000
+  spia:
+    # pathway database to use in SPIA, needs to be available for
+    # the species specified by resources -> ref -> species above
+    pathway_database: "reactome"
+
+bootstrap_plots:
+  # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
+  FDR: 0.01
+  # maximum number of bootstrap plots to generate, i.e. top n discoveries to plot
+  top_n: 20
+  color_by: condition
+  # for now, this will plot the sleuth-normalised kallisto count estimations with kallisto
+  # for all the transcripts of the respective genes
+  genes_of_interest:
+    - A4galt
+
+plot_vars:
+  # significance level used for plot_vars() plots
+  sig_level: 0.1
+
+params:
+  kallisto: "-b 100"
+  # these cutadapt parameters need to contain the required flag(s) for
+  # the type of adapter(s) to trim, i.e.:
+  # * https://cutadapt.readthedocs.io/en/stable/guide.html#adapter-types
+  #   * `-a` for 3' adapter in the forward reads
+  #   * `-g` for 5' adapter in the forward reads
+  #   * `-b` for adapters anywhere in the forward reads
+  # also, separate capitalised letter flags are required for adapters in
+  # the reverse reads of paired end sequencing:
+  # * https://cutadapt.readthedocs.io/en/stable/guide.html#trimming-paired-end-reads
+  cutadapt-se: ""
+  # reasoning behind parameters:
+  #   * `--minimum-length 33`:
+  #     * kallisto needs non-empty reads in current versions (fixed for future releases:
+  #       https://github.com/pachterlab/kallisto/commit/64fe837ca86f3664496483bcd2787c9376584fed)
+  #     * kallisto default k-mer length is 31 and 33 should give at least 3 k-mers for a read
+  #   * `-e 0.005`: the default cutadapt maximum error rate of `0.2` is far too high, for Illumina
+  #     data the error rate is more in the range of `0.005` and setting it accordingly should avoid
+  #     false positive adapter matches
+  #   * `--minimum-overlap 7`: the cutadapt default minimum overlap of `5` did trimming on the level
+  #     of expected adapter matches by chance
+  cutadapt-pe: "-a ACGGATCGATCGATCGATCGAT -g GGATCGATCGATCGATCGAT -A ACGGATCGATCGATCGATCGAT -G GGATCGATCGATCGATCGAT --minimum-length 33 -e 0.005 --overlap 7"

@@ -1,8 +1,0 @@
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - r-sleuth =0.30
-  - bioconductor-rhdf5lib =1.4
-  - bioconductor-rhdf5 =2.26.2
-  - bioconductor-biomart =2.36

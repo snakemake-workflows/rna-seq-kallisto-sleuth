@@ -1,0 +1,137 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+
+description: snakemake configuration file
+
+type: object
+
+properties:
+  samples:
+    type: string
+  units:
+    type: string
+
+  resources:
+    type: object
+    properties:
+      ref:
+        type: object
+        properties:
+          transcriptome:
+            type: string
+          species:
+            type: string
+        required:
+          - transcriptome
+          - species
+      ontology:
+        type: object
+        properties:
+          gene_ontology:
+            type: string
+            format: uri
+        required:
+          - gene_ontology
+
+  pca:
+    type: object
+    properties:
+      labels:
+        type: array
+        items:
+          type: string
+    required:
+      - labels
+
+  diffexp:
+    type: object
+    properties:
+      models:
+        type: object
+    required:
+      - models
+
+  enrichment:
+    type: object
+    properties:
+      gene_sets_file:
+        type: string
+      goatools:
+        type: object
+        properties:
+          fdr_genes:
+            type: number
+          fdr_go_terms:
+            type: number
+        required:
+          - fdr_genes
+          - fdr_go_terms
+      fgsea:
+        type: object
+        properties:
+          fdr_gene_set:
+            type: number
+          nperm:
+            type: integer
+        required:
+          - fdr_gene_set
+          - nperm
+      spia:
+        type: object
+        properties:
+          pathway_database:
+            type: string
+        required:
+          - pathway_database
+    required:
+      - gene_sets_file
+
+
+  bootstrap_plots:
+    type: object
+    properties:
+      FDR:
+        type: number
+      top_n:
+        type: integer
+      color_by:
+        type: string
+      genes_of_interest:
+        type: array
+        items:
+          type: string
+    required:
+      - FDR
+      - top_n
+      - color_by
+      - genes_of_interest
+
+  plot_vars:
+    type: object
+    properties:
+      sig_level:
+        type: number
+    required:
+      - sig_level
+
+  params:
+    type: object
+    properties:
+      kallisto:
+        type: string
+      cutadapt-se:
+        type: string
+      cutadapt-pe:
+        type: string
+    required:
+      - kallisto
+      - cutadapt-se
+      - cutadapt-pe
+
+required:
+  - samples
+  - units
+  - resources
+  - pca
+  - diffexp
+  - enrichment
+  - params

@@ -1,0 +1,9 @@
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bioconductor-biomart=2.40.3
+  - r-base=3.6.1
+  - r-tidyverse=1.2.1
+

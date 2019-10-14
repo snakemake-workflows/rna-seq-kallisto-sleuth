@@ -1,0 +1,22 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base =3.5
+  - bioconductor-spia =2.34
+  - bioconductor-graphite =1.28
+  - bioconductor-org.mm.eg.db =3.7
+  - bioconductor-org.hs.eg.db =3.7
+  - bioconductor-org.at.tair.db =3.7
+  - bioconductor-org.bt.eg.db =3.7
+  - bioconductor-org.ce.eg.db =3.7
+  - bioconductor-org.dm.eg.db =3.7
+  - bioconductor-org.dr.eg.db =3.7
+  - bioconductor-org.eck12.eg.db =3.7
+  - bioconductor-org.gg.eg.db =3.7
+  - bioconductor-org.hs.eg.db =3.7
+  - bioconductor-org.rn.eg.db =3.7
+  - bioconductor-org.sc.sgd.db =3.7
+  - bioconductor-org.ss.eg.db =3.7
+  - bioconductor-org.xl.eg.db =3.7
+  - r-tidyverse =1.2
