@@ -1,3 +1,6 @@
+import sys
+sys.stderr = open(snakemake.log[0], "w")
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from goatools.obo_parser import GODag

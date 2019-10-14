@@ -132,6 +132,8 @@ rule goatools_go_enrichment:
         go_term_fdr=lambda wc: wc.go_term_fdr.replace('-','.')
     conda:
         "../envs/goatools.yaml"
+    log:
+        "logs/goatools/tables_and_plots.{model}.genes-mostsigtrans.diffexp.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.log"
     script:
         "../scripts/goatools-go-enrichment-analysis.py"
 
