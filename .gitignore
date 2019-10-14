@@ -10,6 +10,7 @@ results
 results/*
 !workflow
 !workflow/*
+!workflow/**
 workflow/scripts/.snakemake*
 !.gitignore
 !.editorconfig
