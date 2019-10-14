@@ -4,8 +4,8 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - goatools=0.9.7
-  - python=3.7
-  - pandas
-  - matplotlib
+  - goatools =0.9.7
+  - python =3.7
+  - pandas =0.25
+  - matplotlib =3.1
 
