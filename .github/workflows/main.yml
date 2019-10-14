@@ -15,5 +15,5 @@ jobs:
       uses: snakemake/snakemake-github-action@v1.2.0
       with:
         directory: .test
-        snakefile: Snakefile
+        snakefile: workflows/Snakefile
         args: "--use-conda"
