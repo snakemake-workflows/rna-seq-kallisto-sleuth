@@ -38,7 +38,7 @@ rule sleuth_init:
     conda:
         "../envs/sleuth.yaml"
     log:
-        "logs/sleuth/{model}.init.log
+        "logs/sleuth/{model}.init.log"
     group: "sleuth-init"
     script:
         "../scripts/sleuth-init.R"
@@ -65,7 +65,7 @@ checkpoint sleuth_diffexp:
     conda:
         "../envs/sleuth.yaml"
     log:
-        "logs/sleuth/{model}.diffexp.log
+        "logs/sleuth/{model}.diffexp.log"
     script:
         "../scripts/sleuth-diffexp.R"
 
@@ -80,7 +80,7 @@ rule plot_bootstrap:
     params:
         color_by=config["bootstrap_plots"]["color_by"]
     log:
-        "logs/plots/bootstrap/{gene}.{transcript}.{model}.plot_bootstrap.log
+        "logs/plots/bootstrap/{gene}.{transcript}.{model}.plot_bootstrap.log"
     script:
         "../scripts/plot-bootstrap.R"
 
@@ -93,7 +93,7 @@ rule plot_pca:
     conda:
         "../envs/sleuth.yaml"
     log:
-        "logs/plots/pca/{covariate}.plot_pca.log
+        "logs/plots/pca/{covariate}.plot_pca.log"
     script:
         "../scripts/plot-pca.R"
 
@@ -109,7 +109,7 @@ rule plot_diffexp_heatmap:
     conda:
         "../envs/sleuth.yaml"
     log:
-        "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.log
+        "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.log"
     script:
         "../scripts/plot-diffexp-heatmap.R"
 
@@ -124,7 +124,7 @@ rule plot_diffexp_pval_hist:
     conda:
         "../envs/sleuth.yaml"
     log:
-        "logs/plots/diffexp/{model}.{level}.diffexp-pval-hist.log
+        "logs/plots/diffexp/{model}.{level}.diffexp-pval-hist.log"
     script:
         "../scripts/plot-diffexp-pval-hist.R"
 
@@ -137,7 +137,7 @@ rule tpm_matrix:
     conda:
         "../envs/sleuth.yaml"
     log:
-        "logs/tables/tpm-matrix/{model}.tpm-matrix.log
+        "logs/tables/tpm-matrix/{model}.tpm-matrix.log"
     script:
         "../scripts/sleuth-to-matrix.R"
 
@@ -150,6 +150,6 @@ rule plot_fragment_length_dist:
     conda:
         "../envs/sleuth.yaml"
     log:
-        "logs/plots/fld/{sample}-{unit}.fragment-length-dist.log
+        "logs/plots/fld/{sample}-{unit}.fragment-length-dist.log"
     script:
         "../scripts/plot-fld.R"
