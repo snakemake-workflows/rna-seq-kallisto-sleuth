@@ -44,7 +44,7 @@ rule all:
                 level=["transcripts", "genes-aggregated", "genes-mostsigtrans" ]
         ),
         # technical variance vs. observed variance
-        expand("results/plots/variance/{model}.transcripts.plot_vars.pdf", model=config["diffexp"]["models"]),
+#        expand("results/plots/variance/{model}.transcripts.plot_vars.pdf", model=config["diffexp"]["models"]),
         # PCA plots of kallisto results, each coloured for a different covariate
         expand("results/plots/pca/{covariate}.pca.pdf", covariate=samples.columns[samples.columns != "sample"]),
         [get_bootstrap_plots(model) for model in config["diffexp"]["models"]],
