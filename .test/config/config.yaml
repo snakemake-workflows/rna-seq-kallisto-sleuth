@@ -51,6 +51,10 @@ bootstrap_plots:
   genes_of_interest:
     - A4galt
 
+plot_vars:
+  # significance level used for plot_vars() plots
+  sig_level: 0.1
+
 params:
   kallisto: "-b 100"
   # these cutadapt parameters need to contain the required flag(s) for

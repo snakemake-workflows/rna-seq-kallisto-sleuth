@@ -105,6 +105,13 @@ properties:
       - color_by
       - genes_of_interest
 
+  plot_vars:
+    type: object
+    properties:
+      sig_level:
+        type: number
+    required:
+      - sig_level
 
   params:
     type: object
