@@ -1,7 +1,7 @@
 # Snakemake workflow: rna-seq-kallisto-sleuth
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥5.2.1-brightgreen.svg)](https://snakemake.bitbucket.io)
-![Github Action](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/workflows/Testing/badge.svg)
+![Github Action](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/workflows/Tests/badge.svg)
 [![Snakemake-Report](https://img.shields.io/badge/snakemake-report-green.svg)](https://cdn.rawgit.com/snakemake-workflows/rna-seq-kallisto-sleuth/master/.test/report.html)
 
 This workflow performs a differential expression analysis with [Kallisto](https://pachterlab.github.io/kallisto) and [Sleuth](https://pachterlab.github.io/sleuth).
