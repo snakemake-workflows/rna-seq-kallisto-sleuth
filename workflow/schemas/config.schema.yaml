@@ -18,11 +18,11 @@ properties:
         properties:
           transcriptome:
             type: string
-          ref:
+          species:
             type: string
         required:
           - transcriptome
-          - ref
+          - species
       ontology:
         type: object
         properties:
