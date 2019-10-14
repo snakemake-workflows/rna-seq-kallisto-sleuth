@@ -27,7 +27,8 @@ properties:
         type: object
         properties:
           gene_ontology:
-            type: uri
+            type: string
+            format: uri
         required:
           - gene_ontology
 
