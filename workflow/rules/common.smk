@@ -53,6 +53,9 @@ def get_trimmed(wildcards):
     # single end sample
     return expand("results/trimmed/{sample}-{unit}.fastq.gz", **wildcards)
 
+def is_activated(config_element):
+    return config_element.get('activated', 'false') in {"true","True"}
+  
 def get_bootstrap_plots(model, gene_list=None):
     """Dynamically determine which transcripts to plot based on
        checkpoint output."""

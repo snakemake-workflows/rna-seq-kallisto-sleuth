@@ -29,13 +29,19 @@ diffexp:
 
 enrichment:
   goatools:
+    # tool is only run if set to `true`
+    activate: false
     fdr_genes: 0.05
     fdr_go_terms: 0.05
   fgsea:
+    # tool is only run if set to `true`
+    activate: false
     gene_sets_file: "resources/gene_sets/dummy.gmt"
     fdr_gene_set: 0.05
     nperm: 100000
   spia:
+    # tool is only run if set to `true`
+    activate: true
     # pathway database to use in SPIA, needs to be available for
     # the species specified by resources -> ref -> species above
     pathway_database: "reactome"
