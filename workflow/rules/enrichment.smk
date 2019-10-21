@@ -22,7 +22,7 @@ checkpoint fgsea:
     input:
         samples="results/sleuth/samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
-        gene_sets=config["enrichment"]["gene_sets_file"]
+        gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"]
     output:
         enrichment=report(
             "results/tables/fgsea/{model}.all-gene-sets.tsv",
@@ -62,7 +62,7 @@ rule fgsea_plot_gene_set:
     input:
         samples="results/sleuth/samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
-        gene_sets=config["enrichment"]["gene_sets_file"],
+        gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"],
         sig_gene_sets="results/tables/fgsea/{model}.sig-gene-sets.tsv"
     output:
         report(

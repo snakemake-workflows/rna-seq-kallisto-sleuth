@@ -53,8 +53,6 @@ properties:
   enrichment:
     type: object
     properties:
-      gene_sets_file:
-        type: string
       goatools:
         type: object
         properties:
@@ -68,11 +66,14 @@ properties:
       fgsea:
         type: object
         properties:
+          gene_sets_file:
+            type: string
           fdr_gene_set:
             type: number
           nperm:
             type: integer
         required:
+          - gene_sets_file
           - fdr_gene_set
           - nperm
       spia:
@@ -82,8 +83,6 @@ properties:
             type: string
         required:
           - pathway_database
-    required:
-      - gene_sets_file
 
 
   bootstrap_plots:
