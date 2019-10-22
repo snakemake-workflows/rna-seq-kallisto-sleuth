@@ -3,9 +3,9 @@ units: config/units.tsv
 
 resources:
   ref:
-    transcriptome: "resources/ref/Mus_musculus.GRCm38.cdna.all.plus_RUNX1a_GFP.fa"
+    transcriptome: "resources/ref/Homo_sapiens.GRCh38.cdna.chr21.fa"
     # species needs to be an identifier known to biomart, e.g. mmusculus, hsapiens
-    species: mmusculus
+    species: hsapiens
   ontology:
     # gene ontology to download, used e.g. in goatools
     gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
@@ -20,7 +20,7 @@ diffexp:
   exclude:
   # model for sleuth differential expression analysis
   models:
-    model_X: 
+    model_X:
       full: ~condition + batch_effect
       reduced: ~batch_effect
       # Binary valued covariate that shall be used for fold change/effect size
