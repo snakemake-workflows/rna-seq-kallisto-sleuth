@@ -56,6 +56,8 @@ properties:
       goatools:
         type: object
         properties:
+          activate:
+            type: boolean
           fdr_genes:
             type: number
           fdr_go_terms:
@@ -66,6 +68,8 @@ properties:
       fgsea:
         type: object
         properties:
+          activate:
+            type: boolean
           gene_sets_file:
             type: string
           fdr_gene_set:
@@ -79,6 +83,8 @@ properties:
       spia:
         type: object
         properties:
+          activate:
+            type: boolean
           pathway_database:
             type: string
         required:

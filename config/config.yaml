@@ -36,12 +36,13 @@ enrichment:
   fgsea:
     # tool is only run if set to `true`
     activate: false
+    # if activated, you need to provide a GMT file with gene sets of interest
     gene_sets_file: "resources/gene_sets/dummy.gmt"
     fdr_gene_set: 0.05
     nperm: 100000
   spia:
     # tool is only run if set to `true`
-    activate: true
+    activate: false
     # pathway database to use in SPIA, needs to be available for
     # the species specified by resources -> ref -> species above
     pathway_database: "reactome"

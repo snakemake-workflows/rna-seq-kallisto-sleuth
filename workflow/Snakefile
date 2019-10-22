@@ -4,9 +4,18 @@ include: "rules/quant.smk"
 include: "rules/diffexp.smk"
 include: "rules/enrichment.smk"
 
-def goatools():
-    if is_activated(config["enrichment"]["goatools"]):
-        return  expand(
+
+def all_input(wildcards):
+    """
+    Function defining all requested inputs for the rule all (below).
+    """
+
+    wanted_input = []
+
+    # request goatools if 'activated' in config.yaml
+    if config["enrichment"]["goatools"]["activate"]:
+        wanted_input.extend(
+                expand(
                     [
                         "results/tables/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
                         "results/plots/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment_{go_ns}.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.pdf"
@@ -16,53 +25,79 @@ def goatools():
                     gene_fdr=str(config["enrichment"]["goatools"]["fdr_genes"]).replace('.','-'),
                     go_term_fdr=str(config["enrichment"]["goatools"]["fdr_go_terms"]).replace('.','-')
                 )
-    else:
-        return []
+            )
 
+    # request fgsea if 'activated' in config.yaml
+    if config["enrichment"]["fgsea"]["activate"]:
+        wanted_input.extend(
+                expand(
+                    [
+                        "results/tables/fgsea/{model}.all-gene-sets.tsv",
+                        "results/tables/fgsea/{model}.sig-gene-sets.tsv",
+                        "results/plots/fgsea/{model}.table-plot.pdf"
+                    ],
+                    model=config["diffexp"]["models"],
+                    gene_set_fdr=str(config["enrichment"]["fgsea"]["fdr_gene_set"]).replace('.','-'),
+                    nperm=str(config["enrichment"]["fgsea"]["nperm"])
+                )
+            )
+        for model in config["diffexp"]["models"]:
+            wanted_input.extend( get_fgsea_plots(model) )
 
-def fgsea():
-    if is_activated(config["enrichment"]["fgsea"]):
-        return  [ expand(
-                        [
-                            "results/tables/fgsea/{model}.all-gene-sets.tsv",
-                            "results/tables/fgsea/{model}.sig-gene-sets.tsv",
-                            "results/plots/fgsea/{model}.table-plot.pdf"
-                        ],
-                        model=config["diffexp"]["models"],
-                        gene_set_fdr=str(config["enrichment"]["fgsea"]["fdr_gene_set"]).replace('.','-'),
-                        nperm=str(config["enrichment"]["fgsea"]["nperm"])
-                    ),
-                    [get_fgsea_plots(model) for model in config["diffexp"]["models"]]
-                ]
-    else:
-        return []
+    # request spia if 'activated' in config.yaml
+    if config["enrichment"]["spia"]["activate"]:
+        wanted_input.extend(
+                expand(
+                    [ "results/tables/pathways/{model}.pathways.tsv" ],
+                    model=config["diffexp"]["models"],
+                )
+            )
+
+    # workflow output that is always wanted
+
+    # general sleuth output
+    wanted_input.extend(
+            expand(
+                [
+                    "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
+                    "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
+                    "results/tables/tpm-matrix/{model}.tpm-matrix.tsv",
+                ],
+                model=config["diffexp"]["models"]
+            )
+        )
+    # sleuth p-value histogram plots
+    wanted_input.extend(
+            expand("results/plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf",
+                model=config["diffexp"]["models"],
+                level=["transcripts", "genes-aggregated", "genes-mostsigtrans" ]
+            )
+        )
+
+    # technical variance vs. observed variance
+    #wanted_input.extend(
+    #        expand("results/plots/variance/{model}.transcripts.plot_vars.pdf", model=config["diffexp"]["models"]),
+    #    )
+
+    # PCA plots of kallisto results, each coloured for a different covariate
+    wanted_input.extend(
+            expand("results/plots/pca/{covariate}.pca.pdf", covariate=samples.columns[samples.columns != "sample"])
+        )
+
+    # sleuth bootstrap plots
+    for model in config["diffexp"]["models"]:
+        wanted_input.extend( get_bootstrap_plots(model) )
+        wanted_input.extend( get_bootstrap_plots(model, config["bootstrap_plots"]["genes_of_interest"]) )
+
+    # fragment length distribution plots
+    wanted_input.extend(
+            expand("results/plots/fld/{unit.sample}-{unit.unit}.fragment-length-dist.pdf",
+                unit=units[["sample", "unit"]].itertuples()
+            )
+        )
+
+    return wanted_input
 
 
 rule all:
-    input:
-        expand(
-            [
-                "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
-                "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
-                "results/tables/tpm-matrix/{model}.tpm-matrix.tsv",
-                "results/tables/pathways/{model}.pathways.tsv"
-            ],
-            model=config["diffexp"]["models"]
-        ),
-        # results goatools
-        goatools(),
-        # results fgsea
-        fgsea(),
-        # sleuth p-value histogram plots
-        expand("results/plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf",
-                model=config["diffexp"]["models"],
-                level=["transcripts", "genes-aggregated", "genes-mostsigtrans" ]
-        ),
-        # technical variance vs. observed variance
-#        expand("results/plots/variance/{model}.transcripts.plot_vars.pdf", model=config["diffexp"]["models"]),
-        # PCA plots of kallisto results, each coloured for a different covariate
-        expand("results/plots/pca/{covariate}.pca.pdf", covariate=samples.columns[samples.columns != "sample"]),
-        [get_bootstrap_plots(model) for model in config["diffexp"]["models"]],
-        [get_bootstrap_plots(model, config["bootstrap_plots"]["genes_of_interest"])
-            for model in config["diffexp"]["models"] ],
-        expand("results/plots/fld/{unit.sample}-{unit.unit}.fragment-length-dist.pdf", unit=units[["sample", "unit"]].itertuples())
+    input: all_input
