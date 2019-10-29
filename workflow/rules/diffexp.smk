@@ -40,6 +40,7 @@ rule sleuth_init:
     log:
         "logs/sleuth/{model}.init.log"
     group: "sleuth-init"
+    threads: 6
     script:
         "../scripts/sleuth-init.R"
 
@@ -168,4 +169,3 @@ rule plot_vars:
         "logs/plots/variance/{model}.plot_vars.log"
     script:
         "../scripts/plot-variances.R"
-

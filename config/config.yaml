@@ -3,9 +3,9 @@ units: config/units.tsv
 
 resources:
   ref:
-    transcriptome: "resources/ref/Mus_musculus.GRCm38.cdna.all.plus_RUNX1a_GFP.fa"
+    transcriptome: "resources/ref/Homo_sapiens.GRCh38.cdna.chr21.fa"
     # species needs to be an identifier known to biomart, e.g. mmusculus, hsapiens
-    species: mmusculus
+    species: hsapiens
   ontology:
     # gene ontology to download, used e.g. in goatools
     gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
@@ -20,7 +20,7 @@ diffexp:
   exclude:
   # model for sleuth differential expression analysis
   models:
-    model_X: 
+    model_X:
       full: ~condition + batch_effect
       reduced: ~batch_effect
       # Binary valued covariate that shall be used for fold change/effect size
@@ -28,14 +28,21 @@ diffexp:
       primary_variable: condition
 
 enrichment:
-  gene_sets_file: "resources/gene_sets/dummy.gmt"
   goatools:
+    # tool is only run if set to `true`
+    activate: false
     fdr_genes: 0.05
     fdr_go_terms: 0.05
   fgsea:
+    # tool is only run if set to `true`
+    activate: false
+    # if activated, you need to provide a GMT file with gene sets of interest
+    gene_sets_file: "resources/gene_sets/dummy.gmt"
     fdr_gene_set: 0.05
     nperm: 100000
   spia:
+    # tool is only run if set to `true`
+    activate: false
     # pathway database to use in SPIA, needs to be available for
     # the species specified by resources -> ref -> species above
     pathway_database: "reactome"
