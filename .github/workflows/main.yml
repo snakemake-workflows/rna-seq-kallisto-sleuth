@@ -12,8 +12,8 @@ jobs:
     - name: Checkout submodules
       uses: textbook/git-checkout-submodule-action@2.0.0
     - name: snakemake
-      uses: snakemake/snakemake-github-action@v1.2.0
+      uses: snakemake/snakemake-github-action@v1.4.1
       with:
         directory: .test
         snakefile: workflow/Snakefile
-        args: "--use-conda"
+        args: "--use-conda --show-failed-logs"
