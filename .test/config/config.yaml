@@ -3,7 +3,7 @@ units: config/units.tsv
 
 resources:
   ref:
-    transcriptome: "data/ref/transcriptome.chr21.fa"
+    transcriptome: "ngs-test-data/ref/transcriptome.chr21.fa"
     # species needs to be an identifier known to biomart, e.g. mmusculus, hsapiens
     species: hsapiens
   ontology:
@@ -34,7 +34,7 @@ enrichment:
     fdr_genes: 0.05
     fdr_go_terms: 0.05
   fgsea:
-    gene_sets_file: "data/ref/dummy.gmt"
+    gene_sets_file: "ngs-test-data/ref/dummy.gmt"
     # tool is only run if set to `true`
     activate: true
     # if activated, you need to provide a GMT file with gene sets of interest
