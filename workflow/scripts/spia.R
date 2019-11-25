@@ -4,12 +4,15 @@ sink(log, type="message")
 
 library("SPIA")
 library("graphite")
-library("AnnotationDbi")
 
-# provides library("tidyverse") and function get_prefix_col()
-# the latter requires snakemake@output[["samples"]] and
+# provides library("tidyverse") and functions load_bioconductor_package() and
+# get_prefix_col(), the latter requires snakemake@output[["samples"]] and
 # snakemake@params[["covariate"]]
 source( file.path(snakemake@scriptdir, 'common.R') )
+
+pkg <- snakemake@params[["bioc_pkg"]]
+load_bioconductor_package(snakemake@input[["species_anno"]], pkg)
+
 
 options(Ncpus = snakemake@threads)
 
@@ -32,7 +35,7 @@ sig_genes <- diffexp %>% filter(qval <= 0.05)
 beta_col <- get_prefix_col("b", colnames(sig_genes))
 
 beta <- sig_genes %>%
-            select(ens_gene, !!beta_col) %>%
+            dplyr::select(ens_gene, !!beta_col) %>%
             deframe()
 
 res <- runSPIA(de = beta, all = universe, pw_db, plots = TRUE)

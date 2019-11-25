@@ -1,10 +1,28 @@
+
+rule download_bioconductor_species_database:
+    output:
+        "resources/bioconductor/{package}/DESCRIPTION"
+    params:
+        lib = lambda wc, output: output[0].split(sep=wc.package+"/DESCRIPTION")[0]
+    conda:
+        "../envs/biocmanager.yaml"
+    log:
+        "logs/resources/bioconductor/{package}.log"
+    script:
+        "../scripts/download_bioconductor_package.R"
+
+
+# topology- and interaction-aware pathway enrichment analysis
+
 rule spia:
     input:
         samples="results/sleuth/samples.tsv",
+        species_anno=get_bioc_pkg_path,
         diffexp="results/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv"
     output:
         "results/tables/pathways/{model}.pathways.tsv"
     params:
+        bioc_pkg=get_bioc_species_pkg,
         species=config["resources"]["ref"]["species"],
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"]
@@ -22,6 +40,7 @@ checkpoint fgsea:
     input:
         samples="results/sleuth/samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
+        species_anno=get_bioc_pkg_path,
         gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"]
     output:
         enrichment=report(
@@ -45,7 +64,7 @@ checkpoint fgsea:
             category="Gene set enrichment analysis"
         )
     params:
-        species=config["resources"]["ref"]["species"],
+        bioc_pkg=get_bioc_species_pkg,
         model=get_model,
         gene_set_fdr=config["enrichment"]["fgsea"]["fdr_gene_set"],
         nperm=config["enrichment"]["fgsea"]["nperm"],
@@ -82,17 +101,19 @@ rule fgsea_plot_gene_set:
 
 ## gene ontology term enrichment analysis
 
-rule biomart_ens_gene_to_go:
+rule ens_gene_to_go:
+    input:
+        species_anno=get_bioc_pkg_path
     output:
         "resources/ontology/ens_gene_to_go.tsv"
     params:
-        species=config["resources"]["ref"]["species"]
+        bioc_pkg=get_bioc_species_pkg
     conda:
-        "../envs/biomart-download.yaml"
+        "../envs/ens_gene_to_go.yaml"
     log:
-        "logs/resources/biomart.ens_gene_to_go.download.log"
+        "logs/resources/ens_gene_to_go.log"
     script:
-        "../scripts/biomart-ens_gene_to_go.R"
+        "../scripts/ens_gene_to_go.R"
 
 
 rule download_go_obo:
@@ -136,6 +157,3 @@ rule goatools_go_enrichment:
         "logs/goatools/tables_and_plots.{model}.genes-mostsigtrans.diffexp.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.log"
     script:
         "../scripts/goatools-go-enrichment-analysis.py"
-
-
-
