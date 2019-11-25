@@ -21,7 +21,7 @@ objanno = IdToGosReader(snakemake.input.ens_gene_to_go, godag = obodag)
 ns2assoc = objanno.get_ns2assc()
 
 for nspc, id2gos in ns2assoc.items():
-    print("{NS} {N:,} annotated mouse genes".format(NS=nspc, N=len(id2gos)))
+    print("{NS} {N:,} annotated genes".format(NS=nspc, N=len(id2gos)))
 
 # read gene diffexp table
 all_genes = pd.read_table(snakemake.input.diffexp)
@@ -36,11 +36,11 @@ fdr_level_go_term = float(snakemake.params.go_term_fdr)
 
 goeaobj = GOEnrichmentStudyNS(
     # list of 'population' of genes looked at in total
-    pop = all_genes['ens_gene'].tolist(), 
+    pop = all_genes['ens_gene'].tolist(),
     # geneid -> GO ID mapping
-    ns2assoc = ns2assoc, 
+    ns2assoc = ns2assoc,
     # ontology DAG
-    godag = obodag, 
+    godag = obodag,
     propagate_counts = False,
     # multiple testing correction method (fdr_bh is false discovery rate control with Benjamini-Hochberg)
     methods = ['fdr_bh'],
@@ -70,7 +70,7 @@ plot_results(
     # use pvals for coloring
     goea_results=goea_results_sig,
     # print general gene symbol instead of Ensembl ID
-    id2symbol=ensembl_id_to_symbol, 
+    id2symbol=ensembl_id_to_symbol,
     # number of genes to print, or True for printing all (including count of genes)
     study_items=True,
     # number of genes to print per line
@@ -91,5 +91,3 @@ for ns in ns2assoc.keys():
                         ns, fdr_level_gene, fdr_level_go_term),
                         ha='center', va='center', size=20)
         fig.savefig( outplot_generic.replace('_{NS}.', "_{}.".format(ns)) )
-
-
