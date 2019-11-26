@@ -14,12 +14,13 @@ pkg <- snakemake@params[["bioc_pkg"]]
 load_bioconductor_package(snakemake@input[["species_anno"]], pkg)
 
 
-options(Ncpus = snakemake@threads)
 
 pw_db <- snakemake@params[["pathway_db"]]
 
 db <- pathways(snakemake@params[["species"]], pw_db)
 db <- convertIdentifiers(db, "ENSEMBL")
+
+options(Ncpus = snakemake@threads)
 
 prepareSPIA(db, pw_db)
 

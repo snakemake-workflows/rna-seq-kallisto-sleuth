@@ -6,6 +6,11 @@ resources:
     transcriptome: "ngs-test-data/ref/transcriptome.chr21.fa"
     # species needs to be an identifier known to biomart, e.g. mmusculus, hsapiens
     species: hsapiens
+    # this is the version of the bioconda package `bioconductor-org.{species}`.eg.db` that
+    # you want -- this needs to be compatible with the versions `r-base` and the
+    # bioconductor packages specified e.g. in `envs/` files `fgsea.yaml`, `spia.yaml` and
+    # `ens_gene_to_go.yaml`
+    species_db_version: "3.10"
   ontology:
     # gene ontology to download, used e.g. in goatools
     gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"

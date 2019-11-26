@@ -1,15 +1,14 @@
 
 rule download_bioconductor_species_database:
     output:
-        "resources/bioconductor/{package}/DESCRIPTION"
+        "resources/bioconductor/lib/R/library/{package}/DESCRIPTION"
     params:
-        lib = lambda wc, output: output[0].split(sep=wc.package+"/DESCRIPTION")[0]
-    conda:
-        "../envs/biocmanager.yaml"
+        path = lambda wc, output: output[0].split(sep="lib/R/library/{}/DESCRIPTION".format(wc.package))[0],
+        version = config["resources"]["ref"]["species_db_version"]
     log:
         "logs/resources/bioconductor/{package}.log"
-    script:
-        "../scripts/download_bioconductor_package.R"
+    shell:
+        "conda create --yes -p {params.path} bioconductor-{wildcards.package}={params.version}"
 
 
 # topology- and interaction-aware pathway enrichment analysis

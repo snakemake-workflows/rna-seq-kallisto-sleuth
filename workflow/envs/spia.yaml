@@ -5,5 +5,4 @@ dependencies:
   - r-base =3.6
   - bioconductor-spia =2.38
   - bioconductor-graphite =1.32
-  - bioconductor-annotationdbi =1.48
   - r-tidyverse =1.2

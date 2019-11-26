@@ -59,7 +59,7 @@ def get_bioc_species_pkg(wildcards):
     return "org.{species}.eg.db".format(species=species_letters)
 
 def get_bioc_pkg_path(wildcards):
-    return "resources/bioconductor/{pkg}/DESCRIPTION".format(pkg=get_bioc_species_pkg(wildcards))
+    return "resources/bioconductor/lib/R/library/{pkg}/DESCRIPTION".format(pkg=get_bioc_species_pkg(wildcards))
 
 def is_activated(config_element):
     return config_element['activate'] in {"true","True"}

@@ -5,4 +5,3 @@ channels:
 dependencies:
   - r-base=3.6
   - r-tidyverse=1.2
-  - bioconductor-annotationdbi =1.48
