@@ -19,7 +19,7 @@ rule spia:
         "../envs/spia.yaml"
     log:
         "logs/tables/pathways/{model}.spia-pathways.log"
-    threads: 16
+    threads: 64
     script:
         "../scripts/spia.R"
 
