@@ -1,5 +1,3 @@
-## pathway enrichment analysis
-
 rule spia:
     input:
         samples="results/sleuth/samples.tsv",
@@ -19,10 +17,9 @@ rule spia:
         "../envs/spia.yaml"
     log:
         "logs/tables/pathways/{model}.spia-pathways.log"
-    threads: 64
+    threads: 16
     script:
         "../scripts/spia.R"
-
 
 ## gene set enrichment analysis
 

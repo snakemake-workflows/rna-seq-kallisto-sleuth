@@ -18,6 +18,7 @@ pw_db <- snakemake@params[["pathway_db"]]
 db <- pathways(snakemake@params[["species"]], pw_db)
 db <- convertIdentifiers(db, "ENSEMBL")
 
+
 diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>%
             drop_na(ens_gene) %>%
             mutate(ens_gene = str_c("ENSEMBL:", ens_gene))
