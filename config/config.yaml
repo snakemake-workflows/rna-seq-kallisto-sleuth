@@ -15,6 +15,14 @@ pca:
     # columns of sample sheet to use for PCA
     - condition
 
+volcano:
+  labels:
+    - condition
+  models:
+    model_X:
+      full: ~condition + batch_effect
+      reduced: ~batch_effect
+
 diffexp:
   # samples to exclude (e.g. outliers due to technical problems)
   exclude:

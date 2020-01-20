@@ -98,6 +98,19 @@ rule plot_pca:
     script:
         "../scripts/plot-pca.R"
 
+rule plot_volcano:
+    input:
+        so="results/sleuth/{model}.rds"
+    output:
+        report("results/plots/volcano/{model}.volcano.pdf", caption="../report/plot-volcano.rst", category="Volcano")
+    params:
+        model=get_model
+    conda:
+        "../envs/sleuth.yaml"
+    log:
+        "logs/plots/volcano/{model}.plot_volcano.log"
+    script:
+        "../scripts/plot-volcano.R"
 
 rule plot_diffexp_heatmap:
     input:
