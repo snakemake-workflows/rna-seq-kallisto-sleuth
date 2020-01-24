@@ -104,9 +104,8 @@ rule plot_volcano:
         matrix="results/tables/tpm-matrix/{model}.tpm-matrix.tsv",
         samples="results/sleuth/samples.tsv"
     output:
-        #foldchange="results/sleuth/foldchange/{model}foldchange.tsv",
-        #volcanoplot=
-        report("results/plots/volcano/{model}.volcano.pdf", caption="../report/plot-volcano.rst", category="Volcano")
+        foldchange="results/sleuth/foldchange/{model}.foldchange.tsv",
+        volcanoplot=report("results/plots/volcano/{model}.volcano.pdf", caption="../report/plot-volcano.rst", category="Volcano")
 
     params:
         model=get_model

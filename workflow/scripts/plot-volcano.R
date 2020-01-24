@@ -1,6 +1,6 @@
-#log <- file(snakemake@log[[1]], open="wt")
-#sink(log)
-#sink(log, type="message")
+log <- file(snakemake@log[[1]], open="wt")
+sink(log)
+sink(log, type="message")
 
 #---install required packages for local testing without surrounding snakemake-workflow---
 #install.packages("BiocManager")
@@ -14,15 +14,17 @@ library("tidyverse")
 
 print("Building volcano plot...")
 
-setwd("/home/tharja/Schreibtisch/RNA-Seq-Project/tmp_rna-seq-kallisto-sleuth/")
 
-#pval_transcripts <- sleuth_load(snakemake@input[["pvals"]])
-#conditions <- read.table(snakemake@input[["samples"]])
-#matrix <- sleuth_load(snakemake@input[["matrix"]]) 
 
-pval_transcripts <- sleuth_load("results/sleuth/diffexp/model_X.transcripts.diffexp.rds")
-conditions <- read.table("results/sleuth/samples.tsv")
-matrix <- read.table("results/tables/tpm-matrix/model_X.tpm-matrix.tsv", quote="\"", check.names = F, stringsAsFactors=F, header = TRUE)
+#setwd("/home/tharja/Schreibtisch/RNA-Seq-Project/tmp_rna-seq-kallisto-sleuth/")
+ 
+pval_transcripts <- sleuth_load(snakemake@input[["pvals"]])
+conditions <- read.table(snakemake@input[["samples"]])
+matrix <- read.table(snakemake@input[["matrix"]], quote="\"", check.names = F, stringsAsFactors=F, header = TRUE) 
+
+# #pval_transcripts <- sleuth_load("results/sleuth/diffexp/model_X.transcripts.diffexp.rds")
+# #conditions <- read.table("results/sleuth/samples.tsv")
+# #matrix <- read.table("results/tables/tpm-matrix/model_X.tpm-matrix.tsv", quote="\"", check.names = F, stringsAsFactors=F, header = TRUE)
 
 colnames(matrix)[1] = "target_id"
 matrix <- as_tibble(matrix)
@@ -37,7 +39,7 @@ if(length(levels_condition)!=2) {
 
   condition_a <- as.character(factor(conditions$sample[conditions$condition == condition_a_name]))
   condition_b <- as.character(factor(conditions$sample[conditions$condition == condition_b_name]))
-}
+
   samples <- as_tibble(matrix, header = TRUE)
 
   samples_condition_a <- samples %>%
@@ -46,7 +48,10 @@ if(length(levels_condition)!=2) {
   samples_condition_b <- samples %>%
     select(condition_b)
 
-  
+#}
+ 
+
+ 
   fold_change <- tibble(target_id=samples$target_id, ext_gene=samples$ext_gene, 
                         FC=rowSums(samples_condition_a)/rowSums(samples_condition_b),
                         FC_reverse=rowSums(samples_condition_b)/rowSums(samples_condition_a))
@@ -64,19 +69,31 @@ if(length(levels_condition)!=2) {
     filter(is.finite(qval))
 
   plot_data <- na.omit(plot_data)
-  
+ 
   plot_data <- plot_data %>%
     mutate(colour=factor(case_when(qval<.05 ~"most significant",
                             abs(log2FC)>1 ~"significant",
                             (qval<.05 && abs(log2FC)>1) ~"low significant",
                             (qval>.05 || abs(log2FC)<1)~"not significant")))
   
-#  pdf(file = snakemake@output[[1]])
-    ggplot(plot_data, aes(x=plot_data$log2FC, y=plot_data$pval))+
+   
+   
+  #---plot example for testing snakemakerule---
+  #pdf(file = snakemake@output[[1]], width = 14)
+  #example <- c(1, 2, 3, 7, 4, 9, 5)
+  #plot(example)
+  #dev.off()
+  #--------------------------------------------
+  write_tsv(fold_change, snakemake@output[["foldchange"]])
+  pdf(file = snakemake@output[["volcanoplot"]], width = 14)
+  #par()
+
+  #pdf(file = "results/plots/volcano/model_X.volcano.png", width = 14)
+    volcano <- ggplot(plot_data, aes(x=plot_data$log2FC, y=plot_data$pval))+
       geom_point(aes(color=plot_data$colour))+
       ggtitle("Volcano-Plot")+
       xlab("log2 fold change")+
-      ylab("p-values (-log10 adjusted)")+
+      ylab("p-values as -log10 adjusted")+
       xlim(-max(abs(plot_data$log2FC)), max(abs(plot_data$log2FC)))+
       ylim(0, max(abs(plot_data$pval)))+
       scale_color_manual(name="significance",
@@ -86,13 +103,24 @@ if(length(levels_condition)!=2) {
                                     "not significant"="black"))+
       geom_vline(xintercept = c(-2,2), color="blue", alpha=0.5)+
       geom_hline(yintercept = c(0.1, 0.5), color="red", alpha=0.5)
-    
-
-                        
-#  write_results("foldchange", snakemake@output[["foldchange"]])
+  print(volcano)
+  #---plot example for testing snakemakerule---
+  #pdf(file = snakemake@output[[1]], width = 14)
+  example <- c(1, 2, 3, 7, 4, 9, 5)
+  plot(example)
+  #dev.off()
+  #--------------------------------------------
+  # ggsave(filename=snakemake@output[[1]], width = 14)
+# #  write_tsv("foldchange", snakemake@output[["foldchange"]])
+   # print(volcano)
+  dev.off()
   
-#  dev.off()
-#}
+  #ggsave(filename=snakemake@output[[1]], plot = last_plot(), device="pdf", width = 14)
+}
+  
+
+#########################################################################
+#########################################################################
 
 #ltr_data <- sleuth_load(snakemake@input[["ltr"]])
 #wt_data <- sleuth_load(snakemake@input[["wt"]])
