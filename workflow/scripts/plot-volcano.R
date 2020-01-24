@@ -63,21 +63,79 @@ if(length(levels_condition)!=2) {
     mutate(log2FC=log2(log2FC)) 
   
   plot_data <- full_join(log2FC, p_vals, by=c("target_id", "ext_gene")) %>%
-    mutate(pval=-log10(pval)) %>%
-    filter(is.finite(log2FC)) %>%
-    filter(is.finite(pval)) %>%
-    filter(is.finite(qval))
+    mutate(pval=-log10(pval))
+  
+  # plot_data <- plot_data[is.finite(plot_data$log2FC) && is.finite(plot_data$pval) && is.finite(plot_data$qval)]
 
-  plot_data <- na.omit(plot_data)
- 
+  # print(plot_data$log2FC)
+  # print(plot_data$pval)
+  #plot_data <- na.omit(plot_data)
+  # plot_data <- plot_data%>%mutate(sapply(c(log2FC,pval,qval),rm_nan_inf(x)))
+  # rm_nan_inf <- function(x){
+  #   plot_data$x[!(is.finite(plot_data$x))] <- 0
+  #   plot_data$x[is.na(plot_data$x)] <- 0
+  #   plot_data$x[is.nan(plot_data$x)] <- 0
+  # }
+  
+  # plot_data <- plot_data[is.finite(plot_data$log2FC)]
+ plot_data$log2FC[!(is.finite(plot_data$log2FC))] <- 0
+ plot_data$log2FC[is.na(plot_data$log2FC)] <- 0
+ plot_data$log2FC[is.nan(plot_data$log2FC)] <- 0
+
+  # plot_data <- plot_data[is.finite(plot_data$pval)]
+ plot_data$pval[!(is.finite(plot_data$pval))] <- 0
+ plot_data$pval[is.na(plot_data$pval)] <- 0
+ plot_data$pval[is.nan(plot_data$pval)] <- 0
+
+  # plot_data <- plot_data[is.finite(plot_data$qval)]
+ plot_data$qval[!(is.finite(plot_data$qval))] <- 0
+ plot_data$qval[is.na(plot_data$qval)] <- 0
+ plot_data$qval[is.nan(plot_data$qval)] <- 0
+  
+  # plot_data$log2FC[which(is.nan(plot_data$log2FC))] = Inf
+  # plot_data$log2FC[which(is.na(plot_data$log2FC))] = 0
+  # 
+  # plot_data$pval[which(is.nan(plot_data$pval))] = Inf
+  # plot_data$pval[which(is.na(plot_data$pval))] = 0
+  # 
+  # plot_data$qval[which(is.nan(plot_data$qval))] = Inf
+  # plot_data$qval[which(is.na(plot_data$qval))] = 0
+  
+  # cond1 <- df$sub == 1 & df$day == 2
+  # 
+  # cond2 <- df$sub == 3 & df$day == 4
+  # 
+  # df <- df[!(cond1 | cond2),]
+  # 
+  # is.na(plot_data$log2FC)
+  
+
+  #plot_data <- drop_na(plot_data)
+  
   plot_data <- plot_data %>%
     mutate(colour=factor(case_when(qval<.05 ~"most significant",
                             abs(log2FC)>1 ~"significant",
                             (qval<.05 && abs(log2FC)>1) ~"low significant",
                             (qval>.05 || abs(log2FC)<1)~"not significant")))
+  interc_x <- c(-2,2) 
+  interc_y <- c(0.5,1)
+  max_x <- max(abs(plot_data$log2FC[is.finite(plot_data$log2FC)]), na.rm=T)
+  max_y <- max(abs(plot_data$pval[is.finite(plot_data$pval)]), na.rm = T)
+  if(is.numeric(snakemake@params[["range_log2FC"]])){
+    max_x <- snakemake@params[["range_log2FC"]]
+    interc_x <- c(-max_x/4, max_x/4)
+  }
   
+  if(is.numeric(snakemake@params[["range_pval"]])){
+    max_y <- snakemake@params[["range_pval"]]
+    interc_y <- c(0, max_y/4)
+  }
+   # print(max_x)
+   # print(max_y)
    
-   
+   # print(plot_data$log2FC)
+   # print(plot_data$pval)
+
   #---plot example for testing snakemakerule---
   #pdf(file = snakemake@output[[1]], width = 14)
   #example <- c(1, 2, 3, 7, 4, 9, 5)
@@ -90,24 +148,25 @@ if(length(levels_condition)!=2) {
 
   #pdf(file = "results/plots/volcano/model_X.volcano.png", width = 14)
     volcano <- ggplot(plot_data, aes(x=plot_data$log2FC, y=plot_data$pval))+
-      geom_point(aes(color=plot_data$colour))+
+      geom_point(aes(color=plot_data$colour)) +
       ggtitle("Volcano-Plot")+
       xlab("log2 fold change")+
       ylab("p-values as -log10 adjusted")+
-      xlim(-max(abs(plot_data$log2FC)), max(abs(plot_data$log2FC)))+
-      ylim(0, max(abs(plot_data$pval)))+
+      xlim(-max_x, max_x)+
+      ylim(0, max_y)+
       scale_color_manual(name="significance",
                          values = c("most significant"="red",
                                     "significant"="orange",
                                     "low significant"="green",
                                     "not significant"="black"))+
-      geom_vline(xintercept = c(-2,2), color="blue", alpha=0.5)+
-      geom_hline(yintercept = c(0.1, 0.5), color="red", alpha=0.5)
+      geom_vline(xintercept = interc_x, color="blue", alpha=0.5)+
+      geom_hline(yintercept = interc_y, color="red", alpha=0.5)+
+      geom_vline(xintercept = 0, color="red", alpha=1)
   print(volcano)
   #---plot example for testing snakemakerule---
   #pdf(file = snakemake@output[[1]], width = 14)
-  example <- c(1, 2, 3, 7, 4, 9, 5)
-  plot(example)
+  #example <- c(1, 2, 3, 7, 4, 9, 5)
+  #plot(example)
   #dev.off()
   #--------------------------------------------
   # ggsave(filename=snakemake@output[[1]], width = 14)

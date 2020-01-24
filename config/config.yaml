@@ -18,6 +18,11 @@ pca:
 volcano:
   labels:
     - condition
+  # value for range on x-axis (log2FC=log2 fold change) or y-axis (pvals=p-values)
+  # maximum of abs(values), if parameter is empty or not numeric
+  range_log2FC: 2
+  range_pvals:
+
   models:
     model_X:
       full: ~condition + batch_effect

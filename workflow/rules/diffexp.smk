@@ -108,7 +108,9 @@ rule plot_volcano:
         volcanoplot=report("results/plots/volcano/{model}.volcano.pdf", caption="../report/plot-volcano.rst", category="Volcano")
 
     params:
-        model=get_model
+        model=get_model,
+        range_log2FC=config["volcano"]["range_log2FC"],
+        range_pvals=config["volcano"]["range_pvals"]
     conda:
         "../envs/sleuth.yaml"
     log:
