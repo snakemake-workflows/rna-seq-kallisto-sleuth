@@ -71,7 +71,7 @@ Whenever you change something, don't forget to commit the changes back to your g
 
 Whenever you want to synchronize your workflow copy with new developments from upstream, do the following.
 
-1. Once, register the upstream repository in your local copy: `git remote add -f upstream git@github.com:koesterlab/dna-seq-varlociraptor.git` or `git remote add -f upstream https://github.com/koesterlab/dna-seq-varlociraptor.git` if you do not have setup ssh keys.
+1. Once, register the upstream repository in your local copy: `git remote add -f upstream git@github.com:snakemake-workflows/dna-seq-varlociraptor.git` or `git remote add -f upstream https://github.com/snakemake-workflows/dna-seq-varlociraptor.git` if you do not have setup ssh keys.
 2. Update the upstream version: `git fetch upstream`.
 3. Create a diff with the current version: `git diff HEAD upstream/master workflow > upstream-changes.diff`.
 4. Investigate the changes: `vim upstream-changes.diff`.
