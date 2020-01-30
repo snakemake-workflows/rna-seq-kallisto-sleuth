@@ -3,7 +3,12 @@ rule spia:
         samples="results/sleuth/samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv"
     output:
-        "results/tables/pathways/{model}.pathways.tsv"
+        table=report(
+            "results/tables/pathways/{model}.pathways.tsv",
+            caption="../report/spia.rst",
+            category="Pathway enrichment analysis"
+        ),
+        plots="results/plots/pathways/{model}.spia-perturbation-plots.pdf"
     params:
         species=config["resources"]["ref"]["species"],
         pathway_db=config["enrichment"]["spia"]["pathway_database"],

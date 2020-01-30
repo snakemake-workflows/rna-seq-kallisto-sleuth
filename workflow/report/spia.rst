@@ -1,0 +1,5 @@
+**Pathway enrichment** performed with SPIA, using the model ``{{ snakemake.config["diffexp"]["models"][snakemake.wildcards.model]["full"] }}`` and the most significant transcript of each gene as determined by sleuth.
+
+The table contains the following columns (also see the `SPIA docs <https://rdrr.io/bioc/SPIA/man/spia.html>`_): 
+``pSize`` is the number of genes on the pathway; ``NDE`` is the number of DE genes per pathway; ``tA`` is the observed total perturbation accumulation in the pathway; ``pNDE`` is the probability to observe at least NDE genes on the pathway using a hypergeometric model; ``pPERT`` is the probability to observe a total accumulation more extreme than tA only by chance; ``pG`` is the p-value obtained by combining pNDE and pPERT; ``pGFdr`` and ``pGFWER`` are the False Discovery Rate and respectively Bonferroni adjusted global p-values; and the ``Status`` gives the direction in which the pathway is perturbed (``activated`` or ``inhibited``). KEGGLINK gives a web link to the KEGG website that displays the pathway image with the differentially expressed genes highlighted in red.
+
