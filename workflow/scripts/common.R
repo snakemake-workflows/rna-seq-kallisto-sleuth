@@ -1,8 +1,8 @@
 library("tidyverse")
 
-load_bioconductor_package <- function(path_to_bioc_pkg_desc, pkg_name) {
+load_bioconductor_package <- function(path_to_bioc_pkg, pkg_name) {
 
-    lib <- str_remove(path_to_bioc_pkg_desc, str_c(pkg_name, "/DESCRIPTION") )
+    lib <- str_remove(path_to_bioc_pkg, pkg_name)
 
     # ensure that dependencies of the pkg are also found at same location
     .libPaths( c( lib , .libPaths() ) )
