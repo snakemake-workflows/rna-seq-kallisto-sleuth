@@ -21,7 +21,12 @@ rule spia:
         species_anno=get_bioc_pkg_path,
         diffexp="results/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv"
     output:
-        "results/tables/pathways/{model}.pathways.tsv"
+        table=report(
+            "results/tables/pathways/{model}.pathways.tsv",
+            caption="../report/spia.rst",
+            category="Pathway enrichment analysis"
+        ),
+        plots="results/plots/pathways/{model}.spia-perturbation-plots.pdf"
     params:
         bioc_pkg=get_bioc_species_pkg,
         species=config["resources"]["ref"]["species"],
