@@ -93,4 +93,9 @@ In case you have also changed or added steps, please consider contributing them 
 
 ## Testing
 
-Test cases are in the subfolder `.test`. They are automtically executed via continuous integration with [Github Actions](https://github.com/features/actions).
+Test cases are in the subfolder `.test` and are automtically executed via continuous integration with [Github Actions](https://github.com/features/actions). As [creating a workflow-repository from the template](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/generate) does not include the submodule with the testing data, getting the GitHub Actions tests to pass requires adding the submodule:
+
+    cd .test
+    git submodule add -f https://github.com/snakemake-workflows/ngs-test-data.git
+    git commit -m "add ngs-test-data submodule to get GitHub Actions tests to pass"
+

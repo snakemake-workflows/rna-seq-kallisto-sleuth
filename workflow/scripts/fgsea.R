@@ -3,37 +3,14 @@ sink(log)
 sink(log, type="message")
 
 library("fgsea")
-library("AnnotationDbi")
 
-# provides library("tidyverse") and function get_prefix_col()
-# the latter requires snakemake@output[["samples"]] and
+# provides library("tidyverse") and functions load_bioconductor_package() and
+# get_prefix_col(), the latter requires snakemake@output[["samples"]] and
 # snakemake@params[["covariate"]]
 source( file.path(snakemake@scriptdir, 'common.R') )
 
-# get the species for adding annotations below
-species <- str_to_title( str_sub(snakemake@params[["species"]], 1, 2) )
-
-# construct the respective package name
-pkg <- str_c("org.", species, ".eg.db")
-
-# check if the package is installed in the fgsea environment and load,
-# give a useful error message otherwise; installed per default are:
-# * org.Mm.eg.db
-# * org.Hs.eg.db
-if ( pkg %in% rownames( installed.packages() ) ) {
-    library(pkg, character.only = TRUE)
-} else {
-    stop(
-        str_c(
-            "\n",
-            "Package not installed: ", pkg, "\n",
-            "Package name inferred from species name: ", species, "\n",
-            "Check if package 'bioconductor-", pkg, "' exists and add to envs/fgsea.yaml\n",
-            "\n"
-        )
-    )
-}
-
+pkg <- snakemake@params[["bioc_pkg"]]
+load_bioconductor_package(snakemake@input[["species_anno"]], pkg)
 
 gene_sets <- gmtPathways(snakemake@input[["gene_sets"]])
 diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>%
@@ -58,14 +35,14 @@ rank_ties <- enframe(ranked_genes) %>%
                dplyr::select(ext_gene = name, !!signed_pi := value)
 write_tsv(rank_ties, snakemake@output[["rank_ties"]])
 
-fgsea_res <- fgsea(pathways = gene_sets, 
+fgsea_res <- fgsea(pathways = gene_sets,
                     stats = ranked_genes,
                     minSize=10,
                     maxSize=700,
                     nproc=snakemake@threads,
                     nperm=snakemake@params[["nperm"]]
                     ) %>%
-                as_tibble() 
+                as_tibble()
 
 # Annotation is impossible without any entries, so then just write out empty files
 if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
@@ -95,14 +72,14 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
                            -leading_edge_entrez_id, -leading_edge_ens_gene,
                             leading_edge_symbol, leading_edge_ens_gene,
                             leading_edge_entrez_id, leadingEdge)
-    
+
     # write out fgsea results for all gene sets
     write_tsv(annotated, path = snakemake@output[["enrichment"]])
-    
+
     # select significant pathways
     sig_gene_sets <- annotated %>%
                        filter( padj < snakemake@params[["gene_set_fdr"]] )
-    
+
     # write out fgsea results for gene sets found to be significant
     write_tsv(sig_gene_sets, path = snakemake@output[["significant"]])
 }
