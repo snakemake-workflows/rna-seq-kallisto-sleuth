@@ -1,10 +1,12 @@
+from pathlib import Path
+
 
 rule download_bioconductor_species_database:
     output:
-        "resources/bioconductor/lib/R/library/{package}/DESCRIPTION"
+        directory("resources/bioconductor/lib/R/library/{package}")
     params:
-        path = lambda wc, output: output[0].split(sep="lib/R/library/{}/DESCRIPTION".format(wc.package))[0],
-        version = config["resources"]["ref"]["species_db_version"]
+        path=lambda wc, output: Path(output[0]).parents[3],
+        version=config["resources"]["ref"]["species_db_version"]
     log:
         "logs/resources/bioconductor/{package}.log"
     shell:
