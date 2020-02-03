@@ -98,6 +98,22 @@ rule plot_pca:
     script:
         "../scripts/plot-pca.R"
 
+rule plot_volcano:
+    input:
+        #"results/sleuth/diffexp/model_X.genes-aggregated.diffexp.rds"
+        #"results/sleuth/diffexp/model_X.genes-mostsigtrans.diffexp.rds"
+        #"results/sleuth/diffexp/model_X.transcripts.diffexp.rds"
+        "results/sleuth/all.rds"
+    output:
+        report("results/plots/volcano/{model}.volcano.pdf", caption="../report/plot-volcano.rst", category="Volcano")
+    params:
+        model=get_model
+    conda:
+        "../envs/sleuth.yaml"
+    log:
+        "logs/plots/volcano/{model}.plot-volcano.log"
+    script:
+        "../scripts/plot-volcano.R"
 
 rule plot_diffexp_heatmap:
     input:

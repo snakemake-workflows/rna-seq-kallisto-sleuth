@@ -84,6 +84,12 @@ def all_input(wildcards):
             expand("results/plots/pca/{covariate}.pca.pdf", covariate=samples.columns[samples.columns != "sample"])
         )
 
+    # sleuth volcano plot
+    wanted_input.extend(
+            expand("results/plots/volcano/{model}.volcano.pdf",
+            model=config["diffexp"]["models"])
+        )
+
     # sleuth bootstrap plots
     for model in config["diffexp"]["models"]:
         wanted_input.extend( get_bootstrap_plots(model) )
