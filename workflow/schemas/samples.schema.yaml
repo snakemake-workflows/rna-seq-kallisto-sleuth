@@ -11,4 +11,3 @@ properties:
 
 required:
   - sample
-  - condition

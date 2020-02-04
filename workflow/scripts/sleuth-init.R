@@ -37,7 +37,7 @@ if(!is.null(snakemake@params[["exclude"]])) {
 
 if(!is.null(model)) {
     # retrieve the model formula
-    formula <- as.formula(snakemake@params[["model"]])
+    formula <- as.formula(model)
     # extract variables from the formula and unnest any nested variables
     variables <- labels(terms(formula)) %>%
                     strsplit('[:*]') %>%
@@ -45,9 +45,10 @@ if(!is.null(model)) {
     # select the columns required by sleuth and filter to all samples where
     # none of the given variables are NA
     samples <- samples %>%
-                select(sample, path, condition, variables) %>%
+                select(sample, path, all_of(variables)) %>%
                 drop_na()
 }
+
 
 so <- sleuth_prep(  samples,
                     extra_bootstrap_summary = TRUE,
@@ -65,8 +66,11 @@ custom_transcripts <- so$obs_raw %>%
                         distinct(target_id) %>%
                         # pull it out into a vector
                         pull(target_id)
-so$target_mapping <- so$target_mapping %>%
+
+if(!length(custom_transcripts) == 0) {
+    so$target_mapping <- so$target_mapping %>%
                         # add those custom transcripts as rows to the target mapping
                         add_row(ens_gene = NA, ext_gene = "Custom", target_id = custom_transcripts)
+}
 
 sleuth_save(so, snakemake@output[[1]])
