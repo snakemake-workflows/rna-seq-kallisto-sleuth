@@ -35,7 +35,16 @@ wildcard_constraints:
 
 def is_single_end(sample, unit):
     """Determine whether unit is single-end."""
-    return pd.isnull(units.loc[(sample, unit), "fq2"])
+    fq2_present = pd.isnull(units.loc[(sample, unit), "fq2"])
+    if isinstance(fq2_present, pd.core.series.Series):
+        # if this is the case, get_fastqs cannot work properly
+        raise ValueError(
+            f"Multiple fq2 entries found for sample-unit combination {sample}-{unit}.\n"
+            "This is most likely due to a faulty units.tsv file, e.g. "
+            "a unit name is used twice for the same sample.\n"
+            "Try checking your units.tsv for duplicates."
+        )
+    return fq2_present
 
 def get_fastqs(wildcards):
     """Get raw FASTQ files from unit sheet."""
