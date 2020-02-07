@@ -4,32 +4,54 @@ sink(log, type="message")
 
 library("sleuth")
 library("tidyverse")
+library("fs")
 
 model <- snakemake@params[["model"]]
 
-so <- sleuth_load(snakemake@input[[1]])
+dir_create(file.path(snakemake@output[["volcano_plots"]]))
 
-so <- sleuth_fit(so, as.formula(model[["full"]]), 'full')
-so <- sleuth_fit(so, as.formula(model[["reduced"]]), 'reduced')
-so <- sleuth_lrt(so, "reduced", "full")
+sleuth_object <- sleuth_load(snakemake@input[[1]])
 
-write_results <- function(mode, output, output_all) {
-    aggregate <- FALSE
+sleuth_object <- sleuth_fit(sleuth_object, as.formula(model[["full"]]), 'full')
+sleuth_object <- sleuth_fit(sleuth_object, as.formula(model[["reduced"]]), 'reduced')
+sleuth_object <- sleuth_lrt(sleuth_object, "reduced", "full")
+
+write_results <- function(so, mode, output, output_all) {
+    so$pval_aggregate <- FALSE
     if(mode == "aggregate") {
-        aggregate <- TRUE
+      # renaming for so$gene_column is necessary to pass an internal Extension test
+      # in sleuth.R script:
+          #else if (name == "pval_aggregate" && value && !is.null(obj$gene_column)) {
+          #stop("You set 'pval_aggregate' to TRUE, but no 'gene_column' is set. Please set a 'gene_column' first.")
+      # this test can't be valid
+      # TODO after fixing the Bug in sleuth.R by pachterlab this renaming can be removed
+      g_col <- so$gene_column
+      so$gene_column <- NULL
+      so$pval_aggregate <- TRUE
+      so$gene_column <- g_col
     }
+
     print("Performing likelihood ratio test")
-    all <- sleuth_results(so, "reduced:full", "lrt", show_all = TRUE, pval_aggregate = aggregate) %>%
+    all <- sleuth_results(so, "reduced:full", "lrt", show_all = TRUE, pval_aggregate = so$pval_aggregate) %>%
             arrange(pval)
 
     covariates <- colnames(design_matrix(so, "full"))
     covariates <- covariates[covariates != "(Intercept)"]
 
     # iterate over all covariates and perform wald test in order to obtain beta estimates
-    if(!aggregate) {
+    if(!so$pval_aggregate) {
         for(covariate in covariates) { 
             print(str_c("Performing wald test for ", covariate))
             so <- sleuth_wt(so, covariate, "full")
+
+            print(str_c("Performing volcano plot for ", covariate))
+            path_output <- str_c(snakemake@output[["volcano_plots"]], "/", snakemake@wildcards[["model"]],".volcano-plot.", covariate, ".pdf")
+            
+            volcano <- plot_volcano(so, covariate, "wt", "full",
+                                         sig_level = 0.1, point_alpha = 0.2, sig_color = "red",
+                                         highlight = NULL)
+ 
+            ggsave(path_output, plot = volcano, width = 14)
 
 	      beta_col_name <- str_c("b", covariate, sep = "_")
             beta_se_col_name <- str_c(beta_col_name, "se", sep = "_")
@@ -70,7 +92,6 @@ write_results <- function(mode, output, output_all) {
     write_tsv(all, path = output, quote_escape = "none")
     write_rds(all, path = output_all, compress = "none")
 }
-
-write_results("transcripts", snakemake@output[["transcripts"]], snakemake@output[["transcripts_rds"]])
-write_results("aggregate", snakemake@output[["genes_aggregated"]], snakemake@output[["genes_aggregated_rds"]])
-write_results("mostsignificant", snakemake@output[["genes_mostsigtrans"]], snakemake@output[["genes_mostsigtrans_rds"]])
+write_results(sleuth_object, "transcripts", snakemake@output[["transcripts"]], snakemake@output[["transcripts_rds"]])
+write_results(sleuth_object, "aggregate", snakemake@output[["genes_aggregated"]], snakemake@output[["genes_aggregated_rds"]])
+write_results(sleuth_object, "mostsignificant", snakemake@output[["genes_mostsigtrans"]], snakemake@output[["genes_mostsigtrans_rds"]])
