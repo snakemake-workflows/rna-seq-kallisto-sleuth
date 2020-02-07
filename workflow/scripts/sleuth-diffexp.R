@@ -19,12 +19,9 @@ sleuth_object <- sleuth_lrt(sleuth_object, "reduced", "full")
 write_results <- function(so, mode, output, output_all) {
     so$pval_aggregate <- FALSE
     if(mode == "aggregate") {
-      # renaming for so$gene_column is necessary to pass an internal Extension test
-      # in sleuth.R script:
-          #else if (name == "pval_aggregate" && value && !is.null(obj$gene_column)) {
-          #stop("You set 'pval_aggregate' to TRUE, but no 'gene_column' is set. Please set a 'gene_column' first.")
-      # this test can't be valid
-      # TODO after fixing the Bug in sleuth.R by pachterlab this renaming can be removed
+      # workaround the following bug-request:
+      # https://github.com/pachterlab/sleuth/pull/240
+      # TODO renaming can be removed when fixed
       g_col <- so$gene_column
       so$gene_column <- NULL
       so$pval_aggregate <- TRUE
