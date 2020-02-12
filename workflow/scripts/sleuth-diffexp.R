@@ -5,10 +5,10 @@ sink(log, type="message")
 library("sleuth")
 library("tidyverse")
 library("fs")
+library("grid")
+library("gridExtra")
 
 model <- snakemake@params[["model"]]
-
-dir_create(file.path(snakemake@output[["volcano_plots"]]))
 
 sleuth_object <- sleuth_load(snakemake@input[[1]])
 
@@ -37,20 +37,26 @@ write_results <- function(so, mode, output, output_all) {
 
     # iterate over all covariates and perform wald test in order to obtain beta estimates
     if(!so$pval_aggregate) {
-        for(covariate in covariates) { 
+      
+      volcano_list <- list() # list for volcano plots to make a multipage pdf-file as output
+        
+      for(covariate in covariates) { 
             print(str_c("Performing wald test for ", covariate))
             so <- sleuth_wt(so, covariate, "full")
 
+            # volcano plot
             print(str_c("Performing volcano plot for ", covariate))
-            path_output <- str_c(snakemake@output[["volcano_plots"]], "/", snakemake@wildcards[["model"]],".volcano-plot.", covariate, ".pdf")
-            
+            volc_model <- snakemake@wildcards[["model"]]
+            path_output <- str_c(snakemake@output[["volcano_plots"]], "/", volc_model,".volcano-plot.", covariate, ".pdf")
+            volc_title <- str_c(volc_model, ": volcano plot for ", covariate)
             volcano <- plot_volcano(so, covariate, "wt", "full",
-                                         sig_level = 0.1, point_alpha = 0.2, sig_color = "red",
-                                         highlight = NULL)
- 
-            ggsave(path_output, plot = volcano, width = 14)
-
-	      beta_col_name <- str_c("b", covariate, sep = "_")
+                                         sig_level = snakemake@params[["sig_level"]], point_alpha = 0.2, sig_color = "red",
+                                         highlight = NULL)+
+              ggtitle(volc_title)+
+              theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
+            volcano_list[[volc_title]] <- volcano
+            
+            beta_col_name <- str_c("b", covariate, sep = "_")
             beta_se_col_name <- str_c(beta_col_name, "se", sep = "_")
             all_wald <- sleuth_results(so, covariate, "wt", show_all = TRUE, pval_aggregate = FALSE) %>%
                         select( target_id = target_id,
@@ -63,6 +69,8 @@ write_results <- function(so, mode, output, output_all) {
 	              # e.g. useful for GSEA ranking
 	              mutate( !!signed_pi_col_name := -log10(pval) * !!sym(beta_col_name) )
         }
+      marrange_volcano <- marrangeGrob(grobs=volcano_list, nrow=1, ncol=1, top = NULL)
+      ggsave(snakemake@output[["volcano_plots"]], plot = marrange_volcano, width = 14)
     }
 
     if(mode == "mostsignificant") {

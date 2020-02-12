@@ -31,6 +31,8 @@ diffexp:
       # Binary valued covariate that shall be used for fold change/effect size
       # based downstream analyses.
       primary_variable: condition
+  # significance level used for plot_volcano() plots
+  sig_level_volcano: 0.05
 
 enrichment:
   goatools:
