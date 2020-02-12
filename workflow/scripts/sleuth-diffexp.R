@@ -38,23 +38,35 @@ write_results <- function(so, mode, output, output_all) {
     # iterate over all covariates and perform wald test in order to obtain beta estimates
     if(!so$pval_aggregate) {
       
-      volcano_list <- list() # list for volcano plots to make a multipage pdf-file as output
+      # lists for volcano and ma-plots to make a multipage pdf-file as output
+      volcano_list <- list() 
+      ma_list <- list()
         
       for(covariate in covariates) { 
             print(str_c("Performing wald test for ", covariate))
             so <- sleuth_wt(so, covariate, "full")
 
+            plot_model <- snakemake@wildcards[["model"]]
+            volc_plot_title <- str_c(plot_model, ": volcano plot for ", covariate)
+            ma_plot_title <- str_c(plot_model, ": ma-plot for ", covariate)
+            
             # volcano plot
             print(str_c("Performing volcano plot for ", covariate))
-            volc_model <- snakemake@wildcards[["model"]]
-            path_output <- str_c(snakemake@output[["volcano_plots"]], "/", volc_model,".volcano-plot.", covariate, ".pdf")
-            volc_title <- str_c(volc_model, ": volcano plot for ", covariate)
             volcano <- plot_volcano(so, covariate, "wt", "full",
-                                         sig_level = snakemake@params[["sig_level"]], point_alpha = 0.2, sig_color = "red",
+                                         sig_level = snakemake@params[["sig_level_volcano"]], point_alpha = 0.2, sig_color = "red",
                                          highlight = NULL)+
-              ggtitle(volc_title)+
+              ggtitle(volc_plot_title)+
               theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
-            volcano_list[[volc_title]] <- volcano
+            volcano_list[[volc_plot_title]] <- volcano
+            
+            # ma-plot
+            print(str_c("Performing ma-plot for ", covariate))
+            ma_plot <- plot_ma(so, covariate, "wt", "full",
+                                    sig_level = snakemake@params[["sig_level_ma"]], point_alpha = 0.2, sig_color = "red",
+                                    highlight = NULL, highlight_color = "green")+
+              ggtitle(ma_plot_title)+
+              theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
+            ma_list[[ma_plot_title]] <- ma_plot
             
             beta_col_name <- str_c("b", covariate, sep = "_")
             beta_se_col_name <- str_c(beta_col_name, "se", sep = "_")
@@ -68,9 +80,15 @@ write_results <- function(so, mode, output, output_all) {
                     # https://dx.doi.org/10.1093/bioinformatics/btr671
 	              # e.g. useful for GSEA ranking
 	              mutate( !!signed_pi_col_name := -log10(pval) * !!sym(beta_col_name) )
-        }
+      }
+      # saving volcano plots
       marrange_volcano <- marrangeGrob(grobs=volcano_list, nrow=1, ncol=1, top = NULL)
       ggsave(snakemake@output[["volcano_plots"]], plot = marrange_volcano, width = 14)
+      
+      # saving ma-plots
+      marrange_ma <- marrangeGrob(grobs=ma_list, nrow=1, ncol=1, top = NULL)
+      ggsave(snakemake@output[["ma_plots"]], plot = marrange_ma, width = 14)
+      
     }
 
     if(mode == "mostsignificant") {

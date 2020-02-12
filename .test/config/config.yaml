@@ -32,7 +32,8 @@ diffexp:
       # based downstream analyses.
       primary_variable: condition
   # significance level used for plot_volcano() plots
-  sig_level_volcano: 0.05
+  sig_level_volcano-plot: 0.05
+  sig_level_ma-plot: 0.05
 
 enrichment:
   goatools:

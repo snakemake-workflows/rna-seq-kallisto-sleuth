@@ -60,6 +60,7 @@ def all_input(wildcards):
             expand(
                 [
                     "results/plots/volcano/{model}.volcano-plots.pdf",
+                    "results/plots/ma/{model}.ma-plots.pdf",
                     "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
                     "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
                     "results/tables/tpm-matrix/{model}.tpm-matrix.tsv",

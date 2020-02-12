@@ -52,6 +52,9 @@ checkpoint sleuth_diffexp:
         volcano_plots=report("results/plots/volcano/{model}.volcano-plots.pdf",
                             caption="../report/volcano.rst",
                             category="QC"),
+        ma_plots=report("results/plots/ma/{model}.ma-plots.pdf",
+                            caption="../report/ma.rst",
+                            category="QC"),
         transcripts_rds="results/sleuth/diffexp/{model}.transcripts.diffexp.rds",
         genes_aggregated_rds="results/sleuth/diffexp/{model}.genes-aggregated.diffexp.rds",
         genes_mostsigtrans_rds="results/sleuth/diffexp/{model}.genes-mostsigtrans.diffexp.rds",
@@ -66,7 +69,8 @@ checkpoint sleuth_diffexp:
                                     category="Differential gene expression")
     params:
         model=get_model,
-        sig_level=config["diffexp"]["sig_level_volcano"]
+        sig_level_volcano=config["diffexp"]["sig_level_volcano-plot"],
+        sig_level_ma=config["diffexp"]["sig_level_ma-plot"]
     conda:
         "../envs/sleuth.yaml"
     log:
