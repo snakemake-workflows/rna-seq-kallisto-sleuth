@@ -1,0 +1,1 @@
+MA plots for wald test and with significance level of {{ snakemake.params.sig_level_ma }}. The plots display, for each transcript, the mean of abundances across samples on the x-axis and fold change on the y-axis.
