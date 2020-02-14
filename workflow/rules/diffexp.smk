@@ -1,6 +1,6 @@
 
 kallisto_output = expand(
-    "results/kallisto/{unit.sample}-{unit.unit}", unit=units.itertuples())
+    "results/kallisto/{sample}", sample=samples.index.tolist())
 
 
 rule compose_sample_sheet:
@@ -11,11 +11,8 @@ rule compose_sample_sheet:
         "results/sleuth/samples.tsv"
     group: "sleuth-init"
     run:
-        samples_ = units[["sample", "unit"]].merge(samples, on="sample")
-        samples_["sample"] = samples_.apply(
-            lambda row: "{}-{}".format(row["sample"], row["unit"]), axis=1)
+        samples_ = samples
         samples_["path"] = kallisto_output
-        del samples_["unit"]
         samples_.to_csv(output[0], sep="\t")
 
 
@@ -147,11 +144,11 @@ rule plot_fragment_length_dist:
     input:
         "results/sleuth/all.rds"
     output:
-        report("results/plots/fld/{sample}-{unit}.fragment-length-dist.pdf", caption="../report/fld.rst", category="Fragment length distribution")
+        report("results/plots/fld/{sample}.fragment-length-dist.pdf", caption="../report/fld.rst", category="Fragment length distribution")
     conda:
         "../envs/sleuth.yaml"
     log:
-        "logs/plots/fld/{sample}-{unit}.fragment-length-dist.log"
+        "logs/plots/fld/{sample}.fragment-length-dist.log"
     script:
         "../scripts/plot-fld.R"
 

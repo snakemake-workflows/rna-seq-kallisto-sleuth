@@ -3,9 +3,10 @@ sink(log)
 sink(log, type="message")
 
 library("sleuth")
+library("ggplot2")
 
 so <- sleuth_load(snakemake@input[[1]])
 
-pdf(file = snakemake@output[[1]])
-plot_fld(so, paste0(snakemake@wildcards[["sample"]], "-", snakemake@wildcards[["unit"]]))
-dev.off()
+p <- plot_fld(so, snakemake@wildcards[["sample"]])
+
+ggsave(filename = snakemake@output[[1]], plot = p)
