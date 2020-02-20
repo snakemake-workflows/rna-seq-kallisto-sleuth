@@ -50,10 +50,10 @@ checkpoint sleuth_diffexp:
         "results/sleuth/{model}.rds"
     output:
         volcano_plots=report("results/plots/volcano/{model}.volcano-plots.pdf",
-                            caption="../report/volcano.rst",
+                            caption="../report/plot-volcano.rst",
                             category="QC"),
         ma_plots=report("results/plots/ma/{model}.ma-plots.pdf",
-                            caption="../report/ma.rst",
+                            caption="../report/plot-ma.rst",
                             category="QC"),
         transcripts_rds="results/sleuth/diffexp/{model}.transcripts.diffexp.rds",
         genes_aggregated_rds="results/sleuth/diffexp/{model}.genes-aggregated.diffexp.rds",
@@ -98,9 +98,13 @@ rule plot_pca:
     input:
         "results/sleuth/all.rds"
     output:
-        report("results/plots/pca/{covariate}.pca.pdf", caption="../report/plot-pca.rst", category="PCA")
+        pca=report("results/plots/pca/{covariate}.pca.pdf", caption="../report/plot-pca.rst", category="PCA"),
+        pc_var=report("results/plots/pc-variance/{covariate}.pc-variance-plot.pdf", caption="../report/pc-variance-plot.rst", category="PCA"),
+        loadings=report("results/plots/loadings/{covariate}.loadings-plot.pdf", caption="../report/loadings-plot.rst", category="PCA")
     conda:
         "../envs/sleuth.yaml"
+    params:
+        n_pc=config["pca"]["n_pc"]
     log:
         "logs/plots/pca/{covariate}.plot_pca.log"
     script:

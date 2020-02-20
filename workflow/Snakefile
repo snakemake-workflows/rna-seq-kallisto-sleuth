@@ -83,7 +83,12 @@ def all_input(wildcards):
 
     # PCA plots of kallisto results, each coloured for a different covariate
     wanted_input.extend(
-            expand("results/plots/pca/{covariate}.pca.pdf", covariate=samples.columns[samples.columns != "sample"])
+            expand([
+                       "results/plots/pc-variance/{covariate}.pc-variance-plot.pdf",
+                       "results/plots/loadings/{covariate}.loadings-plot.pdf",
+                       "results/plots/pca/{covariate}.pca.pdf"
+                   ],
+                   covariate=samples.columns[samples.columns != "sample"])
         )
 
     # sleuth bootstrap plots
