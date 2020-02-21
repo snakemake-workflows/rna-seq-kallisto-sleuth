@@ -49,6 +49,9 @@ checkpoint sleuth_diffexp:
     input:
         "results/sleuth/{model}.rds"
     output:
+        mean_var_plot=report("results/plots/mean-var/{model}.mean-variance-plot.pdf",
+                            caption="../report/plot-mean-var.rst",
+                            category="QC"),
         volcano_plots=report("results/plots/volcano/{model}.volcano-plots.pdf",
                             caption="../report/plot-volcano.rst",
                             category="QC"),

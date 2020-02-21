@@ -16,6 +16,12 @@ sleuth_object <- sleuth_fit(sleuth_object, as.formula(model[["full"]]), 'full')
 sleuth_object <- sleuth_fit(sleuth_object, as.formula(model[["reduced"]]), 'reduced')
 sleuth_object <- sleuth_lrt(sleuth_object, "reduced", "full")
 
+# plot mean-variance
+mean_var_plot <- plot_mean_var(sleuth_object, "full", point_alpha = 0.4,
+              point_size = 2, point_colors = c("black", "dodgerblue"),
+              smooth_alpha = 1, smooth_size = 0.75, smooth_color = "red")
+ggsave(snakemake@output[["mean_var_plot"]], mean_var_plot)
+
 write_results <- function(so, mode, output, output_all) {
     so$pval_aggregate <- FALSE
     if(mode == "aggregate") {
