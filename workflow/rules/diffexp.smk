@@ -55,6 +55,9 @@ checkpoint sleuth_diffexp:
         ma_plots=report("results/plots/ma/{model}.ma-plots.pdf",
                             caption="../report/plot-ma.rst",
                             category="QC"),
+        qq_plots=report("results/plots/qq/{model}.qq-plots.pdf",
+                            caption="../report/plot-qq.rst",
+                            category="QC"),
         transcripts_rds="results/sleuth/diffexp/{model}.transcripts.diffexp.rds",
         genes_aggregated_rds="results/sleuth/diffexp/{model}.genes-aggregated.diffexp.rds",
         genes_mostsigtrans_rds="results/sleuth/diffexp/{model}.genes-mostsigtrans.diffexp.rds",
@@ -70,7 +73,8 @@ checkpoint sleuth_diffexp:
     params:
         model=get_model,
         sig_level_volcano=config["diffexp"]["sig_level_volcano-plot"],
-        sig_level_ma=config["diffexp"]["sig_level_ma-plot"]
+        sig_level_ma=config["diffexp"]["sig_level_ma-plot"],
+        sig_level_qq=config["diffexp"]["sig_level_qq-plot"]
     conda:
         "../envs/sleuth.yaml"
     log:
@@ -103,8 +107,6 @@ rule plot_pca:
         loadings=report("results/plots/loadings/{covariate}.loadings-plot.pdf", caption="../report/loadings-plot.rst", category="PCA")
     conda:
         "../envs/sleuth.yaml"
-    params:
-        n_pc=config["pca"]["n_pc"]
     log:
         "logs/plots/pca/{covariate}.plot_pca.log"
     script:

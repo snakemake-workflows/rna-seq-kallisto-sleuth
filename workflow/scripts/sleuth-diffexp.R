@@ -28,27 +28,32 @@ write_results <- function(so, mode, output, output_all) {
       so$gene_column <- g_col
     }
 
+    plot_model <- snakemake@wildcards[["model"]]
+    
+    # list for qq-plots to make a multipage pdf-file as output
+    qq_list <- list()
+    
     print("Performing likelihood ratio test")
     all <- sleuth_results(so, "reduced:full", "lrt", show_all = TRUE, pval_aggregate = so$pval_aggregate) %>%
             arrange(pval)
-
+    
     covariates <- colnames(design_matrix(so, "full"))
     covariates <- covariates[covariates != "(Intercept)"]
-
+    
     # iterate over all covariates and perform wald test in order to obtain beta estimates
     if(!so$pval_aggregate) {
       
       # lists for volcano and ma-plots to make a multipage pdf-file as output
       volcano_list <- list() 
       ma_list <- list()
-        
+      
       for(covariate in covariates) { 
             print(str_c("Performing wald test for ", covariate))
             so <- sleuth_wt(so, covariate, "full")
 
-            plot_model <- snakemake@wildcards[["model"]]
             volc_plot_title <- str_c(plot_model, ": volcano plot for ", covariate)
             ma_plot_title <- str_c(plot_model, ": ma-plot for ", covariate)
+            qq_plot_title <- str_c(plot_model, ": qq-plot of aggregate p-values for ", covariate)
             
             # volcano plot
             print(str_c("Performing volcano plot for ", covariate))
@@ -67,6 +72,16 @@ write_results <- function(so, mode, output, output_all) {
               ggtitle(ma_plot_title)+
               theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
             ma_list[[ma_plot_title]] <- ma_plot
+            
+            # qq-plots from wald test
+            print(str_c("Performing qq-plot from wald test for ", covariate))
+            qq_plot <- plot_qq(so, covariate, "wt", "full", sig_level = snakemake@params[["sig_level_qq"]],
+                               point_alpha = 0.2, sig_color = "red", highlight = NULL, highlight_color = "green", 
+                               line_color = "blue")+
+              ggtitle(qq_plot_title)+
+              theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
+            qq_list[[qq_plot_title]] <- qq_plot
+            
             
             beta_col_name <- str_c("b", covariate, sep = "_")
             beta_se_col_name <- str_c(beta_col_name, "se", sep = "_")
@@ -88,12 +103,11 @@ write_results <- function(so, mode, output, output_all) {
       # saving ma-plots
       marrange_ma <- marrangeGrob(grobs=ma_list, nrow=1, ncol=1, top = NULL)
       ggsave(snakemake@output[["ma_plots"]], plot = marrange_ma, width = 14)
-      
     }
 
     if(mode == "mostsignificant") {
         # for each gene, select the most significant transcript (this is equivalent to sleuth_gene_table, but with bug fixes)
-	  all <- all %>%
+      all <- all %>%
                 drop_na(ens_gene) %>%
                 group_by(ens_gene) %>%
                 filter( qval == min(qval, na.rm = TRUE) ) %>%
@@ -110,7 +124,21 @@ write_results <- function(so, mode, output, output_all) {
                 distinct() %>%
                 # useful sort for scrolling through output by increasing q-values
                 arrange(qval)
+      
+      # qq-plot from likelihood ratio test
+      print(str_c("Performing qq-plot from likelihood ratio test"))
+      qq_plot_title_trans <- str_c(plot_model, ": qq-plot from likelihood ratio test")
+      qq_plot_trans <- plot_qq(so, test = 'reduced:full', test_type = 'lrt', sig_level = snakemake@params[["sig_level_qq"]],
+                               point_alpha = 0.2, sig_color = "red", highlight = NULL, highlight_color = "green",
+                               line_color = "blue")+
+        ggtitle(qq_plot_title_trans)+
+        theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
+      qq_list[[qq_plot_title_trans]] <- qq_plot_trans
     }
+      
+    # saving qq-plots
+    marrange_qq <- marrangeGrob(grobs=qq_list, nrow=1, ncol=1, top = NULL)
+    ggsave(snakemake@output[["qq_plots"]], plot = marrange_qq, width = 14)
 
     write_tsv(all, path = output, quote_escape = "none")
     write_rds(all, path = output_all, compress = "none")
