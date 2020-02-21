@@ -19,8 +19,6 @@ pca:
   labels:
     # columns of sample sheet to use for PCA
     - condition
-    # number of principal components for pca plot, variance plot and loadings plot
-    # the value must be even or it is rounded up to the next even number
 
 diffexp:
   # samples to exclude (e.g. outliers due to technical problems)
