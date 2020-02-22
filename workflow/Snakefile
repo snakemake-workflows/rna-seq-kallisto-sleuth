@@ -93,6 +93,12 @@ def all_input(wildcards):
                    covariate=samples.columns[samples.columns != "sample"])
         )
 
+    # group-density plot
+    wanted_input.extend(
+             expand(["results/plots/group_density/{model}.group_density.pdf"],
+                 model=config["diffexp"]["models"])
+        )
+
     # sleuth bootstrap plots
     for model in config["diffexp"]["models"]:
         wanted_input.extend( get_bootstrap_plots(model) )

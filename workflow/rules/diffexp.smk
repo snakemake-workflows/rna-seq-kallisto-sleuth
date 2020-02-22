@@ -159,6 +159,17 @@ rule tpm_matrix:
     script:
         "../scripts/sleuth-to-matrix.R"
 
+rule plot_group_density:
+    input:
+        "results/sleuth/all.rds"
+    output:
+        report("results/plots/group_density/{model}.group_density.pdf", caption="../report/group-density.rst", category="Densities")
+    conda:
+        "../envs/sleuth.yaml"
+    log:
+        "logs/plots/group_density/{model}.group_density.log"
+    script:
+        "../scripts/plot-group-density.R"
 
 rule plot_fragment_length_dist:
     input:
