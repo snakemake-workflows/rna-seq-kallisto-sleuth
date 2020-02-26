@@ -99,6 +99,13 @@ def all_input(wildcards):
                  model=config["diffexp"]["models"])
         )
 
+    # scatter plots
+    if config["scatter"]["activate"]:
+        wanted_input.extend(
+                  expand(["results/plots/scatter/{model}.scatter.pdf"],
+                      model=config["diffexp"]["models"])
+        )    
+
     # sleuth bootstrap plots
     for model in config["diffexp"]["models"]:
         wanted_input.extend( get_bootstrap_plots(model) )

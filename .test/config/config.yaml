@@ -20,6 +20,10 @@ pca:
     # columns of sample sheet to use for PCA
     - condition
 
+scatter:
+  # scatter plots are only created if activate set to 'true'
+  activate: true
+
 diffexp:
   # samples to exclude (e.g. outliers due to technical problems)
   exclude:

@@ -171,6 +171,20 @@ rule plot_group_density:
     script:
         "../scripts/plot-group-density.R"
 
+rule plot_scatter:
+     input:
+         "results/sleuth/all.rds"
+     output:
+         report("results/plots/scatter/{model}.scatter.pdf", caption="../report/scatter.rst", category="Scatter")
+     # params:
+     #     covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"]
+     conda:
+         "../envs/sleuth.yaml"
+     log:
+         "logs/plots/scatter/{model}.scatter.log"
+     script:
+         "../scripts/plot-scatter.R"         
+
 rule plot_fragment_length_dist:
     input:
         "results/sleuth/all.rds"
