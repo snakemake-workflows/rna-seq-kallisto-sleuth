@@ -45,7 +45,7 @@ if(!is.null(model)) {
     # select the columns required by sleuth and filter to all samples where
     # none of the given variables are NA
     samples <- samples %>%
-                select(sample, path, all_of(variables)) %>%
+                dplyr::select(sample, path, all_of(variables)) %>%
                 drop_na()
 }
 

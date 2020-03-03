@@ -67,8 +67,8 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
                         leading_edge_entrez_id = str_c(leading_edge_entrez_id, collapse = ','),
                         leading_edge_ens_gene = str_c(leading_edge_ens_gene, collapse = ',')
                     ) %>%
-                    inner_join(fgsea_res %>% select(-leadingEdge), by = "pathway") %>%
-                    select(-leadingEdge, -leading_edge_symbol,
+                    inner_join(fgsea_res %>% dplyr::select(-leadingEdge), by = "pathway") %>%
+                    dplyr::select(-leadingEdge, -leading_edge_symbol,
                            -leading_edge_entrez_id, -leading_edge_ens_gene,
                             leading_edge_symbol, leading_edge_ens_gene,
                             leading_edge_entrez_id, leadingEdge)
