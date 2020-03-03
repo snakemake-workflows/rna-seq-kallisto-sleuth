@@ -16,10 +16,18 @@ gene_sets <- gmtPathways(snakemake@input[["gene_sets"]])
 diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>%
                   drop_na(ext_gene) %>%
                   mutate(ext_gene = str_to_upper(ext_gene)) %>%
+                  # resolve multiple occurences of the same ext_gene, usually
+                  # meaning that several ENSEMBLE genes map to the same gene
+                  # symbol -- so we may loose resolution here, as long as gene
+                  # symbols are used
                   group_by(ext_gene) %>%
-                	filter( qval == min(qval, na.rm = TRUE) ) %>%
-                	mutate(target_id = str_c(target_id, collapse=",")) %>%
-                	mutate(ens_gene = str_c(ens_gene, collapse=",")) %>%
+                    filter( qval == min(qval, na.rm = TRUE) ) %>%
+                    filter( pval == min(pval, na.rm = TRUE) ) %>%
+                    # for the case of min(qval) == 1 and min(pval) == 1, we
+                    # need something else to select a unique entry per gene
+                    filter( mean_obs == max(mean_obs, na.rm = TRUE) ) %>%
+                    mutate(target_id = str_c(target_id, collapse=",")) %>%
+                    mutate(ens_gene = str_c(ens_gene, collapse=",")) %>%
                   distinct()
 
 signed_pi <- get_prefix_col("signed_pi_value", colnames(diffexp))
