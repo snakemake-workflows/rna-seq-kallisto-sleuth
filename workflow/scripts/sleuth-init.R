@@ -26,7 +26,7 @@ t2g <- biomaRt::getBM(
 
 samples <- read_tsv(snakemake@input[["samples"]], na = "", col_names = TRUE) %>%
             # make everything except the index, sample name and path string a factor
-            mutate_at(  vars(-X1, -sample, -path),
+            mutate_at(  vars(-sample, -path),
                         list(~factor(.))
                         )
 

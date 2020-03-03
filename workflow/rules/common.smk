@@ -1,4 +1,5 @@
 from snakemake.utils import validate
+from itertools import product
 import pandas as pd
 
 
@@ -21,7 +22,6 @@ units.index.names = ["sample_id", "unit_id"]
 units.index = units.index.set_levels(
     [i.astype(str) for i in units.index.levels])  # enforce str in index
 validate(units, schema="../schemas/units.schema.yaml")
-
 report: "../report/workflow.rst"
 
 ##### wildcard constraints #####
@@ -46,6 +46,17 @@ def is_single_end(sample, unit):
         )
     return fq2_present
 
+### check for each sample, that...
+for s, r in units.groupby("sample"):
+    if not ( # all units are single end
+            all(map(lambda x: is_single_end(x[0], x[1]), product(s, r.unit.values))) or
+            # all units are paired end
+            all(map(lambda x: not is_single_end(x[0], x[1]), product(s, r.unit.values)))
+            ):
+        raise ValueError("kallisto requires units within a sample to either\n"
+                            "all be paired end, or all be single end.\n"
+                            f"Sample {s} has a mix, please fix.")
+
 def get_fastqs(wildcards):
     """Get raw FASTQ files from unit sheet."""
     if is_single_end(wildcards.sample, wildcards.unit):
@@ -55,12 +66,19 @@ def get_fastqs(wildcards):
         return [ f"{u.fq1}", f"{u.fq2}" ]
 
 def get_trimmed(wildcards):
-    if not is_single_end(**wildcards):
-        # paired-end sample
-        return expand("results/trimmed/{sample}-{unit}.{group}.fastq.gz",
-                      group=[1, 2], **wildcards)
-    # single end sample
-    return expand("results/trimmed/{sample}-{unit}.fastq.gz", **wildcards)
+    files=[]
+    sample=wildcards.sample
+    us=units.loc[sample, "unit"].tolist()
+    for unit in us:
+        if not is_single_end(sample, unit):
+            # paired-end sample
+            files.extend(
+                expand( [ "results/trimmed/{sample}-{unit}.{group}.fastq.gz" ],
+                        sample=sample, unit=unit,  group=[1, 2])
+                        )
+        else:
+            files.extend([ f"results/trimmed/{sample}-{unit}.fastq.gz" ])
+    return files
 
 def get_bioc_species_pkg(wildcards):
     """Get the package bioconductor package name for the the species in config.yaml"""

@@ -23,15 +23,14 @@ def kallisto_params(wildcards, input):
         extra += " --fusion"
     return extra
 
-
 rule kallisto_quant:
     input:
         fq=get_trimmed,
         idx="results/kallisto/transcripts.idx"
     output:
-        directory("results/kallisto/{sample}-{unit}")
+        directory("results/kallisto/{sample}")
     log:
-        "results/logs/kallisto/quant/{sample}-{unit}.log"
+        "results/logs/kallisto/quant/{sample}.log"
     params:
         extra=kallisto_params
     conda:

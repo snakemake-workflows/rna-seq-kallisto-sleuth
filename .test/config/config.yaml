@@ -19,6 +19,7 @@ pca:
   labels:
     # columns of sample sheet to use for PCA
     - condition
+    - batch_effect
 
 diffexp:
   # samples to exclude (e.g. outliers due to technical problems)
