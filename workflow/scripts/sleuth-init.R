@@ -42,11 +42,12 @@ if(!is.null(model)) {
     variables <- labels(terms(formula)) %>%
                     strsplit('[:*]') %>%
                     unlist()
-    # select the columns required by sleuth and filter to all samples where
-    # none of the given variables are NA
+    # remove samples with an NA value in any of the columns
+    # relevant for sleuth under the current model
     samples <- samples %>%
-                dplyr::select(sample, path, all_of(variables)) %>%
-                drop_na()
+                drop_na(
+                    c( sample, path, all_of(variables) )
+                )
 }
 
 
