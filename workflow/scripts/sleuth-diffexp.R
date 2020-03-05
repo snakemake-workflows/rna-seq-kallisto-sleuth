@@ -17,9 +17,14 @@ sleuth_object <- sleuth_fit(sleuth_object, as.formula(model[["reduced"]]), 'redu
 sleuth_object <- sleuth_lrt(sleuth_object, "reduced", "full")
 
 # plot mean-variance
-mean_var_plot <- plot_mean_var(sleuth_object, "full", point_alpha = 0.4,
-              point_size = 2, point_colors = c("black", "dodgerblue"),
-              smooth_alpha = 1, smooth_size = 0.75, smooth_color = "red")
+mean_var_plot <- plot_mean_var(sleuth_object, 
+                               which_model = "full", 
+                               point_alpha = 0.4,
+                               point_size = 2, 
+                               point_colors = c("black", "dodgerblue"),
+                               smooth_alpha = 1, 
+                               smooth_size = 0.75, 
+                               smooth_color = "red")
 ggsave(snakemake@output[["mean_var_plot"]], mean_var_plot)
 
 write_results <- function(so, mode, output, output_all) {
@@ -35,60 +40,69 @@ write_results <- function(so, mode, output, output_all) {
     }
 
     plot_model <- snakemake@wildcards[["model"]]
-    
+
     # list for qq-plots to make a multipage pdf-file as output
     qq_list <- list()
-    
+
     print("Performing likelihood ratio test")
     all <- sleuth_results(so, "reduced:full", "lrt", show_all = TRUE, pval_aggregate = so$pval_aggregate) %>%
             arrange(pval)
-    
+
     covariates <- colnames(design_matrix(so, "full"))
     covariates <- covariates[covariates != "(Intercept)"]
-    
+
     # iterate over all covariates and perform wald test in order to obtain beta estimates
     if(!so$pval_aggregate) {
-      
+
       # lists for volcano and ma-plots to make a multipage pdf-file as output
-      volcano_list <- list() 
+      volcano_list <- list()
       ma_list <- list()
-      
-      for(covariate in covariates) { 
+
+      for(covariate in covariates) {
             print(str_c("Performing wald test for ", covariate))
             so <- sleuth_wt(so, covariate, "full")
 
             volc_plot_title <- str_c(plot_model, ": volcano plot for ", covariate)
             ma_plot_title <- str_c(plot_model, ": ma-plot for ", covariate)
-            qq_plot_title <- str_c(plot_model, ": qq-plot of aggregate p-values for ", covariate)
-            
+            qq_plot_title <- str_c(plot_model, ": qq-plot from wald test for ", covariate)
+
             # volcano plot
             print(str_c("Performing volcano plot for ", covariate))
             volcano <- plot_volcano(so, covariate, "wt", "full",
-                                         sig_level = snakemake@params[["sig_level_volcano"]], point_alpha = 0.2, sig_color = "red",
-                                         highlight = NULL)+
-              ggtitle(volc_plot_title)+
+                                    sig_level = snakemake@params[["sig_level_volcano"]], 
+                                    point_alpha = 0.2, 
+                                    sig_color = "red",
+                                    highlight = NULL) +
+              ggtitle(volc_plot_title) +
               theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
             volcano_list[[volc_plot_title]] <- volcano
-            
+
             # ma-plot
             print(str_c("Performing ma-plot for ", covariate))
             ma_plot <- plot_ma(so, covariate, "wt", "full",
-                                    sig_level = snakemake@params[["sig_level_ma"]], point_alpha = 0.2, sig_color = "red",
-                                    highlight = NULL, highlight_color = "green")+
-              ggtitle(ma_plot_title)+
+                               sig_level = snakemake@params[["sig_level_ma"]], 
+                               point_alpha = 0.2, 
+                               sig_color = "red",
+                               highlight = NULL, 
+                               highlight_color = "green") +
+              ggtitle(ma_plot_title) +
               theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
             ma_list[[ma_plot_title]] <- ma_plot
-            
+
             # qq-plots from wald test
             print(str_c("Performing qq-plot from wald test for ", covariate))
-            qq_plot <- plot_qq(so, covariate, "wt", "full", sig_level = snakemake@params[["sig_level_qq"]],
-                               point_alpha = 0.2, sig_color = "red", highlight = NULL, highlight_color = "green", 
-                               line_color = "blue")+
-              ggtitle(qq_plot_title)+
+            qq_plot <- plot_qq(so, covariate, "wt", "full", 
+                               sig_level = snakemake@params[["sig_level_qq"]],
+                               point_alpha = 0.2, 
+                               sig_color = "red", 
+                               highlight = NULL, 
+                               highlight_color = "green",
+                               line_color = "blue") +
+              ggtitle(qq_plot_title) +
               theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
             qq_list[[qq_plot_title]] <- qq_plot
-            
-            
+
+
             beta_col_name <- str_c("b", covariate, sep = "_")
             beta_se_col_name <- str_c(beta_col_name, "se", sep = "_")
             all_wald <- sleuth_results(so, covariate, "wt", show_all = TRUE, pval_aggregate = FALSE) %>%
@@ -105,7 +119,7 @@ write_results <- function(so, mode, output, output_all) {
       # saving volcano plots
       marrange_volcano <- marrangeGrob(grobs=volcano_list, nrow=1, ncol=1, top = NULL)
       ggsave(snakemake@output[["volcano_plots"]], plot = marrange_volcano, width = 14)
-      
+
       # saving ma-plots
       marrange_ma <- marrangeGrob(grobs=ma_list, nrow=1, ncol=1, top = NULL)
       ggsave(snakemake@output[["ma_plots"]], plot = marrange_ma, width = 14)
@@ -130,18 +144,24 @@ write_results <- function(so, mode, output, output_all) {
                 distinct() %>%
                 # useful sort for scrolling through output by increasing q-values
                 arrange(qval)
-      
+
       # qq-plot from likelihood ratio test
       print(str_c("Performing qq-plot from likelihood ratio test"))
       qq_plot_title_trans <- str_c(plot_model, ": qq-plot from likelihood ratio test")
-      qq_plot_trans <- plot_qq(so, test = 'reduced:full', test_type = 'lrt', sig_level = snakemake@params[["sig_level_qq"]],
-                               point_alpha = 0.2, sig_color = "red", highlight = NULL, highlight_color = "green",
-                               line_color = "blue")+
-        ggtitle(qq_plot_title_trans)+
+      qq_plot_trans <- plot_qq(so, 
+                               test = 'reduced:full', 
+                               test_type = 'lrt', 
+                               sig_level = snakemake@params[["sig_level_qq"]],
+                               point_alpha = 0.2, 
+                               sig_color = "red", 
+                               highlight = NULL, 
+                               highlight_color = "green",
+                               line_color = "blue") +
+        ggtitle(qq_plot_title_trans) +
         theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
       qq_list[[qq_plot_title_trans]] <- qq_plot_trans
     }
-      
+
     # saving qq-plots
     marrange_qq <- marrangeGrob(grobs=qq_list, nrow=1, ncol=1, top = NULL)
     ggsave(snakemake@output[["qq_plots"]], plot = marrange_qq, width = 14)

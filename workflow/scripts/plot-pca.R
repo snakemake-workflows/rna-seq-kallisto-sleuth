@@ -25,9 +25,12 @@ ggsave(snakemake@output[["pc_var"]], width=14)
 # plot loadings
 pc_loading_plots <- list()
 for(i in 1:pc) {
-  pc_loading_plots[[paste0("pc", i, "_loading")]] <- plot_loadings(so, scale = TRUE, pc_input = i,
-                                                                   pc_count = 10, units = "est_counts")+
-    ggtitle(paste0(snakemake@wildcards[["covariate"]], ": plot loadings for principal component ", i))+
+  pc_loading_plots[[paste0("pc", i, "_loading")]] <- plot_loadings(so, 
+                                                                   scale = TRUE, 
+                                                                   pc_input = i,
+                                                                   pc_count = 10, 
+                                                                   units = "est_counts") +
+    ggtitle(paste0(snakemake@wildcards[["covariate"]], ": plot loadings for principal component ", i)) +
     theme(plot.title = element_text(size = 14, face = "bold", hjust = 0.5))
 }
 plots_loading <- ggarrange(plotlist = pc_loading_plots, ncol = 1, nrow = 1, common.legend = TRUE)
