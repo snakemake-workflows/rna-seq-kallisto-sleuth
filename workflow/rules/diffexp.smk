@@ -163,7 +163,7 @@ rule plot_group_density:
     input:
         "results/sleuth/all.rds"
     output:
-        report("results/plots/group_density/{model}.group_density.pdf", caption="../report/group-density.rst", category="Densities")
+        report("results/plots/group_density/{model}.group_density.pdf", caption="../report/group-density.rst", category="QC")
     conda:
         "../envs/sleuth.yaml"
     log:
@@ -175,7 +175,7 @@ rule plot_scatter:
      input:
          "results/sleuth/all.rds"
      output:
-         report("results/plots/scatter/{model}.scatter.pdf", caption="../report/scatter.rst", category="Scatter")
+         report("results/plots/scatter/{model}.scatter.pdf", caption="../report/scatter.rst", category="QC")
      # params:
      #     covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"]
      conda:
