@@ -75,9 +75,9 @@ checkpoint sleuth_diffexp:
                                     category="Differential gene expression")
     params:
         model=get_model,
-        sig_level_volcano=config["diffexp"]["sig_level_volcano-plot"],
-        sig_level_ma=config["diffexp"]["sig_level_ma-plot"],
-        sig_level_qq=config["diffexp"]["sig_level_qq-plot"]
+        sig_level_volcano=config["diffexp"]["sig-level"]["volcano-plot"],
+        sig_level_ma=config["diffexp"]["sig-level"]["ma-plot"],
+        sig_level_qq=config["diffexp"]["sig-level"]["qq-plot"]
     conda:
         "../envs/sleuth.yaml"
     log:
@@ -183,7 +183,7 @@ rule plot_scatter:
      log:
          "logs/plots/scatter/{model}.scatter.log"
      script:
-         "../scripts/plot-scatter.R"         
+         "../scripts/plot-scatter.R"
 
 rule plot_fragment_length_dist:
     input:
