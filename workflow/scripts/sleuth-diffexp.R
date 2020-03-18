@@ -4,34 +4,106 @@ sink(log, type="message")
 
 library("sleuth")
 library("tidyverse")
+library("fs")
+library("grid")
+library("gridExtra")
 
 model <- snakemake@params[["model"]]
 
-so <- sleuth_load(snakemake@input[[1]])
+sleuth_object <- sleuth_load(snakemake@input[[1]])
 
-so <- sleuth_fit(so, as.formula(model[["full"]]), 'full')
-so <- sleuth_fit(so, as.formula(model[["reduced"]]), 'reduced')
-so <- sleuth_lrt(so, "reduced", "full")
+sleuth_object <- sleuth_fit(sleuth_object, as.formula(model[["full"]]), 'full')
+sleuth_object <- sleuth_fit(sleuth_object, as.formula(model[["reduced"]]), 'reduced')
+sleuth_object <- sleuth_lrt(sleuth_object, "reduced", "full")
 
-write_results <- function(mode, output, output_all) {
-    aggregate <- FALSE
+# plot mean-variance
+mean_var_plot <- plot_mean_var(sleuth_object, 
+                               which_model = "full", 
+                               point_alpha = 0.4,
+                               point_size = 2, 
+                               point_colors = c("black", "dodgerblue"),
+                               smooth_alpha = 1, 
+                               smooth_size = 0.75, 
+                               smooth_color = "red")
+ggsave(snakemake@output[["mean_var_plot"]], mean_var_plot)
+
+write_results <- function(so, mode, output, output_all) {
+    so$pval_aggregate <- FALSE
     if(mode == "aggregate") {
-        aggregate <- TRUE
+      # workaround the following bug-request:
+      # https://github.com/pachterlab/sleuth/pull/240
+      # TODO renaming can be removed when fixed
+      g_col <- so$gene_column
+      so$gene_column <- NULL
+      so$pval_aggregate <- TRUE
+      so$gene_column <- g_col
     }
+
+    plot_model <- snakemake@wildcards[["model"]]
+
+    # list for qq-plots to make a multipage pdf-file as output
+    qq_list <- list()
+
     print("Performing likelihood ratio test")
-    all <- sleuth_results(so, "reduced:full", "lrt", show_all = TRUE, pval_aggregate = aggregate) %>%
+    all <- sleuth_results(so, "reduced:full", "lrt", show_all = TRUE, pval_aggregate = so$pval_aggregate) %>%
             arrange(pval)
 
     covariates <- colnames(design_matrix(so, "full"))
     covariates <- covariates[covariates != "(Intercept)"]
 
     # iterate over all covariates and perform wald test in order to obtain beta estimates
-    if(!aggregate) {
-        for(covariate in covariates) { 
+    if(!so$pval_aggregate) {
+
+      # lists for volcano and ma-plots to make a multipage pdf-file as output
+      volcano_list <- list()
+      ma_list <- list()
+
+      for(covariate in covariates) {
             print(str_c("Performing wald test for ", covariate))
             so <- sleuth_wt(so, covariate, "full")
 
-	      beta_col_name <- str_c("b", covariate, sep = "_")
+            volc_plot_title <- str_c(plot_model, ": volcano plot for ", covariate)
+            ma_plot_title <- str_c(plot_model, ": ma-plot for ", covariate)
+            qq_plot_title <- str_c(plot_model, ": qq-plot from wald test for ", covariate)
+
+            # volcano plot
+            print(str_c("Performing volcano plot for ", covariate))
+            volcano <- plot_volcano(so, covariate, "wt", "full",
+                                    sig_level = snakemake@params[["sig_level_volcano"]], 
+                                    point_alpha = 0.2, 
+                                    sig_color = "red",
+                                    highlight = NULL) +
+              ggtitle(volc_plot_title) +
+              theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
+            volcano_list[[volc_plot_title]] <- volcano
+
+            # ma-plot
+            print(str_c("Performing ma-plot for ", covariate))
+            ma_plot <- plot_ma(so, covariate, "wt", "full",
+                               sig_level = snakemake@params[["sig_level_ma"]], 
+                               point_alpha = 0.2, 
+                               sig_color = "red",
+                               highlight = NULL, 
+                               highlight_color = "green") +
+              ggtitle(ma_plot_title) +
+              theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
+            ma_list[[ma_plot_title]] <- ma_plot
+
+            # qq-plots from wald test
+            print(str_c("Performing qq-plot from wald test for ", covariate))
+            qq_plot <- plot_qq(so, covariate, "wt", "full", 
+                               sig_level = snakemake@params[["sig_level_qq"]],
+                               point_alpha = 0.2, 
+                               sig_color = "red", 
+                               highlight = NULL, 
+                               highlight_color = "green",
+                               line_color = "blue") +
+              ggtitle(qq_plot_title) +
+              theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
+            qq_list[[qq_plot_title]] <- qq_plot
+
+
+            beta_col_name <- str_c("b", covariate, sep = "_")
             beta_se_col_name <- str_c(beta_col_name, "se", sep = "_")
             all_wald <- sleuth_results(so, covariate, "wt", show_all = TRUE, pval_aggregate = FALSE) %>%
                         dplyr::select( target_id = target_id,
@@ -43,12 +115,19 @@ write_results <- function(mode, output, output_all) {
                     # https://dx.doi.org/10.1093/bioinformatics/btr671
 	              # e.g. useful for GSEA ranking
 	              mutate( !!signed_pi_col_name := -log10(pval) * !!sym(beta_col_name) )
-        }
+      }
+      # saving volcano plots
+      marrange_volcano <- marrangeGrob(grobs=volcano_list, nrow=1, ncol=1, top = NULL)
+      ggsave(snakemake@output[["volcano_plots"]], plot = marrange_volcano, width = 14)
+
+      # saving ma-plots
+      marrange_ma <- marrangeGrob(grobs=ma_list, nrow=1, ncol=1, top = NULL)
+      ggsave(snakemake@output[["ma_plots"]], plot = marrange_ma, width = 14)
     }
 
     if(mode == "mostsignificant") {
         # for each gene, select the most significant transcript (this is equivalent to sleuth_gene_table, but with bug fixes)
-	  all <- all %>%
+      all <- all %>%
                 drop_na(ens_gene) %>%
                 group_by(ens_gene) %>%
                 filter( qval == min(qval, na.rm = TRUE) ) %>%
@@ -65,12 +144,31 @@ write_results <- function(mode, output, output_all) {
                 distinct() %>%
                 # useful sort for scrolling through output by increasing q-values
                 arrange(qval)
+
+      # qq-plot from likelihood ratio test
+      print(str_c("Performing qq-plot from likelihood ratio test"))
+      qq_plot_title_trans <- str_c(plot_model, ": qq-plot from likelihood ratio test")
+      qq_plot_trans <- plot_qq(so, 
+                               test = 'reduced:full', 
+                               test_type = 'lrt', 
+                               sig_level = snakemake@params[["sig_level_qq"]],
+                               point_alpha = 0.2, 
+                               sig_color = "red", 
+                               highlight = NULL, 
+                               highlight_color = "green",
+                               line_color = "blue") +
+        ggtitle(qq_plot_title_trans) +
+        theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
+      qq_list[[qq_plot_title_trans]] <- qq_plot_trans
     }
+
+    # saving qq-plots
+    marrange_qq <- marrangeGrob(grobs=qq_list, nrow=1, ncol=1, top = NULL)
+    ggsave(snakemake@output[["qq_plots"]], plot = marrange_qq, width = 14)
 
     write_tsv(all, path = output, quote_escape = "none")
     write_rds(all, path = output_all, compress = "none")
 }
-
-write_results("transcripts", snakemake@output[["transcripts"]], snakemake@output[["transcripts_rds"]])
-write_results("aggregate", snakemake@output[["genes_aggregated"]], snakemake@output[["genes_aggregated_rds"]])
-write_results("mostsignificant", snakemake@output[["genes_mostsigtrans"]], snakemake@output[["genes_mostsigtrans_rds"]])
+write_results(sleuth_object, "transcripts", snakemake@output[["transcripts"]], snakemake@output[["transcripts_rds"]])
+write_results(sleuth_object, "aggregate", snakemake@output[["genes_aggregated"]], snakemake@output[["genes_aggregated_rds"]])
+write_results(sleuth_object, "mostsignificant", snakemake@output[["genes_mostsigtrans"]], snakemake@output[["genes_mostsigtrans_rds"]])

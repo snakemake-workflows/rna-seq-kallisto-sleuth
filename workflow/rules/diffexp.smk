@@ -49,6 +49,18 @@ checkpoint sleuth_diffexp:
     input:
         "results/sleuth/{model}.rds"
     output:
+        mean_var_plot=report("results/plots/mean-var/{model}.mean-variance-plot.pdf",
+                            caption="../report/plot-mean-var.rst",
+                            category="QC"),
+        volcano_plots=report("results/plots/volcano/{model}.volcano-plots.pdf",
+                            caption="../report/plot-volcano.rst",
+                            category="QC"),
+        ma_plots=report("results/plots/ma/{model}.ma-plots.pdf",
+                            caption="../report/plot-ma.rst",
+                            category="QC"),
+        qq_plots=report("results/plots/qq/{model}.qq-plots.pdf",
+                            caption="../report/plot-qq.rst",
+                            category="QC"),
         transcripts_rds="results/sleuth/diffexp/{model}.transcripts.diffexp.rds",
         genes_aggregated_rds="results/sleuth/diffexp/{model}.genes-aggregated.diffexp.rds",
         genes_mostsigtrans_rds="results/sleuth/diffexp/{model}.genes-mostsigtrans.diffexp.rds",
@@ -63,6 +75,9 @@ checkpoint sleuth_diffexp:
                                     category="Differential gene expression")
     params:
         model=get_model,
+        sig_level_volcano=config["diffexp"]["sig-level"]["volcano-plot"],
+        sig_level_ma=config["diffexp"]["sig-level"]["ma-plot"],
+        sig_level_qq=config["diffexp"]["sig-level"]["qq-plot"]
     conda:
         "../envs/sleuth.yaml"
     log:
@@ -90,7 +105,9 @@ rule plot_pca:
     input:
         "results/sleuth/all.rds"
     output:
-        report("results/plots/pca/{covariate}.pca.pdf", caption="../report/plot-pca.rst", category="PCA")
+        pca=report("results/plots/pca/{covariate}.pca.pdf", caption="../report/plot-pca.rst", category="PCA"),
+        pc_var=report("results/plots/pc-variance/{covariate}.pc-variance-plot.pdf", caption="../report/pc-variance-plot.rst", category="PCA"),
+        loadings=report("results/plots/loadings/{covariate}.loadings-plot.pdf", caption="../report/loadings-plot.rst", category="PCA")
     conda:
         "../envs/sleuth.yaml"
     log:
@@ -142,6 +159,31 @@ rule tpm_matrix:
     script:
         "../scripts/sleuth-to-matrix.R"
 
+rule plot_group_density:
+    input:
+        "results/sleuth/all.rds"
+    output:
+        report("results/plots/group_density/{model}.group_density.pdf", caption="../report/group-density.rst", category="QC")
+    conda:
+        "../envs/sleuth.yaml"
+    log:
+        "logs/plots/group_density/{model}.group_density.log"
+    script:
+        "../scripts/plot-group-density.R"
+
+rule plot_scatter:
+     input:
+         "results/sleuth/all.rds"
+     output:
+         report("results/plots/scatter/{model}.scatter.pdf", caption="../report/scatter.rst", category="QC")
+     # params:
+     #     covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"]
+     conda:
+         "../envs/sleuth.yaml"
+     log:
+         "logs/plots/scatter/{model}.scatter.log"
+     script:
+         "../scripts/plot-scatter.R"
 
 rule plot_fragment_length_dist:
     input:

@@ -59,6 +59,10 @@ def all_input(wildcards):
     wanted_input.extend(
             expand(
                 [
+                    "results/plots/mean-var/{model}.mean-variance-plot.pdf",
+                    "results/plots/volcano/{model}.volcano-plots.pdf",
+                    "results/plots/ma/{model}.ma-plots.pdf",
+                    "results/plots/qq/{model}.qq-plots.pdf",
                     "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
                     "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
                     "results/tables/tpm-matrix/{model}.tpm-matrix.tsv",
@@ -81,8 +85,26 @@ def all_input(wildcards):
 
     # PCA plots of kallisto results, each coloured for a different covariate
     wanted_input.extend(
-            expand("results/plots/pca/{covariate}.pca.pdf", covariate=samples.columns[samples.columns != "sample"])
+            expand([
+                       "results/plots/pc-variance/{covariate}.pc-variance-plot.pdf",
+                       "results/plots/loadings/{covariate}.loadings-plot.pdf",
+                       "results/plots/pca/{covariate}.pca.pdf"
+                   ],
+                   covariate=samples.columns[samples.columns != "sample"])
         )
+
+    # group-density plot
+    wanted_input.extend(
+             expand(["results/plots/group_density/{model}.group_density.pdf"],
+                 model=config["diffexp"]["models"])
+        )
+
+    # scatter plots
+    if config["scatter"]["activate"]:
+        wanted_input.extend(
+                  expand(["results/plots/scatter/{model}.scatter.pdf"],
+                      model=config["diffexp"]["models"])
+        )    
 
     # sleuth bootstrap plots
     for model in config["diffexp"]["models"]:
