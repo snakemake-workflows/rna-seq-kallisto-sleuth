@@ -21,7 +21,9 @@ pca:
     - condition
 
 scatter:
-  # scatter plots are only created if activate set to 'true'
+  # for use as diagnostic plots
+  # all samples are compared in pairs to assess their correlation
+  # scatter plots are only created if parameter 'activate' is set to 'true'
   activate: true
 
 diffexp:

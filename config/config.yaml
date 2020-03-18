@@ -20,6 +20,12 @@ pca:
     # columns of sample sheet to use for PCA
     - condition
 
+scatter:
+  # for use as diagnostic plots
+  # all samples are compared in pairs to assess their correlation
+  # scatter plots are only created if parameter 'activate' is set to 'true'
+  activate: false
+
 diffexp:
   # samples to exclude (e.g. outliers due to technical problems)
   exclude:
@@ -31,6 +37,11 @@ diffexp:
       # Binary valued covariate that shall be used for fold change/effect size
       # based downstream analyses.
       primary_variable: condition
+  # significance level to use for volcano, ma- and qq-plots
+  sig-level:
+    volcano-plot: 0.05
+    ma-plot: 0.05
+    qq-plot: 0.05
 
 enrichment:
   goatools:
