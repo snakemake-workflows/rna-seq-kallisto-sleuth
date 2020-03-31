@@ -16,4 +16,4 @@ jobs:
       with:
         directory: .test
         snakefile: workflow/Snakefile
-        args: "--use-conda --show-failed-logs"
+        args: "--use-conda --show-failed-logs --cores 2"
