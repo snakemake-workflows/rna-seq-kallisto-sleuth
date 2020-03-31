@@ -106,8 +106,8 @@ rule plot_pca:
         "results/sleuth/all.rds"
     output:
         pca=report("results/plots/pca/{covariate}.pca.pdf", caption="../report/plot-pca.rst", category="PCA"),
-        pc_var=report("results/plots/pc-variance/{covariate}.pc-variance-plot.pdf", caption="../report/pc-variance-plot.rst", category="PCA"),
-        loadings=report("results/plots/loadings/{covariate}.loadings-plot.pdf", caption="../report/loadings-plot.rst", category="PCA")
+        pc_var=report("results/plots/pc-variance/{covariate}.pc-variance-plot.pdf", caption="../report/plot-pc-variance.rst", category="PCA"),
+        loadings=report("results/plots/loadings/{covariate}.loadings-plot.pdf", caption="../report/plot-loadings.rst", category="PCA")
     conda:
         "../envs/sleuth.yaml"
     log:
@@ -121,7 +121,7 @@ rule plot_diffexp_heatmap:
         so="results/sleuth/{model}.rds",
         diffexp="results/tables/diffexp/{model}.transcripts.diffexp.tsv"
     output:
-        report("results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf", caption="../report/heatmap.rst", category="Heatmaps")
+        report("results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf", caption="../report/plot-heatmap.rst", category="Heatmaps")
     params:
         model=get_model
     conda:
@@ -136,7 +136,7 @@ rule plot_diffexp_pval_hist:
     input:
         diffexp_rds="results/sleuth/diffexp/{model}.{level}.diffexp.rds"
     output:
-        report("results/plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf", caption="../report/pval-hist.rst", category="QC")
+        report("results/plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf", caption="../report/plot-pval-hist.rst", category="QC")
     params:
         model=get_model
     conda:
@@ -163,7 +163,7 @@ rule plot_group_density:
     input:
         "results/sleuth/all.rds"
     output:
-        report("results/plots/group_density/{model}.group_density.pdf", caption="../report/group-density.rst", category="QC")
+        report("results/plots/group_density/{model}.group_density.pdf", caption="../report/plot-group-density.rst", category="QC")
     conda:
         "../envs/sleuth.yaml"
     log:
@@ -175,7 +175,7 @@ rule plot_scatter:
      input:
          "results/sleuth/all.rds"
      output:
-         report("results/plots/scatter/{model}.scatter.pdf", caption="../report/scatter.rst", category="QC")
+         report("results/plots/scatter/{model}.scatter.pdf", caption="../report/plot-scatter.rst", category="QC")
      # params:
      #     covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"]
      conda:
@@ -189,7 +189,7 @@ rule plot_fragment_length_dist:
     input:
         "results/sleuth/all.rds"
     output:
-        report("results/plots/fld/{sample}-{unit}.fragment-length-dist.pdf", caption="../report/fld.rst", category="Fragment length distribution")
+        report("results/plots/fld/{sample}-{unit}.fragment-length-dist.pdf", caption="../report/plot-fld.rst", category="Fragment length distribution")
     conda:
         "../envs/sleuth.yaml"
     log:
