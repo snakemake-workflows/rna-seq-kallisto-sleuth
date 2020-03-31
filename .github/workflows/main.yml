@@ -12,7 +12,7 @@ jobs:
     - name: Checkout submodules
       uses: textbook/git-checkout-submodule-action@2.0.0
     - name: snakemake
-      uses: snakemake/snakemake-github-action@v1.5.1
+      uses: snakemake/snakemake-github-action@v1.5.2
       with:
         directory: .test
         snakefile: workflow/Snakefile
