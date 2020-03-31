@@ -44,8 +44,7 @@ rule sleuth_init:
     script:
         "../scripts/sleuth-init.R"
 
-
-checkpoint sleuth_diffexp:
+rule sleuth_diffexp:
     input:
         "results/sleuth/{model}.rds"
     output:
@@ -88,15 +87,24 @@ checkpoint sleuth_diffexp:
 
 rule plot_bootstrap:
     input:
-        "results/sleuth/{model}.rds"
+        so="results/sleuth/{model}.rds",
+        transcripts="results/tables/diffexp/{model}.transcripts.diffexp.tsv"
     output:
-        report("results/plots/bootstrap/{gene}/{gene}.{transcript}.{model}.bootstrap.pdf", caption="../report/plot-bootstrap.rst", category="Expression Plots")
+        report(
+            directory("results/plots/bootstrap/{model}"),
+            patterns=["{gene}.{transcript}.{model}.bootstrap.pdf"],
+            caption="../report/plot-bootstrap.rst",
+            category="Expression Plots"
+        )
     conda:
         "../envs/sleuth.yaml"
     params:
-        color_by=config["bootstrap_plots"]["color_by"]
+        color_by=config["bootstrap_plots"]["color_by"],
+        fdr=config["bootstrap_plots"]["FDR"],
+        top_n=config["bootstrap_plots"]["top_n"],
+        genes=config["bootstrap_plots"]["genes_of_interest"]
     log:
-        "logs/plots/bootstrap/{gene}.{transcript}.{model}.plot_bootstrap.log"
+        "logs/plots/bootstrap/{model}/{model}.plot_bootstrap.log"
     script:
         "../scripts/plot-bootstrap.R"
 
