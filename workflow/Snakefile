@@ -70,6 +70,23 @@ def all_input(wildcards):
                 model=config["diffexp"]["models"]
             )
         )
+        
+    # ihw false discovery rate control
+    wanted_input.extend(
+            expand(
+                [
+                    "results/tables/ihw/{model}.{level}.ihw-results.tsv",
+                    "results/plots/ihw/{level}/{model}.{level}.plot-dispersion.pdf",
+                    "results/plots/ihw/{level}/{model}.{level}.plot-histograms.pdf",
+                    "results/plots/ihw/{level}/{model}.{level}.plot-trends.pdf",
+                    "results/plots/ihw/{level}/{model}.{level}.plot-decision.pdf",
+                    "results/plots/ihw/{level}/{model}.{level}.plot-adj-pvals.pdf"
+                ],
+                model=config["diffexp"]["models"],
+                level=["transcripts", "genes-aggregated", "genes-mostsigtrans"]
+            )
+        )
+
     # sleuth p-value histogram plots
     wanted_input.extend(
             expand("results/plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf",
@@ -104,7 +121,7 @@ def all_input(wildcards):
         wanted_input.extend(
                   expand(["results/plots/scatter/{model}.scatter.pdf"],
                       model=config["diffexp"]["models"])
-        )    
+        )
 
     # sleuth bootstrap plots
     for model in config["diffexp"]["models"]:
