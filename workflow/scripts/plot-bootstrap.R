@@ -27,8 +27,6 @@ genes <- full_join(top_genes, genes_of_interest, by = 'ext_gene') %>%
 
 dir.create( snakemake@output[[1]] )
 
-save.image("dump.RData")
-
 for (gene in genes) {
     transcripts <- results %>%
         filter(ext_gene == gene) %>%
