@@ -102,7 +102,7 @@ rule fgsea_plot_gene_set:
     conda:
         "../envs/fgsea.yaml"
     log:
-        "logs/plots/fgsea/{model}.{gene_set}.plot_gene_set.log"
+        "logs/plots/fgsea/{model}.plot_gene_set.log"
     script:
         "../scripts/plot-fgsea-gene-sets.R"
 
