@@ -73,17 +73,3 @@ def get_bioc_pkg_path(wildcards):
 def is_activated(config_element):
     return config_element['activate'] in {"true","True"}
 
-def get_fgsea_plots(model):
-    plots = set()
-    table = pd.read_csv(
-                checkpoints.fgsea.get( model=model ).output.significant,
-                sep="\t").dropna()
-    gs = set(table['pathway'])
-    for gene_set in gs:
-        plots.add(
-            "results/plots/fgsea/{model}.{gene_set}.gene-set-plot.pdf".format(
-                model=model,
-                gene_set=gene_set
-                )
-            )
-    return plots

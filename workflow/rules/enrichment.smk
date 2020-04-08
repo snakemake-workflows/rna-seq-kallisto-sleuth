@@ -42,7 +42,7 @@ rule spia:
 
 ## gene set enrichment analysis
 
-checkpoint fgsea:
+rule fgsea:
     input:
         samples="results/sleuth/samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
@@ -91,7 +91,8 @@ rule fgsea_plot_gene_set:
         sig_gene_sets="results/tables/fgsea/{model}.sig-gene-sets.tsv"
     output:
         report(
-            "results/plots/fgsea/{model}.{gene_set}.gene-set-plot.pdf",
+            directory( "results/plots/fgsea/{model}"),
+            patterns = [ "{model}.{gene_set}.gene-set-plot.pdf" ],
             caption="../report/fgsea-gene-set-plot.rst",
             category="Gene set enrichment analysis"
         )
@@ -103,7 +104,7 @@ rule fgsea_plot_gene_set:
     log:
         "logs/plots/fgsea/{model}.{gene_set}.plot_gene_set.log"
     script:
-        "../scripts/fgsea_plot_gene_set.R"
+        "../scripts/plot-fgsea-gene-sets.R"
 
 ## gene ontology term enrichment analysis
 
