@@ -96,7 +96,7 @@ rule ihw_fdr_control:
         decision=report("results/plots/ihw/{level}/{model}.{level}.plot-decision.pdf", caption="../report/plot-decision-ihw.rst", category="IHW"),
         adj_pvals=report("results/plots/ihw/{level}/{model}.{level}.plot-adj-pvals.pdf", caption="../report/plot-adj-pvals-ihw.rst", category="IHW")
     conda:
-        "../envs/sleuth.yaml"
+        "../envs/ihw.yaml"
     log:
         "logs/tables/ihw/{model}.{level}.ihw.log"
     script:

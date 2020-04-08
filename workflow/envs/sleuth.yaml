@@ -6,7 +6,6 @@ dependencies:
   - bioconductor-rhdf5lib =1.6.0
   - bioconductor-rhdf5 =2.28.0
   - bioconductor-biomart =2.42.0
-  - bioconductor-ihw =1.14.0
   - r-gridextra =2.3
   - r-pheatmap =1.0.12
   - r-tidyverse =1.2.1

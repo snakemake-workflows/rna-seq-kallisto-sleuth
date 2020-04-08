@@ -6,55 +6,55 @@ library("tidyverse")
 library("ggpubr")
 library("IHW")
 
-number.of.groups <- 7
+number_of_groups <- 7
 
-gene.data <- na.omit(read_tsv((snakemake@input[[1]])))
-level.name <- snakemake@wildcards[["level"]]
+gene_data <- na.omit(read_tsv((snakemake@input[[1]])))
+level_name <- snakemake@wildcards[["level"]]
 
 # calculate covariate mean_obs for gene.aggregated data
-if(level.name == "genes-aggregated") {
-  gene.data <- gene.data %>%
+if(level_name == "genes-aggregated") {
+  gene_data <- gene_data %>%
     mutate(mean_obs = if_else(num_aggregated_transcripts > 0, (sum_mean_obs_counts / num_aggregated_transcripts), 0))
 }
 
 # determine the appropriate number of groups for grouping in ihw calculation for genes_aggregated
-tested.number.of.groups <- number.of.groups
+tested_number_of_groups <- number_of_groups
 ihw_test_grouping <- function(x){
   tryCatch(
     expr = {
-      ihw(pval ~ mean_obs, data = gene.data, alpha = 0.1, nbins = x)
+      ihw(pval ~ mean_obs, data = gene_data, alpha = 0.1, nbins = x)
       return(TRUE)
     },
     error = function(e) {
-      print(str_c("Number of groups was set too hight, trying grouping by ", tested.number.of.groups - 1, " groups."))
+      print(str_c("Number of groups was set too hight, trying grouping by ", tested_number_of_groups - 1, " groups."))
       return(FALSE)
     })
 }
 
-while(!ihw_test_grouping(tested.number.of.groups) && tested.number.of.groups > 0){
-  tested.number.of.groups <- tested.number.of.groups -1
-  ihw_test_grouping(tested.number.of.groups)
+while(!ihw_test_grouping(tested_number_of_groups) && tested_number_of_groups > 0){
+  tested_number_of_groups <- tested_number_of_groups -1
+  ihw_test_grouping(tested_number_of_groups)
 }
 
-if (tested.number.of.groups < number.of.groups) {
-  print(str_c("The chosen number of groups for ", level.name, " dataset was too large, instead IHW was calculated on ", tested.number.of.groups, " groups."))
-  number.of.groups <- tested.number.of.groups
+if (tested_number_of_groups < number_of_groups) {
+  print(str_c("The chosen number of groups for ", level_name, " dataset was too large, instead IHW was calculated on ", tested_number_of_groups, " groups."))
+  number_of_groups <- tested_number_of_groups
 }
 
 #select the necessary data
-if(level.name == "genes-aggregated") {
-  gene.data <- gene.data %>%
+if(level_name == "genes-aggregated") {
+  gene_data <- gene_data %>%
     select(-c(qval, sum_mean_obs_counts, num_aggregated_transcripts)) %>%
-    mutate(grouping = groups_by_filter(mean_obs, number.of.groups))
+    mutate(grouping = groups_by_filter(mean_obs, number_of_groups))
 } else {
-  gene.data <- gene.data %>%
+  gene_data <- gene_data %>%
     select(ens_gene, ext_gene, pval, mean_obs) %>%
-    mutate(grouping = groups_by_filter(mean_obs, number.of.groups))
+    mutate(grouping = groups_by_filter(mean_obs, number_of_groups))
 }
 
 ### diagnostic plots for covariate and grouping
 #dispersion plot
-dispersion <- ggplot(gene.data, aes(x = percent_rank(mean_obs), y = -log10(pval))) +
+dispersion <- ggplot(gene_data, aes(x = percent_rank(mean_obs), y = -log10(pval))) +
   geom_point() +
   ggtitle("IHW: scatter plot of p-values vs. mean of counts as covariate") +
   theme(plot.title = element_text(size = 12, face = "bold", hjust = 0.5)) +
@@ -64,17 +64,17 @@ dispersion <- ggplot(gene.data, aes(x = percent_rank(mean_obs), y = -log10(pval)
 ggsave(snakemake@output[["dispersion"]], dispersion)
 
 #histograms
-hist_overall <- ggplot(gene.data, aes(x = pval)) +
+hist_overall <- ggplot(gene_data, aes(x = pval)) +
   geom_histogram(binwidth = 0.025, boundary = 0) +
   xlab("p-values without grouping") +
   ylab("density")
 
-levels(gene.data$grouping) <- paste0(rep("group ", number.of.groups), 1:number.of.groups)
-hist_groups <- ggplot(gene.data, aes(x = pval)) +
+levels(gene_data$grouping) <- paste0(rep("group ", number_of_groups), 1:number_of_groups)
+hist_groups <- ggplot(gene_data, aes(x = pval)) +
   geom_histogram(binwidth = 0.025, boundary = 0) +
   xlab("p-values of the individual groups") +
   ylab("density") +
-  facet_wrap(~ grouping, nrow = number.of.groups %/% 4 + ifelse((number.of.groups %% 4 != 0), 1, 0))
+  facet_wrap(~ grouping, nrow = number_of_groups %/% 4 + ifelse((number_of_groups %% 4 != 0), 1, 0))
 
 plots_agg_mean_obs <- ggarrange(hist_overall, hist_groups, nrow = 1)
 
@@ -89,8 +89,8 @@ ggexport(histograms,
          width=14)
 
 # ihw calculation
-write_tsv(gene.data, snakemake@output[["results"]])
-ihw_results_mean <- ihw(pval ~ mean_obs, data = gene.data, alpha = 0.1, nbins = tested.number.of.groups)
+write_tsv(gene_data, snakemake@output[["results"]])
+ihw_results_mean <- ihw(pval ~ mean_obs, data = gene_data, alpha = 0.1, nbins = tested_number_of_groups)
 ihw_mean <- as.data.frame(ihw_results_mean)
 write_tsv(ihw_mean, snakemake@output[["results"]])
 

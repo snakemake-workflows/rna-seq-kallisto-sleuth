@@ -1,0 +1,7 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - bioconductor-ihw =1.14.0
+  - r-tidyverse =1.2.1
+  - r-ggpubr =0.2.4
