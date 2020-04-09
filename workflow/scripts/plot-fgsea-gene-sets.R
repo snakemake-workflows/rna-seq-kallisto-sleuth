@@ -29,7 +29,7 @@ ranked_genes <- diffexp %>%
 
 dir.create( snakemake@output[[1]] )
 
-for (set in gene_sets ) {
+for ( set in names(gene_sets) ) {
   # plot gene set enrichment
   p <- plotEnrichment(gene_sets[[set]], ranked_genes) +
          ggtitle(str_c("gene set: ", set),
