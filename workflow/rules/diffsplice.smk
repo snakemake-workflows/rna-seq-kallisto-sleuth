@@ -2,8 +2,8 @@ rule init_isoform_switch:
     input:
         kallisto=kallisto_output,
         designmatrix="results/sleuth/{model}.designmatrix.rds",
-        fasta="results/refs/transcriptome.cdna.fasta",
-        gtf="results/refs/genome.gtf"
+        fasta="resources/transcriptome.cdna.fasta",
+        gtf="resources/genome.gtf"
     output:
         rds="results/diffsplice/{model}.diffsplice.rds",
         seqs=expand("results/diffsplice/{{model}}.sequences/isoformSwitchAnalyzeR_isoform_{type}.fasta", type=["AA", "nt"])
@@ -23,7 +23,7 @@ rule calculate_protein_domains:
     input:
         fasta="results/diffsplice/{model}.sequences/isoformSwitchAnalyzeR_isoform_AA.fasta",
         pfam=rules.convert_pfam.output,
-        pfam_dat="results/refs/pfam/Pfam-A.hmm.dat"
+        pfam_dat="resources/pfam/Pfam-A.hmm.dat"
     output:
         "results/diffsplice/{model}.pfam"
     params:
@@ -40,8 +40,8 @@ rule calculate_protein_domains:
 rule calculate_coding_potential:
     input:
         fasta="results/diffsplice/{model}.sequences/isoformSwitchAnalyzeR_isoform_nt.fasta",
-        cpat_model="results/refs/cpat.logit.RData",
-        hexamers="results/refs/cpat.hexamers.tsv"
+        cpat_model="resources/cpat.logit.RData",
+        hexamers="resources/cpat.hexamers.tsv"
     output:
         "results/diffsplice/{model}.cpat.tsv"
     conda:

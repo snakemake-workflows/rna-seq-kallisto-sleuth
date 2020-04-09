@@ -2,7 +2,7 @@ ensembl = config["resources"]["ref"]["ensembl"]
 
 rule get_transcriptome:
     output:
-        "results/refs/transcriptome.{type}.fasta"
+        "resources/transcriptome.{type}.fasta"
     params:
         species=ensembl["species"],
         datatype="{type}",
@@ -19,7 +19,7 @@ rule get_transcriptome:
 
 rule get_annotation:
     output:
-        "results/refs/genome.gtf"
+        "resources/genome.gtf"
     params:
         species=ensembl["species"],
         release=ensembl["release"],
@@ -33,7 +33,7 @@ rule get_annotation:
 
 rule get_pfam:
     output:
-        r"results/refs/pfam/Pfam-A.{ext,(hmm|hmm\.dat)}"
+        r"resources/pfam/Pfam-A.{ext,(hmm|hmm\.dat)}"
     params:
         release=config["resources"]["ref"]["pfam"]
     log:
@@ -44,9 +44,9 @@ rule get_pfam:
 
 rule convert_pfam:
     input:
-        "results/refs/pfam/Pfam-A.hmm"
+        "resources/pfam/Pfam-A.hmm"
     output:
-        multiext("results/refs/pfam/Pfam-A.hmm", ".h3m", ".h3i", ".h3f", ".h3p")
+        multiext("resources/pfam/Pfam-A.hmm", ".h3m", ".h3i", ".h3f", ".h3p")
     log:
         "logs/convert_pfam.log"
     conda:
@@ -58,10 +58,10 @@ rule convert_pfam:
 
 rule calculate_cpat_hexamers:
     input:
-        cds="results/refs/transcriptome.cds.fasta",
-        ncrna="results/refs/transcriptome.ncrna.fasta"
+        cds="resources/transcriptome.cds.fasta",
+        ncrna="resources/transcriptome.ncrna.fasta"
     output:
-        "results/refs/cpat.hexamers.tsv"
+        "resources/cpat.hexamers.tsv"
     conda:
         "../envs/cpat.yaml"
     cache: True
@@ -71,11 +71,11 @@ rule calculate_cpat_hexamers:
 
 rule calculate_cpat_logit_model:
     input:
-        hexamers="results/refs/cpat.hexamers.tsv",
-        cds="results/refs/transcriptome.cds.fasta",
-        ncrna="results/refs/transcriptome.ncrna.fasta"
+        hexamers="resources/cpat.hexamers.tsv",
+        cds="resources/transcriptome.cds.fasta",
+        ncrna="resources/transcriptome.ncrna.fasta"
     output:
-        "results/refs/cpat.logit.RData"
+        "resources/cpat.logit.RData"
     params:
         prefix=lambda _, output: output[0][:-12]
     conda:
