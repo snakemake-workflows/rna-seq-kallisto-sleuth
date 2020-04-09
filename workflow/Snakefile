@@ -3,6 +3,7 @@ include: "rules/trim.smk"
 include: "rules/quant.smk"
 include: "rules/diffexp.smk"
 include: "rules/enrichment.smk"
+include: "rules/diffsplice.smk"
 
 
 def all_input(wildcards):
@@ -118,6 +119,13 @@ def all_input(wildcards):
                 unit=units[["sample", "unit"]].itertuples()
             )
         )
+
+    # diffsplice analysis
+    wanted_input.extend(expand(
+        "results/plots/diffsplice/{model}/{cons}", 
+        model=config["diffexp"]["models"], 
+        cons=["with_consequences", "without_consequences"]
+    ))
 
     return wanted_input
 

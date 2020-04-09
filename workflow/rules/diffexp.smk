@@ -16,12 +16,12 @@ rule compose_sample_sheet:
             lambda row: "{}-{}".format(row["sample"], row["unit"]), axis=1)
         samples_["path"] = kallisto_output
         del samples_["unit"]
-        samples_.to_csv(output[0], sep="\t")
+        samples_.to_csv(output[0], sep="\t", index=False)
 
 
 def get_model(wildcards):
     if wildcards.model == "all":
-        return {"full": None}
+        return None
     return config["diffexp"]["models"][wildcards.model]
 
 
@@ -30,10 +30,11 @@ rule sleuth_init:
         kallisto=kallisto_output,
         samples="results/sleuth/samples.tsv"
     output:
-        "results/sleuth/{model,[^.]+}.rds"
+        so="results/sleuth/{model}.rds",
+        designmatrix="results/sleuth/{model}.designmatrix.rds"
     params:
         species=config["resources"]["ref"]["species"],
-        model=lambda w: get_model(w)["full"],
+        model=get_model,
         exclude=config["diffexp"].get("exclude", None)
     conda:
         "../envs/sleuth.yaml"

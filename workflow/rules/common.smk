@@ -28,7 +28,8 @@ report: "../report/workflow.rst"
 
 wildcard_constraints:
     sample="|".join(samples.index),
-    unit="|".join(units["unit"])
+    unit="|".join(units["unit"]),
+    model="[^\.]+"
 
 
 ####### helpers ###########

@@ -24,9 +24,9 @@ t2g <- biomaRt::getBM(
                 ext_gene = external_gene_name
                 )
 
-samples <- read_tsv(snakemake@input[["samples"]], na = "", col_names = TRUE) %>%
-            # make everything except the index, sample name and path string a factor
-            mutate_at(  vars(-X1, -sample, -path),
+samples <- read_tsv(snakemake@input[["samples"]], col_names = TRUE) %>%
+            # make everything except the sample name and path string a factor
+            mutate_at(  vars(-sample, -path),
                         list(~factor(.))
                         )
 
@@ -35,9 +35,9 @@ if(!is.null(snakemake@params[["exclude"]])) {
                 filter( !sample %in% snakemake@params[["exclude"]] )
 }
 
-if(!is.null(model)) {
+samples_out <- if(!is.null(model)) {
     # retrieve the model formula
-    formula <- as.formula(model)
+    formula <- as.formula(model[["full"]])
     # extract variables from the formula and unnest any nested variables
     variables <- labels(terms(formula)) %>%
                     strsplit('[:*]') %>%
@@ -45,11 +45,26 @@ if(!is.null(model)) {
     # remove samples with an NA value in any of the columns
     # relevant for sleuth under the current model
     samples <- samples %>%
-                drop_na(
-                    c( sample, path, all_of(variables) )
-                )
+	        drop_na(c(sample, path, all_of(variables)))
+
+    primary_variable <- model[["primary_variable"]]
+    base_level <- model[["base_level"]]
+    # TODO migrate this to tidyverse
+    # Ensure that primary variable factors are sorted such that base_level comes first.
+    # This is important for fold changes, effect sizes to have the expected sign.
+    samples[, primary_variable] <- relevel(samples[, primary_variable, drop=TRUE], base_level)
+
+    samples %>% select(c(sample, all_of(variables)))
+} else {
+    samples %>% select(-path)
 }
 
+# store design matrix
+saveRDS(samples_out, file = snakemake@output[["designmatrix"]])
+
+# remove all columns which have only NA values
+samples <- samples %>%
+	    select_if(function(col) !all(is.na(col)))
 
 so <- sleuth_prep(  samples,
                     extra_bootstrap_summary = TRUE,
@@ -72,6 +87,11 @@ if(!length(custom_transcripts) == 0) {
     so$target_mapping <- so$target_mapping %>%
                         # add those custom transcripts as rows to the target mapping
                         add_row(ens_gene = NA, ext_gene = "Custom", target_id = custom_transcripts)
+}
+
+if(!is.null(model)) {
+    so <- sleuth_fit(so, as.formula(model[["full"]]), 'full')
+    so <- sleuth_fit(so, as.formula(model[["reduced"]]), 'reduced')
 }
 
 sleuth_save(so, snakemake@output[[1]])

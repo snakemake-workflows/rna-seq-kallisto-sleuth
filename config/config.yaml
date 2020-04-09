@@ -43,6 +43,13 @@ diffexp:
     ma-plot: 0.05
     qq-plot: 0.05
 
+diffsplice:
+  # codingCutoff parameter of isoformSwitchAnalyzer, see
+  # https://rdrr.io/bioc/IsoformSwitchAnalyzeR/man/analyzeCPAT.html
+  coding_cutoff: 0.725
+  # Should be set to true when using de-novo assembled transcripts.
+  remove_noncoding_orfs: false
+
 enrichment:
   goatools:
     # tool is only run if set to `true`

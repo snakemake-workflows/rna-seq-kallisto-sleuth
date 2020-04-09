@@ -12,8 +12,6 @@ model <- snakemake@params[["model"]]
 
 sleuth_object <- sleuth_load(snakemake@input[[1]])
 
-sleuth_object <- sleuth_fit(sleuth_object, as.formula(model[["full"]]), 'full')
-sleuth_object <- sleuth_fit(sleuth_object, as.formula(model[["reduced"]]), 'reduced')
 sleuth_object <- sleuth_lrt(sleuth_object, "reduced", "full")
 
 # plot mean-variance
