@@ -16,13 +16,27 @@ properties:
       ref:
         type: object
         properties:
-          transcriptome:
-            type: string
           species:
             type: string
+          pfam:
+            type: string
+          ensembl:
+            type: object
+            properties:
+              species:
+                type: string
+              build:
+                type: string
+              release:
+                type: integer
+            required:
+              - species
+              - build
+              - release
         required:
-          - transcriptome
           - species
+          - ensembl
+          - pfam
       ontology:
         type: object
         properties:
@@ -49,6 +63,17 @@ properties:
         type: object
     required:
       - models
+
+  diffsplice:
+    type: object
+    properties:
+      coding_cutoff:
+        type: number
+      remove_noncoding_orfs:
+        type: boolean
+    required:
+      - coding_cutoff
+      - remove_noncoding_orfs
 
   enrichment:
     type: object
