@@ -1,0 +1,8 @@
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - r-sleuth =0.30
+  - bioconductor-isoformswitchanalyzer =1.8
+  - r-tidyverse =1.2.1
+  - r-base =3.6
