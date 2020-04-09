@@ -12,6 +12,7 @@ rule get_transcriptome:
         "logs/get-genome/{type}.log"
     wildcard_constraints:
         type="cdna|cds|ncrna"
+    cache: True
     wrapper:
         "0.45.1/bio/reference/ensembl-sequence"
 
@@ -25,6 +26,7 @@ rule get_annotation:
         build=ensembl["build"],
         fmt="gtf",
         flavor="chr_patch_hapl_scaff"
+    cache: True
     wrapper:
         "0.50.0/bio/reference/ensembl-annotation"
 
@@ -49,6 +51,7 @@ rule convert_pfam:
         "logs/convert_pfam.log"
     conda:
         "../envs/hmmer.yaml"
+    cache: True
     shell:
         "hmmpress {input} > {log} 2>&1"
 
@@ -61,6 +64,7 @@ rule calculate_cpat_hexamers:
         "results/refs/cpat.hexamers.tsv"
     conda:
         "../envs/cpat.yaml"
+    cache: True
     shell:
         "make_hexamer_tab.py --cod={input.cds} --noncod={input.ncrna} > {output}"
 
@@ -76,6 +80,7 @@ rule calculate_cpat_logit_model:
         prefix=lambda _, output: output[0][:-12]
     conda:
         "../envs/cpat.yaml"
+    cache: True
     shell:
         "make_logitModel.py --hex={input.hexamers} --cgene={input.cds} "
         "--ngene={input.ncrna} -o {params.prefix}"
