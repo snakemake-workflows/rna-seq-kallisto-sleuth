@@ -83,7 +83,7 @@ rule fgsea:
     script:
         "../scripts/fgsea.R"
 
-rule fgsea_plot_gene_set:
+rule fgsea_plot_gene_sets:
     input:
         samples="results/sleuth/samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
@@ -93,7 +93,7 @@ rule fgsea_plot_gene_set:
         report(
             directory( "results/plots/fgsea/{model}"),
             patterns = [ "{model}.{gene_set}.gene-set-plot.pdf" ],
-            caption="../report/fgsea-gene-set-plot.rst",
+            caption="../report/plot-fgsea-gene-set.rst",
             category="Gene set enrichment analysis"
         )
     params:
@@ -102,7 +102,7 @@ rule fgsea_plot_gene_set:
     conda:
         "../envs/fgsea.yaml"
     log:
-        "logs/plots/fgsea/{model}.plot_gene_set.log"
+        "logs/plots/fgsea/{model}.plot_fgsea_gene_set.log"
     script:
         "../scripts/plot-fgsea-gene-sets.R"
 
