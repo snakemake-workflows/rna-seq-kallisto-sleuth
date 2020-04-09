@@ -35,7 +35,7 @@ def all_input(wildcards):
                         "results/tables/fgsea/{model}.all-gene-sets.tsv",
                         "results/tables/fgsea/{model}.sig-gene-sets.tsv",
                         "results/plots/fgsea/{model}.table-plot.pdf",
-                        "results/plots/fgsea/{model}/"
+                        "results/plots/fgsea/{model}"
                     ],
                     model=config["diffexp"]["models"],
                     gene_set_fdr=str(config["enrichment"]["fgsea"]["fdr_gene_set"]).replace('.','-'),
