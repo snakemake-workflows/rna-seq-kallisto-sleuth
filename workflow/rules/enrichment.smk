@@ -1,18 +1,3 @@
-from pathlib import Path
-
-
-rule download_bioconductor_species_database:
-    output:
-        directory("resources/bioconductor/lib/R/library/{package}")
-    params:
-        path=lambda wc, output: Path(output[0]).parents[3],
-        version=config["resources"]["ref"]["species_db_version"]
-    log:
-        "logs/resources/bioconductor/{package}.log"
-    shell:
-        "conda create --yes --quiet -p {params.path} --channel bioconda bioconductor-{wildcards.package}={params.version}"
-
-
 # topology- and interaction-aware pathway enrichment analysis
 
 rule spia:

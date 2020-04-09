@@ -1,3 +1,5 @@
+from pathlib import Path
+
 ensembl = config["resources"]["ref"]["ensembl"]
 
 rule get_transcriptome:
@@ -39,7 +41,9 @@ rule get_pfam:
     log:
         "logs/get_pfam.{ext}.log"
     shell:
-        "(curl -L ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam{params.release}/Pfam-A.{wildcards.ext}.gz | gzip -d > {output}) 2> {log}"
+        "(curl -L ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/"
+        "Pfam{params.release}/Pfam-A.{wildcards.ext}.gz | "
+        "gzip -d > {output}) 2> {log}"
 
 
 rule convert_pfam:
@@ -85,3 +89,15 @@ rule calculate_cpat_logit_model:
         "make_logitModel.py --hex={input.hexamers} --cgene={input.cds} "
         "--ngene={input.ncrna} -o {params.prefix}"
 
+
+rule download_bioconductor_species_database:
+    output:
+        directory("resources/bioconductor/lib/R/library/{package}")
+    params:
+        path=lambda wc, output: Path(output[0]).parents[3],
+        version=config["resources"]["ref"]["species_db_version"]
+    log:
+        "logs/resources/bioconductor/{package}.log"
+    shell:
+        "conda create --yes --quiet -p {params.path} "
+        "--channel bioconda bioconductor-{wildcards.package}={params.version}"
