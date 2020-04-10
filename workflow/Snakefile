@@ -34,15 +34,14 @@ def all_input(wildcards):
                     [
                         "results/tables/fgsea/{model}.all-gene-sets.tsv",
                         "results/tables/fgsea/{model}.sig-gene-sets.tsv",
-                        "results/plots/fgsea/{model}.table-plot.pdf"
+                        "results/plots/fgsea/{model}.table-plot.pdf",
+                        "results/plots/fgsea/{model}"
                     ],
                     model=config["diffexp"]["models"],
                     gene_set_fdr=str(config["enrichment"]["fgsea"]["fdr_gene_set"]).replace('.','-'),
                     nperm=str(config["enrichment"]["fgsea"]["nperm"])
                 )
             )
-        for model in config["diffexp"]["models"]:
-            wanted_input.extend( get_fgsea_plots(model) )
 
     # request spia if 'activated' in config.yaml
     if config["enrichment"]["spia"]["activate"]:
@@ -124,9 +123,11 @@ def all_input(wildcards):
         )
 
     # sleuth bootstrap plots
-    for model in config["diffexp"]["models"]:
-        wanted_input.extend( get_bootstrap_plots(model) )
-        wanted_input.extend( get_bootstrap_plots(model, config["bootstrap_plots"]["genes_of_interest"]) )
+    wanted_input.extend(
+            expand("results/plots/bootstrap/{model}",
+                model=config["diffexp"]["models"]
+            )
+        )
 
     # fragment length distribution plots
     wanted_input.extend(

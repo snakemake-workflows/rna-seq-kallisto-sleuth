@@ -1,0 +1,1 @@
+Density plot grouped by sample for model ``{{ snakemake.wildcards.model }}``.

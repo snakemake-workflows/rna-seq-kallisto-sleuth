@@ -44,8 +44,7 @@ rule sleuth_init:
     script:
         "../scripts/sleuth-init.R"
 
-
-checkpoint sleuth_diffexp:
+rule sleuth_diffexp:
     input:
         "results/sleuth/{model}.rds"
     output:
@@ -104,15 +103,24 @@ rule ihw_fdr_control:
 
 rule plot_bootstrap:
     input:
-        "results/sleuth/{model}.rds"
+        so="results/sleuth/{model}.rds",
+        transcripts="results/tables/diffexp/{model}.transcripts.diffexp.tsv"
     output:
-        report("results/plots/bootstrap/{gene}/{gene}.{transcript}.{model}.bootstrap.pdf", caption="../report/plot-bootstrap.rst", category="Expression Plots")
+        report(
+            directory("results/plots/bootstrap/{model}"),
+            patterns=["{gene}.{transcript}.{model}.bootstrap.pdf"],
+            caption="../report/plot-bootstrap.rst",
+            category="Expression Plots"
+        )
     conda:
         "../envs/sleuth.yaml"
     params:
-        color_by=config["bootstrap_plots"]["color_by"]
+        color_by=config["bootstrap_plots"]["color_by"],
+        fdr=config["bootstrap_plots"]["FDR"],
+        top_n=config["bootstrap_plots"]["top_n"],
+        genes=config["bootstrap_plots"]["genes_of_interest"]
     log:
-        "logs/plots/bootstrap/{gene}.{transcript}.{model}.plot_bootstrap.log"
+        "logs/plots/bootstrap/{model}/{model}.plot_bootstrap.log"
     script:
         "../scripts/plot-bootstrap.R"
 
@@ -122,8 +130,8 @@ rule plot_pca:
         "results/sleuth/all.rds"
     output:
         pca=report("results/plots/pca/{covariate}.pca.pdf", caption="../report/plot-pca.rst", category="PCA"),
-        pc_var=report("results/plots/pc-variance/{covariate}.pc-variance-plot.pdf", caption="../report/pc-variance-plot.rst", category="PCA"),
-        loadings=report("results/plots/loadings/{covariate}.loadings-plot.pdf", caption="../report/loadings-plot.rst", category="PCA")
+        pc_var=report("results/plots/pc-variance/{covariate}.pc-variance-plot.pdf", caption="../report/plot-pc-variance.rst", category="PCA"),
+        loadings=report("results/plots/loadings/{covariate}.loadings-plot.pdf", caption="../report/plot-loadings.rst", category="PCA")
     conda:
         "../envs/sleuth.yaml"
     log:
@@ -137,7 +145,7 @@ rule plot_diffexp_heatmap:
         so="results/sleuth/{model}.rds",
         diffexp="results/tables/diffexp/{model}.transcripts.diffexp.tsv"
     output:
-        report("results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf", caption="../report/heatmap.rst", category="Heatmaps")
+        report("results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf", caption="../report/plot-heatmap.rst", category="Heatmaps")
     params:
         model=get_model
     conda:
@@ -152,7 +160,7 @@ rule plot_diffexp_pval_hist:
     input:
         diffexp_rds="results/sleuth/diffexp/{model}.{level}.diffexp.rds"
     output:
-        report("results/plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf", caption="../report/pval-hist.rst", category="QC")
+        report("results/plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf", caption="../report/plot-pval-hist.rst", category="QC")
     params:
         model=get_model
     conda:
@@ -179,7 +187,7 @@ rule plot_group_density:
     input:
         "results/sleuth/all.rds"
     output:
-        report("results/plots/group_density/{model}.group_density.pdf", caption="../report/group-density.rst", category="QC")
+        report("results/plots/group_density/{model}.group_density.pdf", caption="../report/plot-group-density.rst", category="QC")
     conda:
         "../envs/sleuth.yaml"
     log:
@@ -191,7 +199,7 @@ rule plot_scatter:
      input:
          "results/sleuth/all.rds"
      output:
-         report("results/plots/scatter/{model}.scatter.pdf", caption="../report/scatter.rst", category="QC")
+         report("results/plots/scatter/{model}.scatter.pdf", caption="../report/plot-scatter.rst", category="QC")
      # params:
      #     covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"]
      conda:
@@ -205,7 +213,7 @@ rule plot_fragment_length_dist:
     input:
         "results/sleuth/all.rds"
     output:
-        report("results/plots/fld/{sample}-{unit}.fragment-length-dist.pdf", caption="../report/fld.rst", category="Fragment length distribution")
+        report("results/plots/fld/{sample}-{unit}.fragment-length-dist.pdf", caption="../report/plot-fld.rst", category="Fragment length distribution")
     conda:
         "../envs/sleuth.yaml"
     log:

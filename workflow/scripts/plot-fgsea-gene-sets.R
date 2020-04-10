@@ -27,17 +27,23 @@ ranked_genes <- diffexp %>%
                   dplyr::select(ext_gene, !!signed_pi) %>%
                   deframe()
 
-set <- snakemake@wildcards[["gene_set"]]
+dir.create( snakemake@output[[1]] )
 
-# plot gene set enrichment
-p <- plotEnrichment(gene_sets[[set]], ranked_genes) +
-            ggtitle(str_c("gene set: ", set),
-                subtitle = str_c(
-                    sig_gene_sets %>% filter(pathway == set) %>% pull(size), " genes;  ",
-                    "p-value (BH-adjusted): ", sig_gene_sets %>% filter(pathway ==  set) %>% pull(padj), "\n",
-                    "normalized enrichment score (NES):", sig_gene_sets %>% filter(pathway == set) %>% pull(NES)
-                    )
-            ) +
-            xlab("gene rank") + 
-            theme_bw(base_size=16)
-ggsave(snakemake@output[[1]], width=10, height=7)
+for ( set in names(gene_sets) ) {
+  # plot gene set enrichment
+  p <- plotEnrichment(gene_sets[[set]], ranked_genes) +
+         ggtitle(str_c("gene set: ", set),
+           subtitle = str_c(
+             sig_gene_sets %>% filter(pathway == set) %>% pull(size)," genes;  ",
+             "p-value (BH-adjusted): ", sig_gene_sets %>% filter(pathway ==  set) %>% pull(padj), "\n",
+             "normalized enrichment score (NES):", sig_gene_sets %>% filter(pathway == set) %>% pull(NES)
+             )
+         ) +
+         xlab("gene rank") +
+         theme_bw( base_size = 16 )
+  ggsave(
+    file = str_c( snakemake@output[[1]], "/", snakemake@wildcards[["model"]], ".", set, ".gene-set-plot.pdf"),
+    width = 10,
+    height = 7
+  )
+}
