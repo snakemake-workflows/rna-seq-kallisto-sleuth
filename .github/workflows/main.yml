@@ -11,12 +11,12 @@ jobs:
     - uses: actions/checkout@v1
     - name: Checkout submodules
       uses: textbook/git-checkout-submodule-action@2.0.0
-    - name: snakemake
+    - name: Test workflow
       uses: snakemake/snakemake-github-action@v1.5.3
       with:
         directory: .test
         snakefile: workflow/Snakefile
-        args: "--use-conda --show-failed-logs --cores 2"
+        args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs"
     - name: Test report
       uses: snakemake/snakemake-github-action@v1.5.3
       with:
