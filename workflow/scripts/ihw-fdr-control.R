@@ -8,16 +8,18 @@ library("IHW")
 
 number_of_groups <- 7
 
-gene_data <- na.omit(read_tsv((snakemake@input[[1]])))
+gene_data <- read_tsv(snakemake@input[[1]]) %>%
+  drop_na()
 level_name <- snakemake@wildcards[["level"]]
 
 # calculate covariate mean_obs for gene.aggregated data
 if(level_name == "genes-aggregated") {
   gene_data <- gene_data %>%
-    mutate(mean_obs = if_else(num_aggregated_transcripts > 0, (sum_mean_obs_counts / num_aggregated_transcripts), 0))
+    mutate(mean_obs = if_else(num_aggregated_transcripts > 0, sum_mean_obs_counts / num_aggregated_transcripts, 0)) %>%
+    rename(ens_gene = target_id)
 }
 
-# determine the appropriate number of groups for grouping in ihw calculation for genes_aggregated
+# determine the appropriate number of groups for grouping in ihw calculation
 tested_number_of_groups <- number_of_groups
 ihw_test_grouping <- function(x){
   tryCatch(
@@ -41,22 +43,15 @@ if (tested_number_of_groups < number_of_groups) {
   number_of_groups <- tested_number_of_groups
 }
 
-#select the necessary data
-if(level_name == "genes-aggregated") {
-  gene_data <- gene_data %>%
-    select(-c(qval, sum_mean_obs_counts, num_aggregated_transcripts)) %>%
-    mutate(grouping = groups_by_filter(mean_obs, number_of_groups))
-} else {
-  gene_data <- gene_data %>%
-    select(ens_gene, ext_gene, pval, mean_obs) %>%
-    mutate(grouping = groups_by_filter(mean_obs, number_of_groups))
-}
+gene_data <- gene_data %>%
+  select(ens_gene, ext_gene, pval, mean_obs) %>%
+  mutate(grouping = groups_by_filter(mean_obs, number_of_groups))
 
 ### diagnostic plots for covariate and grouping
 #dispersion plot
 dispersion <- ggplot(gene_data, aes(x = percent_rank(mean_obs), y = -log10(pval))) +
   geom_point() +
-  ggtitle("IHW: scatter plot of p-values vs. mean of counts as covariate") +
+  ggtitle("IHW: scatter plot of p-values vs. mean of counts") +
   theme(plot.title = element_text(size = 12, face = "bold", hjust = 0.5)) +
   xlab("percent rank of mean_obs") +
   ylab(expression(-log[10](p-value)))
@@ -74,12 +69,12 @@ hist_groups <- ggplot(gene_data, aes(x = pval)) +
   geom_histogram(binwidth = 0.025, boundary = 0) +
   xlab("p-values of the individual groups") +
   ylab("density") +
-  facet_wrap(~ grouping, nrow = number_of_groups %/% 4 + ifelse((number_of_groups %% 4 != 0), 1, 0))
+  facet_wrap(~ grouping, nrow = ceiling(number_of_groups / 4)) 
 
 plots_agg_mean_obs <- ggarrange(hist_overall, hist_groups, nrow = 1)
 
 histograms <- annotate_figure(plots_agg_mean_obs,
-                              top = text_grob("IHW: histograms for p-values of mean of counts as covariate",
+                              top = text_grob("IHW: histograms for p-values of mean of counts",
                                               color = "black",
                                               face = "bold",
                                               size = 12))
@@ -89,28 +84,34 @@ ggexport(histograms,
          width=14)
 
 # ihw calculation
-write_tsv(gene_data, snakemake@output[["results"]])
 ihw_results_mean <- ihw(pval ~ mean_obs, data = gene_data, alpha = 0.1, nbins = tested_number_of_groups)
 ihw_mean <- as.data.frame(ihw_results_mean)
+
+# merging ens_gene-IDs and ext_gene-names
+if(all_equal(ihw_mean$pvalue, gene_data$pval) && all_equal(ihw_mean$covariate, gene_data$mean_obs)){
+  ihw_mean <- gene_data %>% 
+    select(ens_gene, ext_gene) %>%
+    bind_cols(ihw_mean)
+}
 write_tsv(ihw_mean, snakemake@output[["results"]])
 
 ### diagnostic plots for ihw calculation
 # plot of trends of the covariate
 plot_trend_mean <- plot(ihw_results_mean) +
-  ggtitle("IHW: Plot of trends of covariate (mean of counts)") +
+  ggtitle("IHW: Plot of trends of mean of counts") +
   theme(plot.title = element_text(size=12))
 ggsave(snakemake@output[["trends"]], plot_trend_mean)
 
 # plots of decision boundaries for unweighted p-values as a function of the covariate
 plot_decision_mean <- plot(ihw_results_mean, what = "decisionboundary") +
-  ggtitle("IHW: Decision boundaries for unweighted p-values vs. mean of counts as covariate") +
+  ggtitle("IHW: Decision boundaries for unweighted p-values vs. mean of counts") +
   theme(plot.title = element_text(size=12))
 ggsave(snakemake@output[["decision"]], plot_decision_mean)
 
 # p-values vs. adusted p-values
 plot_ihw_pval_mean <- ggplot(ihw_mean, aes(x = pvalue, y = adj_pvalue, col = group)) +
   geom_point(size = 0.25) +
-  ggtitle("IHW: p-values vs. adusted p-values in ihw-analysis of mean of counts as covariate") +
+  ggtitle("IHW: raw p-values vs. adusted p-values from ihw-analysis") +
   theme(plot.title = element_text(size=12)) +
   scale_colour_hue(l = 70, c = 150, drop = FALSE)
 ggsave(snakemake@output[["adj_pvals"]], plot_ihw_pval_mean)
