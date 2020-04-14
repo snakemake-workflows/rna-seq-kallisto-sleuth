@@ -16,7 +16,7 @@ jobs:
       with:
         directory: .test
         snakefile: workflow/Snakefile
-        args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs"
+        args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs --latency-wait 15"
     - name: Test report
       uses: snakemake/snakemake-github-action@v1.5.3
       with:
