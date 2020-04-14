@@ -8,15 +8,13 @@ library("IHW")
 
 number_of_groups <- 7
 
-gene_data <- read_tsv(snakemake@input[[1]]) %>%
-  drop_na()
+gene_data <- read_tsv(snakemake@input[[1]])
 level_name <- snakemake@wildcards[["level"]]
 
 # calculate covariate mean_obs for gene.aggregated data
 if(level_name == "genes-aggregated") {
   gene_data <- gene_data %>%
-    mutate(mean_obs = if_else(num_aggregated_transcripts > 0, sum_mean_obs_counts / num_aggregated_transcripts, 0)) %>%
-    rename(ens_gene = target_id)
+    mutate(mean_obs = if_else(num_aggregated_transcripts > 0, sum_mean_obs_counts / num_aggregated_transcripts, 0), ens_gene = target_id)
 }
 
 # determine the appropriate number of groups for grouping in ihw calculation
@@ -44,6 +42,7 @@ if (tested_number_of_groups < number_of_groups) {
 }
 
 gene_data <- gene_data %>%
+  drop_na(pval, mean_obs) %>%
   select(ens_gene, ext_gene, pval, mean_obs) %>%
   mutate(grouping = groups_by_filter(mean_obs, number_of_groups))
 
@@ -64,7 +63,6 @@ hist_overall <- ggplot(gene_data, aes(x = pval)) +
   xlab("p-values without grouping") +
   ylab("density")
 
-levels(gene_data$grouping) <- paste0(rep("group ", number_of_groups), 1:number_of_groups)
 hist_groups <- ggplot(gene_data, aes(x = pval)) +
   geom_histogram(binwidth = 0.025, boundary = 0) +
   xlab("p-values of the individual groups") +
@@ -88,11 +86,9 @@ ihw_results_mean <- ihw(pval ~ mean_obs, data = gene_data, alpha = 0.1, nbins = 
 ihw_mean <- as.data.frame(ihw_results_mean)
 
 # merging ens_gene-IDs and ext_gene-names
-if(all_equal(ihw_mean$pvalue, gene_data$pval) && all_equal(ihw_mean$covariate, gene_data$mean_obs)){
-  ihw_mean <- gene_data %>% 
-    select(ens_gene, ext_gene) %>%
-    bind_cols(ihw_mean)
-}
+ihw_mean <- unique(right_join(ihw_mean, gene_data, by = c(pvalue = "pval", covariate = "mean_obs", group = "grouping"))) %>%
+  select(ens_gene, ext_gene, colnames(ihw_mean))
+
 write_tsv(ihw_mean, snakemake@output[["results"]])
 
 ### diagnostic plots for ihw calculation
