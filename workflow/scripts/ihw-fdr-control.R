@@ -81,13 +81,22 @@ ggexport(histograms,
          filename = snakemake@output[["histograms"]],
          width=14)
 
+# ###Debug-Mode##########################
+this.wd <- getwd()
+setwd("/home/tarja/Schreibtisch/Bioinformatik/RNA-Seq-Project/Debugging")
+save.image("debug.info")
+setwd(this.wd)
+load("/home/tarja/Schreibtisch/Bioinformatik/RNA-Seq-Project/Debugging/debug.info")
+#######################################
 # ihw calculation
 ihw_results_mean <- ihw(pval ~ mean_obs, data = gene_data, alpha = 0.1, nbins = tested_number_of_groups)
-ihw_mean <- as.data.frame(ihw_results_mean)
 
 # merging ens_gene-IDs and ext_gene-names
-ihw_mean <- unique(right_join(ihw_mean, gene_data, by = c(pvalue = "pval", covariate = "mean_obs", group = "grouping"))) %>%
-  select(ens_gene, ext_gene, colnames(ihw_mean))
+ihw_mean <- as.data.frame(ihw_results_mean) %>% 
+  # TODO remove ugly hack if ihw in future allows annotation columns
+  right_join(gene_data, by = c(pvalue = "pval", covariate = "mean_obs", group = "grouping")) %>%
+  unique() %>%
+  select(ens_gene, ext_gene, everything())
 
 write_tsv(ihw_mean, snakemake@output[["results"]])
 
