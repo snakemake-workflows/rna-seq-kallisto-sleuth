@@ -10,9 +10,13 @@ rule download_bioconductor_species_database:
     log:
         "logs/resources/bioconductor/{package}.log"
     shell:
+        "df -h; "
         "conda create -v --yes -p {params.path} --channel bioconda bioconductor-{wildcards.package}={params.version}; "
         "conda --version; "
         "ls -l resources/bioconductor/lib/R/library/; "
+        "ls -l resources/bioconductor; "
+        "ls -l /opt/conda/pkgs/; "
+        "df -h; "
 
 
 # topology- and interaction-aware pathway enrichment analysis
