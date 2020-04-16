@@ -12,13 +12,16 @@ rule download_bioconductor_species_database:
     shell:
         "df -h; "
         "conda clean --all --yes --quiet; "
-        "conda create -v --quiet --yes -p {params.path} --channel bioconda bioconductor-{wildcards.package}={params.version}; "
+        "conda create --quiet --yes -p {params.path} --channel bioconda bioconductor-{wildcards.package}={params.version}; "
         "conda --version; "
         "conda clean --all --yes --quiet; "
-        "ls -l resources/bioconductor/lib/R/library/; "
-        "ls -l resources/bioconductor; "
-        "ls -l /opt/conda/pkgs/; "
         "df -h; "
+        "echo '/opt/*'"
+        "du -sh /opt/*; "
+        "echo '/github/home/*'"
+        "du -sh /github/home/*; "
+        "echo '/github/*'"
+        "du -sh /github/*; "
 
 
 # topology- and interaction-aware pathway enrichment analysis
