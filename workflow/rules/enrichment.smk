@@ -16,11 +16,11 @@ rule download_bioconductor_species_database:
         "conda --version; "
         "conda clean --all --yes --quiet; "
         "df -h; "
-        "echo '/opt/*'"
+        "echo '/opt/*'; "
         "du -sh /opt/*; "
-        "echo '/github/home/*'"
+        "echo '/github/home/*'; "
         "du -sh /github/home/*; "
-        "echo '/github/*'"
+        "echo '/github/*'; "
         "du -sh /github/*; "
 
 
