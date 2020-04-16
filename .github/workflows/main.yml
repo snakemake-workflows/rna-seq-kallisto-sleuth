@@ -8,8 +8,6 @@ jobs:
   run-workflow:
     runs-on: ubuntu-latest
     steps:
-    - name: Cleanup Docker container
-      run: docker system prune --force
     - name: Checkout repository
       uses: actions/checkout@v1
     - name: Checkout submodules
