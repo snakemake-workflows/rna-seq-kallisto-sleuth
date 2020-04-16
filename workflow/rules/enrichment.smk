@@ -11,8 +11,10 @@ rule download_bioconductor_species_database:
         "logs/resources/bioconductor/{package}.log"
     shell:
         "df -h; "
-        "conda create -v --yes -p {params.path} --channel bioconda bioconductor-{wildcards.package}={params.version}; "
+        "conda clean --all --yes --quiet; "
+        "conda create -v --quiet --yes -p {params.path} --channel bioconda bioconductor-{wildcards.package}={params.version}; "
         "conda --version; "
+        "conda clean --all --yes --quiet; "
         "ls -l resources/bioconductor/lib/R/library/; "
         "ls -l resources/bioconductor; "
         "ls -l /opt/conda/pkgs/; "
