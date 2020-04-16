@@ -10,8 +10,7 @@ rule download_bioconductor_species_database:
     log:
         "logs/resources/bioconductor/{package}.log"
     shell:
-        "conda create -v --copy --yes --quiet -p {params.path} --channel bioconda bioconductor-{wildcards.package}={params.version}; "
-        "whereis conda; "
+        "conda create -v --yes -p {params.path} --channel bioconda bioconductor-{wildcards.package}={params.version}; "
         "conda --version; "
         "ls -l resources/bioconductor/lib/R/library/; "
 
