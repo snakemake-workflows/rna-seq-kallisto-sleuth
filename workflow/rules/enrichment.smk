@@ -10,20 +10,9 @@ rule download_bioconductor_species_database:
     log:
         "logs/resources/bioconductor/{package}.log"
     shell:
-        "df -h; "
         "conda clean --all --yes --quiet; "
         "conda create --quiet --yes -p {params.path} --channel bioconda bioconductor-{wildcards.package}={params.version}; "
-        "conda --version; "
         "conda clean --all --yes --quiet; "
-        "df -h; "
-        "echo '/opt/*'; "
-        "du -sh /opt/*; "
-        "echo '/github/workspace/*'; "
-        "du -sh /github/workspace/*; "
-        "echo '/github/*'; "
-        "du -sh /github/*; "
-        "echo '/*'; "
-        "du -sh /*; "
 
 
 # topology- and interaction-aware pathway enrichment analysis
