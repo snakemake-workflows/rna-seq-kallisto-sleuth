@@ -86,7 +86,7 @@ ihw_results_mean <- ihw(pval ~ mean_obs, data = gene_data, alpha = 0.1, nbins = 
 
 # merging ens_gene-IDs and ext_gene-names
 ihw_mean <- as.data.frame(ihw_results_mean) %>% 
-  # TODO remove ugly hack if ihw in future allows annotation columns
+  # TODO remove ugly hack if ihw in future allows annotation columns (feature requested here: https://support.bioconductor.org/p/129972/)
   right_join(gene_data, by = c(pvalue = "pval", covariate = "mean_obs", group = "grouping")) %>%
   unique() %>%
   select(ens_gene, ext_gene, everything())
