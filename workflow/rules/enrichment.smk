@@ -18,10 +18,12 @@ rule download_bioconductor_species_database:
         "df -h; "
         "echo '/opt/*'; "
         "du -sh /opt/*; "
-        "echo '/github/home/*'; "
-        "du -sh /github/home/*; "
+        "echo '/github/workspace/*'; "
+        "du -sh /github/workspace/*; "
         "echo '/github/*'; "
         "du -sh /github/*; "
+        "echo '/*'; "
+        "du -sh /*; "
 
 
 # topology- and interaction-aware pathway enrichment analysis
