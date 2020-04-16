@@ -81,13 +81,6 @@ ggexport(histograms,
          filename = snakemake@output[["histograms"]],
          width=14)
 
-# ###Debug-Mode##########################
-this.wd <- getwd()
-setwd("/home/tarja/Schreibtisch/Bioinformatik/RNA-Seq-Project/Debugging")
-save.image("debug.info")
-setwd(this.wd)
-load("/home/tarja/Schreibtisch/Bioinformatik/RNA-Seq-Project/Debugging/debug.info")
-#######################################
 # ihw calculation
 ihw_results_mean <- ihw(pval ~ mean_obs, data = gene_data, alpha = 0.1, nbins = tested_number_of_groups)
 
