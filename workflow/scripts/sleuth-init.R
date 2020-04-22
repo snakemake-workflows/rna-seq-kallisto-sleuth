@@ -23,7 +23,7 @@ while ( class(mart)[[1]] != "Mart" ) {
       # the mirror instead of specifying a host
       biomaRt::useEnsembl(
         biomart = "ENSEMBL_MART_ENSEMBL",
-        dataset = "hsapiens_gene_ensembl",
+        dataset = str_c(snakemake@params[["species"]], "_gene_ensembl"),
         mirror = mart
       )
     },
