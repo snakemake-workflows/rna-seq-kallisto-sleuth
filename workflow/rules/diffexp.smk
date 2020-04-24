@@ -84,6 +84,22 @@ rule sleuth_diffexp:
     script:
         "../scripts/sleuth-diffexp.R"
 
+rule ihw_fdr_control:
+    input:
+        "results/tables/diffexp/{model}.{level}.diffexp.tsv"
+    output:
+        results=report("results/tables/ihw/{model}.{level}.ihw-results.tsv", caption="../report/ihw-results.rst", category="IHW"),
+        dispersion=report("results/plots/ihw/{level}/{model}.{level}.plot-dispersion.pdf", caption="../report/plot-dispersion-ihw.rst", category="IHW"),
+        histograms=report("results/plots/ihw/{level}/{model}.{level}.plot-histograms.pdf", caption="../report/plot-histograms-ihw.rst", category="IHW"),
+        trends=report("results/plots/ihw/{level}/{model}.{level}.plot-trends.pdf", caption="../report/plot-trends-ihw.rst", category="IHW"),
+        decision=report("results/plots/ihw/{level}/{model}.{level}.plot-decision.pdf", caption="../report/plot-decision-ihw.rst", category="IHW"),
+        adj_pvals=report("results/plots/ihw/{level}/{model}.{level}.plot-adj-pvals.pdf", caption="../report/plot-adj-pvals-ihw.rst", category="IHW")
+    conda:
+        "../envs/ihw.yaml"
+    log:
+        "logs/tables/ihw/{model}.{level}.ihw.log"
+    script:
+        "../scripts/ihw-fdr-control.R"
 
 rule plot_bootstrap:
     input:
