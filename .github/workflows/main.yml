@@ -8,6 +8,13 @@ jobs:
   run-workflow:
     runs-on: ubuntu-latest
     steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v1
+
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@2.0.0
+
     - name: Patch Docker Daemon data-root
       env:
         DOCKER_DATA_ROOT: /mnt/var/lib/docker
@@ -17,12 +24,6 @@ jobs:
         jq --arg dataroot "${DOCKER_DATA_ROOT}" '. + {"data-root": $dataroot}' "${DOCKER_DAEMON_JSON}" > "/tmp/docker.json.tmp"
         sudo mv "/tmp/docker.json.tmp" "${DOCKER_DAEMON_JSON}"
         sudo systemctl restart docker
-
-    - name: Checkout repository
-      uses: actions/checkout@v1
-
-    - name: Checkout submodules
-      uses: textbook/git-checkout-submodule-action@2.0.0
 
     - name: Test workflow
       uses: snakemake/snakemake-github-action@v1.6.0
