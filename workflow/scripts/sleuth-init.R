@@ -59,7 +59,8 @@ t2g <- biomaRt::getBM(
             attributes = c( "ensembl_transcript_id",
                             "ensembl_gene_id",
                             "external_gene_name"),
-            mart = mart
+            mart = mart,
+            useCache = FALSE
             ) %>%
         rename( target_id = ensembl_transcript_id,
                 ens_gene = ensembl_gene_id,
