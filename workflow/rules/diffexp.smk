@@ -18,7 +18,7 @@ rule compose_sample_sheet:
     group:
         "sleuth-init"
     script:
-        "scripts/compose-sample-sheet.py"
+        "../scripts/compose-sample-sheet.py"
 
 
 rule sleuth_init:
