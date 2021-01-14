@@ -5,9 +5,9 @@ kallisto_output = expand(
 
 rule compose_sample_sheet:
     input:
-        kallisto_output,
         report(config["samples"], caption="../report/samples.rst"),
         config["units"],
+        kallisto_output=kallisto_output,
     output:
         "results/sleuth/samples.tsv",
     log:
