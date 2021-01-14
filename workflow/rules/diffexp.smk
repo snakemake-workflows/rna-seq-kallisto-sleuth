@@ -7,24 +7,18 @@ rule compose_sample_sheet:
     input:
         kallisto_output,
         report(config["samples"], caption="../report/samples.rst"),
+        config["units"],
     output:
         "results/sleuth/samples.tsv",
+    log:
+        "logs/compose-sample-sheet.log",
+    params:
+        units=units,
+        samples=samples,
     group:
         "sleuth-init"
-    run:
-        samples_ = units[["sample", "unit"]].merge(samples, on="sample")
-        samples_["sample"] = samples_.apply(
-            lambda row: "{}-{}".format(row["sample"], row["unit"]), axis=1
-        )
-        samples_["path"] = kallisto_output
-        del samples_["unit"]
-        samples_.to_csv(output[0], sep="\t")
-
-
-def get_model(wildcards):
-    if wildcards.model == "all":
-        return {"full": None}
-    return config["diffexp"]["models"][wildcards.model]
+    script:
+        "scripts/compose-sample-sheet.py"
 
 
 rule sleuth_init:
