@@ -3,4 +3,4 @@ channels:
   - bioconda
 dependencies:
   - kallisto =0.46
-  - hdf5 =1.12
+  - hdf5 ==1.10
