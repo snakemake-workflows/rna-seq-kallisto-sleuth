@@ -55,8 +55,24 @@ fgsea_res <- fgsea(pathways = gene_sets,
 # Annotation is impossible without any entries, so then just write out empty files
 if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
 
-    write_tsv(fgsea_res, path = snakemake@output[["enrichment"]])
-    write_tsv(fgsea_res, path = snakemake@output[["significant"]])
+    # leadingEdge cannot be a list, and the empty output should at least
+    # have the correct columns in the correct order
+    unnested <- fgsea_res %>%
+                    unnest(leadingEdge) %>%
+                    add_column(
+                        leading_edge_symbol = NA,
+                        leading_edge_ens_gene = NA,
+                        leading_edge_entrez_id = NA
+                    ) %>%
+                    dplyr::select(
+                        leading_edge_symbol,
+                        leading_edge_ens_gene,
+                        leading_edge_entrez_id,
+                        leadingEdge
+                    )
+
+    write_tsv(unnested, path = snakemake@output[["enrichment"]])
+    write_tsv(unnested, path = snakemake@output[["significant"]])
 
 } else {
 
