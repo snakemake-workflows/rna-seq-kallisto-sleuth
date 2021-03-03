@@ -71,8 +71,8 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
                         leadingEdge
                     )
 
-    write_tsv(unnested, path = snakemake@output[["enrichment"]])
-    write_tsv(unnested, path = snakemake@output[["significant"]])
+    write_tsv(unnested, file = snakemake@output[["enrichment"]])
+    write_tsv(unnested, file = snakemake@output[["significant"]])
 
 } else {
 
@@ -98,14 +98,14 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
                             leading_edge_entrez_id, leadingEdge)
 
     # write out fgsea results for all gene sets
-    write_tsv(annotated, path = snakemake@output[["enrichment"]])
+    write_tsv(annotated, file = snakemake@output[["enrichment"]])
 
     # select significant pathways
     sig_gene_sets <- annotated %>%
                        filter( padj < snakemake@params[["gene_set_fdr"]] )
 
     # write out fgsea results for gene sets found to be significant
-    write_tsv(sig_gene_sets, path = snakemake@output[["significant"]])
+    write_tsv(sig_gene_sets, file = snakemake@output[["significant"]])
 }
 
 height = .7 * (length(gene_sets) + 2)
