@@ -64,11 +64,14 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
                         leading_edge_ens_gene = NA,
                         leading_edge_entrez_id = NA
                     ) %>%
-                    dplyr::select(
-                        leading_edge_symbol,
-                        leading_edge_ens_gene,
-                        leading_edge_entrez_id,
-                        leadingEdge
+                    dplyr::relocate(
+                        c(
+                          leading_edge_symbol,
+                          leading_edge_ens_gene,
+                          leading_edge_entrez_id,
+                          leadingEdge
+                        ),
+                        .after = last_col()
                     )
 
     write_tsv(unnested, file = snakemake@output[["enrichment"]])
@@ -92,10 +95,15 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
                         leading_edge_ens_gene = str_c(leading_edge_ens_gene, collapse = ',')
                     ) %>%
                     inner_join(fgsea_res %>% dplyr::select(-leadingEdge), by = "pathway") %>%
-                    dplyr::select(-leadingEdge, -leading_edge_symbol,
-                           -leading_edge_entrez_id, -leading_edge_ens_gene,
-                            leading_edge_symbol, leading_edge_ens_gene,
-                            leading_edge_entrez_id, leadingEdge)
+                    dplyr::relocate(
+                        c(
+                          leading_edge_symbol,
+                          leading_edge_ens_gene,
+                          leading_edge_entrez_id,
+                          leadingEdge
+                        ),
+                        .after = last_col()
+                    )
 
     # write out fgsea results for all gene sets
     write_tsv(annotated, file = snakemake@output[["enrichment"]])
