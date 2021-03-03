@@ -2,5 +2,5 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - kallisto =0.45
-  - hdf5 =1.10
+  - kallisto =0.46
+  - hdf5 =1.12
