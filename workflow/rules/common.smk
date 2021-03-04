@@ -92,7 +92,7 @@ def get_trimmed(wildcards):
 
 def get_bioc_species_pkg(wildcards):
     """Get the package bioconductor package name for the the species in config.yaml"""
-    species_letters = config["resources"]["ref"]["species"][0:2].capitalize()
+    species_letters = config["resources"]["ref"]["species"][0:2]
     return "org.{species}.eg.db".format(species=species_letters)
 
 
