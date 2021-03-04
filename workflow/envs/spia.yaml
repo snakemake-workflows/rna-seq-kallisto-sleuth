@@ -2,7 +2,7 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - r-base =3.6
-  - bioconductor-spia =2.38
-  - bioconductor-graphite =1.32
-  - r-tidyverse =1.2
+  - r-base =4.0
+  - bioconductor-spia =2.42
+  - bioconductor-graphite =1.36
+  - r-tidyverse =1.3
