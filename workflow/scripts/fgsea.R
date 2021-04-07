@@ -64,15 +64,18 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
                         leading_edge_ens_gene = NA,
                         leading_edge_entrez_id = NA
                     ) %>%
-                    dplyr::select(
-                        leading_edge_symbol,
-                        leading_edge_ens_gene,
-                        leading_edge_entrez_id,
-                        leadingEdge
+                    dplyr::relocate(
+                        c(
+                          leading_edge_symbol,
+                          leading_edge_ens_gene,
+                          leading_edge_entrez_id,
+                          leadingEdge
+                        ),
+                        .after = last_col()
                     )
 
-    write_tsv(unnested, path = snakemake@output[["enrichment"]])
-    write_tsv(unnested, path = snakemake@output[["significant"]])
+    write_tsv(unnested, file = snakemake@output[["enrichment"]])
+    write_tsv(unnested, file = snakemake@output[["significant"]])
 
 } else {
 
@@ -92,20 +95,25 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
                         leading_edge_ens_gene = str_c(leading_edge_ens_gene, collapse = ',')
                     ) %>%
                     inner_join(fgsea_res %>% dplyr::select(-leadingEdge), by = "pathway") %>%
-                    dplyr::select(-leadingEdge, -leading_edge_symbol,
-                           -leading_edge_entrez_id, -leading_edge_ens_gene,
-                            leading_edge_symbol, leading_edge_ens_gene,
-                            leading_edge_entrez_id, leadingEdge)
+                    dplyr::relocate(
+                        c(
+                          leading_edge_symbol,
+                          leading_edge_ens_gene,
+                          leading_edge_entrez_id,
+                          leadingEdge
+                        ),
+                        .after = last_col()
+                    )
 
     # write out fgsea results for all gene sets
-    write_tsv(annotated, path = snakemake@output[["enrichment"]])
+    write_tsv(annotated, file = snakemake@output[["enrichment"]])
 
     # select significant pathways
     sig_gene_sets <- annotated %>%
                        filter( padj < snakemake@params[["gene_set_fdr"]] )
 
     # write out fgsea results for gene sets found to be significant
-    write_tsv(sig_gene_sets, path = snakemake@output[["significant"]])
+    write_tsv(sig_gene_sets, file = snakemake@output[["significant"]])
 }
 
 height = .7 * (length(gene_sets) + 2)
