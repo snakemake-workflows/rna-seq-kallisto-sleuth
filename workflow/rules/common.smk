@@ -25,6 +25,7 @@ def drop_unique_cols(df):
     singular_cols = df.nunique().loc[(df.nunique().values <= 1)].index
     return df.drop(singular_cols, axis=1)
 
+
 samples = drop_unique_cols(samples)
 validate(samples, schema="../schemas/samples.schema.yaml")
 
