@@ -15,13 +15,20 @@ configfile: "config/config.yaml"
 
 validate(config, schema="../schemas/config.schema.yaml")
 
-samples = pd.read_csv(config["samples"], sep="\t", dtype=str).set_index(
+samples = pd.read_csv(config["samples"], sep="\t", dtype=str, comment="#").set_index(
     "sample", drop=False
 )
 samples.index.names = ["sample_id"]
+
+
+def drop_unique_cols(df):
+    return df.drop(df.nunique().loc[(df.nunique().values <= 1)].index, axis=1)
+
+samples = drop_unique_cols(samples)
+print(samples)
 validate(samples, schema="../schemas/samples.schema.yaml")
 
-units = pd.read_csv(config["units"], dtype=str, sep="\t").set_index(
+units = pd.read_csv(config["units"], dtype=str, sep="\t", comment="#").set_index(
     ["sample", "unit"], drop=False
 )
 units.index.names = ["sample_id", "unit_id"]
@@ -57,16 +64,8 @@ def get_model(wildcards):
 
 def is_single_end(sample, unit):
     """Determine whether unit is single-end."""
-    fq2_present = pd.isnull(units.loc[(sample, unit), "fq2"])
-    if isinstance(fq2_present, pd.core.series.Series):
-        # if this is the case, get_fastqs cannot work properly
-        raise ValueError(
-            f"Multiple fq2 entries found for sample-unit combination {sample}-{unit}.\n"
-            "This is most likely due to a faulty units.tsv file, e.g. "
-            "a unit name is used twice for the same sample.\n"
-            "Try checking your units.tsv for duplicates."
-        )
-    return fq2_present
+    fq2_not_present = pd.isnull(units.loc[(sample, unit), "fq2"])
+    return fq2_not_present
 
 
 def get_fastqs(wildcards):

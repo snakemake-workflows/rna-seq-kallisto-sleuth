@@ -116,14 +116,33 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
     write_tsv(sig_gene_sets, file = snakemake@output[["significant"]])
 }
 
-height = .7 * (length(gene_sets) + 2)
+# select significant pathways
+top_pathways <- fgsea_res %>% arrange(padj) %>% head(n=1000) %>% filter(padj < snakemake@params[["gene_set_fdr"]]) %>% arrange(-NES) %>% pull(pathway)
+selected_gene_sets <- gene_sets[top_pathways]
+
+height = .7 * (length(selected_gene_sets) + 2)
 
 # table plot of all gene sets
 tg <- plotGseaTable(
-            pathway = gene_sets,
+            pathway = selected_gene_sets,
             stats = ranked_genes,
             fgseaRes = fgsea_res,
             gseaParam = 1,
             render = FALSE
         )
-ggsave(filename = snakemake@output[["plot"]], plot = tg, width = 12, height = height, limitsize=FALSE)
+ggsave(filename = snakemake@output[["plot"]], plot = tg, width = 15, height = height, limitsize=FALSE)
+
+collapsed_pathways <- collapsePathways(fgsea_res %>% arrange(pval) %>% filter(padj < snakemake@params[["gene_set_fdr"]]), gene_sets, ranked_genes)
+main_pathways <- fgsea_res %>% filter(pathway %in% collapsed_pathways$mainPathways) %>% arrange(-NES) %>% pull(pathway)
+selected_gene_sets <- gene_sets[main_pathways]
+height = .7 * (length(selected_gene_sets) + 2)
+
+# table plot of all gene sets
+tg <- plotGseaTable(
+            pathway = selected_gene_sets,
+            stats = ranked_genes,
+            fgseaRes = fgsea_res,
+            gseaParam = 1,
+            render = FALSE
+        )
+ggsave(filename = snakemake@output[["plot_collapsed"]], plot = tg, width = 15, height = height, limitsize=FALSE)

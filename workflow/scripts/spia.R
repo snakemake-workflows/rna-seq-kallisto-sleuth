@@ -28,20 +28,29 @@ diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>%
 universe <- diffexp %>% pull(var = ens_gene)
 sig_genes <- diffexp %>% filter(qval <= 0.05)
 
-# get logFC equivalent (the sum of beta scores of covariates of interest)
+if(nrow(sig_genes) == 0) {
+    cols <- c("Name", "pSize", "NDE", "pNDE", "tA", "pPERT", "pG", "pGFdr", "pGFWER", "Status")
+    res <- data.frame(matrix(ncol=10, nrow=0, dimnames=list(NULL, cols)))
+    # create empty perturbation plots
+    pdf(file = snakemake@output[["plots"]])
+    dev.off()
+} else {
 
-beta_col <- get_prefix_col("b", colnames(sig_genes))
+    # get logFC equivalent (the sum of beta scores of covariates of interest)
 
-beta <- sig_genes %>%
-            dplyr::select(ens_gene, !!beta_col) %>%
-            deframe()
+    beta_col <- get_prefix_col("b", colnames(sig_genes))
 
-t <- tempdir(check=TRUE)
-olddir <- getwd()
-setwd(t)
-prepareSPIA(db, pw_db)
-res <- runSPIA(de = beta, all = universe, pw_db, plots = TRUE, verbose = TRUE)
-setwd(olddir)
+    beta <- sig_genes %>%
+                dplyr::select(ens_gene, !!beta_col) %>%
+                deframe()
 
-file.copy(file.path(t, "SPIAPerturbationPlots.pdf"), snakemake@output[["plots"]])
+    t <- tempdir(check=TRUE)
+    olddir <- getwd()
+    setwd(t)
+    prepareSPIA(db, pw_db)
+    res <- runSPIA(de = beta, all = universe, pw_db, plots = TRUE, verbose = TRUE)
+    setwd(olddir)
+
+    file.copy(file.path(t, "SPIAPerturbationPlots.pdf"), snakemake@output[["plots"]])
+}
 write_tsv(res, snakemake@output[["table"]])
