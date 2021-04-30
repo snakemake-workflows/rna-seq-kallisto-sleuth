@@ -22,10 +22,10 @@ samples.index.names = ["sample_id"]
 
 
 def drop_unique_cols(df):
-    return df.drop(df.nunique().loc[(df.nunique().values <= 1)].index, axis=1)
+    singular_cols = df.nunique().loc[(df.nunique().values <= 1)].index
+    return df.drop(singular_cols, axis=1)
 
 samples = drop_unique_cols(samples)
-print(samples)
 validate(samples, schema="../schemas/samples.schema.yaml")
 
 units = pd.read_csv(config["units"], dtype=str, sep="\t", comment="#").set_index(
