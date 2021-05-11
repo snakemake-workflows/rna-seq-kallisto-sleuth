@@ -1,5 +1,6 @@
 # Snakemake workflow: rna-seq-kallisto-sleuth
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4749302.svg)](https://doi.org/10.5281/zenodo.4749302)
 [![Snakemake](https://img.shields.io/badge/snakemake-≥6.3.0-brightgreen.svg)](https://snakemake.github.io)
 [![Snakemake-Report](https://img.shields.io/badge/snakemake-report-green.svg)](https://cdn.rawgit.com/snakemake-workflows/rna-seq-kallisto-sleuth/main/.test/report.html)
 
