@@ -73,6 +73,11 @@ rule fgsea:
             caption="../report/fgsea-table-plot.rst",
             category="Gene set enrichment analysis",
         ),
+        plot_collapsed=report(
+            "results/plots/fgsea/{model}.collapsed_pathways.table-plot.pdf",
+            caption="../report/fgsea-collapsed-table-plot.rst",
+            category="Gene set enrichment analysis",
+        ),
     params:
         bioc_pkg=get_bioc_species_pkg,
         model=get_model,
