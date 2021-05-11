@@ -3,7 +3,7 @@ name: Tests
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches_ignore: []
 
@@ -18,7 +18,7 @@ jobs:
       uses: github/super-linter@v3
       env:
         VALIDATE_ALL_CODEBASE: false
-        DEFAULT_BRANCH: master
+        DEFAULT_BRANCH: main
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         VALIDATE_SNAKEMAKE_SNAKEFMT: true
   linting:
