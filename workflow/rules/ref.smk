@@ -1,8 +1,8 @@
-rule get_genome:
+rule get_transcriptome:
     output:
-        "resources/genome.fasta",
+        "resources/transcriptome.fasta",
     log:
-        "logs/get-genome.log",
+        "logs/get-transcriptome.log",
     params:
         species=config["resources"]["ref"]["species"],
         datatype="cdna",
