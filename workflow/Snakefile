@@ -1,3 +1,19 @@
+from snakemake.utils import min_version
+
+min_version("6.3.0")
+
+
+configfile: "config/config.yaml"
+
+
+report: "report/workflow.rst"
+
+
+# this container defines the underlying OS for each job when using the workflow
+# with --use-conda --use-singularity
+container: "docker://continuumio/miniconda3"
+
+
 include: "rules/common.smk"
 include: "rules/trim.smk"
 include: "rules/quant.smk"
