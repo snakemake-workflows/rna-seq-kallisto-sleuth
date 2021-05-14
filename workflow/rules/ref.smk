@@ -4,10 +4,10 @@ rule get_genome:
     log:
         "logs/get-genome.log",
     params:
-        species=config["ref"]["species"],
+        species=config["resources"]["ref"]["species"],
         datatype="cdna",
-        build=config["ref"]["build"],
-        release=config["ref"]["release"],
+        build=config["resources"]["ref"]["build"],
+        release=config["resources"]["ref"]["release"],
     cache: True
     wrapper:
         "0.74.0/bio/reference/ensembl-sequence"
