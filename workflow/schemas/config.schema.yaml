@@ -16,13 +16,19 @@ properties:
       ref:
         type: object
         properties:
-          transcriptome:
-            type: string
           species:
             type: string
+          release:
+            type: string
+          build:
+            type: string
+          species_db_version:
+            type: string
         required:
-          - transcriptome
           - species
+          - release
+          - build
+          - species_db_version
       ontology:
         type: object
         properties:

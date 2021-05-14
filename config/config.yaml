@@ -3,9 +3,12 @@ units: config/units.tsv
 
 resources:
   ref:
-    transcriptome: "resources/ref/Homo_sapiens.GRCh38.cdna.chr21.fa"
-    # species needs to be an identifier known to biomart, e.g. mmusculus, hsapiens
-    species: hsapiens
+    # ensembl species name
+    species: homo_sapiens
+    # ensembl release version
+    release: "104"
+    # genome build
+    build: GRCh38
     # this is the version of the bioconda package `bioconductor-org.{species}`.eg.db` that
     # you want -- this needs to be compatible with the versions `r-base` and the
     # bioconductor packages specified e.g. in `envs/` files `fgsea.yaml`, `spia.yaml` and

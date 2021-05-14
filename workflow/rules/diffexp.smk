@@ -28,7 +28,7 @@ rule sleuth_init:
     output:
         "results/sleuth/{model,[^.]+}.rds",
     params:
-        species=config["resources"]["ref"]["species"],
+        species=get_bioc_species_name(),
         model=lambda w: get_model(w)["full"],
         exclude=config["diffexp"].get("exclude", None),
     conda:

@@ -31,7 +31,7 @@ rule spia:
         plots="results/plots/pathways/{model}.spia-perturbation-plots.pdf",
     params:
         bioc_pkg=get_bioc_species_pkg,
-        species=config["resources"]["ref"]["species"],
+        species=get_bioc_species_name(),
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
     conda:
@@ -168,7 +168,7 @@ rule goatools_go_enrichment:
             category="GO term enrichment analysis",
         ),
     params:
-        species=config["resources"]["ref"]["species"],
+        species=get_bioc_species_name(),
         model=get_model,
         gene_fdr=lambda wc: wc.gene_fdr.replace("-", "."),
         go_term_fdr=lambda wc: wc.go_term_fdr.replace("-", "."),
