@@ -81,10 +81,12 @@ def get_trimmed(wildcards):
     # single end sample
     return expand("results/trimmed/{sample}-{unit}.fastq.gz", **wildcards)
 
+
 def get_bioc_species_name():
     first_letter = config["resources"]["ref"]["species"][0]
-    subspecies = config["resources"]["ref"]["species"].split('_')[1]
+    subspecies = config["resources"]["ref"]["species"].split("_")[1]
     return first_letter + subspecies
+
 
 def get_bioc_species_pkg(wildcards):
     """Get the package bioconductor package name for the the species in config.yaml"""

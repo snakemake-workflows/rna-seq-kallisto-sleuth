@@ -11,4 +11,3 @@ rule get_genome:
     cache: True
     wrapper:
         "0.74.0/bio/reference/ensembl-sequence"
-
