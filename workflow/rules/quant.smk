@@ -1,6 +1,6 @@
 rule kallisto_index:
     input:
-        config["resources"]["ref"]["transcriptome"],
+        "resources/genome.fasta,
     output:
         "results/kallisto/transcripts.idx",
     log:
