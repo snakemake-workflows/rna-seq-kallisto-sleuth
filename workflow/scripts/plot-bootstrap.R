@@ -18,8 +18,14 @@ top_genes <- results %>%
     drop_na() %>%
     distinct(ext_gene)
 
-genes_of_interest <- tibble( ext_gene = snakemake@params[["genes"]]) %>%
+
+if ( !is.null(snakemake@params[["genes"]]) ) {
+  genes_of_interest <- tibble( ext_gene = snakemake@params[["genes"]]) %>%
     distinct(ext_gene)
+} else {
+  # "genes" is null, if the list provided in config.yaml is empty
+  genes_of_interest <- tibble( ext_gene = character() )
+}
 
 genes <- full_join(top_genes, genes_of_interest, by = 'ext_gene') %>%
     add_row(ext_gene = "Custom") %>%
