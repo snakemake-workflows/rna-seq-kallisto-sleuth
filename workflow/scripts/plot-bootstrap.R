@@ -19,7 +19,7 @@ top_genes <- results %>%
     distinct(ext_gene)
 
 
-if ( !is.null(snakemake@params[["genes"]] ) {
+if ( !is.null(snakemake@params[["genes"]]) ) {
   genes_of_interest <- tibble( ext_gene = snakemake@params[["genes"]]) %>%
     distinct(ext_gene)
 } else {
