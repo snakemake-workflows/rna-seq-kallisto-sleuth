@@ -34,7 +34,7 @@ def volcano(
         opacity=0.66,
         title=title,
         log_y=True,
-        labels={x: "beta value", y: "p-value"},
+        labels={x: "beta value", y: "q-value"},
     )
     fig.add_hline(
         y=qval,
