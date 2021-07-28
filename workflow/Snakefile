@@ -20,6 +20,7 @@ include: "rules/ref.smk"
 include: "rules/quant.smk"
 include: "rules/diffexp.smk"
 include: "rules/enrichment.smk"
+include: "rules/plot.smk"
 
 
 rule all:
