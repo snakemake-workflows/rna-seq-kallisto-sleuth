@@ -5,13 +5,13 @@ import os
 
 
 def volcano(
-    data: pd.DataFrame, x: str, y: str = "pval", qval: float = 0.01, title: str = ""
+    data: pd.DataFrame, x: str, y: str, sig_level: float = 0.01, title: str = ""
 ) -> Figure:
     assert x.startswith("b_")
     x_name = x[2:]
 
     data["text"] = ""
-    data["significant"] = data["qval"] < qval
+    data["significant"] = data[y] < sig_level
 
     fig = px.scatter(
         data,
@@ -22,7 +22,7 @@ def volcano(
         hover_data={
             "target_id": True,
             "pval": ":.6f",
-            "qval": ":.6f",
+            f"qval_{x_name}": ":.6f",
             f"signed_pi_value_{x_name}": ":.6f",
             "text": False,
             "significant": False,
@@ -37,9 +37,9 @@ def volcano(
         labels={x: "beta value", y: "q-value"},
     )
     fig.add_hline(
-        y=qval,
+        y=sig_level,
         line_dash="dash",
-        annotation_text=f"qval: {qval}",
+        annotation_text=f"qval: {sig_level}",
     )
     fig.update_layout(
         template="plotly_white", showlegend=True, yaxis=dict(autorange="reversed")
@@ -66,8 +66,8 @@ def main(snakemake):
         fig = volcano(
             data,
             x="b_" + covariate,
-            y="qval",
-            qval=sig_level,
+            y="qval_" + covariate,
+            sig_level=sig_level,
             title=f"volcano plot for {model} {covariate} (qval={sig_level})",
         )
         fig.write_html(os.path.join(snakemake.output.volcano_plot, covariate + ".html"))
