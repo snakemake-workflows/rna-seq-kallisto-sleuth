@@ -6,7 +6,8 @@ rule interactive_plots:
             report(
                 "results/plots/interactive/volcano/{model}/",
                 caption="../report/plot-volcano.rst",
-                category="QC",
+                patterns=["{name}.html"],
+                category="Volcano plots",
             )
         ),
     params:
