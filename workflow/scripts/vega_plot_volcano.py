@@ -6,7 +6,7 @@ from io import StringIO
 def main(snakemake):
 
     # read vega js file with template vars
-    # `$url`, `$sig_level`, `$beta_column` and `$beta_se_column`
+    # `$data`, `$sig_level`, `$beta_column` and `$beta_se_column`
     with open(snakemake.input.spec, "rt") as f:
         spec = Template(f.read())
 
