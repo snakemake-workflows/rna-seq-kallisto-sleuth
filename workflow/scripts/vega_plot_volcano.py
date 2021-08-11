@@ -15,6 +15,7 @@ def main(snakemake):
 
     # find column that matches primary variable
     df: pd.DataFrame = pd.read_csv(snakemake.input.tsv, sep="\t")
+
     primary_cols = [
         c
         for c in list(df.columns)
@@ -22,7 +23,13 @@ def main(snakemake):
     ]
     assert len(primary_cols) == 1
     beta_col = primary_cols[0]
+
+    # only keep columns needed for plot
     df = df[["ens_gene", "ext_gene", "target_id", "qval", beta_col, beta_col + "_se"]]
+
+    # nan / NA / None values do not get plotted, so remove respective rows
+    df = df.dropna()
+
     data = StringIO()
     df.to_csv(data, sep="\t", index=False)
 
