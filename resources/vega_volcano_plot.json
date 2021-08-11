@@ -4,15 +4,34 @@
     "width": "container",
     "height": "container",
     "data": {
-        "url": "$url"
+        "values": "$data",
+        "format": {
+            "type": "tsv"
+        }
     },
     "layer": [
         {
-            "mark": { "type": "point", "filled": true },
+            "mark": {
+                "type": "point",
+                "filled": true
+            },
             "encoding": {
-                "x": { "field": "$beta_column", "type": "quantitative" },
-                "y": { "field": "qval", "type": "quantitative", "scale": { "type": "log", "reverse": true } },
-                "size": { "field": "$beta_se_column", "type": "quantitative" },
+                "x": {
+                    "field": "$beta_column",
+                    "type": "quantitative"
+                },
+                "y": {
+                    "field": "qval",
+                    "type": "quantitative",
+                    "scale": {
+                        "type": "log",
+                        "reverse": true
+                    }
+                },
+                "size": {
+                    "field": "$beta_se_column",
+                    "type": "quantitative"
+                },
                 "color": {
                     "condition": {
                         "test": "datum['qval'] >= $sig_level",
@@ -20,31 +39,74 @@
                     }
                 },
                 "tooltip": [
-                    { "field": "ext_gene", "type": "nominal" },
-                    { "field": "ens_gene", "type": "nominal" },
-                    { "field": "target_id", "type": "nominal" },
-                    { "field": "qval", "type": "quantitative" }
+                    {
+                        "field": "ext_gene",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "ens_gene",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "target_id",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "qval",
+                        "type": "quantitative"
+                    }
                 ]
             }
         },
         {
             "mark": "rule",
             "encoding": {
-                "y": { "datum": "$sig_level" },
-                "size": { "value": 1 },
-                "strokeDash": { "value": [8, 8] },
-                "color": { "value": "#111" }
+                "y": {
+                    "datum": "$sig_level"
+                },
+                "size": {
+                    "value": 1
+                },
+                "strokeDash": {
+                    "value": [
+                        8,
+                        8
+                    ]
+                },
+                "color": {
+                    "value": "#111"
+                }
             }
         },
         {
             "mark": "rule",
             "encoding": {
-                "x": { "datum": "$sig_level" },
-                "size": { "value": 1 },
-                "strokeDash": { "value": [4, 4] },
-                "color": { "value": "#111" }
+                "x": {
+                    "datum": "$sig_level"
+                },
+                "size": {
+                    "value": 1
+                },
+                "strokeDash": {
+                    "value": [
+                        4,
+                        4
+                    ]
+                },
+                "color": {
+                    "value": "#111"
+                }
             }
         }
     ],
-    "resolve": { "scale": { "y": "shared", "x": "shared" }, "axis": { "y": "shared", "x": "shared" } }
+    "resolve": {
+        "scale": {
+            "y": "shared",
+            "x": "shared"
+        },
+        "axis": {
+            "y": "shared",
+            "x": "shared"
+        }
+    }
 }

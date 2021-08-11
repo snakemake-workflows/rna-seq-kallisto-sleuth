@@ -16,7 +16,6 @@ rule vega_volcano_plot:
         tsv="results/tables/diffexp/{model}.transcripts.diffexp.nona.tsv",
         spec="resources/vega_volcano_plot.json",
     output:
-        tsv="results/plots/interactive/volcano/{model}.tsv",
         json="results/plots/interactive/volcano/{model}.vl.json",
     params:
         model=get_model,
