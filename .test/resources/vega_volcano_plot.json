@@ -23,8 +23,7 @@
                     { "field": "ext_gene", "type": "nominal" },
                     { "field": "ens_gene", "type": "nominal" },
                     { "field": "target_id", "type": "nominal" },
-                    { "field": "qval", "type": "quantitative" },
-                    { "field": "signed_pi_value_knockdownyes", "type": "quantitative" }
+                    { "field": "qval", "type": "quantitative" }
                 ]
             }
         },
