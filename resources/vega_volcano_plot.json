@@ -62,7 +62,7 @@
             "mark": "rule",
             "encoding": {
                 "y": {
-                    "datum": "$sig_level"
+                    "datum": $sig_level
                 },
                 "size": {
                     "value": 1
@@ -82,7 +82,7 @@
             "mark": "rule",
             "encoding": {
                 "x": {
-                    "datum": "$sig_level"
+                    "datum": 0
                 },
                 "size": {
                     "value": 1
