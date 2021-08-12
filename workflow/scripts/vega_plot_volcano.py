@@ -3,6 +3,27 @@ import pandas as pd
 from io import StringIO
 
 
+HTML = r"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+<body>
+    <div id="vis" style="width: 100%; height: 90vh;"></div>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <script>
+        var vega_specs = $json;
+        vegaEmbed('#vis', vega_specs);
+    </script>
+</body>
+</html>
+"""
+
+
 def main(snakemake):
 
     # read vega js file with template vars
@@ -41,8 +62,13 @@ def main(snakemake):
         beta_se_column=beta_col + "_se",
     )
 
+    html = Template(HTML).safe_substitute(json=json)
+
     with open(snakemake.output.json, "wt") as f:
         f.write(json)
+
+    with open(snakemake.output.html, "wt") as f:
+        f.write(html)
 
 
 if __name__ == "__main__":

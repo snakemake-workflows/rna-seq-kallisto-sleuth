@@ -17,6 +17,7 @@ rule vega_volcano_plot:
         spec="resources/vega_volcano_plot.json",
     output:
         json="results/plots/interactive/volcano/{model}.vl.json",
+        html=report("results/plots/interactive/volcano/{model}.html", category="Plots"),
     params:
         model=get_model,
         sig_level_volcano=config["diffexp"]["sig-level"]["volcano-plot"],
