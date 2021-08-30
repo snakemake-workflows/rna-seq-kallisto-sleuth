@@ -1,0 +1,190 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "description": "A simple bar chart with embedded data.",
+    "data": {
+        "values": "$data",
+        "format": {
+            "type": "tsv"
+        }
+    },
+    "spacing": 15,
+    "bounds": "flush",
+    "vconcat": [
+        {
+            "mark": "bar",
+            "width": 800,
+            "height": 80,
+            "encoding": {
+                "x": {
+                    "bin": true,
+                    "field": "$beta_column",
+                    "axis": null
+                },
+                "y": {
+                    "aggregate": "count",
+                    "title": ""
+                }
+            }
+        },
+        {
+            "spacing": 15,
+            "bounds": "flush",
+            "hconcat": [
+                {
+                    "width": 800,
+                    "height": 800,
+                    "layer": [
+                        {
+                            "mark": {
+                                "type": "point",
+                                "filled": true
+                            },
+                            "encoding": {
+                                "x": {
+                                    "field": "$beta_column",
+                                    "type": "quantitative"
+                                },
+                                "y": {
+                                    "field": "qval",
+                                    "type": "quantitative",
+                                    "scale": {
+                                        "type": "log",
+                                        "reverse": true,
+                                        "domainMax": 1
+                                    }
+                                },
+                                "size": {
+                                    "field": "$beta_se_column",
+                                    "type": "quantitative"
+                                },
+                                "color": {
+                                    "condition": {
+                                        "test": "datum['qval'] >= $sig_level",
+                                        "value": "#aaa"
+                                    }
+                                },
+                                "tooltip": [
+                                    {
+                                        "field": "ext_gene",
+                                        "type": "nominal"
+                                    },
+                                    {
+                                        "field": "ens_gene",
+                                        "type": "nominal"
+                                    },
+                                    {
+                                        "field": "target_id",
+                                        "type": "nominal"
+                                    },
+                                    {
+                                        "field": "qval",
+                                        "type": "quantitative"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "mark": "rule",
+                            "encoding": {
+                                "y": {
+                                    "datum": $sig_level
+                                },
+                                "size": {
+                                    "value": 1
+                                },
+                                "strokeDash": {
+                                    "value": [
+                                        8,
+                                        8
+                                    ]
+                                },
+                                "color": {
+                                    "value": "#111"
+                                }
+                            }
+                        },
+                        {
+                            "mark": "rule",
+                            "encoding": {
+                                "x": {
+                                    "datum": 0
+                                },
+                                "size": {
+                                    "value": 1
+                                },
+                                "strokeDash": {
+                                    "value": [
+                                        4,
+                                        4
+                                    ]
+                                },
+                                "color": {
+                                    "value": "#111"
+                                }
+                            }
+                        }
+                    ],
+                    "resolve": {
+                        "scale": {
+                            "y": "shared",
+                            "x": "shared"
+                        },
+                        "axis": {
+                            "y": "shared",
+                            "x": "shared"
+                        }
+                    }
+                },
+                {
+                    "width": 80,
+                    "transform": [
+                        {
+                            "calculate": "log(datum.qval)/log(10)",
+                            "as": "log_qval"
+                        },
+                        {
+                            "bin": true,
+                            "field": "log_qval",
+                            "as": "bin_log_qval"
+                        },
+                        {
+                            "calculate": "pow(10, datum.bin_log_qval)",
+                            "as": "y1"
+                        },
+                        {
+                            "calculate": "pow(10, datum.bin_log_qval_end)",
+                            "as": "y2"
+                        }
+                    ],
+                    "mark": "bar",
+                    "encoding": {
+                        "y": {
+                            "field": "y1",
+                            "scale": {
+                                "type": "log",
+                                "base": 10,
+                                "reverse": true
+                            },
+                            "axis": null
+                        },
+                        "y2": {
+                            "field": "y2"
+                        },
+                        "x": {
+                            "aggregate": "count",
+                            "axis": null
+                        }
+                    }
+                }
+            ],
+            "resolve": {
+                "scale": {
+                    "y": "shared"
+                },
+                "axis": {
+                    "y": "shared"
+                }
+            }
+        }
+    ]
+}

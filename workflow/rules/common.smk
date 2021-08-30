@@ -173,6 +173,7 @@ def all_input(wildcards):
             [
                 "results/plots/mean-var/{model}.mean-variance-plot.pdf",
                 "results/plots/volcano/{model}.volcano-plots.pdf",
+                "results/plots/interactive/volcano/{model}.svg",
                 "results/plots/ma/{model}.ma-plots.pdf",
                 "results/plots/qq/{model}.qq-plots.pdf",
                 "results/tables/diffexp/{model}.transcripts.diffexp.tsv",

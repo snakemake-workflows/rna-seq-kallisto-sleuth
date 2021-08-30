@@ -1,0 +1,6 @@
+channels:
+  - conda-forge
+dependencies:
+  - vega-lite-cli =4.17
+  - python >=3.9,<4
+  - pandas >=1.3,<2
