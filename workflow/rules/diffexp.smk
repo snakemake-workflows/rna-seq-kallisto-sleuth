@@ -339,7 +339,7 @@ rule vg2svg:
 rule vega_volcano_plot:
     input:
         tsv="results/tables/diffexp/{model}.transcripts.diffexp.tsv",
-        spec="resources/vega_volcano_plot.json",
+        spec=workflow.source_path("../../resources/vega_volcano_plot.json"),
     output:
         json="results/plots/interactive/volcano/{model}.vl.json",
         html=report(
