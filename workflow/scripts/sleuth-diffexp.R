@@ -146,6 +146,22 @@ write_results <- function(so, mode, output, output_all) {
                 distinct() %>%
                 # useful sort for scrolling through output by increasing q-values
                 arrange(qval)
+
+      # qq-plot from likelihood ratio test
+      print(str_c("Performing qq-plot from likelihood ratio test"))
+      qq_plot_title_trans <- str_c(plot_model, ": qq-plot from likelihood ratio test")
+      qq_plot_trans <- plot_qq(so, 
+                                test = 'reduced:full', 
+                                test_type = 'lrt', 
+                                sig_level = snakemake@params[["sig_level_qq"]],
+                                point_alpha = 0.2, 
+                                sig_color = "red", 
+                                highlight = NULL, 
+                                highlight_color = "green",
+                                line_color = "blue") +
+        ggtitle(qq_plot_title_trans) +
+        theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
+        qq_list[[qq_plot_title_trans]] <- qq_plot_trans
     } else if (mode == "canonical") {
       all <- all %>%
                 drop_na(canonical) %>%
@@ -153,22 +169,6 @@ write_results <- function(so, mode, output, output_all) {
       # Control FDR again, because we have less tests now.
       all$qval <- p.adjust(all$pval)
     }
-
-    # qq-plot from likelihood ratio test
-    print(str_c("Performing qq-plot from likelihood ratio test"))
-    qq_plot_title_trans <- str_c(plot_model, ": qq-plot from likelihood ratio test")
-    qq_plot_trans <- plot_qq(so, 
-                              test = 'reduced:full', 
-                              test_type = 'lrt', 
-                              sig_level = snakemake@params[["sig_level_qq"]],
-                              point_alpha = 0.2, 
-                              sig_color = "red", 
-                              highlight = NULL, 
-                              highlight_color = "green",
-                              line_color = "blue") +
-      ggtitle(qq_plot_title_trans) +
-      theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
-      qq_list[[qq_plot_title_trans]] <- qq_plot_trans
 
     # saving qq-plots
     marrange_qq <- marrangeGrob(grobs=qq_list, nrow=1, ncol=1, top = NULL)
