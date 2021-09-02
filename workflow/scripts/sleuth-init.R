@@ -58,13 +58,15 @@ while ( class(mart)[[1]] != "Mart" ) {
 t2g <- biomaRt::getBM(
             attributes = c( "ensembl_transcript_id",
                             "ensembl_gene_id",
-                            "external_gene_name"),
+                            "external_gene_name",
+                            "transcript_is_canonical"),
             mart = mart,
             useCache = FALSE
             ) %>%
         rename( target_id = ensembl_transcript_id,
                 ens_gene = ensembl_gene_id,
-                ext_gene = external_gene_name
+                ext_gene = external_gene_name,
+                canonical = transcript_is_canonical,
                 )
 
 samples <- read_tsv(snakemake@input[["samples"]], na = "", col_names = TRUE) %>%
@@ -114,7 +116,7 @@ custom_transcripts <- so$obs_raw %>%
 if(!length(custom_transcripts) == 0) {
     so$target_mapping <- so$target_mapping %>%
                         # add those custom transcripts as rows to the target mapping
-                        add_row(ens_gene = NA, ext_gene = "Custom", target_id = custom_transcripts)
+                        add_row(ens_gene = NA, ext_gene = "Custom", target_id = custom_transcripts, canonical = NA)
 }
 
 sleuth_save(so, snakemake@output[[1]])

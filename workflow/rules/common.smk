@@ -124,8 +124,8 @@ def all_input(wildcards):
         wanted_input.extend(
             expand(
                 [
-                    "results/tables/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
-                    "results/plots/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment_{go_ns}.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.pdf",
+                    "results/tables/go_terms/{model}.canonical-transcripts.diffexp.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
+                    "results/plots/go_terms/{model}.canonical-transcripts.diffexp.go_term_enrichment_{go_ns}.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.pdf",
                 ],
                 model=config["diffexp"]["models"],
                 go_ns=["BP", "CC", "MF"],

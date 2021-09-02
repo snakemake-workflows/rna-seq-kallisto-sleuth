@@ -73,6 +73,9 @@ rule sleuth_diffexp:
         genes_mostsigtrans_rds=(
             "results/sleuth/diffexp/{model}.genes-mostsigtrans.diffexp.rds"
         ),
+        canoncical_transcripts_rds=(
+            "results/sleuth/diffexp/{model}.canonical-transcripts.diffexp.rds"
+        ),
         transcripts=report(
             "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
             caption="../report/diffexp.rst",
@@ -86,6 +89,11 @@ rule sleuth_diffexp:
         genes_mostsigtrans=report(
             "results/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
             caption="../report/diffexp-mostsigtrans.rst",
+            category="Differential gene expression",
+        ),
+        canonical_transcripts=report(
+            "results/tables/diffexp/{model}.canonical-transcripts.diffexp.tsv",
+            caption="../report/diffexp-canonical.rst",
             category="Differential gene expression",
         ),
     params:

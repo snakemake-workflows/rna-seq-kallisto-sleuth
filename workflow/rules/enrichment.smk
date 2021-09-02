@@ -21,7 +21,7 @@ rule spia:
     input:
         samples="results/sleuth/samples.tsv",
         species_anno=get_bioc_pkg_path,
-        diffexp="results/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
+        diffexp="results/tables/diffexp/{model}.canonical-transcripts.diffexp.tsv",
     output:
         table=report(
             "results/tables/pathways/{model}.pathways.tsv",
@@ -49,7 +49,7 @@ rule spia:
 rule fgsea:
     input:
         samples="results/sleuth/samples.tsv",
-        diffexp="results/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
+        diffexp="results/tables/diffexp/{model}.canonical-transcripts.diffexp.tsv",
         species_anno=get_bioc_pkg_path,
         gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"],
     output:
@@ -96,7 +96,7 @@ rule fgsea:
 rule fgsea_plot_gene_sets:
     input:
         samples="results/sleuth/samples.tsv",
-        diffexp="results/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
+        diffexp="results/tables/diffexp/{model}.canonical-transcripts.diffexp.tsv",
         gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"],
         sig_gene_sets="results/tables/fgsea/{model}.sig-gene-sets.tsv",
     output:
@@ -152,16 +152,16 @@ rule goatools_go_enrichment:
     input:
         obo="resources/ontology/gene_ontology.obo",
         ens_gene_to_go="resources/ontology/ens_gene_to_go.tsv",
-        diffexp="results/tables/diffexp/{model}.genes-mostsigtrans.diffexp.tsv",
+        diffexp="results/tables/diffexp/{model}.canonical-transcripts.diffexp.tsv",
     output:
         enrichment=report(
-            "results/tables/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
+            "results/tables/go_terms/{model}.canonical-transcripts.diffexp.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
             caption="../report/go-enrichment-mostsigtrans-table.rst",
             category="GO term enrichment analysis",
         ),
         plot=report(
             expand(
-                "results/plots/go_terms/{{model}}.genes-mostsigtrans.diffexp.go_term_enrichment_{ns}.gene_fdr_{{gene_fdr}}.go_term_fdr_{{go_term_fdr}}.pdf",
+                "results/plots/go_terms/{{model}}.canonical-transcripts.diffexp.go_term_enrichment_{ns}.gene_fdr_{{gene_fdr}}.go_term_fdr_{{go_term_fdr}}.pdf",
                 ns=["BP", "CC", "MF"],
             ),
             caption="../report/go-enrichment-mostsigtrans-plot.rst",
@@ -175,6 +175,6 @@ rule goatools_go_enrichment:
     conda:
         "../envs/goatools.yaml"
     log:
-        "logs/goatools/tables_and_plots.{model}.genes-mostsigtrans.diffexp.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
+        "logs/goatools/tables_and_plots.{model}.canonical-transcripts.diffexp.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     script:
         "../scripts/goatools-go-enrichment-analysis.py"
