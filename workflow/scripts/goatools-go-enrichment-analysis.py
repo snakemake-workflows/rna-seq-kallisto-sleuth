@@ -58,7 +58,7 @@ if goea_results_all:
 else:
     # write empty file to indicate that nothing was found
     with open(snakemake.output.enrichment, "w") as out:
-        print("", file=out)
+        pass
 
 
 # plot results
