@@ -29,6 +29,7 @@ diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>%
                     mutate(target_id = str_c(target_id, collapse=",")) %>%
                     mutate(ens_gene = str_c(ens_gene, collapse=",")) %>%
                   distinct()
+print(diffexp)
 
 signed_pi <- get_prefix_col("signed_pi_value", colnames(diffexp))
 
