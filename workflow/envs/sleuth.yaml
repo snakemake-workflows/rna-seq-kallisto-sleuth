@@ -11,4 +11,4 @@ dependencies:
   - r-tidyverse =1.3
   - r-ggpubr =0.4
   - r-base =4.0
-  - bioconductor-limma =3.48
+  - bioconductor-limma =2.46
