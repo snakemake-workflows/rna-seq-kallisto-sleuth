@@ -163,9 +163,11 @@ write_results <- function(so, mode, output, output_all) {
         theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
         qq_list[[qq_plot_title_trans]] <- qq_plot_trans
     } else if (mode == "canonical") {
+      print(all)
       all <- all %>%
                 drop_na(canonical) %>%
                 filter(canonical == TRUE)
+      assert(nrow(all) > 0)
       # Control FDR again, because we have less tests now.
       all$qval <- p.adjust(all$pval)
     }
