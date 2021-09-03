@@ -235,19 +235,19 @@ rule plot_diffexp_pval_hist:
 
 rule logcount_matrix:
     input:
-        "results/sleuth/{model}.rds"
+        "results/sleuth/{model}.rds",
     output:
         report(
             "results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
             caption="../report/logcount-matrix.rst",
             category="Expression Matrices",
-        )
+        ),
     params:
-        model=get_model
+        model=get_model,
     conda:
         "../envs/sleuth.yaml"
     log:
-        "logs/tables/logcount-matrix/{model}.logcount-matrix.log"
+        "logs/tables/logcount-matrix/{model}.logcount-matrix.log",
     script:
         "../scripts/sleuth-to-matrix.R"
 
@@ -344,9 +344,7 @@ rule vega_volcano_plot:
         spec=workflow.source_path("../../resources/vega_volcano_plot.json"),
     output:
         json="results/plots/interactive/volcano/{model}.vl.json",
-        html=report(
-            "results/plots/interactive/volcano/{model}.html", category="Plots"
-        ),
+        html=report("results/plots/interactive/volcano/{model}.html", category="Plots"),
     params:
         model=get_model,
         sig_level_volcano=config["diffexp"]["sig-level"]["volcano-plot"],
