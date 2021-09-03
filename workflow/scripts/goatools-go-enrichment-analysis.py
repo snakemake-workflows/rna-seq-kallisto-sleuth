@@ -1,5 +1,6 @@
 import sys
 sys.stderr = open(snakemake.log[0], "w")
+sys.stdout = open(snakemake.log[0], "a")
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -52,7 +53,12 @@ goea_results_all = goeaobj.run_study(sig_genes['ens_gene'].tolist())
 
 
 # write results to text file
-goeaobj.wr_tsv(snakemake.output.enrichment, goea_results_all)
+if goea_results_all:
+    goeaobj.wr_tsv(snakemake.output.enrichment, goea_results_all)
+else:
+    # write empty file to indicate that nothing was found
+    with open(snakemake.output.enrichment, "w") as out:
+        print("", file=out)
 
 
 # plot results
