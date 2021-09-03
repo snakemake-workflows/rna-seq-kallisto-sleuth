@@ -233,19 +233,21 @@ rule plot_diffexp_pval_hist:
         "../scripts/plot-diffexp-pval-hist.R"
 
 
-rule tpm_matrix:
+rule logcount_matrix:
     input:
-        "results/sleuth/{model}.rds",
+        "results/sleuth/{model}.rds"
     output:
         report(
-            "results/tables/tpm-matrix/{model}.tpm-matrix.tsv",
-            caption="../report/tpm-matrix.rst",
+            "results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
+            caption="../report/logcount-matrix.rst",
             category="Expression Matrices",
-        ),
+        )
+    params:
+        model=get_model
     conda:
         "../envs/sleuth.yaml"
     log:
-        "logs/tables/tpm-matrix/{model}.tpm-matrix.log",
+        "logs/tables/logcount-matrix/{model}.logcount-matrix.log"
     script:
         "../scripts/sleuth-to-matrix.R"
 
