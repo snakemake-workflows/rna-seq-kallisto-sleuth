@@ -73,7 +73,7 @@ rule sleuth_diffexp:
         genes_mostsigtrans_rds=(
             "results/sleuth/diffexp/{model}.genes-mostsigtrans.diffexp.rds"
         ),
-        canoncical_transcripts_rds=(
+        canonical_transcripts_rds=(
             "results/sleuth/diffexp/{model}.canonical-transcripts.diffexp.rds"
         ),
         transcripts=report(
