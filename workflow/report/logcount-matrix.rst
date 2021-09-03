@@ -1,0 +1,2 @@
+Transcript expression matrix (transcript x samples) as normalized and batch-corrected log counts.
+Expressions are normalized and corrected for batch effects with the model ``{{ snakemake.params.model["reduced"] }}``, while protecting the model ``{{ snakemake.params.model["nobatch"] }}``, using Limma.
