@@ -19,9 +19,10 @@ log_norm_counts <- log_norm_counts[, so$sample_to_covariates$sample, drop=FALSE]
 
 # obtain covariates
 model <- snakemake@params[["model"]]
+model_nobatch <- paste("~", model[["primary_variable"]], sep="")
 
 covariates <- model.matrix(as.formula(model[["reduced"]]), data = so$sample_to_covariates)
-design <- model.matrix(as.formula(model[["nobatch"]]), data = so$sample_to_covariates)
+design <- model.matrix(as.formula(model_nobatch), data = so$sample_to_covariates)
 
 stopifnot(so$sample_to_covariates$sample == colnames(log_norm_counts))
 
