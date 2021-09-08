@@ -177,7 +177,7 @@ def all_input(wildcards):
                 "results/plots/ma/{model}.ma-plots.pdf",
                 "results/plots/qq/{model}.qq-plots.pdf",
                 "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
-                "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
+                # "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf", # see rule plot_diffexp_heatmap
                 "results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
             ],
             model=config["diffexp"]["models"],
