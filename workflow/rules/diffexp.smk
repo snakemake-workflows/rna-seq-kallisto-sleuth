@@ -194,6 +194,11 @@ rule plot_pca:
         "../scripts/plot-pca.R"
 
 
+# TODO rewrite heatmap code with ComplexHeatmap or altair.
+# This rule may fail with
+# Error in names(annotation_colors[[names(annotation)[i]]]) <- l :
+#  'names' attribute [2] must be the same length as the vector [1]
+# Calls: plot_transcript_heatmap -> <Anonymous> -> generate_annotation_colours
 rule plot_diffexp_heatmap:
     input:
         so="results/sleuth/{model}.rds",
