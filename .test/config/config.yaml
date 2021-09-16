@@ -13,7 +13,7 @@ resources:
     # you want -- this needs to be compatible with the versions `r-base` and the
     # bioconductor packages specified e.g. in `envs/` files `fgsea.yaml`, `spia.yaml` and
     # `ens_gene_to_go.yaml`
-    species_db_version: "3.12"
+    species_db_version: "3.13"
   ontology:
     # gene ontology to download, used e.g. in goatools
     gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
