@@ -42,7 +42,8 @@ def main(snakemake):
         for c in list(df.columns)
         if c.startswith(f"b_{primary_var}") and not c.endswith("_se")
     ]
-    assert len(primary_cols) == 1
+    if len(primary_cols) > 1:
+        print("WARNING: found {len(primary_cols)} possible primary variables")
     beta_col = primary_cols[0]
 
     # only keep columns needed for plot
