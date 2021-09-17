@@ -58,14 +58,20 @@ while ( class(mart)[[1]] != "Mart" ) {
 t2g <- biomaRt::getBM(
             attributes = c( "ensembl_transcript_id",
                             "ensembl_gene_id",
-                            "external_gene_name"),
+                            "external_gene_name",
+                            "description"),
             mart = mart,
             useCache = FALSE
             ) %>%
         rename( target_id = ensembl_transcript_id,
                 ens_gene = ensembl_gene_id,
-                ext_gene = external_gene_name
-                )
+                ext_gene = external_gene_name,
+                gene_desc = description
+                ) %>%
+        mutate_at(
+          gene_desc,
+          function(value) { str_trim(str_split(value, "[")[[1]]) } # remove trailing source annotation (e.g. [Source:HGNC Symbol;Acc:HGNC:5])
+        )
 
 samples <- read_tsv(snakemake@input[["samples"]], na = "", col_names = TRUE) %>%
             # make everything except the index, sample name and path string a factor
