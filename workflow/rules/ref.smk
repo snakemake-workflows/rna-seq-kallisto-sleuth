@@ -24,6 +24,8 @@ rule get_annotation:
         build=config["resources"]["ref"]["build"],
         fmt="gtf",
         flavor="chr_patch_hapl_scaff",
+    log:
+        "logs/get-annotation.log"
     cache: True
     wrapper:
         "0.74.0/bio/reference/ensembl-annotation"
@@ -48,7 +50,7 @@ rule convert_pfam:
     output:
         multiext("resources/pfam/Pfam-A.hmm", ".h3m", ".h3i", ".h3f", ".h3p"),
     log:
-        "logs/convert_pfam.log",
+        "logs/convert-pfam.log",
     conda:
         "../envs/hmmer.yaml"
     cache: True
@@ -78,6 +80,8 @@ rule calculate_cpat_logit_model:
         "resources/cpat.logit.RData",
     params:
         prefix=lambda _, output: output[0][:-12],
+    log:
+        "logs/calculate-cpat-logit-model.log"
     conda:
         "../envs/cpat.yaml"
     cache: True
