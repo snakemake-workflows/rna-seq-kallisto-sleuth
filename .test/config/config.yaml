@@ -42,6 +42,7 @@ diffexp:
       # Binary valued covariate that shall be used for fold change/effect size
       # based downstream analyses.
       primary_variable: condition
+      base_level: untreated
   # significance level to use for volcano, ma- and qq-plots
   sig-level:
     volcano-plot: 0.05
