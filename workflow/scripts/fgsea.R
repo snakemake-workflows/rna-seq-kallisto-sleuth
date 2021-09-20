@@ -55,8 +55,27 @@ fgsea_res <- fgsea(pathways = gene_sets,
 # Annotation is impossible without any entries, so then just write out empty files
 if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
 
-    write_tsv(fgsea_res, path = snakemake@output[["enrichment"]])
-    write_tsv(fgsea_res, path = snakemake@output[["significant"]])
+    # leadingEdge cannot be a list, and the empty output should at least
+    # have the correct columns in the correct order
+    unnested <- fgsea_res %>%
+                    unnest(leadingEdge) %>%
+                    add_column(
+                        leading_edge_symbol = NA,
+                        leading_edge_ens_gene = NA,
+                        leading_edge_entrez_id = NA
+                    ) %>%
+                    dplyr::relocate(
+                        c(
+                          leading_edge_symbol,
+                          leading_edge_ens_gene,
+                          leading_edge_entrez_id,
+                          leadingEdge
+                        ),
+                        .after = last_col()
+                    )
+
+    write_tsv(unnested, file = snakemake@output[["enrichment"]])
+    write_tsv(unnested, file = snakemake@output[["significant"]])
 
 } else {
 
@@ -76,30 +95,54 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
                         leading_edge_ens_gene = str_c(leading_edge_ens_gene, collapse = ',')
                     ) %>%
                     inner_join(fgsea_res %>% dplyr::select(-leadingEdge), by = "pathway") %>%
-                    dplyr::select(-leadingEdge, -leading_edge_symbol,
-                           -leading_edge_entrez_id, -leading_edge_ens_gene,
-                            leading_edge_symbol, leading_edge_ens_gene,
-                            leading_edge_entrez_id, leadingEdge)
+                    dplyr::relocate(
+                        c(
+                          leading_edge_symbol,
+                          leading_edge_ens_gene,
+                          leading_edge_entrez_id,
+                          leadingEdge
+                        ),
+                        .after = last_col()
+                    )
 
     # write out fgsea results for all gene sets
-    write_tsv(annotated, path = snakemake@output[["enrichment"]])
+    write_tsv(annotated, file = snakemake@output[["enrichment"]])
 
     # select significant pathways
     sig_gene_sets <- annotated %>%
                        filter( padj < snakemake@params[["gene_set_fdr"]] )
 
     # write out fgsea results for gene sets found to be significant
-    write_tsv(sig_gene_sets, path = snakemake@output[["significant"]])
+    write_tsv(sig_gene_sets, file = snakemake@output[["significant"]])
 }
 
-height = .7 * (length(gene_sets) + 2)
+# select significant pathways
+top_pathways <- fgsea_res %>% arrange(padj) %>% head(n=1000) %>% filter(padj < snakemake@params[["gene_set_fdr"]]) %>% arrange(-NES) %>% pull(pathway)
+selected_gene_sets <- gene_sets[top_pathways]
+
+height = .7 * (length(selected_gene_sets) + 2)
 
 # table plot of all gene sets
 tg <- plotGseaTable(
-            pathway = gene_sets,
+            pathway = selected_gene_sets,
             stats = ranked_genes,
             fgseaRes = fgsea_res,
             gseaParam = 1,
             render = FALSE
         )
-ggsave(filename = snakemake@output[["plot"]], plot = tg, width = 12, height = height, limitsize=FALSE)
+ggsave(filename = snakemake@output[["plot"]], plot = tg, width = 15, height = height, limitsize=FALSE)
+
+collapsed_pathways <- collapsePathways(fgsea_res %>% arrange(pval) %>% filter(padj < snakemake@params[["gene_set_fdr"]]), gene_sets, ranked_genes)
+main_pathways <- fgsea_res %>% filter(pathway %in% collapsed_pathways$mainPathways) %>% arrange(-NES) %>% pull(pathway)
+selected_gene_sets <- gene_sets[main_pathways]
+height = .7 * (length(selected_gene_sets) + 2)
+
+# table plot of all gene sets
+tg <- plotGseaTable(
+            pathway = selected_gene_sets,
+            stats = ranked_genes,
+            fgseaRes = fgsea_res,
+            gseaParam = 1,
+            render = FALSE
+        )
+ggsave(filename = snakemake@output[["plot_collapsed"]], plot = tg, width = 15, height = height, limitsize=FALSE)

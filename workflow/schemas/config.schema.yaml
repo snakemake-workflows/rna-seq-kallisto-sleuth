@@ -18,24 +18,19 @@ properties:
         properties:
           species:
             type: string
+          release:
+            type: string
+          build:
+            type: string
+          species_db_version:
+            type: string
           pfam:
             type: string
-          ensembl:
-            type: object
-            properties:
-              species:
-                type: string
-              build:
-                type: string
-              release:
-                type: integer
-            required:
-              - species
-              - build
-              - release
         required:
           - species
-          - ensembl
+          - release
+          - build
+          - species_db_version
           - pfam
       ontology:
         type: object

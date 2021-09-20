@@ -5,8 +5,6 @@ sink(log, type="message")
 library("sleuth")
 library("ggpubr")
 
-so <- sleuth_load(snakemake@input[[1]])
-
 #principal components
 pc <- 4
 

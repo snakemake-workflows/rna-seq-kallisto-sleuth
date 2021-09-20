@@ -103,8 +103,10 @@ write_results <- function(so, mode, output, output_all) {
 
             beta_col_name <- str_c("b", covariate, sep = "_")
             beta_se_col_name <- str_c(beta_col_name, "se", sep = "_")
+            qval_name <- str_c("qval", covariate, sep = "_")
             all_wald <- sleuth_results(so, covariate, "wt", show_all = TRUE, pval_aggregate = FALSE) %>%
                         dplyr::select( target_id = target_id,
+                                !!qval_name := qval,
                                 !!beta_col_name := b,
                                 !!beta_se_col_name := se_b)
             signed_pi_col_name <- str_c("signed_pi_value", covariate, sep = "_")
