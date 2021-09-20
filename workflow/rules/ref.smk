@@ -25,7 +25,7 @@ rule get_annotation:
         fmt="gtf",
         flavor="chr_patch_hapl_scaff",
     log:
-        "logs/get-annotation.log"
+        "logs/get-annotation.log",
     cache: True
     wrapper:
         "0.74.0/bio/reference/ensembl-annotation"
@@ -81,7 +81,7 @@ rule calculate_cpat_logit_model:
     params:
         prefix=lambda _, output: output[0][:-12],
     log:
-        "logs/calculate-cpat-logit-model.log"
+        "logs/calculate-cpat-logit-model.log",
     conda:
         "../envs/cpat.yaml"
     cache: True
