@@ -70,7 +70,7 @@ rule calculate_cpat_hexamers:
         "../envs/cpat.yaml"
     cache: True
     shell:
-        "make_hexamer_tab.py --cod={input.cds} --noncod={input.ncrna} > {output}"
+        "make_hexamer_tab.py --cod={input.cds} --noncod={input.ncrna} > {output} 2> {log}"
 
 
 rule calculate_cpat_logit_model:
@@ -89,4 +89,4 @@ rule calculate_cpat_logit_model:
     cache: True
     shell:
         "make_logitModel.py --hex={input.hexamers} --cgene={input.cds} "
-        "--ngene={input.ncrna} -o {params.prefix}"
+        "--ngene={input.ncrna} -o {params.prefix} 2> {log}"
