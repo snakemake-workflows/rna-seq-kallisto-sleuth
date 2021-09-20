@@ -70,7 +70,7 @@ t2g <- biomaRt::getBM(
                 ) %>%
         mutate_at(
           vars(gene_desc),
-          function(value) { str_trim(str_split(value, "[")[[1]]) } # remove trailing source annotation (e.g. [Source:HGNC Symbol;Acc:HGNC:5])
+          function(value) { str_trim(str_split(value, r"\[")[[1]]) } # remove trailing source annotation (e.g. [Source:HGNC Symbol;Acc:HGNC:5])
         )
 
 samples <- read_tsv(snakemake@input[["samples"]], na = "", col_names = TRUE) %>%
