@@ -171,6 +171,8 @@ write_results <- function(so, mode, output, output_all) {
     write_rds(all, path = output_all, compress = "none")
 
     # add sample expressions
+    head(all)
+    head(sleuth_to_matrix(sleuth_object, "obs_norm", "est_counts")$data)
     all <- all %> left_join(as_tibble(sleuth_to_matrix(sleuth_object, "obs_norm", "est_counts")$data, rownames="target_id"))
     write_tsv(all, path = output, quote_escape = "none")
 }
