@@ -64,6 +64,8 @@ rule calculate_cpat_hexamers:
         ncrna="resources/transcriptome.ncrna.fasta",
     output:
         "resources/cpat.hexamers.tsv",
+    log:
+        "logs/calculate-cpat-hexamers.log",
     conda:
         "../envs/cpat.yaml"
     cache: True
