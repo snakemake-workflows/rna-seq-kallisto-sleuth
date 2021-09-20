@@ -30,7 +30,7 @@ rule sleuth_init:
         designmatrix="results/sleuth/{model}.designmatrix.rds",
     params:
         species=get_bioc_species_name(),
-        model=lambda w: get_model(w)["full"],
+        model=get_model,
         exclude=config["diffexp"].get("exclude", None),
     conda:
         "../envs/sleuth.yaml"

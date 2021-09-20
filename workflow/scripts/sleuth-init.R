@@ -84,7 +84,7 @@ if(!is.null(snakemake@params[["exclude"]])) {
                 filter( !sample %in% snakemake@params[["exclude"]] )
 }
 
-samples_out <- if(!is.null(model)) {
+samples_out <- if(!is.null(model[["full"]])) {
     # retrieve the model formula
     formula <- as.formula(model[["full"]])
     # extract variables from the formula and unnest any nested variables
@@ -138,7 +138,7 @@ if(!length(custom_transcripts) == 0) {
                         add_row(ens_gene = NA, ext_gene = "Custom", target_id = custom_transcripts)
 }
 
-if(!is.null(model)) {
+if(!is.null(model[["full"]])) {
     so <- sleuth_fit(so, as.formula(model[["full"]]), 'full')
     so <- sleuth_fit(so, as.formula(model[["reduced"]]), 'reduced')
 }
