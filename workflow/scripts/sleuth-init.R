@@ -69,7 +69,7 @@ t2g <- biomaRt::getBM(
                 gene_desc = description
                 ) %>%
         mutate_at(
-          gene_desc,
+          vars(gene_desc),
           function(value) { str_trim(str_split(value, "[")[[1]]) } # remove trailing source annotation (e.g. [Source:HGNC Symbol;Acc:HGNC:5])
         )
 
