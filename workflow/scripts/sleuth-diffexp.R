@@ -171,7 +171,7 @@ write_results <- function(so, mode, output, output_all) {
     write_rds(all, path = output_all, compress = "none")
 
     # add sample expressions
-    all <- all %> left_join(sleuth_to_matrix(sleuth_object, "obs_norm", "est_counts"))
+    all <- all %> left_join(as_tibble(sleuth_to_matrix(sleuth_object, "obs_norm", "est_counts"), rownames="target_id"))
     write_tsv(all, path = output, quote_escape = "none")
 }
 write_results(sleuth_object, "transcripts", snakemake@output[["transcripts"]], snakemake@output[["transcripts_rds"]])
