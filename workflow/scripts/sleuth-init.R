@@ -143,4 +143,4 @@ if(!is.null(model)) {
     so <- sleuth_fit(so, as.formula(model[["reduced"]]), 'reduced')
 }
 
-sleuth_save(so, snakemake@output[[1]])
+sleuth_save(so, snakemake@output[["sleuth_object"]])

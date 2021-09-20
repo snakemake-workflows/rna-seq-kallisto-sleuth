@@ -26,7 +26,8 @@ rule sleuth_init:
         kallisto=kallisto_output,
         samples="results/sleuth/samples.tsv",
     output:
-        "results/sleuth/{model,[^.]+}.rds",
+        sleuth_object="results/sleuth/{model,[^.]+}.rds",
+        designmatrix="results/sleuth/{model}.designmatrix.rds",
     params:
         species=get_bioc_species_name(),
         model=lambda w: get_model(w)["full"],
