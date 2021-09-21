@@ -27,30 +27,30 @@ results <- analyzeAlternativeSplicing(
     onlySwitchingGenes = FALSE,
 )
 
+if(length(results$isoformFeatures$iso_ref) > 0) {
+    results <- analyzeSwitchConsequences(
+        results, 
+        consequencesToAnalyze = c(
+            'intron_retention',
+            'coding_potential',
+            # 'ORF_seq_similarity', TODO this is only needed for assembly, reactivate then
+            'NMD_status',
+            'domains_identified'
+        ),
+        onlySigIsoforms = FALSE,
+        removeNonConseqSwitches = FALSE,
+        quiet = FALSE
+    )
 
-
-results <- analyzeSwitchConsequences(
-    results, 
-    consequencesToAnalyze = c(
-        'intron_retention',
-        'coding_potential',
-        # 'ORF_seq_similarity', TODO this is only needed for assembly, reactivate then
-        'NMD_status',
-        'domains_identified'
-    ),
-    onlySigIsoforms = FALSE,
-    removeNonConseqSwitches = FALSE,
-    quiet = FALSE
-)
-
-switchPlotTopSwitches(
-    switchAnalyzeRlist = results,
-    n = Inf,
-    filterForConsequences = TRUE,
-    splitComparison = FALSE,
-    splitFunctionalConsequences = TRUE,
-    pathToOutput = snakemake@params[["plotdir"]],
-)
+    switchPlotTopSwitches(
+        switchAnalyzeRlist = results,
+        n = Inf,
+        filterForConsequences = TRUE,
+        splitComparison = FALSE,
+        splitFunctionalConsequences = TRUE,
+        pathToOutput = snakemake@params[["plotdir"]],
+    )
+}
 
 significant <- extractTopSwitches(
     results,
