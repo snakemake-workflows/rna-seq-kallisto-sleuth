@@ -39,10 +39,25 @@ filtered_candidates <- preFilter(
 
 results <- isoformSwitchTestDEXSeq(
     switchAnalyzeRlist = filtered_candidates,
-    reduceToSwitchingGenes = TRUE,
-    dIFcutoff = snakemake@params[["min_effect_size"]],
-    alpha = snakemake@params[["fdr"]]
+    reduceToSwitchingGenes = FALSE,
 )
+
+# get significant genes
+keep <- unique(
+    results$isoformFeatures$gene_ref[which(
+        results$isoformFeatures$isoform_switch_q_value <
+            snakemake@params[["fdr"]] &
+            abs(results$isoformFeatures$dIF) > snakemake@params[["min_effect_size"]]
+    )]
+)
+
+# if(length(keep) == 0) {
+#     # No significant genes left, just keep the first to keep the analysis going.
+#     keep <- results$isoformFeatures$gene_ref[1]
+# }
+
+# filter to significant genes
+results <- subsetSwitchAnalyzeRlist(results, results$isoformFeatures$gene_ref %in% keep)
 
 extractSequence(
     results,
