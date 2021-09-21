@@ -66,9 +66,15 @@ properties:
         type: number
       remove_noncoding_orfs:
         type: boolean
+      fdr:
+        type: number
+      min_effect_size:
+        type: number
     required:
       - coding_cutoff
       - remove_noncoding_orfs
+      - fdr
+      - min_effect_size
 
   enrichment:
     type: object
