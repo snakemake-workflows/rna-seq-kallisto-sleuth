@@ -56,10 +56,10 @@ diffsplice:
   # Should be set to true when using de-novo assembled transcripts.
   remove_noncoding_orfs: false
   # False discovery rate to control for.
-  fdr: 0.5
+  fdr: 1.0
   # Minimum size of differential isoform usage effect 
   # (see dIFcutoff, https://rdrr.io/github/kvittingseerup/IsoformSwitchAnalyzeR/man/IsoformSwitchTestDEXSeq.html)
-  min_effect_size: 0.001
+  min_effect_size: 0.0
 
 enrichment:
   goatools:
