@@ -42,7 +42,8 @@ results <- isoformSwitchTestDEXSeq(
     reduceToSwitchingGenes = FALSE,
 )
 
-# get significant genes
+# get significant genes (have to do this manually, because IsoformSwitchAnalyzeR exits with an error
+# in case of no significant genes).
 keep <- unique(
     results$isoformFeatures$gene_ref[which(
         results$isoformFeatures$isoform_switch_q_value <
