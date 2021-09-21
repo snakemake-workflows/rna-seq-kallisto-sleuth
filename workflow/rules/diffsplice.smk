@@ -21,6 +21,8 @@ rule init_isoform_switch:
             for unit in units.itertuples()
         ],
         seq_dir=lambda _, output: os.path.dirname(output.seqs[0]),
+        min_effect_size=config["diffsplice"]["min_effect_size"],
+        fdr=config["diffsplice"]["fdr"],
     script:
         "../scripts/isoform-switch-analysis-init.R"
 

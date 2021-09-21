@@ -39,7 +39,9 @@ filtered_candidates <- preFilter(
 
 results <- isoformSwitchTestDEXSeq(
     switchAnalyzeRlist = filtered_candidates,
-    reduceToSwitchingGenes = TRUE
+    reduceToSwitchingGenes = TRUE,
+    dIFcutoff = snakemake@params[["min_effect_size"]],
+    alpha = snakemake@params[["fdr"]]
 )
 
 extractSequence(
