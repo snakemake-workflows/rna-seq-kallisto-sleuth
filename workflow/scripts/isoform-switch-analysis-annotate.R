@@ -21,16 +21,16 @@ results <- analyzeCPAT(
     quiet = TRUE
 )
 
-results <- analyzeAlternativeSplicing(results, quiet = FALSE)
+results <- analyzeAlternativeSplicing(results, quiet = FALSE, onlySwitchingGenes = FALSE)
 
 results <- analyzeSwitchConsequences(
     results, 
     consequencesToAnalyze = c(
         'intron_retention',
-	'coding_potential',
-	# 'ORF_seq_similarity', TODO this is only needed for assembly, reactivate then
-	'NMD_status',
-	'domains_identified'
+        'coding_potential',
+        # 'ORF_seq_similarity', TODO this is only needed for assembly, reactivate then
+        'NMD_status',
+        'domains_identified'
     ),
     quiet = FALSE
 )
