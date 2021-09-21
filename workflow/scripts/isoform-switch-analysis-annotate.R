@@ -27,6 +27,8 @@ results <- analyzeAlternativeSplicing(
     onlySwitchingGenes = FALSE,
 )
 
+print(results)
+
 if(length(results$isoformFeatures$iso_ref) > 0) {
     results <- analyzeSwitchConsequences(
         results, 
