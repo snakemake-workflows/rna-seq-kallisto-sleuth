@@ -21,7 +21,13 @@ results <- analyzeCPAT(
     quiet = TRUE
 )
 
-results <- analyzeAlternativeSplicing(results, quiet = FALSE, onlySwitchingGenes = FALSE)
+results <- analyzeAlternativeSplicing(
+    results, 
+    quiet = FALSE, 
+    onlySwitchingGenes = FALSE,
+)
+
+
 
 results <- analyzeSwitchConsequences(
     results, 
@@ -32,13 +38,15 @@ results <- analyzeSwitchConsequences(
         'NMD_status',
         'domains_identified'
     ),
+    onlySigIsoforms = FALSE,
+    removeNonConseqSwitches = FALSE,
     quiet = FALSE
 )
 
 switchPlotTopSwitches(
     switchAnalyzeRlist = results,
     n = Inf,
-    filterForConsequences = FALSE,
+    filterForConsequences = TRUE,
     splitComparison = FALSE,
     splitFunctionalConsequences = TRUE,
     pathToOutput = snakemake@params[["plotdir"]],
