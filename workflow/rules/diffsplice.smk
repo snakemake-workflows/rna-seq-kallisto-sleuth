@@ -32,6 +32,7 @@ rule calculate_protein_domains:
         fasta="results/diffsplice/{model}.sequences/isoformSwitchAnalyzeR_isoform_AA.fasta",
         pfam=rules.convert_pfam.output,
         pfam_dat="resources/pfam/Pfam-A.hmm.dat",
+        pfam_hmm="resources/pfam/Pfam-A.hmm",
     output:
         "results/diffsplice/{model}.pfam",
     params:
