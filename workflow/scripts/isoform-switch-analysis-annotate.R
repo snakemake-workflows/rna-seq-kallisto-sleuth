@@ -46,14 +46,16 @@ if(nrow(results$isoformFeatures) > 0) {
         dIFcutoff = snakemake@params[["min_effect_size"]],
     )
 
-    switchPlotTopSwitches(
-        switchAnalyzeRlist = results,
-        n = Inf,
-        filterForConsequences = TRUE,
-        splitComparison = FALSE,
-        splitFunctionalConsequences = TRUE,
-        pathToOutput = snakemake@params[["plotdir"]],
-    )
+    if(!all(is.na(results$isoformFeatures$switchConsequencesGene))) {
+        switchPlotTopSwitches(
+            switchAnalyzeRlist = results,
+            n = Inf,
+            filterForConsequences = TRUE,
+            splitComparison = FALSE,
+            splitFunctionalConsequences = TRUE,
+            pathToOutput = snakemake@params[["plotdir"]],
+        )
+    }
 }
 
 significant <- extractTopSwitches(
