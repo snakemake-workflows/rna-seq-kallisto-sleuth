@@ -29,7 +29,7 @@ results <- analyzeAlternativeSplicing(
 
 print(results)
 
-if(length(results$isoformFeatures$iso_ref) > 0) {
+if(nrow(results$isoformFeatures) > 0) {
     results <- analyzeSwitchConsequences(
         results, 
         consequencesToAnalyze = c(
@@ -41,7 +41,9 @@ if(length(results$isoformFeatures$iso_ref) > 0) {
         ),
         onlySigIsoforms = FALSE,
         removeNonConseqSwitches = FALSE,
-        quiet = FALSE
+        quiet = FALSE,
+        alpha = snakemake@params[["fdr"]],
+        dIFcutoff = snakemake@params[["min_effect_size"]],
     )
 
     switchPlotTopSwitches(

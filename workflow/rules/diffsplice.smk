@@ -94,6 +94,8 @@ rule annotate_isoform_switch:
         coding_cutoff=config["diffsplice"]["coding_cutoff"],
         remove_noncoding_orfs=config["diffsplice"]["remove_noncoding_orfs"],
         plotdir=lambda _, output: os.path.dirname(output.plots_with),
+        min_effect_size=config["diffsplice"]["min_effect_size"],
+        fdr=config["diffsplice"]["fdr"],
     conda:
         "../envs/isoform-switch-analyzer.yaml"
     script:
