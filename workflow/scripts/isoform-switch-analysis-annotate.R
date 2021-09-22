@@ -46,6 +46,7 @@ if(nrow(results$isoformFeatures) > 0) {
         dIFcutoff = snakemake@params[["min_effect_size"]],
     )
 
+    print(results$isoformFeatures$switchConsequencesGene)
     if(!all(is.na(results$isoformFeatures$switchConsequencesGene))) {
         switchPlotTopSwitches(
             switchAnalyzeRlist = results,
