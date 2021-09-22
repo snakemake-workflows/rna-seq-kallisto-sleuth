@@ -41,7 +41,7 @@ if(nrow(results$isoformFeatures) > 0) {
         ),
         onlySigIsoforms = FALSE,
         removeNonConseqSwitches = FALSE,
-        quiet = FALSE,
+        quiet = TRUE, # set to TRUE to circumvent a bug leading to a stop() if there are no significant switches
         alpha = snakemake@params[["fdr"]],
         dIFcutoff = snakemake@params[["min_effect_size"]],
     )
