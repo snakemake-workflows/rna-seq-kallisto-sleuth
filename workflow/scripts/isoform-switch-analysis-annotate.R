@@ -65,6 +65,8 @@ significant <- extractTopSwitches(
     extractGenes = TRUE,
     n = Inf,
     sortByQvals = TRUE,
+    alpha = snakemake@params[["fdr"]],
+    dIFcutoff = snakemake@params[["min_effect_size"]],
 )
 
 write_tsv(significant, snakemake@output[["table"]])
