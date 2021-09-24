@@ -5,4 +5,4 @@ dependencies:
   - r-sleuth =0.30
   - bioconductor-isoformswitchanalyzer =1.14
   - r-tidyverse =1.3
-  - r-base =4.0
+  - r-base =4.1
