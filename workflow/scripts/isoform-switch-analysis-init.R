@@ -63,7 +63,8 @@ results <- subsetSwitchAnalyzeRlist(results, results$isoformFeatures$gene_ref %i
 extractSequence(
     results,
     pathToOutput = snakemake@params[["seq_dir"]],
-    addToSwitchAnalyzeRlist = TRUE
+    addToSwitchAnalyzeRlist = TRUE,
+    onlySwitchingGenes = FALSE,
 )
 
 saveRDS(results, file = snakemake@output[[1]])
