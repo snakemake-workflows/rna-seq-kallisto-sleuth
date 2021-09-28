@@ -52,9 +52,12 @@ jobs:
         snakefile: workflow/Snakefile
         args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache --all-temp"
 
-    - name: Test report
-      uses: snakemake/snakemake-github-action@v1.22.0
-      with:
-        directory: .test
-        snakefile: workflow/Snakefile
-        args: "--report report.zip"
+    # Disable report testing for now since we mark all output files as temporary above.
+    # TODO: add some kind of test mode to report generation which does not really try to include
+    # results.
+    # - name: Test report
+    #   uses: snakemake/snakemake-github-action@v1.22.0
+    #   with:
+    #     directory: .test
+    #     snakefile: workflow/Snakefile
+    #     args: "--report report.zip"
