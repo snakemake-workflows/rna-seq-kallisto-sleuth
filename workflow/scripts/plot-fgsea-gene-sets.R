@@ -7,7 +7,7 @@ library("fgsea")
 # provides library("tidyverse") and function get_prefix_col()
 # the latter requires snakemake@output[["samples"]] and
 # snakemake@params[["covariate"]]
-source( file.path(snakemake@scriptdir, 'common.R') )
+source(snakemake@params[["common_src"]])
 
 
 gene_sets <- gmtPathways(snakemake@input[["gene_sets"]])
