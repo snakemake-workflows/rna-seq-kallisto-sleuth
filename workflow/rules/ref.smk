@@ -31,6 +31,19 @@ rule get_annotation:
         "0.74.0/bio/reference/ensembl-annotation"
 
 
+rule get_transcript_info:
+    output:
+        "resources/transcript-info.rds",
+    params:
+        species=get_bioc_species_name(),
+    log:
+        "logs/get_transcript_info.log",
+    conda:
+        "../envs/biomart.yaml"
+    script:
+        "../scripts/get-transcript-info.R"
+
+
 rule get_pfam:
     output:
         r"resources/pfam/Pfam-A.{ext,(hmm|hmm\.dat)}",

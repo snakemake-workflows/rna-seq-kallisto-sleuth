@@ -25,6 +25,7 @@ rule sleuth_init:
     input:
         kallisto=kallisto_output,
         samples="results/sleuth/samples.tsv",
+        transcript_info="resources/transcript-info.rds",
     output:
         sleuth_object="results/sleuth/{model,[^.]+}.rds",
         designmatrix="results/sleuth/{model}.designmatrix.rds",

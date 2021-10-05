@@ -3,75 +3,9 @@ sink(log)
 sink(log, type="message")
 
 library("sleuth")
-library("biomaRt")
 library("tidyverse")
 
 model <- snakemake@params[["model"]]
-
-# this variable holds a mirror name until
-# useEnsembl succeeds ("www" is last, because 
-# of very frequent "Internal Server Error"s)
-mart <- "useast"
-rounds <- 0
-while ( class(mart)[[1]] != "Mart" ) {
-  mart <- tryCatch(
-    {
-      # done here, because error function does not
-      # modify outer scope variables, I tried
-      if (mart == "www") rounds <- rounds + 1
-      # equivalent to useMart, but you can choose
-      # the mirror instead of specifying a host
-      biomaRt::useEnsembl(
-        biomart = "ENSEMBL_MART_ENSEMBL",
-        dataset = str_c(snakemake@params[["species"]], "_gene_ensembl"),
-        mirror = mart
-      )
-    },
-    error = function(e) {
-      # change or make configurable if you want more or
-      # less rounds of tries of all the mirrors
-      if (rounds >= 3) {
-        stop(
-          str_c(
-            "Have tried all 4 available Ensembl biomaRt mirrors ",
-            rounds,
-            " times. You might have a connection problem, or no mirror is responsive."
-          )
-        )
-      }
-      # hop to next mirror
-      mart <- switch(mart,
-                     useast = "uswest",
-                     uswest = "asia",
-                     asia = "www",
-                     www = {
-                       # wait before starting another round through the mirrors,
-                       # hoping that intermittent problems disappear
-                       Sys.sleep(30)
-                       "useast"
-                     }
-              )
-    }
-  )
-}
-
-t2g <- biomaRt::getBM(
-            attributes = c( "ensembl_transcript_id",
-                            "ensembl_gene_id",
-                            "external_gene_name",
-                            "description"),
-            mart = mart,
-            useCache = FALSE
-            ) %>%
-        rename( target_id = ensembl_transcript_id,
-                ens_gene = ensembl_gene_id,
-                ext_gene = external_gene_name,
-                gene_desc = description
-                ) %>%
-        mutate_at(
-          vars(gene_desc),
-          function(value) { str_trim(str_split(value, r"{\[}")[[1]][1]) } # remove trailing source annotation (e.g. [Source:HGNC Symbol;Acc:HGNC:5])
-        )
 
 samples <- read_tsv(snakemake@input[["samples"]], na = "", col_names = TRUE) %>%
             # make everything except the index, sample name and path string a factor
@@ -114,6 +48,8 @@ saveRDS(samples_out, file = snakemake@output[["designmatrix"]])
 # remove all columns which have only NA values
 samples <- samples %>%
 	    select_if(function(col) !all(is.na(col)))
+
+t2g <- readRDS(snakemake@input[["transcript_info"]])
 
 so <- sleuth_prep(  samples,
                     extra_bootstrap_summary = TRUE,

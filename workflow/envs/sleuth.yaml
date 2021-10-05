@@ -5,7 +5,6 @@ dependencies:
   - r-sleuth =0.30
   - bioconductor-rhdf5lib =1.12
   - bioconductor-rhdf5 =2.34
-  - bioconductor-biomart =2.46
   - r-gridextra =2.3
   - r-pheatmap =1.0.12
   - r-tidyverse =1.3
