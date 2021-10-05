@@ -36,10 +36,12 @@ rule get_transcript_info:
         "resources/transcript-info.rds",
     params:
         species=get_bioc_species_name(),
+        version=config["resources"]["ref"]["release"],
     log:
         "logs/get_transcript_info.log",
     conda:
         "../envs/biomart.yaml"
+    cache: True
     script:
         "../scripts/get-transcript-info.R"
 
