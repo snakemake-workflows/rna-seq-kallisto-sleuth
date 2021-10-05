@@ -5,7 +5,7 @@ sink(log, type="message")
 library("tidyverse")
 library("IsoformSwitchAnalyzeR")
 
-results <- readRDS(snakemake@input[["rds"]])
+results <- read_rds(snakemake@input[["rds"]])
 
 results <- analyzePFAM(
     switchAnalyzeRlist = results, 
@@ -26,8 +26,6 @@ results <- analyzeAlternativeSplicing(
     quiet = FALSE, 
     onlySwitchingGenes = FALSE,
 )
-
-print(results)
 
 if(nrow(results$isoformFeatures) > 0) {
     results <- analyzeSwitchConsequences(

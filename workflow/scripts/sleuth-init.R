@@ -43,13 +43,13 @@ samples_out <- if(!is.null(model[["full"]])) {
 }
 
 # store design matrix
-saveRDS(samples_out, file = snakemake@output[["designmatrix"]])
+write_rds(samples_out, file = snakemake@output[["designmatrix"]])
 
 # remove all columns which have only NA values
 samples <- samples %>%
 	    select_if(function(col) !all(is.na(col)))
 
-t2g <- readRDS(snakemake@input[["transcript_info"]])
+t2g <- read_rds(snakemake@input[["transcript_info"]])
 
 so <- sleuth_prep(  samples,
                     extra_bootstrap_summary = TRUE,

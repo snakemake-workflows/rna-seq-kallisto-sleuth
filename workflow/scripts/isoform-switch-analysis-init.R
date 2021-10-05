@@ -3,12 +3,11 @@ sink(log)
 sink(log, type="message")
 
 library("tidyverse")
-library("sleuth")
 library("IsoformSwitchAnalyzeR")
 
 model <- snakemake@params[["model"]]
 
-m <- readRDS(snakemake@input[["designmatrix"]])
+m <- read_rds(snakemake@input[["designmatrix"]])
 is_prefix_col <- startsWith(colnames(m), model[["primary_variable"]])
 colnames(m) <- replace(colnames(m), is_prefix_col, "condition")
 colnames(m) <- replace(colnames(m), colnames(m) == "sample", "sampleID")
@@ -67,4 +66,4 @@ extractSequence(
     onlySwitchingGenes = FALSE,
 )
 
-saveRDS(results, file = snakemake@output[[1]])
+write_rds(results, file = snakemake@output[[1]], compress = "gz")

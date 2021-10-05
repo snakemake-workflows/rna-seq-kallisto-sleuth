@@ -72,4 +72,4 @@ t2g <- biomaRt::getBM(
         )
 
 
-saveRDS(t2g, file = snakemake@output[[1]])
+write_rds(t2g, file = snakemake@output[[1]], compress = "gz")
