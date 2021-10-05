@@ -24,11 +24,14 @@ properties:
             type: string
           species_db_version:
             type: string
+          pfam:
+            type: string
         required:
           - species
           - release
           - build
           - species_db_version
+          - pfam
       ontology:
         type: object
         properties:
@@ -55,6 +58,23 @@ properties:
         type: object
     required:
       - models
+
+  diffsplice:
+    type: object
+    properties:
+      coding_cutoff:
+        type: number
+      remove_noncoding_orfs:
+        type: boolean
+      fdr:
+        type: number
+      min_effect_size:
+        type: number
+    required:
+      - coding_cutoff
+      - remove_noncoding_orfs
+      - fdr
+      - min_effect_size
 
   enrichment:
     type: object

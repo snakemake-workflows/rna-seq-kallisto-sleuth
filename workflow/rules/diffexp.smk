@@ -25,11 +25,13 @@ rule sleuth_init:
     input:
         kallisto=kallisto_output,
         samples="results/sleuth/samples.tsv",
+        transcript_info="resources/transcript-info.rds",
     output:
-        "results/sleuth/{model,[^.]+}.rds",
+        sleuth_object="results/sleuth/{model,[^.]+}.rds",
+        designmatrix="results/sleuth/{model}.designmatrix.rds",
     params:
         species=get_bioc_species_name(),
-        model=lambda w: get_model(w)["full"],
+        model=get_model,
         exclude=config["diffexp"].get("exclude", None),
     conda:
         "../envs/sleuth.yaml"

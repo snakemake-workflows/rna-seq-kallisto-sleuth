@@ -3,7 +3,7 @@ sink(log)
 sink(log, type="message")
 
 # provides `tidyverse` and load_bioconductor_package()
-source( file.path(snakemake@scriptdir, 'common.R') )
+source(snakemake@params[["common_src"]])
 
 pkg <- snakemake@params[["bioc_pkg"]]
 load_bioconductor_package(snakemake@input[["species_anno"]], pkg)

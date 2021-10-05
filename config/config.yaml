@@ -14,6 +14,8 @@ resources:
     # bioconductor packages specified e.g. in `envs/` files `fgsea.yaml`, `spia.yaml` and
     # `ens_gene_to_go.yaml`
     species_db_version: "3.13"
+    # pfam release to use for annotation of domains in differential splicing analysis
+    pfam: "33.0"
   ontology:
     # gene ontology to download, used e.g. in goatools
     gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
@@ -40,11 +42,26 @@ diffexp:
       # Binary valued covariate that shall be used for fold change/effect size
       # based downstream analyses.
       primary_variable: condition
+      # base level of the primary variable (will be considered as denominator 
+      # in the fold change/effect size estimation).
+      base_level: untreated
   # significance level to use for volcano, ma- and qq-plots
   sig-level:
     volcano-plot: 0.05
     ma-plot: 0.05
     qq-plot: 0.05
+
+diffsplice:
+  # codingCutoff parameter of isoformSwitchAnalyzer, see
+  # https://rdrr.io/bioc/IsoformSwitchAnalyzeR/man/analyzeCPAT.html
+  coding_cutoff: 0.725
+  # Should be set to true when using de-novo assembled transcripts.
+  remove_noncoding_orfs: false
+  # False discovery rate to control for.
+  fdr: 0.05
+  # Minimum size of differential isoform usage effect 
+  # (see dIFcutoff, https://rdrr.io/github/kvittingseerup/IsoformSwitchAnalyzeR/man/IsoformSwitchTestDEXSeq.html)
+  min_effect_size: 0.1
 
 enrichment:
   goatools:
