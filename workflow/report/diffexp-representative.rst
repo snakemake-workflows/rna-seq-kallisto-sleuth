@@ -1,4 +1,13 @@
-**Differentially expressed genes** using the model ``{{ snakemake.params.model["full"] }}``, computed with sleuth by taking only the most significant transcript of each gene.
+{% set repr_transcript = snakemake.config["resources"]["ref"]["representative_transcript"] %}
+
+**Differentially expressed genes** using the model ``{{ snakemake.params.model["full"] }}``, computed with sleuth by taking only
+{% if repr_transcript == "canonical" %}
+the canonical transcript of each gene.
+{% elif repr_transcript == "mostsigtrans" %}
+the most significant transcript of each gene.
+{% else %}
+a manually configured representative transcript for each gene.
+{% endif %}
 
 The columns ``b_*`` and ``b_*_se`` display the effect size :math:`\beta` and the corresponding standard error for every covariate in the model. 
 They are analog to log2 fold changes. 

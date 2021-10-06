@@ -16,6 +16,13 @@ resources:
     species_db_version: "3.13"
     # pfam release to use for annotation of domains in differential splicing analysis
     pfam: "33.0"
+    # Choose strategy for selecting representative transcripts for each gene.
+    # Possible values:
+    #   - canonical (use the canonical transcript from ensembl, only works for human at the moment)
+    #   - mostsignificant (use the most significant transcript)
+    #   - path/to/any/file.txt (a path to a file with ensembl transcript IDs to use; 
+    #     the user has to ensure that there is only one ID per gene given)
+    representative_transcripts: ensembl
   ontology:
     # gene ontology to download, used e.g. in goatools
     gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"

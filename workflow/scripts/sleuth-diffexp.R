@@ -161,13 +161,25 @@ write_results <- function(so, mode, output, output_all) {
         theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
         qq_list[[qq_plot_title_trans]] <- qq_plot_trans
     } else if (mode == "canonical") {
-      print(all)
+      print(head(all))
+      print(head(all$canonical == "1"))
+      print(head(all$canonical))
+      print(head(typeof(all$canonical)))
       all <- all %>%
                 drop_na(canonical) %>%
-                filter(canonical == 1)
-      stopifnot(nrow(all) > 0)
+                filter(canonical == "1")
+      if (nrow(all) == 0) {
+        stop("No canonical transcripts found (does ensembl support canonical transcript annotation for your species?")
+      }
       # Control FDR again, because we have less tests now.
       all$qval <- p.adjust(all$pval)
+    } else if (mode == "custom") {
+      # load custom ID list
+      ids <- read_tsv(snakemake@input[[ "representative_transcripts" ]], col_names = "ID")
+      all <- all %>% filter(target_id %in% ids)
+      if (nrow(all) == 0) {
+        stop("The given list of representative transcript ids does not match any of the transcript ids of the chosen species.")
+      }
     }
 
     # saving qq-plots
@@ -183,5 +195,13 @@ write_results <- function(so, mode, output, output_all) {
 
 write_results(sleuth_object, "transcripts", snakemake@output[["transcripts"]], snakemake@output[["transcripts_rds"]])
 write_results(sleuth_object, "aggregate", snakemake@output[["genes_aggregated"]], snakemake@output[["genes_aggregated_rds"]])
-write_results(sleuth_object, "mostsignificant", snakemake@output[["genes_mostsigtrans"]], snakemake@output[["genes_mostsigtrans_rds"]])
-write_results(sleuth_object, "canonical", snakemake@output[["canonical_transcripts"]], snakemake@output[["canonical_transcripts_rds"]])
+
+repr_trans <- snakemake@params[["representative_transcripts"]]
+if (repr_trans == "canonical") {
+  write_results(sleuth_object, "canonical", snakemake@output[["genes_representative"]], snakemake@output[["genes_representative_rds"]])
+} else if (repr_trans == "mostsignificant") {
+  write_results(sleuth_object, "mostsignificant", snakemake@output[["genes_representative"]], snakemake@output[["genes_representative_rds"]])
+} else {
+  write_results(sleuth_object, "custom", snakemake@output[["genes_representative"]], snakemake@output[["genes_representative_rds"]])
+}
+

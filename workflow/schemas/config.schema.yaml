@@ -26,12 +26,15 @@ properties:
             type: string
           pfam:
             type: string
+          representative_transcripts:
+            type: string
         required:
           - species
           - release
           - build
           - species_db_version
           - pfam
+          - representative_transcripts
       ontology:
         type: object
         properties:
