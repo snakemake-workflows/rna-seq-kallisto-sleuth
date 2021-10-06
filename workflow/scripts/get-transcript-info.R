@@ -87,10 +87,20 @@ t2g <- t2g %>%
         mutate_at(
           vars(canonical),
           function(values) {
-            values <- str_trim(values)
-            values[values == "1"] <- TRUE
-            values[values == "0"] <- FALSE
-            values
+            as_vector(
+              map(
+                str_trim(values), 
+                function(v) {
+                  if (is.na(v)) {
+                    NA
+                  } else if (v == "1") { 
+                    TRUE 
+                  } else if (v == "0") {
+                    FALSE
+                  }
+                }
+              )
+            )
           }
         )
 
