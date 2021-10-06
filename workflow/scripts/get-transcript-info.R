@@ -53,15 +53,27 @@ while ( class(mart)[[1]] != "Mart" ) {
   )
 }
 
+attributes <- c("ensembl_transcript_id",
+                "ensembl_gene_id",
+                "external_gene_name",
+                "description")
+
+has_canonical <- "transcript_is_canonical" %in% biomaRt::listAttributes(mart=mart)$name
+
+if (has_canonical) {
+  attributes <- c(attributes, "transcript_is_canonical")
+}
+
 t2g <- biomaRt::getBM(
-            attributes = c( "ensembl_transcript_id",
-                            "ensembl_gene_id",
-                            "external_gene_name",
-                            "description",
-                            "transcript_is_canonical"),
+            attributes = attributes,
             mart = mart,
             useCache = FALSE
-            ) %>%
+            )
+if (!has_canonical) {
+  t2g <- t2g %>% add_column(transcript_is_canonical = NA)
+}
+
+t2g <- t2g %>%
         rename( target_id = ensembl_transcript_id,
                 ens_gene = ensembl_gene_id,
                 ext_gene = external_gene_name,
@@ -81,6 +93,5 @@ t2g <- biomaRt::getBM(
             values
           }
         )
-
 
 write_rds(t2g, file = snakemake@output[[1]], compress = "gz")
