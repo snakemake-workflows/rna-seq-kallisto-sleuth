@@ -12,8 +12,6 @@ model <- snakemake@params[["model"]]
 
 sleuth_object <- sleuth_load(snakemake@input[[1]])
 
-sleuth_object <- sleuth_fit(sleuth_object, as.formula(model[["full"]]), 'full')
-sleuth_object <- sleuth_fit(sleuth_object, as.formula(model[["reduced"]]), 'reduced')
 sleuth_object <- sleuth_lrt(sleuth_object, "reduced", "full")
 
 # plot mean-variance
@@ -176,8 +174,11 @@ write_results <- function(so, mode, output, output_all) {
     marrange_qq <- marrangeGrob(grobs=qq_list, nrow=1, ncol=1, top = NULL)
     ggsave(snakemake@output[["qq_plots"]], plot = marrange_qq, width = 14)
 
-    write_tsv(all, path = output, quote_escape = "none")
     write_rds(all, path = output_all, compress = "none")
+
+    # add sample expressions
+    all <- all %>% left_join(as_tibble(sleuth_to_matrix(so, "obs_norm", "est_counts"), rownames="target_id"))
+    write_tsv(all, path = output, quote_escape = "none")
 }
 
 write_results(sleuth_object, "transcripts", snakemake@output[["transcripts"]], snakemake@output[["transcripts_rds"]])

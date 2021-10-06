@@ -3,75 +3,13 @@ sink(log)
 sink(log, type="message")
 
 library("sleuth")
-library("biomaRt")
 library("tidyverse")
 
 model <- snakemake@params[["model"]]
 
-# this variable holds a mirror name until
-# useEnsembl succeeds ("www" is last, because 
-# of very frequent "Internal Server Error"s)
-mart <- "useast"
-rounds <- 0
-while ( class(mart)[[1]] != "Mart" ) {
-  mart <- tryCatch(
-    {
-      # done here, because error function does not
-      # modify outer scope variables, I tried
-      if (mart == "www") rounds <- rounds + 1
-      # equivalent to useMart, but you can choose
-      # the mirror instead of specifying a host
-      biomaRt::useEnsembl(
-        biomart = "ENSEMBL_MART_ENSEMBL",
-        dataset = str_c(snakemake@params[["species"]], "_gene_ensembl"),
-        mirror = mart
-      )
-    },
-    error = function(e) {
-      # change or make configurable if you want more or
-      # less rounds of tries of all the mirrors
-      if (rounds >= 3) {
-        stop(
-          str_c(
-            "Have tried all 4 available Ensembl biomaRt mirrors ",
-            rounds,
-            " times. You might have a connection problem, or no mirror is responsive."
-          )
-        )
-      }
-      # hop to next mirror
-      mart <- switch(mart,
-                     useast = "uswest",
-                     uswest = "asia",
-                     asia = "www",
-                     www = {
-                       # wait before starting another round through the mirrors,
-                       # hoping that intermittent problems disappear
-                       Sys.sleep(30)
-                       "useast"
-                     }
-              )
-    }
-  )
-}
-
-t2g <- biomaRt::getBM(
-            attributes = c( "ensembl_transcript_id",
-                            "ensembl_gene_id",
-                            "external_gene_name",
-                            "transcript_is_canonical"),
-            mart = mart,
-            useCache = FALSE
-            ) %>%
-        rename( target_id = ensembl_transcript_id,
-                ens_gene = ensembl_gene_id,
-                ext_gene = external_gene_name,
-                canonical = transcript_is_canonical,
-                )
-
 samples <- read_tsv(snakemake@input[["samples"]], na = "", col_names = TRUE) %>%
             # make everything except the index, sample name and path string a factor
-            mutate_at(  vars(-X1, -sample, -path),
+            mutate_at(  vars(-sample, -path),
                         list(~factor(.))
                         )
 
@@ -80,9 +18,9 @@ if(!is.null(snakemake@params[["exclude"]])) {
                 filter( !sample %in% snakemake@params[["exclude"]] )
 }
 
-if(!is.null(model)) {
+samples_out <- if(!is.null(model[["full"]])) {
     # retrieve the model formula
-    formula <- as.formula(model)
+    formula <- as.formula(model[["full"]])
     # extract variables from the formula and unnest any nested variables
     variables <- labels(terms(formula)) %>%
                     strsplit('[:*]') %>%
@@ -90,11 +28,28 @@ if(!is.null(model)) {
     # remove samples with an NA value in any of the columns
     # relevant for sleuth under the current model
     samples <- samples %>%
-                drop_na(
-                    c( sample, path, all_of(variables) )
-                )
+	        drop_na(c(sample, path, all_of(variables)))
+
+    primary_variable <- model[["primary_variable"]]
+    base_level <- model[["base_level"]]
+    # TODO migrate this to tidyverse
+    # Ensure that primary variable factors are sorted such that base_level comes first.
+    # This is important for fold changes, effect sizes to have the expected sign.
+    samples[, primary_variable] <- relevel(samples[, primary_variable, drop=TRUE], base_level)
+
+    samples %>% select(c(sample, all_of(variables)))
+} else {
+    samples %>% select(-path)
 }
 
+# store design matrix
+write_rds(samples_out, file = snakemake@output[["designmatrix"]])
+
+# remove all columns which have only NA values
+samples <- samples %>%
+	    select_if(function(col) !all(is.na(col)))
+
+t2g <- read_rds(snakemake@input[["transcript_info"]])
 
 so <- sleuth_prep(  samples,
                     extra_bootstrap_summary = TRUE,
@@ -119,4 +74,9 @@ if(!length(custom_transcripts) == 0) {
                         add_row(ens_gene = NA, ext_gene = "Custom", target_id = custom_transcripts, canonical = NA)
 }
 
-sleuth_save(so, snakemake@output[[1]])
+if(!is.null(model[["full"]])) {
+    so <- sleuth_fit(so, as.formula(model[["full"]]), 'full')
+    so <- sleuth_fit(so, as.formula(model[["reduced"]]), 'reduced')
+}
+
+sleuth_save(so, snakemake@output[["sleuth_object"]])

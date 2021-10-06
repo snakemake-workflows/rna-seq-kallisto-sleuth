@@ -25,11 +25,13 @@ rule sleuth_init:
     input:
         kallisto=kallisto_output,
         samples="results/sleuth/samples.tsv",
+        transcript_info="resources/transcript-info.rds",
     output:
-        "results/sleuth/{model,[^.]+}.rds",
+        sleuth_object="results/sleuth/{model,[^.]+}.rds",
+        designmatrix="results/sleuth/{model}.designmatrix.rds",
     params:
         species=get_bioc_species_name(),
-        model=lambda w: get_model(w)["full"],
+        model=get_model,
         exclude=config["diffexp"].get("exclude", None),
     conda:
         "../envs/sleuth.yaml"
@@ -202,6 +204,11 @@ rule plot_pca:
         "../scripts/plot-pca.R"
 
 
+# TODO rewrite heatmap code with ComplexHeatmap or altair.
+# This rule may fail with
+# Error in names(annotation_colors[[names(annotation)[i]]]) <- l :
+#  'names' attribute [2] must be the same length as the vector [1]
+# Calls: plot_transcript_heatmap -> <Anonymous> -> generate_annotation_colours
 rule plot_diffexp_heatmap:
     input:
         so="results/sleuth/{model}.rds",

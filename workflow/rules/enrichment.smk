@@ -34,6 +34,7 @@ rule spia:
         species=get_bioc_species_name(),
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
+        common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
         "../envs/spia.yaml"
     log:
@@ -84,6 +85,7 @@ rule fgsea:
         gene_set_fdr=config["enrichment"]["fgsea"]["fdr_gene_set"],
         nperm=config["enrichment"]["fgsea"]["nperm"],
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
+        common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
         "../envs/fgsea.yaml"
     log:
@@ -109,6 +111,7 @@ rule fgsea_plot_gene_sets:
     params:
         model=get_model,
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
+        common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
         "../envs/fgsea.yaml"
     log:
@@ -127,6 +130,7 @@ rule ens_gene_to_go:
         "resources/ontology/ens_gene_to_go.tsv",
     params:
         bioc_pkg=get_bioc_species_pkg,
+        common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
         "../envs/ens_gene_to_go.yaml"
     log:

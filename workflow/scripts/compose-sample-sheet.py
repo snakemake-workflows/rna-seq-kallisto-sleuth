@@ -7,4 +7,4 @@ samples_["sample"] = samples_.apply(
 )
 samples_["path"] = snakemake.input.kallisto_output
 del samples_["unit"]
-samples_.to_csv(snakemake.output[0], sep="\t")
+samples_.to_csv(snakemake.output[0], sep="\t", index=False)

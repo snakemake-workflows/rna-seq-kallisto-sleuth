@@ -19,6 +19,7 @@ include: "rules/trim.smk"
 include: "rules/ref.smk"
 include: "rules/quant.smk"
 include: "rules/diffexp.smk"
+include: "rules/diffsplice.smk"
 include: "rules/enrichment.smk"
 
 

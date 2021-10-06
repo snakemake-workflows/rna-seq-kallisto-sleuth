@@ -40,6 +40,7 @@ report: "../report/workflow.rst"
 wildcard_constraints:
     sample="|".join(samples.index),
     unit="|".join(units["unit"]),
+    model="|".join(list(config["diffexp"].get("models", [])) + ["all"]),
 
 
 ####### helpers ###########
@@ -177,7 +178,7 @@ def all_input(wildcards):
                 "results/plots/ma/{model}.ma-plots.pdf",
                 "results/plots/qq/{model}.qq-plots.pdf",
                 "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
-                "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
+                # "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf", # see rule plot_diffexp_heatmap
                 "results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
             ],
             model=config["diffexp"]["models"],
@@ -253,6 +254,15 @@ def all_input(wildcards):
         expand(
             "results/plots/fld/{unit.sample}-{unit.unit}.fragment-length-dist.pdf",
             unit=units[["sample", "unit"]].itertuples(),
+        )
+    )
+
+    # diffsplice analysis
+    wanted_input.extend(
+        expand(
+            "results/plots/diffsplice/{model}/{cons}",
+            model=config["diffexp"]["models"],
+            cons=["with_consequences", "without_consequences"],
         )
     )
 
