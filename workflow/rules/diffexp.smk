@@ -95,7 +95,9 @@ rule sleuth_diffexp:
         sig_level_volcano=config["diffexp"]["sig-level"]["volcano-plot"],
         sig_level_ma=config["diffexp"]["sig-level"]["ma-plot"],
         sig_level_qq=config["diffexp"]["sig-level"]["qq-plot"],
-        representative_transcripts=config["resources"]["ref"]["representative_transcripts"],
+        representative_transcripts=config["resources"]["ref"][
+            "representative_transcripts"
+        ],
     conda:
         "../envs/sleuth.yaml"
     log:
@@ -352,7 +354,9 @@ rule vega_volcano_plot:
         spec=workflow.source_path("../../resources/vega_volcano_plot.json"),
     output:
         json="results/plots/interactive/volcano/{model}.vl.json",
-        html=report("results/plots/interactive/volcano/{model}.html", category="Volcano plots"),
+        html=report(
+            "results/plots/interactive/volcano/{model}.html", category="Volcano plots"
+        ),
     params:
         model=get_model,
         sig_level_volcano=config["diffexp"]["sig-level"]["volcano-plot"],
