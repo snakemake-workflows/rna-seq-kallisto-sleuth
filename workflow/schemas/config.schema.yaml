@@ -59,6 +59,23 @@ properties:
     properties:
       models:
         type: object
+        patternProperties:
+          "^.+$":
+            type: object
+            properties:
+              full:
+                type: string
+              reduced:
+                type: string
+              primary_variable:
+                type: string
+              base_level:
+                type: ["number", "string"]
+            required:
+              - full
+              - reduced
+              - primary_variable
+              - base_level
     required:
       - models
 
