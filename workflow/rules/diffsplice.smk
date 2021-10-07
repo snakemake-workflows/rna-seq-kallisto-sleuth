@@ -17,8 +17,7 @@ rule init_isoform_switch:
     params:
         model=get_model,
         samples=[
-            "{unit.sample}-{unit.unit}".format(unit=unit)
-            for unit in units.itertuples()
+            "{unit.sample}-{unit.unit}".format(unit=unit) for unit in units.itertuples()
         ],
         seq_dir=lambda _, output: os.path.dirname(output.seqs[0]),
         min_effect_size=config["diffsplice"]["min_effect_size"],
