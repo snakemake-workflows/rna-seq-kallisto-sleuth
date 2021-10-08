@@ -27,6 +27,9 @@ results <- analyzeAlternativeSplicing(
     onlySwitchingGenes = FALSE,
 )
 
+dir.create(snakemake@output[["plots_with"]])
+dir.create(snakemake@output[["plots_without"]])
+
 if(nrow(results$isoformFeatures) > 0) {
     results <- analyzeSwitchConsequences(
         results, 

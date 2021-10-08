@@ -29,6 +29,7 @@ diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>%
                     mutate(target_id = str_c(target_id, collapse=",")) %>%
                     mutate(ens_gene = str_c(ens_gene, collapse=",")) %>%
                   distinct()
+print(diffexp)
 
 signed_pi <- get_prefix_col("signed_pi_value", colnames(diffexp))
 
@@ -36,12 +37,15 @@ ranked_genes <- diffexp %>%
                   dplyr::select(ext_gene, !!signed_pi) %>%
                   deframe()
 
-# get and write out rank values that are tied -- a way to check up on respecitve warnings
+# get and write out rank values that are tied -- a way to check up on respective warnings
 rank_ties <- enframe(ranked_genes) %>%
                mutate(dup = duplicated(value) | duplicated(value, fromLast = TRUE) ) %>%
                filter(dup == TRUE) %>%
                dplyr::select(ext_gene = name, !!signed_pi := value)
 write_tsv(rank_ties, snakemake@output[["rank_ties"]])
+
+print(gene_sets)
+print(ranked_genes)
 
 fgsea_res <- fgsea(pathways = gene_sets,
                     stats = ranked_genes,

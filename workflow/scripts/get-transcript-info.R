@@ -53,23 +53,55 @@ while ( class(mart)[[1]] != "Mart" ) {
   )
 }
 
+attributes <- c("ensembl_transcript_id",
+                "ensembl_gene_id",
+                "external_gene_name",
+                "description")
+
+has_canonical <- "transcript_is_canonical" %in% biomaRt::listAttributes(mart=mart)$name
+
+if (has_canonical) {
+  attributes <- c(attributes, "transcript_is_canonical")
+}
+
 t2g <- biomaRt::getBM(
-            attributes = c( "ensembl_transcript_id",
-                            "ensembl_gene_id",
-                            "external_gene_name",
-                            "description"),
+            attributes = attributes,
             mart = mart,
             useCache = FALSE
-            ) %>%
+            )
+if (!has_canonical) {
+  t2g <- t2g %>% add_column(transcript_is_canonical = NA)
+}
+
+t2g <- t2g %>%
         rename( target_id = ensembl_transcript_id,
                 ens_gene = ensembl_gene_id,
                 ext_gene = external_gene_name,
-                gene_desc = description
+                gene_desc = description,
+                canonical = transcript_is_canonical
                 ) %>%
         mutate_at(
           vars(gene_desc),
-          function(value) { str_trim(str_split(value, r"{\[}")[[1]][1]) } # remove trailing source annotation (e.g. [Source:HGNC Symbol;Acc:HGNC:5])
+          function(values) { str_trim(map(values, function (v) { str_split(v, r"{\[}")[[1]][1]})) } # remove trailing source annotation (e.g. [Source:HGNC Symbol;Acc:HGNC:5])
+        ) %>%
+        mutate_at(
+          vars(canonical),
+          function(values) {
+            as_vector(
+              map(
+                str_trim(values), 
+                function(v) {
+                  if (is.na(v)) {
+                    NA
+                  } else if (v == "1") { 
+                    TRUE 
+                  } else if (v == "0") {
+                    FALSE
+                  }
+                }
+              )
+            )
+          }
         )
-
 
 write_rds(t2g, file = snakemake@output[[1]], compress = "gz")

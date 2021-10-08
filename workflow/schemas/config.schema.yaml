@@ -26,12 +26,15 @@ properties:
             type: string
           pfam:
             type: string
+          representative_transcripts:
+            type: string
         required:
           - species
           - release
           - build
           - species_db_version
           - pfam
+          - representative_transcripts
       ontology:
         type: object
         properties:
@@ -56,6 +59,23 @@ properties:
     properties:
       models:
         type: object
+        patternProperties:
+          "^.+$":
+            type: object
+            properties:
+              full:
+                type: string
+              reduced:
+                type: string
+              primary_variable:
+                type: string
+              base_level:
+                type: ["number", "string"]
+            required:
+              - full
+              - reduced
+              - primary_variable
+              - base_level
     required:
       - models
 

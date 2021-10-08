@@ -16,6 +16,7 @@ resources:
     species_db_version: "3.13"
     # pfam release to use for annotation of domains in differential splicing analysis
     pfam: "33.0"
+    representative_transcripts: canonical
   ontology:
     # gene ontology to download, used e.g. in goatools
     gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"

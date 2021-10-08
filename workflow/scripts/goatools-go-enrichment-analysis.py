@@ -1,6 +1,7 @@
 import sys
 
 sys.stderr = open(snakemake.log[0], "w")
+sys.stdout = open(snakemake.log[0], "a")
 
 import pandas as pd
 import matplotlib.pyplot as plt

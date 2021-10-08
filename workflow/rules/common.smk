@@ -125,8 +125,8 @@ def all_input(wildcards):
         wanted_input.extend(
             expand(
                 [
-                    "results/tables/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
-                    "results/plots/go_terms/{model}.genes-mostsigtrans.diffexp.go_term_enrichment_{go_ns}.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.pdf",
+                    "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
+                    "results/plots/go_terms/{model}.go_term_enrichment_{go_ns}.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.pdf",
                 ],
                 model=config["diffexp"]["models"],
                 go_ns=["BP", "CC", "MF"],
@@ -197,7 +197,7 @@ def all_input(wildcards):
                 "results/plots/ihw/{level}/{model}.{level}.plot-adj-pvals.pdf",
             ],
             model=config["diffexp"]["models"],
-            level=["transcripts", "genes-aggregated", "genes-mostsigtrans"],
+            level=["transcripts", "genes-aggregated", "genes-representative"],
         )
     )
 
@@ -206,7 +206,7 @@ def all_input(wildcards):
         expand(
             "results/plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf",
             model=config["diffexp"]["models"],
-            level=["transcripts", "genes-aggregated", "genes-mostsigtrans"],
+            level=["transcripts", "genes-aggregated", "genes-representative"],
         )
     )
 
