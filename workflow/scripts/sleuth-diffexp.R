@@ -172,6 +172,8 @@ write_results <- function(so, mode, output, output_all) {
     } else if (mode == "custom") {
       # load custom ID list
       ids <- read_tsv(snakemake@input[[ "representative_transcripts" ]], col_names = "ID")
+      print(head(ids))
+      print(head(all$target_id))
       all <- all %>% filter(target_id %in% ids)
       if (nrow(all) == 0) {
         stop("The given list of representative transcript ids does not match any of the transcript ids of the chosen species.")
