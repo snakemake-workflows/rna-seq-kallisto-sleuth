@@ -173,6 +173,7 @@ write_results <- function(so, mode, output, output_all) {
       # load custom ID list
       id_version_pattern <- "\\.\\d+$"
       ids <- read_tsv(snakemake@input[[ "representative_transcripts" ]], col_names = "ID") %>% str_replace(id_version_pattern, "")
+      save.image()
       print(head(ids))
       print(head(all$target_id))
       all <- all %>% filter(str_replace(target_id, id_version_pattern, "") %in% ids)
