@@ -47,6 +47,7 @@ rule sleuth_init:
 rule sleuth_diffexp:
     input:
         "results/sleuth/{model}.rds",
+        representative
     output:
         mean_var_plot=report(
             "results/plots/mean-var/{model}.mean-variance-plot.pdf",

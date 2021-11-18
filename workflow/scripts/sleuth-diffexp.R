@@ -172,11 +172,12 @@ write_results <- function(so, mode, output, output_all) {
     } else if (mode == "custom") {
       # load custom ID list
       id_version_pattern <- "\\.\\d+$"
-      ids <- read_tsv(snakemake@input[[ "representative_transcripts" ]], col_names = "ID") %>% str_replace(id_version_pattern, "")
-      save.image()
-      print(head(ids))
-      print(head(all$target_id))
-      all <- all %>% filter(str_replace(target_id, id_version_pattern, "") %in% ids)
+      ids <- read_tsv(snakemake@params[["representative_transcripts"]], col_names = "ID")$ID
+      ids <- str_replace(ids, id_version_pattern, "")
+      all <- all %>% 
+        mutate(target_id_stem = str_replace(target_id, id_version_pattern, "")) %>% 
+        filter(target_id_stem %in% ids) %>% 
+        mutate(target_id_stem = NULL)
       if (nrow(all) == 0) {
         stop("The given list of representative transcript ids does not match any of the transcript ids of the chosen species.")
       }
