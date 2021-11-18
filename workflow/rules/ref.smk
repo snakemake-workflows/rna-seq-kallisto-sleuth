@@ -23,7 +23,6 @@ rule get_annotation:
         release=config["resources"]["ref"]["release"],
         build=config["resources"]["ref"]["build"],
         fmt="gtf",
-        flavor="chr_patch_hapl_scaff",
     log:
         "logs/get-annotation.log",
     cache: True
