@@ -171,8 +171,13 @@ write_results <- function(so, mode, output, output_all) {
       all$qval <- p.adjust(all$pval)
     } else if (mode == "custom") {
       # load custom ID list
-      ids <- read_tsv(snakemake@input[[ "representative_transcripts" ]], col_names = "ID")
-      all <- all %>% filter(target_id %in% ids)
+      id_version_pattern <- "\\.\\d+$"
+      ids <- read_tsv(snakemake@params[["representative_transcripts"]], col_names = "ID")$ID
+      ids <- str_replace(ids, id_version_pattern, "")
+      all <- all %>% 
+        mutate(target_id_stem = str_replace(target_id, id_version_pattern, "")) %>% 
+        filter(target_id_stem %in% ids) %>% 
+        mutate(target_id_stem = NULL)
       if (nrow(all) == 0) {
         stop("The given list of representative transcript ids does not match any of the transcript ids of the chosen species.")
       }
