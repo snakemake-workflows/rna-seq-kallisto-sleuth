@@ -51,6 +51,7 @@ diffexp:
     qq-plot: 0.05
 
 diffsplice:
+  activate: true
   # codingCutoff parameter of isoformSwitchAnalyzer, see
   # https://rdrr.io/bioc/IsoformSwitchAnalyzeR/man/analyzeCPAT.html
   coding_cutoff: 0.725

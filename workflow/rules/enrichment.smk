@@ -3,7 +3,7 @@ from pathlib import Path
 
 rule download_bioconductor_species_database:
     output:
-        directory("resources/bioconductor/lib/R/library/{package}"),
+        directory("resources/bioconductor/lib/R/library/{package}"),  # TODO: encode version in path!
     params:
         path=lambda wc, output: Path(output[0]).parents[3],
         version=config["resources"]["ref"]["species_db_version"],
