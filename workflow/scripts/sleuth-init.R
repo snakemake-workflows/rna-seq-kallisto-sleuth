@@ -60,9 +60,11 @@ so <- sleuth_prep(  samples,
                     num_cores = snakemake@threads
                     )
 
-# Sleuth converts all columns to characters. We don't want that for the canonical column.
-# Hence we fix it here.
-so$target_mapping$canonical <- as.logical(so$target_mapping$canonical)
+if ("canonical" %in% colnames(so$target_mapping)) {
+    # Sleuth converts all columns to characters. We don't want that for the canonical column.
+    # Hence we fix it here.
+    so$target_mapping$canonical <- as.logical(so$target_mapping$canonical)
+}
 
 custom_transcripts <- so$obs_raw %>%
                         # find transcripts not in the target_mapping
