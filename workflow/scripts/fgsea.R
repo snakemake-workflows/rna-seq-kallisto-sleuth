@@ -52,7 +52,7 @@ fgsea_res <- fgsea(pathways = gene_sets,
                     minSize=10,
                     maxSize=700,
                     nproc=snakemake@threads,
-                    nperm=snakemake@params[["nperm"]]
+                    eps=snakemake@params[["eps"]]
                     ) %>%
                 as_tibble()
 
