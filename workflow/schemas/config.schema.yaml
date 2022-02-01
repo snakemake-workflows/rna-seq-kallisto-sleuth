@@ -120,12 +120,12 @@ properties:
             type: string
           fdr_gene_set:
             type: number
-          nperm:
-            type: integer
+          eps:
+            type: number
         required:
           - gene_sets_file
           - fdr_gene_set
-          - nperm
+          - eps
       spia:
         type: object
         properties:
