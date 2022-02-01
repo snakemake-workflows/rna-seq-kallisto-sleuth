@@ -75,7 +75,7 @@ enrichment:
     activate: true
     # if activated, you need to provide a GMT file with gene sets of interest
     fdr_gene_set: 0.05
-    nperm: 10000
+    eps: 0.0001
   spia:
     # tool is only run if set to `true`
     activate: true
