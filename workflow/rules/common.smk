@@ -150,10 +150,6 @@ def all_input(wildcards):
                     "results/plots/fgsea/{model}",
                 ],
                 model=config["diffexp"]["models"],
-                gene_set_fdr=str(config["enrichment"]["fgsea"]["fdr_gene_set"]).replace(
-                    ".", "-"
-                ),
-                nperm=str(config["enrichment"]["fgsea"]["nperm"]),
             )
         )
 
