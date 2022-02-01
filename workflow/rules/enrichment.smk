@@ -83,7 +83,7 @@ rule fgsea:
         bioc_pkg=get_bioc_species_pkg,
         model=get_model,
         gene_set_fdr=config["enrichment"]["fgsea"]["fdr_gene_set"],
-        nperm=config["enrichment"]["fgsea"]["nperm"],
+        eps=config["enrichment"]["fgsea"]["eps"],
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
         common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
