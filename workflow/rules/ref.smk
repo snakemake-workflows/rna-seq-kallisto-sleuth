@@ -15,6 +15,19 @@ rule get_transcriptome:
         "0.74.0/bio/reference/ensembl-sequence"
 
 
+rule get_3prime_seqs:
+    input:
+        "resources/transcriptome.cds.fasta",
+    output:
+        "resources/transcriptome.3prime.fasta",
+    params:
+        read_length=config["experiment"]["read-length"],
+    conda:
+        "../envs/r-fasta.yaml"
+    script:
+        "../scripts/get-3prime-seqs.R"  # TODO generate and implement this script, see https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#external-scripts
+
+
 rule get_annotation:
     output:
         "resources/genome.gtf",

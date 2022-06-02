@@ -1,6 +1,8 @@
 rule kallisto_index:
     input:
-        "resources/transcriptome.cdna.fasta",
+        "resources/transcriptome.3prime.fasta"
+        if config["experiment"]["is-3-prime-rna-seq"]
+        else "resources/transcriptome.cdna.fasta",
     output:
         "results/kallisto/transcripts.idx",
     log:

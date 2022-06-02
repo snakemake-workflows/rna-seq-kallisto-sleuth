@@ -1,5 +1,8 @@
 samples: config/samples.tsv
 units: config/units.tsv
+experiment:
+  is-3-prime-rna-seq: false
+  read-length: 100
 
 resources:
   ref:
