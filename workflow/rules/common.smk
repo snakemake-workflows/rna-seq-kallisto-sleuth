@@ -71,6 +71,15 @@ def get_fastqs(wildcards):
         return [f"{u.fq1}", f"{u.fq2}"]
 
 
+def get_all_fastqs(wildcards):
+    for item in units[["sample", "unit"]].itertuples():
+        if is_single_end(item.sample, item.unit):
+            yield f"results/trimmed/{item.sample}-{item.unit}.fastq.gz"
+        else:
+            yield f"results/trimmed/{item.sample}-{item.unit}.1.fastq.gz"
+            yield f"results/trimmed/{item.sample}-{item.unit}.2.fastq.gz"
+
+
 def get_trimmed(wildcards):
     if not is_single_end(**wildcards):
         # paired-end sample

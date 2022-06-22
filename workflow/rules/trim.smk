@@ -25,3 +25,14 @@ rule cutadapt:
         "results/logs/cutadapt/{sample}-{unit}.log",
     wrapper:
         "0.31.1/bio/cutadapt/se"
+
+
+rule get_max_read_length:
+    input:
+        get_all_fastqs,
+    output:
+        "results/stats/max-read-length.json",
+    conda:
+        "../envs/pysam.yaml"
+    script:
+        "../scripts/get-max-read-length.py"
