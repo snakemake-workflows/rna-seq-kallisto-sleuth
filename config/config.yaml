@@ -24,7 +24,8 @@ resources:
     #   - mostsignificant (use the most significant transcript)
     #   - path/to/any/file.txt (a path to a file with ensembl transcript IDs to use; 
     #     the user has to ensure that there is only one ID per gene given)
-    representative_transcripts: ensembl
+    #representative_transcripts: ensembl
+    representative_transcripts: canonical
   ontology:
     # gene ontology to download, used e.g. in goatools
     gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
@@ -46,8 +47,10 @@ diffexp:
   # model for sleuth differential expression analysis
   models:
     model_X:
-      full: ~condition + batch_effect
-      reduced: ~batch_effect
+      full: ~condition
+      #full: ~condition + batch_effect
+      reduced: ~1
+      #reduced: '~1'# in case if it takes as numerical
       # Binary valued covariate that shall be used for fold change/effect size
       # based downstream analyses.
       primary_variable: condition
@@ -86,7 +89,8 @@ enrichment:
     gene_sets_file: "resources/gene_sets/dummy.gmt"
     fdr_gene_set: 0.05
     # minimum achievable p-value  (equivalent to the reciprocal of the number of permutations, see fgsea docs)
-    eps: 1e-50
+    #eps: 1e-50
+    eps: 0.00000000000000000000000000000000000000000000000001
   spia:
     # tool is only run if set to `true`
     activate: false
@@ -120,7 +124,7 @@ params:
   # also, separate capitalised letter flags are required for adapters in
   # the reverse reads of paired end sequencing:
   # * https://cutadapt.readthedocs.io/en/stable/guide.html#trimming-paired-end-reads
-  cutadapt-se: ""
+  cutadapt-se: "-u 12 "
   # reasoning behind parameters:
   #   * `--minimum-length 33`:
   #     * kallisto needs non-empty reads in current versions (fixed for future releases:

@@ -18,6 +18,7 @@ rule get_transcriptome:
 rule get_3prime_seqs:
     input:
         "resources/transcriptome.cds.fasta",
+        "results/stats/max-read-length.json",
     output:
         "resources/transcriptome.3prime.fasta",
     params:
