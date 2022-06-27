@@ -1,0 +1,8 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - bioconductor-biomart =2.50
+  - r-dplyr =1.0
+  - r-stringr =1.4
+  - r-rjson =0.2

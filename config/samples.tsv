@@ -1,5 +1,3 @@
 sample	condition	batch_effect
-A	treated	batch1
-B	untreated	batch1
-C	treated	batch2
-D	untreated	batch2
+2912657_S63	treated	batch1
+2912662_S48	untreated	batch1

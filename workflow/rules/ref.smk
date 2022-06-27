@@ -17,12 +17,11 @@ rule get_transcriptome:
 
 rule get_3prime_seqs:
     input:
-        "resources/transcriptome.cds.fasta",
-        "results/stats/max-read-length.json",
+        read_length="results/stats/max-read-length.json",
     output:
         "resources/transcriptome.3prime.fasta",
     params:
-        read_length=config["experiment"]["read-length"],
+        release=config["resources"]["ref"]["release"],
     conda:
         "../envs/r-fasta.yaml"
     script:
