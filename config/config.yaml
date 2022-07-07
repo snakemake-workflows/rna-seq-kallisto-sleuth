@@ -46,7 +46,7 @@ diffexp:
   exclude:
   # model for sleuth differential expression analysis
   models:
-    model_X:
+    model_SuperResp:
       full: ~condition
       #full: ~condition + batch_effect
       reduced: ~1
@@ -56,7 +56,7 @@ diffexp:
       primary_variable: condition
       # base level of the primary variable (will be considered as denominator 
       # in the fold change/effect size estimation).
-      base_level: untreated
+      base_level: Non_resp
   # significance level to use for volcano, ma- and qq-plots
   sig-level:
     volcano-plot: 0.05
@@ -125,7 +125,7 @@ params:
   # also, separate capitalised letter flags are required for adapters in
   # the reverse reads of paired end sequencing:
   # * https://cutadapt.readthedocs.io/en/stable/guide.html#trimming-paired-end-reads
-  cutadapt-se: "-u 12 "
+  cutadapt-se: "-u 8 "
   # reasoning behind parameters:
   #   For reads that are produced by 3’-end sequencing first 12 bases are removed based on accordance with Lexogen’s recommendation. More info: https://www.nature.com/articles/s41598-019-55434-x#Sec10
   #   * `--minimum-length 33`:
