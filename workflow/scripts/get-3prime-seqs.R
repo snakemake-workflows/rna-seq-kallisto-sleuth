@@ -14,16 +14,19 @@ get_canonical_transcripts <-
     getBM(attributes = c("ensembl_gene_id", "ensembl_gene_id_version",
     "ensembl_transcript_id", "ensembl_transcript_id_version",
     "transcript_is_canonical"), mart = ensembl)
+read_length <- fromJSON(file = snakemake@input[["read_length"]])
 canonical_ids <- subset(get_canonical_transcripts, transcript_is_canonical == 1)
 seq <- getSequence(id = canonical_ids$ensembl_transcript_id_version,
-    type = "ensembl_transcript_id_version", seqType = "coding",
+    type = "ensembl_transcript_id_version", seqType = "3utr",
     mart = ensembl)
-unava_seq_fil <-
-    seq %>% filter(coding != "Sequence unavailable")
-read_length <- fromJSON(file = snakemake@input[["read_length"]])
-seq$coding <- str_sub(seq$coding,
+seq_fil <-
+    seq %>% filter(`3utr` != "Sequence unavailable")
+seq_fil <- seq_fil %>% mutate(`3utr` = str_remove_all(`3utr`, "AAA"))
+seq_fil <- seq_fil %>% mutate(`3utr` = str_remove_all(`3utr`, "TTT"))
+#seq_fil <- seq_fil %>% mutate(cdna = str_remove_all(cdna, "AAA"))
+seq_fil$`3utr` <- str_sub(seq_fil$`3utr`,
     start = -read_length)
 #unava_seq_fil <-
     #seq %>% filter(`3utr` != "Sequence unavailable")
     # if unavailable sequences are to be removed. 
-exportFASTA(unava_seq_fil, file = snakemake@output[[1]])
+exportFASTA(seq_fil, file = snakemake@output[[1]])

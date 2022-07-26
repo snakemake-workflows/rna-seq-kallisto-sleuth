@@ -12,12 +12,13 @@ rule get_transcriptome:
         type="cdna|cds|ncrna",
     cache: True
     wrapper:
-        "0.74.0/bio/reference/ensembl-sequence"
+        "v1.7.1/bio/reference/ensembl-sequence"
 
 
 rule get_3prime_seqs:
     input:
         read_length="results/stats/max-read-length.json",
+        ref_fasta="resources/transcriptome.cdna.fasta",
     output:
         "resources/transcriptome.3prime.fasta",
     params:
@@ -25,7 +26,7 @@ rule get_3prime_seqs:
     conda:
         "../envs/r-fasta.yaml"
     script:
-        "../scripts/get-3prime-seqs.R"  # TODO generate and implement this script, see https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#external-scripts
+        "../scripts/get_3prime-seqs.py"
 
 
 rule get_annotation:
