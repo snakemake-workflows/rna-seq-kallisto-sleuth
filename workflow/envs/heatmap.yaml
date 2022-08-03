@@ -1,0 +1,9 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base =4.1.3
+  - bioconductor-biomart =2.50
+  - bioconductor-tximport =1.22
+  - r-pheatmap =1.0.12
+  - bioconductor-rhdf5

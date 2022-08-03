@@ -8,7 +8,7 @@ resources:
     # ensembl species name
     species: homo_sapiens
     # ensembl release version
-    release: "107"
+    release: "87"
     # genome build
     build: GRCh38
     # this is the version of the bioconda package `bioconductor-org.{species}`.eg.db` that
@@ -119,7 +119,7 @@ plot_vars:
 params:
     #For reads that are produced by 3’-end sequencing, the --single-overhang option does not discard 
     #reads where the expected fragment size goes beyond the transcript start
-  kallisto: "-b 100 --single-overhang "
+  kallisto: "-b 100 --single-overhang --pseudobam"
   # these cutadapt parameters need to contain the required flag(s) for
   # the type of adapter(s) to trim, i.e.:
   # * https://cutadapt.readthedocs.io/en/stable/guide.html#adapter-types

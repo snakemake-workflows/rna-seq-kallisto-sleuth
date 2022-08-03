@@ -1,7 +1,7 @@
 sample	unit	fragment_len_mean	fragment_len_sd	fq1	fq2
-SRR8309096_03C_3	1	300	1	/home/manuel/ref_quantseq/SRR8309096.fastq	
-SRR8309097_04P_4	1	300	1	/home/manuel/ref_quantseq/SRR8309097.fastq	
-SRR8309098_05C_5	1	300	1	/home/manuel/ref_quantseq/SRR8309098.fastq	
-SRR8309099_06P_6	1	300	1	/home/manuel/ref_quantseq/SRR8309099.fastq	
-SRR8309094_01C_1	1	300	1	/home/manuel/ref_quantseq/SRR8309094.fastq	
-SRR8309095_02P_2	1	300	1	/home/manuel/ref_quantseq/SRR8309095.fastq	
+SRR8309096_03C_3	1	75	1	/home/manuel/ref_quantseq/SRR8309096.fastq	
+SRR8309097_04P_4	1	75	1	/home/manuel/ref_quantseq/SRR8309097.fastq	
+SRR8309098_05C_5	1	75	1	/home/manuel/ref_quantseq/SRR8309098.fastq	
+SRR8309099_06P_6	1	75	1	/home/manuel/ref_quantseq/SRR8309099.fastq	
+SRR8309094_01C_1	1	75	1	/home/manuel/ref_quantseq/SRR8309094.fastq	
+SRR8309095_02P_2	1	75	1	/home/manuel/ref_quantseq/SRR8309095.fastq	

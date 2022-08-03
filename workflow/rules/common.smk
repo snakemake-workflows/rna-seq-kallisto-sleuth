@@ -271,5 +271,7 @@ def all_input(wildcards):
                 cons=["with_consequences", "without_consequences"],
             )
         )
-
+    wanted_input.extend(
+        expand("results/QC/{unit.sample}-{unit.unit}.histogram.html", unit=units.itertuples())
+    )
     return wanted_input

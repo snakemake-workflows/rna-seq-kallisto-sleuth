@@ -3,6 +3,7 @@ kallisto_output = expand(
 )
 
 
+
 rule compose_sample_sheet:
     input:
         report(config["samples"], caption="../report/samples.rst"),
