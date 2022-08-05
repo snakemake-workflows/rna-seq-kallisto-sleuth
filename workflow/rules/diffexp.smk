@@ -1,5 +1,5 @@
 kallisto_output = expand(
-    "results/kallisto/{unit.sample}-{unit.unit}", unit=units.itertuples()
+    "results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples()
 )
 
 

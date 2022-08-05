@@ -7,3 +7,5 @@ dependencies:
   - bioconductor-tximport =1.22
   - r-pheatmap =1.0.12
   - bioconductor-rhdf5
+  - r-dplyr =1.0.9
+  - r-tidyr =1.2.0

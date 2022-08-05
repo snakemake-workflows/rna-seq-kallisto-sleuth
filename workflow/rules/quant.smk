@@ -1,27 +1,37 @@
-rule kallisto_index:
+rule kallisto_cds_index:
     input:
-        "resources/transcriptome.3prime.fasta"
-        if config["experiment"]["is-3-prime-rna-seq"]
-        else "resources/transcriptome.cdna.fasta",
+        "resources/transcriptome.cdna.fasta",
     output:
-        "results/kallisto/transcripts.idx",
+        "results/kallisto_cds/transcripts.idx",
     log:
-        "results/logs/kallisto/index.log",
+        "results/logs/kallisto_cds/index.log",
     conda:
         "../envs/kallisto.yaml"
     shell:
         "kallisto index -i {output} {input} 2> {log}"
 
 
-rule kallisto_quant:
+rule kallisto_3prime_index:
+    input:
+        "resources/transcriptome.3prime.fasta",
+    output:
+        "results/kallisto_3prime/transcripts.idx",
+    log:
+        "results/logs/kallisto_3prime/index.log",
+    conda:
+        "../envs/kallisto.yaml"
+    shell:
+        "kallisto index -i {output} {input} 2> {log}"
+
+rule kallisto_cds_quant:
     input:
         fq=get_trimmed,
-        idx="results/kallisto/transcripts.idx",
+        idx="results/kallisto_cds/transcripts.idx",
     output:
-        kallisto_folder=directory("results/kallisto/{sample}-{unit}"),
-        bam_file="results/kallisto/{sample}-{unit}/pseudoalignments.bam",
+        kallisto_folder=directory("results/kallisto_cds/{sample}-{unit}"),
+        bam_file="results/kallisto_cds/{sample}-{unit}/pseudoalignments.bam",
     log:
-        "results/logs/kallisto/quant/{sample}-{unit}.log",
+        "results/logs/kallisto_cds/quant/{sample}-{unit}.log",
     params:
         extra=kallisto_params,
     conda:
@@ -30,13 +40,32 @@ rule kallisto_quant:
         "kallisto quant -i {input.idx} -o {output.kallisto_folder} {params.extra} {input.fq} 2> {log}"
 
 
+rule kallisto_3prime_quant:
+    input:
+        fq=get_trimmed,
+        idx="results/kallisto_3prime/transcripts.idx",
+    output:
+        kallisto_folder=directory("results/kallisto_3prime/{sample}-{unit}"),
+    log:
+        "results/logs/kallisto_3prime/quant/{sample}-{unit}.log",
+    params:
+        extra=kallisto_params,
+    conda:
+        "../envs/kallisto.yaml"
+    shell:
+        "kallisto quant -i {input.idx} -o {output.kallisto_folder} {params.extra} {input.fq} 2> {log}"
+
+
+
 rule get_heatmap:
     input:
-        kallisto_path= expand("results/kallisto/{unit.sample}-{unit.unit}", unit=units.itertuples()),
-        sample_names="results/kallisto/"
+        kallisto_path=expand("results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples()),
+        #sample_names="results/kallisto_3prime/",
     output:
         png="results/heatmaps/heatmap.png",
-        topvar_genes="results/heatmaps/topvar_genes.tsv"
+        matrix_file="results/heatmaps/kallisto_genematrix_file.tsv",
+    params:
+        sample_names="results/kallisto_3prime/",
     log:
         "results/logs/heatmaps/heatmap.log",
     conda:
@@ -45,22 +74,23 @@ rule get_heatmap:
         "../scripts/get_heatmap.R"
 
 
-rule get_heatmap_for_topvar_genes:
+rule get_heatmap_for_predefine_genes:
     input:
-        var_genes="results/heatmaps/topvar_genes.tsv"
+        kallisto_genematrix_file="results/heatmaps/kallisto_genematrix_file.tsv",
+        predef_genelist="resources/selected_gene_from_ref.txt",
     output:
-        var_png="results/heatmaps/top_var_genes_heatmap.png",
+        predefgene_png="results/heatmaps/predefgenes_heatmap.png",
     log:
-        "results/logs/heatmaps/top_var_genes_heatmap.log",
+        "results/logs/heatmaps/predefgenes_heatmap.log",
     conda:
         "../envs/heatmap.yaml"
     script:
-        "../scripts/get_topvar_genes_heatmap.R"
+        "../scripts/get_predefgenes_heatmap.R"
 
 
 rule get_aligned_pos:
     input:
-        bam_file="results/kallisto/{sample}-{unit}/pseudoalignments.bam",
+        bam_file="results/kallisto_cds/{sample}-{unit}/pseudoalignments.bam",
         #expand("results/kallisto/{unit.sample}-{unit.unit}/pseudoalignments.bam", unit=units.itertuples()),
     output:
         "results/QC/{sample}-{unit}.aligned.txt",
@@ -71,10 +101,10 @@ rule get_aligned_pos:
         "samtools view {input.bam_file} | cut -f1,3,4  > {output} 2> {log}"
 
 
-
 rule get_read_dist:
     input:
         aligned_file="results/QC/{sample}-{unit}.aligned.txt",
+        bam_path="results/kallisto_cds/{sample}-{unit}/"
     output:
         histogram="results/QC/{sample}-{unit}.histogram.html",
     log:

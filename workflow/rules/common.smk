@@ -275,3 +275,9 @@ def all_input(wildcards):
         expand("results/QC/{unit.sample}-{unit.unit}.histogram.html", unit=units.itertuples())
     )
     return wanted_input
+
+    
+    wanted_input.extend(
+        expand("results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples())
+    )
+    return wanted_input
