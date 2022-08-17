@@ -8,7 +8,7 @@ resources:
     # ensembl species name
     species: homo_sapiens
     # ensembl release version
-    release: "87"
+    release: "104"
     # genome build
     build: GRCh38
     # this is the version of the bioconda package `bioconductor-org.{species}`.eg.db` that
@@ -52,14 +52,14 @@ diffexp:
     model_Condition:
       full: ~condition
       #full: ~condition + batch_effect
-      reduced: ~1
+      reduced: '~1'
       #reduced: '~1'# in case if it takes as numerical
       # Binary valued covariate that shall be used for fold change/effect size
       # based downstream analyses.
       primary_variable: condition
       # base level of the primary variable (will be considered as denominator 
       # in the fold change/effect size estimation).
-      base_level: Control
+      base_level: Non_resp
   # significance level to use for volcano, ma- and qq-plots
   sig-level:
     volcano-plot: 0.05

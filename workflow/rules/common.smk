@@ -271,13 +271,19 @@ def all_input(wildcards):
                 cons=["with_consequences", "without_consequences"],
             )
         )
+
     wanted_input.extend(
-        expand("results/QC/{unit.sample}-{unit.unit}.histogram.html", unit=units.itertuples())
+        expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt", unit=units.itertuples())
     )
     return wanted_input
-
-    
     wanted_input.extend(
         expand("results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples())
     )
     return wanted_input
+    
+    wanted_input.extend(
+        expand("results/QC/{unit.sample}-{unit.unit}_read_postions.csv", unit=units.itertuples())
+    )
+
+    
+    

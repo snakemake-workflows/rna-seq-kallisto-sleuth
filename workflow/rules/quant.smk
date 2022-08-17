@@ -57,35 +57,6 @@ rule kallisto_3prime_quant:
 
 
 
-rule get_heatmap:
-    input:
-        kallisto_path=expand("results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples()),
-        #sample_names="results/kallisto_3prime/",
-    output:
-        png="results/heatmaps/heatmap.png",
-        matrix_file="results/heatmaps/kallisto_genematrix_file.tsv",
-    params:
-        sample_names="results/kallisto_3prime/",
-    log:
-        "results/logs/heatmaps/heatmap.log",
-    conda:
-        "../envs/heatmap.yaml"
-    script:
-        "../scripts/get_heatmap.R"
-
-
-rule get_heatmap_for_predefine_genes:
-    input:
-        kallisto_genematrix_file="results/heatmaps/kallisto_genematrix_file.tsv",
-        predef_genelist="resources/selected_gene_from_ref.txt",
-    output:
-        predefgene_png="results/heatmaps/predefgenes_heatmap.png",
-    log:
-        "results/logs/heatmaps/predefgenes_heatmap.log",
-    conda:
-        "../envs/heatmap.yaml"
-    script:
-        "../scripts/get_predefgenes_heatmap.R"
 
 
 rule get_aligned_pos:
@@ -93,7 +64,7 @@ rule get_aligned_pos:
         bam_file="results/kallisto_cds/{sample}-{unit}/pseudoalignments.bam",
         #expand("results/kallisto/{unit.sample}-{unit.unit}/pseudoalignments.bam", unit=units.itertuples()),
     output:
-        "results/QC/{sample}-{unit}.aligned.txt",
+        aligned_files="results/QC/{sample}-{unit}.aligned.txt",
         #"results/QC/{sample}-{unit}.aligned.txt"
     log:
         "results/logs/QC/{sample}-{unit}.aligned.log",
@@ -103,12 +74,15 @@ rule get_aligned_pos:
 
 rule get_read_dist:
     input:
-        aligned_file="results/QC/{sample}-{unit}.aligned.txt",
-        bam_path="results/kallisto_cds/{sample}-{unit}/"
+        aligned_file=expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt", unit=units.itertuples()),
+        #bam_path="results/kallisto_cds/{sample}-{unit}/"
     output:
-        histogram="results/QC/{sample}-{unit}.histogram.html",
+        histogram="results/QC/QC_plot.html",
+    params:
+        samples=expand("results/kallisto_cds/{unit.sample}-{unit.unit}",unit=units.itertuples()),
+        read_length="results/stats/max-read-length.json",
     log:
-        "results/logs/QC/{sample}-{unit}.histogram.log",
+        "results/logs/QC/QC_plot.log",
     conda:
         "../envs/QC.yaml"
     script:

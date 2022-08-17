@@ -5,5 +5,7 @@ dependencies:
   - altair-transform =0.2.0
   - altair =4.2.0
   - pysam =0.19.1
-  - numpy =1.23.1
+  - numpy =1.22.0
   - altair_saver =0.5.0
+  - scipy =1.7.3
+  - matplotlib =3.5.2

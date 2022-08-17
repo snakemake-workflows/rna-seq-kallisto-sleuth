@@ -263,6 +263,33 @@ rule logcount_matrix:
         "../scripts/sleuth-to-matrix.R"
 
 
+rule get_heatmap:
+    input:
+        Sleuth_logcountmatrix_file=expand("results/tables/logcount-matrix/{model}.logcount-matrix.tsv", model=config["diffexp"]["models"]),
+    output:
+        png="results/heatmaps/heatmap.png",
+    log:
+        "results/logs/heatmaps/heatmap.log",
+    conda:
+        "../envs/heatmap.yaml"
+    script:
+        "../scripts/get_heatmap.R"
+
+
+rule get_heatmap_for_predefine_genes:
+    input:
+        Sleuth_logcountmatrix_file="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
+        predef_genelist="resources/selected_gene_from_ref.txt",
+    output:
+        predefgene_png="results/heatmaps/predefgenes_heatmap.png",
+    log:
+        "results/logs/heatmaps/predefgenes_heatmap.log",
+    conda:
+        "../envs/heatmap.yaml"
+    script:
+        "../scripts/get_predefgenes_heatmap.R"
+
+
 rule plot_group_density:
     input:
         "results/sleuth/all.rds",
