@@ -26,3 +26,5 @@ include: "rules/enrichment.smk"
 rule all:
     input:
         all_input,
+        "results/QC/QC_plot.html",
+        "results/heatmaps/heatmap.png",

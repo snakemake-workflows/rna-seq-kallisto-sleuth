@@ -4,7 +4,6 @@ from altair_saver import save
 import pandas as pd
 import numpy as np
 import pysam
-from altair_transform import transform_chart
 from scipy.stats import gaussian_kde
 from scipy import stats
 import sys
@@ -18,7 +17,8 @@ read_length = json.load(f)
 f.close()
 
 
-allsamp_disdata = pd.DataFrame([])
+allsamp_hist_full = pd.DataFrame([])
+allsamp_hist = pd.DataFrame([])
 for each_sample in samples:
     sample_name = each_sample.split("/")[2]
     print(each_sample)
@@ -38,26 +38,37 @@ for each_sample in samples:
     merge_data = align_bam_txt.merge(trans_length_data, on='Transcript_ID')
     #Each read postion is calcuated
     merge_data[sample_name + '_read_dist'] = merge_data['LN'] - merge_data['Start']
-    #Gaussian calcuation
-    kde_dist = gaussian_kde(merge_data[sample_name + '_read_dist'])
-    data_space = np.linspace(merge_data[sample_name + '_read_dist'].min(), 10000, num=100)
-    evaluated_dist = kde_dist.evaluate(data_space)
     #import pdb; pdb.set_trace()
     #Python will evaluate each step
+    Freq, bins = np.histogram(merge_data[sample_name + '_read_dist'], bins =read_length, range=[0,20000])
+    Freq_full, bins_full = np.histogram(merge_data[sample_name + '_read_dist'], bins =read_length, range=[0,max(merge_data['LN'])])
+    hist = pd.DataFrame({'sample_Name': sample_name, 'Freq': Freq, 'bins': bins[:-1]})
+    hist_full = pd.DataFrame({'sample_Name': sample_name, 'Freq_full': Freq_full, 'bins_full': bins_full[:-1]})
+    allsamp_hist = pd.concat([allsamp_hist, hist])
+    allsamp_hist_full = pd.concat([allsamp_hist_full, hist_full])
 
-    eachsample_dist = pd.DataFrame({'sample_name': sample_name, 'data_points': data_space,
-        'kde_dist': evaluated_dist })
-    allsamp_disdata = pd.concat([allsamp_disdata, eachsample_dist])
+#Histogram for first 20,000 transcript len
+hist = alt.Chart(allsamp_hist).mark_line(interpolate='step-after').encode(x = alt.X('bins', 
+   scale=alt.Scale(domain=[0, 20000]), title="difference between transcript length and read start"), 
+        y =alt.Y('Freq:Q', title = 'Count of Records'), 
+            color = 'sample_Name').transform_filter(alt.FieldRangePredicate(field='bins', range=[0, 20000]))
 
-hist = alt.Chart().mark_line().encode(x = alt.X('data_points', 
-    title="difference between transcript length and read start"), 
-        y =alt.Y('kde_dist', title = "density"), color = 'sample_name')
+allsamp_hist['read_length'] = read_length
+chart_read_length = alt.Chart(allsamp_hist).mark_rule(color='black',strokeDash=[3,5]).encode(
+    x='read_length')
+final_chart = (hist+chart_read_length)
 
-allsamp_disdata['read_length'] = read_length
-chart_read_length = alt.Chart().mark_rule().encode(
+#Histogram for full len transcript
+hist_full = alt.Chart(allsamp_hist_full).mark_line(interpolate='step-after').encode(x = alt.X('bins_full', 
+    title="difference between transcript length and read start"), y =alt.Y('Freq_full:Q', title = 'Count of Records'), 
+        color = 'sample_Name')
+
+allsamp_hist_full['read_length'] = read_length
+chart_read_length_full = alt.Chart(allsamp_hist_full).mark_rule(color='black',strokeDash=[3,5]).encode(
     x='read_length')
 
-final_chart = (hist+chart_read_length).facet(row='site', data=allsamp_disdata)
+final_chart_full = (hist_full+chart_read_length_full)
 
-final_chart.save(snakemake.output["histogram"])
+final_hist =alt.hconcat(final_chart, final_chart_full)
 
+final_hist.save(snakemake.output["histogram"])

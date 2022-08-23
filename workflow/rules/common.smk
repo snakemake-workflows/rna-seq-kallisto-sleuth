@@ -122,11 +122,12 @@ def kallisto_params(wildcards, input):
     return extra
 
 
+
 def all_input(wildcards):
     """
-    Function defining all requested inputs for the rule all (below).
+    #Function defining all requested inputs for the rule all (below).
     """
-
+    
     wanted_input = []
 
     # request goatools if 'activated' in config.yaml
@@ -276,14 +277,16 @@ def all_input(wildcards):
         expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt", unit=units.itertuples())
     )
     return wanted_input
+    
+    wanted_input.extend(
+        expand("results/QC_final/{unit.sample}-{unit.unit}.QC_plot.html", unit=units.itertuples())
+    )
+    return wanted_input
     wanted_input.extend(
         expand("results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples())
     )
     return wanted_input
-    
-    wanted_input.extend(
-        expand("results/QC/{unit.sample}-{unit.unit}_read_postions.csv", unit=units.itertuples())
-    )
+
 
     
     

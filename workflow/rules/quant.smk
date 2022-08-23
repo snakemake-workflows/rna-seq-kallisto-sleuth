@@ -1,6 +1,6 @@
 rule kallisto_cds_index:
     input:
-        "resources/transcriptome.cdna.fasta",
+        "resources/transcriptome_clean.cdna.fasta",
     output:
         "results/kallisto_cds/transcripts.idx",
     log:
@@ -56,9 +56,6 @@ rule kallisto_3prime_quant:
         "kallisto quant -i {input.idx} -o {output.kallisto_folder} {params.extra} {input.fq} 2> {log}"
 
 
-
-
-
 rule get_aligned_pos:
     input:
         bam_file="results/kallisto_cds/{sample}-{unit}/pseudoalignments.bam",
@@ -74,7 +71,8 @@ rule get_aligned_pos:
 
 rule get_read_dist:
     input:
-        aligned_file=expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt", unit=units.itertuples()),
+        aligned_file=expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt", unit=units.itertuples())
+        #aligned_file="results/QC/{sample}-{unit}.aligned.txt",
         #bam_path="results/kallisto_cds/{sample}-{unit}/"
     output:
         histogram="results/QC/QC_plot.html",
