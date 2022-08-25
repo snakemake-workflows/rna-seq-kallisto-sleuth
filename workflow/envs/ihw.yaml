@@ -1,6 +1,7 @@
 channels:
   - conda-forge
   - bioconda
+  - nodefaults
 dependencies:
   - r-base =4.1
   - bioconductor-ihw =1.20.0

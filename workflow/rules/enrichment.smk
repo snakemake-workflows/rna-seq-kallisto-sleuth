@@ -17,6 +17,7 @@ rule download_bioconductor_species_database:
 # topology- and interaction-aware pathway enrichment analysis
 
 
+# TODO consider cellphonedb for receptor ligand interaction (Sarah Teichmann, Nature Methods?)
 rule spia:
     input:
         samples="results/sleuth/samples.tsv",
