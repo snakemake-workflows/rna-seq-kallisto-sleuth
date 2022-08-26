@@ -1,0 +1,2 @@
+**Quality control plot**,Quality control plot of all samples as step chart. The left plot shows the difference between transcripts length and read start postion upto 20,000 base pairs (x-axis).
+The right plot show the full length transcript (x-axis).

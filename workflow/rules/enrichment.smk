@@ -10,7 +10,7 @@ rule download_bioconductor_species_database:
     log:
         "logs/resources/bioconductor/{package}.log",
     shell:
-        "conda create --quiet --yes -p {params.path} --channel bioconda --channel conda-forge "
+        "conda create --quiet --yes -p {params.path} --channel conda-forge --channel bioconda "
         "bioconductor-{wildcards.package}={params.version} > {log} 2>&1"
 
 
@@ -39,7 +39,7 @@ rule spia:
         "../envs/spia.yaml"
     log:
         "logs/tables/pathways/{model}.spia-pathways.log",
-    threads: 16
+    threads: 25
     script:
         "../scripts/spia.R"
 

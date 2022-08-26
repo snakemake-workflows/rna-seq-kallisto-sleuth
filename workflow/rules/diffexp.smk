@@ -1,7 +1,11 @@
-kallisto_output = expand(
-    "results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples()
-)
-
+if config["experiment"]["is-3-prime-rna-seq"]:
+    kallisto_output = expand(
+        "results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples()
+    )
+else:
+    kallisto_output = expand(
+        "results/kallisto_cds/{unit.sample}-{unit.unit}", unit=units.itertuples()
+    )
 
 
 rule compose_sample_sheet:
@@ -200,31 +204,6 @@ rule plot_pca:
         "../scripts/plot-pca.R"
 
 
-# TODO rewrite heatmap code with ComplexHeatmap or altair.
-# This rule may fail with
-# Error in names(annotation_colors[[names(annotation)[i]]]) <- l :
-#  'names' attribute [2] must be the same length as the vector [1]
-# Calls: plot_transcript_heatmap -> <Anonymous> -> generate_annotation_colours
-rule plot_diffexp_heatmap:
-    input:
-        so="results/sleuth/{model}.rds",
-        diffexp="results/tables/diffexp/{model}.transcripts.diffexp.tsv",
-    output:
-        report(
-            "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
-            caption="../report/plot-heatmap.rst",
-            category="Heatmaps",
-        ),
-    params:
-        model=get_model,
-    conda:
-        "../envs/sleuth.yaml"
-    log:
-        "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.log",
-    script:
-        "../scripts/plot-diffexp-heatmap.R"
-
-
 rule plot_diffexp_pval_hist:
     input:
         diffexp_rds="results/sleuth/diffexp/{model}.{level}.diffexp.rds",
@@ -261,6 +240,39 @@ rule logcount_matrix:
         "logs/tables/logcount-matrix/{model}.logcount-matrix.log",
     script:
         "../scripts/sleuth-to-matrix.R"
+
+
+rule get_heatmap:
+    input:
+        Sleuth_logcountmatrix_file="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
+    output:
+        report(
+            "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
+            caption="../report/plot-heatmap.rst",
+            category="Heatmaps",
+        )
+    params:
+        model=get_model,
+    log:
+        "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.log",
+    conda:
+        "../envs/heatmap.yaml"
+    script:
+        "../scripts/get_heatmap.R"
+
+
+rule get_heatmap_for_predefine_genes:
+    input:
+        Sleuth_logcountmatrix_file="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
+        predef_genelist="resources/selected_gene_from_ref.txt",
+    output:
+        predefgene_png="results/heatmaps/predefgenes_heatmap.png",
+    log:
+        "results/logs/heatmaps/predefgenes_heatmap.log",
+    conda:
+        "../envs/heatmap.yaml"
+    script:
+        "../scripts/get_predefgenes_heatmap.R"
 
 
 rule plot_group_density:

@@ -191,7 +191,11 @@ write_results <- function(so, mode, output, output_all) {
 
     # add sample expressions
     all <- all %>% left_join(as_tibble(sleuth_to_matrix(so, "obs_norm", "est_counts"), rownames="target_id"))
-    write_tsv(all, path = output, quote_escape = "none")
+    #write_tsv(all, path = output, quote_escape = "none")
+    #Warning message:
+    #The `quote_escape` argument of `write_delim()` is deprecated as of readr 2.0.0.
+    #Please use the `escape` argument instead.
+    write_tsv(all, path = output, escape = "none")
 }
 
 write_results(sleuth_object, "transcripts", snakemake@output[["transcripts"]], snakemake@output[["transcripts_rds"]])

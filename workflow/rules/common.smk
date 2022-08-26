@@ -122,11 +122,12 @@ def kallisto_params(wildcards, input):
     return extra
 
 
+
 def all_input(wildcards):
     """
-    Function defining all requested inputs for the rule all (below).
+    #Function defining all requested inputs for the rule all (below).
     """
-
+    
     wanted_input = []
 
     # request goatools if 'activated' in config.yaml
@@ -183,7 +184,7 @@ def all_input(wildcards):
                 "results/plots/ma/{model}.ma-plots.pdf",
                 "results/plots/qq/{model}.qq-plots.pdf",
                 "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
-                # "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf", # see rule plot_diffexp_heatmap
+                "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
                 "results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
             ],
             model=config["diffexp"]["models"],
@@ -271,13 +272,18 @@ def all_input(wildcards):
                 cons=["with_consequences", "without_consequences"],
             )
         )
-    wanted_input.extend(
-        expand("results/QC/{unit.sample}-{unit.unit}.histogram.html", unit=units.itertuples())
-    )
+        
+    if config["experiment"]["is-3-prime-rna-seq"]:
+        wanted_input.extend(
+                expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt", unit=units.itertuples())
+            )
+
+        wanted_input.extend(
+            expand("results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples())
+        )
     return wanted_input
+        
+    
 
     
-    wanted_input.extend(
-        expand("results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples())
-    )
-    return wanted_input
+    
