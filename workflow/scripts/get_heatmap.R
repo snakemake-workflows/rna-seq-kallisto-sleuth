@@ -18,10 +18,7 @@ vargenes <-
     apply(sleuth_file, 1, var)
 selectedgenes <-
     names(vargenes[order(vargenes, decreasing = TRUE)][1:50])
-<<<<<<< HEAD
+
 pdf(file=snakemake@output[[1]], height =10, width= 10)
-=======
-png(snakemake@output[["png"]], w = 908, h = 953, pointsize = 200)
->>>>>>> a1cce49705730f2c73aa5869fee0fa86fab6ff7c
 pheatmap(sleuth_file[selectedgenes, ], scale = "row")
 dev.off()

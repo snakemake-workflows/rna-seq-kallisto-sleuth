@@ -272,7 +272,6 @@ def all_input(wildcards):
                 cons=["with_consequences", "without_consequences"],
             )
         )
-<<<<<<< HEAD
         
     if config["experiment"]["is-3-prime-rna-seq"]:
         wanted_input.extend(
@@ -284,26 +283,4 @@ def all_input(wildcards):
         )
     return wanted_input
         
-    
-
-    
-=======
-
-    wanted_input.extend(
-        expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt", unit=units.itertuples())
-    )
-    return wanted_input
-    
-    wanted_input.extend(
-        expand("results/QC_final/{unit.sample}-{unit.unit}.QC_plot.html", unit=units.itertuples())
-    )
-    return wanted_input
-    wanted_input.extend(
-        expand("results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples())
-    )
-    return wanted_input
-
-
-    
->>>>>>> a1cce49705730f2c73aa5869fee0fa86fab6ff7c
     

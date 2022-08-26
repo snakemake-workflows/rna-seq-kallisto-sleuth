@@ -244,7 +244,6 @@ rule logcount_matrix:
 
 rule get_heatmap:
     input:
-<<<<<<< HEAD
         Sleuth_logcountmatrix_file="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
     output:
         report(
@@ -256,13 +255,6 @@ rule get_heatmap:
         model=get_model,
     log:
         "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.log",
-=======
-        Sleuth_logcountmatrix_file=expand("results/tables/logcount-matrix/{model}.logcount-matrix.tsv", model=config["diffexp"]["models"]),
-    output:
-        png="results/heatmaps/heatmap.png",
-    log:
-        "results/logs/heatmaps/heatmap.log",
->>>>>>> a1cce49705730f2c73aa5869fee0fa86fab6ff7c
     conda:
         "../envs/heatmap.yaml"
     script:

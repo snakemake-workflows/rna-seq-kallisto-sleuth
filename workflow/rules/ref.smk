@@ -14,7 +14,6 @@ rule get_transcriptome:
     wrapper:
         "v1.7.1/bio/reference/ensembl-sequence"
 
-<<<<<<< HEAD
 if config["experiment"]["is-3-prime-rna-seq"]:
     rule cds_polyA_T_removal:
         input:
@@ -40,34 +39,6 @@ if config["experiment"]["is-3-prime-rna-seq"]:
             "../envs/r-fasta.yaml"
         script:
             "../scripts/get_3prime-seqs.py"
-=======
-rule cds_polyA_T_removal:
-    input:
-        ref_fasta="resources/transcriptome.cdna.fasta",
-    output:
-        "resources/transcriptome_clean.cdna.fasta",
-    log:
-        "results/logs/kallisto_cds/cds_polyA_T_removal.log",
-    conda:
-        "../envs/r-fasta.yaml"
-    script:
-        "../scripts/remove_poly_tails.py"
-
-
-rule get_3prime_seqs:
-    input:
-        read_length="results/stats/max-read-length.json",
-        ref_fasta="resources/transcriptome_clean.cdna.fasta",
-    output:
-        "resources/transcriptome.3prime.fasta",
-    params:
-        release=config["resources"]["ref"]["release"],
-    conda:
-        "../envs/r-fasta.yaml"
-    script:
-        "../scripts/get_3prime-seqs.py"
->>>>>>> a1cce49705730f2c73aa5869fee0fa86fab6ff7c
-
 
 rule get_annotation:
     output:
