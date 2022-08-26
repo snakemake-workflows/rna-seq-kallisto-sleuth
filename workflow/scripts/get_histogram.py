@@ -12,7 +12,11 @@ sys.stderr = open(snakemake.log[0], "w")
 
 
 samples = snakemake.params["samples"]
+<<<<<<< HEAD
 f = open(snakemake.input["read_length"])
+=======
+f = open(snakemake.params["read_length"])
+>>>>>>> a1cce49705730f2c73aa5869fee0fa86fab6ff7c
 read_length = json.load(f)
 f.close()
 
@@ -71,4 +75,8 @@ final_chart_full = (hist_full+chart_read_length_full)
 
 final_hist =alt.hconcat(final_chart, final_chart_full)
 
+<<<<<<< HEAD
 final_hist.save(snakemake.output[0])
+=======
+final_hist.save(snakemake.output["histogram"])
+>>>>>>> a1cce49705730f2c73aa5869fee0fa86fab6ff7c
