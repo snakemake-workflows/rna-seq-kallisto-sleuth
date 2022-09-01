@@ -12,7 +12,7 @@ sys.stderr = open(snakemake.log[0], "w")
 
 
 samples = snakemake.params["samples"]
-f = open(snakemake.input["read_length"])
+f = open(snakemake.params["read_length"])
 read_length = json.load(f)
 f.close()
 

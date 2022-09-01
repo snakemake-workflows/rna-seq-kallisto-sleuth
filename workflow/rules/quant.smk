@@ -31,7 +31,7 @@ rule kallisto_cds_quant:
 if config["experiment"]["is-3-prime-rna-seq"]:
     rule kallisto_3prime_index:
         input:
-            "resources/transcriptome.3prime.fasta",
+            "resources/transcriptome_canonical.3prime.fasta",
         output:
             "results/kallisto_3prime/transcripts.idx",
         log:
@@ -69,26 +69,18 @@ if config["experiment"]["is-3-prime-rna-seq"]:
         shell:
             "samtools view {input.bam_file} | cut -f1,3,4  > {output} 2> {log}"
 
-    rule get_aligned_pos:
-        input:
-            bam_file="results/kallisto_cds/{sample}-{unit}/pseudoalignments.bam",
-        output:
-            aligned_files="results/QC/{sample}-{unit}.aligned.txt",
-        log:
-            "results/logs/QC/{sample}-{unit}.aligned.log",
-        shell:
-            "samtools view {input.bam_file} | cut -f1,3,4  > {output} 2> {log}"
-
     rule get_read_dist:
         input:
             aligned_file=expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt", unit=units.itertuples()),
-            read_length="results/stats/max-read-length.json",
         output:
             report(
                 "results/QC/QC_plot.html",
                 caption="../report/plot-QC.rst",
                 category="QC",
             ),
+        params:
+            samples=expand("results/kallisto_cds/{unit.sample}-{unit.unit}",unit=units.itertuples()),
+            read_length="results/stats/max-read-length.json",
         log:
             "results/logs/QC/QC_plot.log",
         conda:

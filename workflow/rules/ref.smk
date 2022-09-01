@@ -15,6 +15,7 @@ rule get_transcriptome:
         "v1.7.1/bio/reference/ensembl-sequence"
 
 if config["experiment"]["is-3-prime-rna-seq"]:
+
     rule cds_polyA_T_removal:
         input:
             ref_fasta="resources/transcriptome.cdna.fasta"
@@ -39,6 +40,29 @@ if config["experiment"]["is-3-prime-rna-seq"]:
             "../envs/r-fasta.yaml"
         script:
             "../scripts/get_3prime-seqs.py"
+    
+    rule get_canonical_ids:
+        output:
+            "resources/canonical_ids.csv",
+        log:
+           "logs/filter_canonical/get_canonical_ids.log",
+        params:
+            release=config["resources"]["ref"]["release"],
+        conda:
+            "../envs/get_canonical_ids.yaml"
+        script:
+            "../scripts/get_canonical_ids.R"
+    
+    rule get_canonical_transcripts:
+        input:
+            fasta="resources/transcriptome.3prime.fasta",
+            canonical_ids="resources/canonical_ids.csv",
+        output:
+            "resources/transcriptome_canonical.3prime.fasta",
+        conda:
+            "../envs/get_canonical_ids.yaml"
+        shell:
+            """bioawk -cfastx 'BEGIN{{while((getline k <"{input.canonical_ids}")>0)i[k]=1}}{{if(i[$name])print ">"$name"\\n"$seq}}' {input.fasta} > {output}"""
 
 rule get_annotation:
     output:

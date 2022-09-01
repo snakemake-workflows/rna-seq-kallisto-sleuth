@@ -43,6 +43,24 @@ rule spia:
     script:
         "../scripts/spia.R"
 
+rule plot_spia_pathways:
+    input:
+        pathway_file="results/tables/pathways/{model}.pathways.tsv",
+    output:
+         report(
+            "results/plots/pathways/{model}.pathways.pdf",
+            caption="../report/plot-pathway.rst",
+            category="Pathway enrichment analysis",
+        )
+    conda:
+        "../envs/spia.yaml"
+    log:
+        "logs/tables/pathways/{model}.spia-plot-pathways.log",
+    script:
+        "../scripts/get_pathway_barplot.R"
+    
+    
+
 
 ## gene set enrichment analysis
 
@@ -90,7 +108,7 @@ rule fgsea:
         "../envs/fgsea.yaml"
     log:
         "logs/tables/fgsea/{model}.gene-set-enrichment.log",
-    threads: 8
+    threads: 25
     script:
         "../scripts/fgsea.R"
 
