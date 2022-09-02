@@ -2,6 +2,8 @@
 import Bio
 import json
 import re
+import sys
+sys.stderr = open(snakemake.log[0], "w")
 
 f = open(snakemake.input["read_length"])
 read_length = json.load(f)

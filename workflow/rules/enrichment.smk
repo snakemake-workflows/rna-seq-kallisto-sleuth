@@ -39,7 +39,7 @@ rule spia:
         "../envs/spia.yaml"
     log:
         "logs/tables/pathways/{model}.spia-pathways.log",
-    threads: 25
+    threads: 35
     script:
         "../scripts/spia.R"
 

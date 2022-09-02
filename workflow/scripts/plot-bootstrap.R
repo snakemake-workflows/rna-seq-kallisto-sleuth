@@ -41,7 +41,7 @@ for (gene in genes) {
 
     if ( length( transcripts > 0 ) ) {
         for (transcript in transcripts) {
-            plot_bootstrap(so, transcript, color_by = snakemake@params[["color_by"]], units = "tpm")
+            plot_bootstrap(so, transcript, color_by = snakemake@params[["color_by"]], units = "est_counts")
             ggsave(file = str_c(snakemake@output[[1]], "/", gene, ".", transcript, ".", snakemake@wildcards[["model"]] , ".bootstrap.pdf"))
         }
     }

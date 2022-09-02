@@ -167,7 +167,10 @@ def all_input(wildcards):
     if config["enrichment"]["spia"]["activate"]:
         wanted_input.extend(
             expand(
-                ["results/tables/pathways/{model}.pathways.tsv"],
+                [
+                    "results/tables/pathways/{model}.pathways.tsv",
+                    "results/plots/pathways/{model}.pathways.pdf",
+                ],
                 model=config["diffexp"]["models"],
             )
         )
