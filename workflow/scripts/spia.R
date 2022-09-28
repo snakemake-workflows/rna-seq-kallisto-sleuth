@@ -52,5 +52,23 @@ if(nrow(sig_genes) == 0) {
     setwd(olddir)
 
     file.copy(file.path(t, "SPIAPerturbationPlots.pdf"), snakemake@output[["plots"]])
+    pathway_names <- db[res$Name]
+    pathway_names <- db[res$Name]
+    path_ids <- as.matrix(lapply(pathway_names@entries, slot, "id"))
+    path_ids_data_frame <-
+        data.frame(Ids = matrix(unlist(path_ids),
+            nrow = length(path_ids), byrow = TRUE))
+    final_res <- cbind(res,
+        Ids = path_ids_data_frame$Ids)
+    res_reorder <- dplyr::select(final_res, Status, Name,
+        pGFdr, tA, pSize, NDE, pNDE, pGFWER, pPERT, pG, Ids)
+    names(res_reorder)[names(res_reorder) == "pGFWER"] <- "Bonferroni adjusted global p-values"
+    names(res_reorder)[names(res_reorder) == "pGFdr"] <- "False Discovery Rate global p-values"
+    names(res_reorder)[names(res_reorder) == "tA"] <- "observed total perturbation accumulation"
+    names(res_reorder)[names(res_reorder) == "pSize"] <- "number of genes on the pathway"
+    names(res_reorder)[names(res_reorder) == "NDE"] <- "number of DE genes per pathway"
+    names(res_reorder)[names(res_reorder) == "pG"] <- "p-value obtained by combining pNDE and pPERT"
+    names(res_reorder)[names(res_reorder) == "pPERT"] <- "probability to observe a total accumulation"
+    names(res_reorder)[names(res_reorder) == "pNDE"] <- "probability to observe at least NDE genes on the pathway"
+    write_tsv(res_reorder, snakemake@output[["table"]])
 }
-write_tsv(res, snakemake@output[["table"]])

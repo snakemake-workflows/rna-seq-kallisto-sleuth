@@ -112,7 +112,7 @@ def get_bioc_pkg_path(wildcards):
 
 def kallisto_params(wildcards, input):
     extra = config["params"]["kallisto"]
-    if len(input.fq) == 1:
+    if len(input.fq) == 1 or config["experiment"]["is-3-prime-rna-seq"]:
         extra += " --single"
         extra += (
             " --fragment-length {unit.fragment_len_mean} " "--sd {unit.fragment_len_sd}"
@@ -275,7 +275,7 @@ def all_input(wildcards):
                 cons=["with_consequences", "without_consequences"],
             )
         )
-        
+
     if config["experiment"]["is-3-prime-rna-seq"]:
         wanted_input.extend(
                 expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt", unit=units.itertuples())
@@ -284,6 +284,14 @@ def all_input(wildcards):
         wanted_input.extend(
             expand("results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples())
         )
+        wanted_input.extend(
+            expand("results/aligned_reads/{unit.sample}-{unit.unit}.read_names.txt",unit=units.itertuples())
+        )
+        wanted_input.extend(
+            expand("results/kallisto_cds/{unit.sample}-{unit.unit}",unit=units.itertuples())
+        )
+        wanted_input.extend(
+            expand("results/canonical_reads/{unit.sample}-{unit.unit}.fastq",unit=units.itertuples())
+        )
     return wanted_input
-        
     

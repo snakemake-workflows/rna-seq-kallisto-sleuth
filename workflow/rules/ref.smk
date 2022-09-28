@@ -30,12 +30,13 @@ if config["experiment"]["is-3-prime-rna-seq"]:
 
     rule get_3prime_seqs:
         input:
-            read_length="results/stats/max-read-length.json",
             ref_fasta="resources/transcriptome_clean.cdna.fasta",
         output:
             "resources/transcriptome.3prime.fasta",
         params:
             release=config["resources"]["ref"]["release"],
+        log:
+            "logs/get_3prime_seqs/get_3prime_seqs.log",
         conda:
             "../envs/r-fasta.yaml"
         script:

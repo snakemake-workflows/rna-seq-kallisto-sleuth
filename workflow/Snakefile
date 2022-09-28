@@ -21,6 +21,7 @@ include: "rules/quant.smk"
 include: "rules/diffexp.smk"
 include: "rules/diffsplice.smk"
 include: "rules/enrichment.smk"
+include: "rules/datavzrd.smk"
 
 
 rule all:

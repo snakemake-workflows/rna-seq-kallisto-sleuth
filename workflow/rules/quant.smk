@@ -43,7 +43,7 @@ if config["experiment"]["is-3-prime-rna-seq"]:
 
     rule kallisto_3prime_quant:
         input:
-            fq=get_trimmed,
+            fq="results/canonical_reads/{sample}-{unit}.fastq",
             idx="results/kallisto_3prime/transcripts.idx",
         output:
             kallisto_folder=directory("results/kallisto_3prime/{sample}-{unit}"),
@@ -67,7 +67,35 @@ if config["experiment"]["is-3-prime-rna-seq"]:
         conda:
             "../envs/aligned_pos.yaml"
         shell:
-            "samtools view {input.bam_file} | cut -f1,3,4  > {output} 2> {log}"
+            "samtools view {input.bam_file} | cut -f1,3,4,10,11  > {output} 2> {log}"
+           
+    rule get_aligned_reads:
+        input:
+            aligned_reads="results/QC/{sample}-{unit}.aligned.txt",
+            canonical_ids="resources/canonical_ids.csv",
+        output:
+            aligned_read_names="results/aligned_reads/{sample}-{unit}.read_names.txt",
+        params:
+            samples="results/kallisto_cds/{sample}-{unit}",
+        log:
+            "results/logs/aligned_read_files/{sample}-{unit}.log",
+        conda:
+            "../envs/QC.yaml",
+        script:
+            "../scripts/get_aligned_reads.py"
+    
+    rule get_canonical_fastq:
+        input:
+            get_all_fastq="results/trimmed/{sample}-{unit}.fastq.gz",
+            aligned_read_names="results/aligned_reads/{sample}-{unit}.read_names.txt",
+        output:
+            canonical_fastq="results/canonical_reads/{sample}-{unit}.fastq",
+        log:
+            "results/logs/canonical_reads/{sample}-{unit}.canonical_reads.log",
+        conda:
+            "../envs/canonical_reads.yaml"
+        shell:
+            "seqtk subseq {input.get_all_fastq} {input.aligned_read_names} > {output.canonical_fastq}"  
 
     rule get_read_dist:
         input:

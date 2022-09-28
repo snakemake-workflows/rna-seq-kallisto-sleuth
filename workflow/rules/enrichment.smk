@@ -39,7 +39,7 @@ rule spia:
         "../envs/spia.yaml"
     log:
         "logs/tables/pathways/{model}.spia-pathways.log",
-    threads: 35
+    threads: 38
     script:
         "../scripts/spia.R"
 
@@ -48,18 +48,19 @@ rule plot_spia_pathways:
         pathway_file="results/tables/pathways/{model}.pathways.tsv",
     output:
          report(
-            "results/plots/pathways/{model}.pathways.pdf",
+            "results/plots/pathways/{model}.pathways.html",
             caption="../report/plot-pathway.rst",
             category="Pathway enrichment analysis",
         )
     conda:
-        "../envs/spia.yaml"
+        "../envs/QC.yaml"
     log:
         "logs/tables/pathways/{model}.spia-plot-pathways.log",
     script:
-        "../scripts/get_pathway_barplot.R"
+        "../scripts/get_pathway_barplot.py"
     
     
+
 
 
 ## gene set enrichment analysis
