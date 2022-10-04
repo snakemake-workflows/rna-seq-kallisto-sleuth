@@ -109,8 +109,5 @@ rev_chart_trim =(hist_rev_trim+cht_rd_len_rev_trim)
 Fwd_chart =alt.hconcat(Fwd_chart_trim, Fwd_chart_full)
 Rev_chart =alt.hconcat(rev_chart_trim, rev_chart_full)
 
-
-print("concatination completed")
 Final_chart = alt.vconcat(Fwd_chart, Rev_chart)
-
 Final_chart.save(snakemake.output[0])

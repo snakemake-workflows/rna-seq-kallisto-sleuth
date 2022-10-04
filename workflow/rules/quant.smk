@@ -29,6 +29,7 @@ rule kallisto_cds_quant:
         "kallisto quant -i {input.idx} -o {output.kallisto_folder} {params.extra} {input.fq} 2> {log}"
 
 if config["experiment"]["is-3-prime-rna-seq"]:
+    
     rule kallisto_3prime_index:
         input:
             "resources/transcriptome_canonical.3prime.fasta",
@@ -57,6 +58,7 @@ if config["experiment"]["is-3-prime-rna-seq"]:
             "kallisto quant -i {input.idx} -o {output.kallisto_folder} {params.extra} {input.fq} 2> {log}"
 
 if config["experiment"]["is-3-prime-rna-seq"]:
+    
     rule get_aligned_pos:
         input:
             bam_file="results/kallisto_cds/{sample}-{unit}/pseudoalignments.bam",

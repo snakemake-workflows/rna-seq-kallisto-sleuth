@@ -120,9 +120,15 @@ def kallisto_params(wildcards, input):
     else:
         extra += " --fusion"
     return extra
-
-
-
+"""
+def three_prime_cutadapt(get_fastqs):
+    var = config["params"]["cutadapt-se"]
+    if config["experiment"]["is-3-prime-rna-seq"]:
+        var += f{'-m 20 -O 20 -a polyA=A{20} -a QUALITY=G{20} -n 2} {get_fastqs}',
+        #extra += cutadapt -m 20 -O 3 --nextseq-trim=10 -a ""r1adapter=A\{18\}AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=3;max_error_rate=0.100000"" | 
+        #extra += cutadapt -m 20 -O 20 -g ""r1adapter=AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=20"" --discard-trimmed  ),
+    return var
+"""
 def all_input(wildcards):
     """
     #Function defining all requested inputs for the rule all (below).

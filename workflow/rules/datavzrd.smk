@@ -10,7 +10,6 @@ rule render_datavzrd_config_spia:
     template_engine:
         "yte"
 
-
 rule datavzrd:
     input:
         config="results/datavzrd/{type}/{model}.yaml",
