@@ -1,3 +1,4 @@
+# TODO add ability to use gencode (more complete)
 rule get_transcriptome:
     output:
         "resources/transcriptome.{type}.fasta",

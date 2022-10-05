@@ -84,7 +84,7 @@ enrichment:
     gene_sets_file: "resources/gene_sets/dummy.gmt"
     fdr_gene_set: 0.05
     # minimum achievable p-value  (equivalent to the reciprocal of the number of permutations, see fgsea docs)
-    eps: 1e-50
+    eps: 1.0e-50
   spia:
     # tool is only run if set to `true`
     activate: false

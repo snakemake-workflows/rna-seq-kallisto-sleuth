@@ -10,13 +10,14 @@ rule download_bioconductor_species_database:
     log:
         "logs/resources/bioconductor/{package}.log",
     shell:
-        "conda create --quiet --yes -p {params.path} --channel bioconda --channel conda-forge "
+        "conda create --quiet --yes -p {params.path} --channel conda-forge --channel bioconda "
         "bioconductor-{wildcards.package}={params.version} > {log} 2>&1"
 
 
 # topology- and interaction-aware pathway enrichment analysis
 
 
+# TODO consider cellphonedb for receptor ligand interaction (Sarah Teichmann, Nature Methods?)
 rule spia:
     input:
         samples="results/sleuth/samples.tsv",

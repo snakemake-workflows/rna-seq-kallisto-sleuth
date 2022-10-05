@@ -1,6 +1,7 @@
 channels:
   - conda-forge
   - bioconda
+  - nodefaults
 dependencies:
   - r-sleuth =0.30
   - bioconductor-rhdf5lib =1.12
