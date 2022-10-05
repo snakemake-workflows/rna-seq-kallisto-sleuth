@@ -28,5 +28,5 @@ rule all:
     input:
         all_input,
         "results/QC/QC_plot.html" 
-        if config["experiment"]["is-3-prime-rna-seq"]
+        if config["experiment"]["3-prime-rna-seq"]["activate"]
         else all_input,

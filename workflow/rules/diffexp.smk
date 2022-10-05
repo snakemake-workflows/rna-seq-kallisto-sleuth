@@ -1,4 +1,4 @@
-if config["experiment"]["is-3-prime-rna-seq"]:
+if config["experiment"]["3-prime-rna-seq"]["activate"]:
     kallisto_output = expand(
         "results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples()
     )

@@ -1,7 +1,7 @@
 rule kallisto_cds_index:
     input:
         "resources/transcriptome_clean.cdna.fasta"
-        if config["experiment"]["is-3-prime-rna-seq"]
+        if config["experiment"]["3-prime-rna-seq"]["activate"]
         else "resources/transcriptome.cdna.fasta",                
     output:
         "results/kallisto_cds/transcripts.idx",
@@ -28,7 +28,7 @@ rule kallisto_cds_quant:
     shell:
         "kallisto quant -i {input.idx} -o {output.kallisto_folder} {params.extra} {input.fq} 2> {log}"
 
-if config["experiment"]["is-3-prime-rna-seq"]:
+if config["experiment"]["3-prime-rna-seq"]["activate"]:
     
     rule kallisto_3prime_index:
         input:
@@ -57,7 +57,7 @@ if config["experiment"]["is-3-prime-rna-seq"]:
         shell:
             "kallisto quant -i {input.idx} -o {output.kallisto_folder} {params.extra} {input.fq} 2> {log}"
 
-if config["experiment"]["is-3-prime-rna-seq"]:
+if config["experiment"]["3-prime-rna-seq"]["activate"]:
     
     rule get_aligned_pos:
         input:
@@ -117,3 +117,24 @@ if config["experiment"]["is-3-prime-rna-seq"]:
             "../envs/QC.yaml"
         script:
             "../scripts/get_histogram.py"
+
+if config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all":
+
+    rule get_ind_transcript_histograms:
+        input:
+            aligned_file=expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt", unit=units.itertuples()),
+        output:
+            report(
+                "results/QC/{transcripts}.QC_plot.html",
+                caption="../report/plot-QC.rst",
+                category="QC",
+            ),
+        params:
+            transcripts =" ".join(config["experiment"]["3-prime-rna-seq"]["plot-qc"]),
+            read_length="results/stats/max-read-length.json",
+        log:
+            "results/logs/QC/{transcripts}.QC_plot.log",
+        conda:
+            "../envs/QC.yaml"
+        script:
+            "../scripts/histo_for_single_trans.py"

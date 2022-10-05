@@ -14,7 +14,7 @@ rule get_transcriptome:
     wrapper:
         "v1.7.1/bio/reference/ensembl-sequence"
 
-if config["experiment"]["is-3-prime-rna-seq"]:
+if config["experiment"]["3-prime-rna-seq"]["activate"]:
 
     rule cds_polyA_T_removal:
         input:

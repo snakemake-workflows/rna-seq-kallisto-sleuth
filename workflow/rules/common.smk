@@ -97,6 +97,10 @@ def get_bioc_species_name():
     subspecies = config["resources"]["ref"]["species"].split("_")[1]
     return first_letter + subspecies
 
+def get_ind_transcripts():
+    transcripts =" ".join(config["experiment"]["3-prime-rna-seq"]["plot-qc"])
+    return transcripts
+
 
 def get_bioc_species_pkg(wildcards):
     """Get the package bioconductor package name for the the species in config.yaml"""
@@ -112,7 +116,7 @@ def get_bioc_pkg_path(wildcards):
 
 def kallisto_params(wildcards, input):
     extra = config["params"]["kallisto"]
-    if len(input.fq) == 1 or config["experiment"]["is-3-prime-rna-seq"]:
+    if len(input.fq) == 1 or config["experiment"]["3-prime-rna-seq"]["activate"]:
         extra += " --single"
         extra += (
             " --fragment-length {unit.fragment_len_mean} " "--sd {unit.fragment_len_sd}"
@@ -120,15 +124,7 @@ def kallisto_params(wildcards, input):
     else:
         extra += " --fusion"
     return extra
-"""
-def three_prime_cutadapt(get_fastqs):
-    var = config["params"]["cutadapt-se"]
-    if config["experiment"]["is-3-prime-rna-seq"]:
-        var += f{'-m 20 -O 20 -a polyA=A{20} -a QUALITY=G{20} -n 2} {get_fastqs}',
-        #extra += cutadapt -m 20 -O 3 --nextseq-trim=10 -a ""r1adapter=A\{18\}AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=3;max_error_rate=0.100000"" | 
-        #extra += cutadapt -m 20 -O 20 -g ""r1adapter=AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=20"" --discard-trimmed  ),
-    return var
-"""
+
 def all_input(wildcards):
     """
     #Function defining all requested inputs for the rule all (below).
@@ -175,7 +171,7 @@ def all_input(wildcards):
             expand(
                 [
                     "results/tables/pathways/{model}.pathways.tsv",
-                    "results/plots/pathways/{model}.pathways.pdf",
+                    "results/plots/pathways/{model}.pathways.html",
                 ],
                 model=config["diffexp"]["models"],
             )
@@ -282,7 +278,7 @@ def all_input(wildcards):
             )
         )
 
-    if config["experiment"]["is-3-prime-rna-seq"]:
+    if config["experiment"]["3-prime-rna-seq"]["activate"]:
         wanted_input.extend(
                 expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt", unit=units.itertuples())
             )
@@ -300,4 +296,3 @@ def all_input(wildcards):
             expand("results/canonical_reads/{unit.sample}-{unit.unit}.fastq",unit=units.itertuples())
         )
     return wanted_input
-    

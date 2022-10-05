@@ -22,8 +22,6 @@ rev_allsamp_hist = pd.DataFrame([])
 rev_allsamp_hist_trim = pd.DataFrame([])
 for each_sample in samples:
     sample_name = each_sample.split("/")[2]
-    print(each_sample)
-    print(sample_name)
     #Bam sorting and Indexing
     pysam.sort(each_sample + "/pseudoalignments.bam", "-o", each_sample + "/pseudoalignments_sort.bam")
     pysam.index("%s/pseudoalignments_sort.bam" % each_sample)
@@ -38,8 +36,9 @@ for each_sample in samples:
     align_bam_txt["Strand"] =align_bam_txt['Transcript_ID'].str.split('_', 1).str[1]
     #Both transcript len and start postion are merged based on same transcript ID
     merge_data = align_bam_txt.merge(trans_length_data, on='Transcript_ID')
-    #Each read postion is calcuated
+    #Forward strand
     forward_strand = merge_data.loc[merge_data['Strand'] == '1']
+    #Each read postion is calcuated
     forward_strand[sample_name + '_forward_strand'] = forward_strand['LN'] - forward_strand['Start']
     aligned_reads = forward_strand.loc[forward_strand.groupby(['read_Name','reads'])[sample_name + '_forward_strand'].idxmin()]
 
@@ -51,9 +50,8 @@ for each_sample in samples:
 
     fwrd_allsamp_hist = pd.concat([fwrd_allsamp_hist, hist_fwrd])
     fwrd_allsamp_hist_trim = pd.concat([fwrd_allsamp_hist_trim, hist_fwrd_trim])
-    #reverse strand
+    #Reverse strand
     reverse_strand = merge_data.loc[merge_data['Strand'] == '-1']
-    print("entered rev strand")
     read_min = reverse_strand.loc[reverse_strand.groupby(['read_Name','reads'])['Start'].idxmin()]
 
     Freq_rev, bins_rev = np.histogram(read_min['Start'], bins =read_length, range=[0,max(read_min['LN'])])
@@ -64,17 +62,16 @@ for each_sample in samples:
 
     rev_allsamp_hist = pd.concat([rev_allsamp_hist, hist_rev])
     rev_allsamp_hist_trim = pd.concat([rev_allsamp_hist_trim, hist_rev_trim])
-    print("entered rev completed")
 
 #Histogram for forward strand
 #Histogram for full len transcript
 hist_fwrd_full = alt.Chart(fwrd_allsamp_hist).mark_line(interpolate='step-after').encode(x = alt.X('bins_foward', 
     title="difference between transcript length and read start"), y =alt.Y('Freq_forward:Q', title = 'Count of Records'), 
-        color = 'sample_Name').properties(title="QC plot of the forward strand full transcript length")
-#Histogram upto 20000 bp transcript length
+        color = 'sample_Name').properties(title="forward strand transcripts (full length)")
+#Histogram plot for 20000 bp len transcript
 hist_fwrd_trimd = alt.Chart(fwrd_allsamp_hist_trim).mark_line(interpolate='step-after').encode(x = alt.X('bins_foward', 
     title="difference between transcript length and read start"), y =alt.Y('Freq_forward:Q', title = 'Count of Records'), 
-        color = 'sample_Name').properties(title="QC plot of the forward strand up to 20000 base pair transcript length")
+        color = 'sample_Name').properties(title="forward strand transcripts (showing 1-20000bp)")
 fwrd_allsamp_hist['read_length'] = read_length
 fwrd_allsamp_hist_trim['read_length'] = read_length
 cht_rd_len_fwd_full = alt.Chart(fwrd_allsamp_hist).mark_rule(color='black',strokeDash=[3,5]).encode(
@@ -82,14 +79,15 @@ cht_rd_len_fwd_full = alt.Chart(fwrd_allsamp_hist).mark_rule(color='black',strok
 cht_rd_len_fwd_trim = alt.Chart(fwrd_allsamp_hist_trim).mark_rule(color='black',strokeDash=[3,5]).encode(
     x='read_length')
 
-#Histogram for forward strand
+#Histogram for reverse strand
 #Histogram for full len transcript
 hist_rev_full = alt.Chart(rev_allsamp_hist).mark_line(interpolate='step-after').encode(x = alt.X('bins_rev', 
     title="read start position in the transcript"), y =alt.Y('Freq_rev:Q', title = 'Count of Records'), 
-        color = 'sample_Name').properties(title="QC plot of the reverse strand full transcript length")
+        color = 'sample_Name').properties(title="Reverse strand transcripts (full length)")
+#Histogram plot for 20000 bp len transcript
 hist_rev_trim = alt.Chart(rev_allsamp_hist_trim).mark_line(interpolate='step-after').encode(x = alt.X('bins_rev', 
     title="read start position in the transcript"), y =alt.Y('Freq_rev:Q', title = 'Count of Records'), 
-        color = 'sample_Name').properties(title="QC plot of the reverse strand up to 20000 base pair transcript length")
+        color = 'sample_Name').properties(title="Reverse strand transcripts (showing 1-20000bp)")
 
 rev_allsamp_hist['read_length'] = read_length
 rev_allsamp_hist_trim['read_length'] = read_length
