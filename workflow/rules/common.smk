@@ -108,7 +108,7 @@ def get_bioc_pkg_path(wildcards):
     return "resources/bioconductor/lib/R/library/{pkg}".format(
         pkg=get_bioc_species_pkg(wildcards)
     )
-    
+
 
 def kallisto_params(wildcards, input):
     extra = config["params"]["kallisto"]
@@ -291,7 +291,8 @@ def all_input(wildcards):
         wanted_input.extend(
             expand("results/canonical_reads/{unit.sample}-{unit.unit}.fastq",unit=units.itertuples())
         )
-        wanted_input.extend(
-            expand("results/QC/{ind_transcripts}.QC_plot.html",ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"])
-        )
+        if config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all":
+            wanted_input.extend(
+                expand("results/QC/{ind_transcripts}.QC_plot.html",ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"])
+            )
     return wanted_input

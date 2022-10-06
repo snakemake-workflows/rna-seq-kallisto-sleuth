@@ -3,6 +3,7 @@ units: config/units.tsv
 experiment:
   3-prime-rna-seq:
     activate: true
+    plot-qc: all
 
 resources:
   ref:
