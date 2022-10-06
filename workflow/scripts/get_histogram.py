@@ -8,6 +8,7 @@ from scipy.stats import gaussian_kde
 from scipy import stats
 import sys
 import json
+
 sys.stderr = open(snakemake.log[0], "w")
 
 
@@ -68,43 +69,38 @@ for each_sample in samples:
 hist_fwrd_full = alt.Chart(fwrd_allsamp_hist).mark_line(interpolate='step-after').encode(x = alt.X('bins_foward', 
     title="difference between transcript length and read start"), y =alt.Y('Freq_forward:Q', title = 'Count of Records'), 
         color = 'sample_Name').properties(title="forward strand transcripts (full length)")
+fwrd_allsamp_hist['read_length'] = read_length
+cht_rd_len_fwd_full = alt.Chart(fwrd_allsamp_hist).mark_rule(color='black',strokeDash=[3,5]).encode(
+    x='read_length')
+Fwd_chart_full = (hist_fwrd_full+cht_rd_len_fwd_full)
 #Histogram plot for 20000 bp len transcript
 hist_fwrd_trimd = alt.Chart(fwrd_allsamp_hist_trim).mark_line(interpolate='step-after').encode(x = alt.X('bins_foward', 
     title="difference between transcript length and read start"), y =alt.Y('Freq_forward:Q', title = 'Count of Records'), 
         color = 'sample_Name').properties(title="forward strand transcripts (showing 1-20000bp)")
-fwrd_allsamp_hist['read_length'] = read_length
 fwrd_allsamp_hist_trim['read_length'] = read_length
-cht_rd_len_fwd_full = alt.Chart(fwrd_allsamp_hist).mark_rule(color='black',strokeDash=[3,5]).encode(
-    x='read_length')
 cht_rd_len_fwd_trim = alt.Chart(fwrd_allsamp_hist_trim).mark_rule(color='black',strokeDash=[3,5]).encode(
     x='read_length')
+Fwd_chart_trim = (hist_fwrd_trimd+cht_rd_len_fwd_trim)
 
+Fwd_chart =alt.hconcat(Fwd_chart_trim, Fwd_chart_full)
 #Histogram for reverse strand
 #Histogram for full len transcript
 hist_rev_full = alt.Chart(rev_allsamp_hist).mark_line(interpolate='step-after').encode(x = alt.X('bins_rev', 
     title="read start position in the transcript"), y =alt.Y('Freq_rev:Q', title = 'Count of Records'), 
         color = 'sample_Name').properties(title="Reverse strand transcripts (full length)")
+rev_allsamp_hist['read_length'] = read_length
+cht_rd_len_rev = alt.Chart(rev_allsamp_hist).mark_rule(color='black',strokeDash=[3,5]).encode(
+    x='read_length')
+rev_chart_full =(hist_rev_full+cht_rd_len_rev)
 #Histogram plot for 20000 bp len transcript
 hist_rev_trim = alt.Chart(rev_allsamp_hist_trim).mark_line(interpolate='step-after').encode(x = alt.X('bins_rev', 
     title="read start position in the transcript"), y =alt.Y('Freq_rev:Q', title = 'Count of Records'), 
         color = 'sample_Name').properties(title="Reverse strand transcripts (showing 1-20000bp)")
-
-rev_allsamp_hist['read_length'] = read_length
 rev_allsamp_hist_trim['read_length'] = read_length
-
-cht_rd_len_rev = alt.Chart(rev_allsamp_hist).mark_rule(color='black',strokeDash=[3,5]).encode(
-    x='read_length')
 cht_rd_len_rev_trim = alt.Chart(rev_allsamp_hist_trim).mark_rule(color='black',strokeDash=[3,5]).encode(
     x='read_length')
-
-
-Fwd_chart_full = (hist_fwrd_full+cht_rd_len_fwd_full)
-Fwd_chart_trim = (hist_fwrd_trimd+cht_rd_len_fwd_trim)
-
-rev_chart_full =(hist_rev_full+cht_rd_len_rev)
 rev_chart_trim =(hist_rev_trim+cht_rd_len_rev_trim)
 
-Fwd_chart =alt.hconcat(Fwd_chart_trim, Fwd_chart_full)
 Rev_chart =alt.hconcat(rev_chart_trim, rev_chart_full)
 
 Final_chart = alt.vconcat(Fwd_chart, Rev_chart)

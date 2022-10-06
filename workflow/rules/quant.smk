@@ -125,16 +125,17 @@ if config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all":
             aligned_file=expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt", unit=units.itertuples()),
         output:
             report(
-                "results/QC/{transcripts}.QC_plot.html",
+                "results/QC/{ind_transcripts}.QC_plot.html",
                 caption="../report/plot-QC.rst",
                 category="QC",
             ),
         params:
-            transcripts =" ".join(config["experiment"]["3-prime-rna-seq"]["plot-qc"]),
+            each_transcript = "{ind_transcripts}",
             read_length="results/stats/max-read-length.json",
+            samples=expand("results/kallisto_cds/{unit.sample}-{unit.unit}",unit=units.itertuples()),
         log:
-            "results/logs/QC/{transcripts}.QC_plot.log",
+            "results/logs/QC/{ind_transcripts}.QC_plot.log",
         conda:
             "../envs/QC.yaml"
         script:
-            "../scripts/histo_for_single_trans.py"
+            "../scripts/plot_ind-transcripts_histogram.py"

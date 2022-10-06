@@ -1,0 +1,100 @@
+name: ?f"Pathway impact analysis for model {wildcards.model}"
+datasets:
+  spia_results:
+    path: ?input.spia_results
+    separator: "\t"
+    links:
+      link to the barplot:
+        column: Name
+        view: pathway-barplot
+views:
+  impacted_pathways:
+    dataset: spia_results
+    desc: |
+        The table contains the following columns pSize is the number of genes on the pathway; NDE is the number of DE genes per pathway; tA is the observed total perturbation accumulation in the pathway; pNDE is the probability to observe at least NDE genes on the pathway using a hypergeometric model; pPERT is the probability to observe a total accumulation more extreme than tA only by chance; pG is the p-value obtained by combining pNDE and pPERT; pGFdr and pGFWER are the False Discovery Rate and respectively Bonferroni adjusted global p-values; and the Status gives the direction in which the pathway is perturbed (activated or inhibited).
+    page-size: 25
+    render-table:
+      columns:
+        Name:
+          display-mode: normal
+          link-to-url: "http://reactome.org/PathwayBrowser/#/{Ids}"
+        number of genes on the pathway:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - white
+                - "#186904"         
+        number of DE genes per pathway:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - white
+                - "#186904"
+        probability to observe at least NDE genes on the pathway:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#1f77b4"
+                - white
+        observed total perturbation accumulationA:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              domain:
+                - Activated
+                - Not Activated
+                - Inhibited
+              range:
+                - "#a80808"
+                - white
+                - "#186904"
+        probability to observe a total accumulation:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#1f77b4"
+                - white
+        p-value obtained by combining pNDE and pPERT:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#1f77b4"
+                - white
+        False Discovery Rate global p-values:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#1f77b4"
+                - white
+        Bonferroni adjusted global p-values:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#1f77b4"
+                - white         
+        Status:
+          plot:
+            heatmap:
+              scale: ordinal
+              color-scheme: accent
+              link-to-url: ?input.barplot        
+        Ids:
+          display-mode: hidden
+          link-to-url: "http://reactome.org/PathwayBrowser/#/{value}"
+
+        # Add view configuration for each column.
+        # I suggest to have a tick plot with log scale for the FDRs, and a heatmap for the direction of the perturbation.
