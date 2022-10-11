@@ -46,6 +46,23 @@ wildcard_constraints:
 ####### helpers ###########
 
 
+def check_config():
+    representative_transcripts_keywords = ["canonical", "mostsignificant"]
+    representative_transcripts = config["resources"]["ref"][
+        "representative_transcripts"
+    ]
+    if representative_transcripts not in representative_transcripts_keywords:
+        if not os.path.exists(representative_transcripts):
+            raise ValueError(
+                f"Invalid value given for resources/ref/representative_transcripts in "
+                "configuration. Must be 'canonical', 'mostsignificant' or valid path, "
+                "but {representative_transcripts} does not exist or is not readable."
+            )
+
+
+check_config()
+
+
 def is_activated(config_element):
     return config_element["activate"] in {"true", "True"}
 

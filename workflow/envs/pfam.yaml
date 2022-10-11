@@ -1,5 +1,6 @@
 channels:
-  - bioconda
   - conda-forge
+  - bioconda
+  - nodefaults
 dependencies:
   - pfam_scan =1.6

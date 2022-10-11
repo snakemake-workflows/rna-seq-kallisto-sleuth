@@ -1,5 +1,6 @@
 channels:
-  - bioconda
   - conda-forge
+  - bioconda
+  - nodefaults
 dependencies:
   - cpat =2.0.0
