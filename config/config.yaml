@@ -131,7 +131,7 @@ params:
   # * https://cutadapt.readthedocs.io/en/stable/guide.html#trimming-paired-end-reads
   cutadapt-se: ""
   # reasoning behind parameters:
-  #   For reads that are produced by 3’-end sequencing first 12 bases are removed based on accordance with Lexogen’s recommendation. More info: https://www.nature.com/articles/s41598-019-55434-x#Sec10
+  #   For reads that are produced by 3’-end sequencing, depending on the protocol, it might be recommended to remove some leading bases (e.g. see https://www.nature.com/articles/s41598-019-55434-x#Sec10)
   #   * `--minimum-length 33`:
   #     * kallisto needs non-empty reads in current versions (fixed for future releases:
   #       https://github.com/pachterlab/kallisto/commit/64fe837ca86f3664496483bcd2787c9376584fed)
