@@ -140,7 +140,7 @@ def kallisto_params(wildcards, input):
 
 def all_input(wildcards):
     """
-    #Function defining all requested inputs for the rule all (below).
+    Function defining all requested inputs for the rule all (below).
     """
     
     wanted_input = []
