@@ -26,7 +26,6 @@ resources:
     #   - mostsignificant (use the most significant transcript)
     #   - path/to/any/file.txt (a path to a file with ensembl transcript IDs to use; 
     #     the user has to ensure that there is only one ID per gene given)
-    #representative_transcripts: ensembl
     representative_transcripts: canonical
   ontology:
     # gene ontology to download, used e.g. in goatools
@@ -92,7 +91,7 @@ enrichment:
     gene_sets_file: "resources/gene_sets/dummy.gmt"
     fdr_gene_set: 0.05
     # minimum achievable p-value  (equivalent to the reciprocal of the number of permutations, see fgsea docs)
-    eps: 1e-50
+    eps: 1.0e-50
   spia:
     # tool is only run if set to `true`
     activate: false
@@ -130,7 +129,7 @@ params:
   # * https://cutadapt.readthedocs.io/en/stable/guide.html#trimming-paired-end-reads
   cutadapt-se: ""
   # reasoning behind parameters:
-  # For reads that are produced by 3’-end sequencing, depending on the protocol, it might be recommended to remove some leading bases (e.g. see https://www.nature.com/articles/s41598-019-55434-x#Sec10
+  #   For reads that are produced by 3’-end sequencing, depending on the protocol, it might be recommended to remove some leading bases (e.g. see https://www.nature.com/articles/s41598-019-55434-x#Sec10)
   #   * `--minimum-length 33`:
   #     * kallisto needs non-empty reads in current versions (fixed for future releases:
   #       https://github.com/pachterlab/kallisto/commit/64fe837ca86f3664496483bcd2787c9376584fed)
