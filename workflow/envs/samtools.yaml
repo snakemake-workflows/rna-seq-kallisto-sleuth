@@ -1,5 +1,5 @@
 channels:
-  - conda-forge
   - bioconda
+  - conda-forge
 dependencies:
-  - kallisto =0.46
+  - samtools =1.9

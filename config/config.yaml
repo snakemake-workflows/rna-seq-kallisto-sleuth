@@ -1,9 +1,9 @@
 samples: config/samples.tsv
 units: config/units.tsv
 experiment:
-  3-prime-rna-seq:
+  3-prime-rna-seq: # If set to `true`, this option allows the workflow to analyse 3-prime RNA seq data obtained from Quantseq protocol by Lexogen. For more information https://www.lexogen.com/quantseq-3mrna-sequencing/
     activate: true
-    plot-qc: all
+    plot-qc: all #this allows to specify transcripts for which the QC plot shall be generated separately
 
 resources:
   ref:
@@ -31,8 +31,6 @@ resources:
   ontology:
     # gene ontology to download, used e.g. in goatools
     gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
-  gencode:
-    gencodeBED: "https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg38_GENCODE.v38.bed.gz/download"
 
 
 pca:
@@ -94,8 +92,7 @@ enrichment:
     gene_sets_file: "resources/gene_sets/dummy.gmt"
     fdr_gene_set: 0.05
     # minimum achievable p-value  (equivalent to the reciprocal of the number of permutations, see fgsea docs)
-    #eps: 1e-50
-    eps: 0.00000000000000000000000000000000000000000000000001
+    eps: 1e-50
   spia:
     # tool is only run if set to `true`
     activate: false
@@ -121,7 +118,7 @@ plot_vars:
 params:
     #For reads that are produced by 3’-end sequencing, the --single-overhang option does not discard 
     #reads where the expected fragment size goes beyond the transcript start
-  kallisto: "-b 100 --single-overhang --pseudobam"
+  kallisto: "-b 100"
   # these cutadapt parameters need to contain the required flag(s) for
   # the type of adapter(s) to trim, i.e.:
   # * https://cutadapt.readthedocs.io/en/stable/guide.html#adapter-types
@@ -131,9 +128,9 @@ params:
   # also, separate capitalised letter flags are required for adapters in
   # the reverse reads of paired end sequencing:
   # * https://cutadapt.readthedocs.io/en/stable/guide.html#trimming-paired-end-reads
-  cutadapt-se: " "
+  cutadapt-se: ""
   # reasoning behind parameters:
-  #   For reads that are produced by 3’-end sequencing first 12 bases are removed based on accordance with Lexogen’s recommendation. More info: https://www.nature.com/articles/s41598-019-55434-x#Sec10
+  # For reads that are produced by 3’-end sequencing, depending on the protocol, it might be recommended to remove some leading bases (e.g. see https://www.nature.com/articles/s41598-019-55434-x#Sec10
   #   * `--minimum-length 33`:
   #     * kallisto needs non-empty reads in current versions (fixed for future releases:
   #       https://github.com/pachterlab/kallisto/commit/64fe837ca86f3664496483bcd2787c9376584fed)

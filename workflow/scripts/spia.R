@@ -60,15 +60,15 @@ if(nrow(sig_genes) == 0) {
             nrow = length(path_ids), byrow = TRUE))
     final_res <- cbind(res,
         Ids = path_ids_data_frame$Ids)
-    res_reorder <- dplyr::select(final_res, Status, Name,
+    res_reorder <- dplyr::select(final_res, Name, Status,
         pGFdr, tA, pSize, NDE, pNDE, pGFWER, pPERT, pG, Ids)
-    names(res_reorder)[names(res_reorder) == "pGFWER"] <- "Bonferroni adjusted global p-values"
-    names(res_reorder)[names(res_reorder) == "pGFdr"] <- "False Discovery Rate global p-values"
-    names(res_reorder)[names(res_reorder) == "tA"] <- "observed total perturbation accumulation"
+    names(res_reorder)[names(res_reorder) == "pGFWER"] <- "Combined Bonferroni p-values"
+    names(res_reorder)[names(res_reorder) == "pGFdr"] <- "Combined FDR"
+    names(res_reorder)[names(res_reorder) == "tA"] <- "total perturbation accumulation"
     names(res_reorder)[names(res_reorder) == "pSize"] <- "number of genes on the pathway"
     names(res_reorder)[names(res_reorder) == "NDE"] <- "number of DE genes per pathway"
-    names(res_reorder)[names(res_reorder) == "pG"] <- "p-value obtained by combining pNDE and pPERT"
-    names(res_reorder)[names(res_reorder) == "pPERT"] <- "probability to observe a total accumulation"
-    names(res_reorder)[names(res_reorder) == "pNDE"] <- "probability to observe at least NDE genes on the pathway"
+    names(res_reorder)[names(res_reorder) == "pG"] <- "Combined p-value"
+    names(res_reorder)[names(res_reorder) == "pPERT"] <- "p-value to observe a total accumulation"
+    names(res_reorder)[names(res_reorder) == "pNDE"] <- "p-value for at least NDE genes"
     write_tsv(res_reorder, snakemake@output[["table"]])
 }

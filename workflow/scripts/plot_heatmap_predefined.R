@@ -7,7 +7,7 @@ library(pheatmap)
 library(dplyr)
 library(tidyr)
 
-sleuth_file <- read.csv(snakemake@input[["Sleuth_logcountmatrix_file"]],
+sleuth_file <- read.csv(snakemake@input[["logcountmatrix_file"]],
     sep = ",", header = TRUE)
 rownames(sleuth_file) <- paste(kallsito_file$transcript,
     "_", sleuth_file$gene)

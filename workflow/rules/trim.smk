@@ -69,7 +69,7 @@ else:
         wrapper:
             "0.31.1/bio/cutadapt/se"
 
-rule get_max_read_length:
+rule get_all_fastqs:
     input:
         get_all_fastqs,
     output:

@@ -112,8 +112,8 @@ def get_bioc_pkg_path(wildcards):
 
 def kallisto_params(wildcards, input):
     extra = config["params"]["kallisto"]
-    if len(input.fq) == 1 or config["experiment"]["3-prime-rna-seq"]["activate"]:
-        extra += " --single"
+    if len(input.fastq) == 1 or config["experiment"]["3-prime-rna-seq"]["activate"]:
+        extra += " --single --single-overhang --pseudobam"
         extra += (
             " --fragment-length {unit.fragment_len_mean} " "--sd {unit.fragment_len_sd}"
         ).format(unit=units.loc[(wildcards.sample, wildcards.unit)])
@@ -123,7 +123,7 @@ def kallisto_params(wildcards, input):
 
 def all_input(wildcards):
     """
-    #Function defining all requested inputs for the rule all (below).
+    Function defining all requested inputs for the rule all (below).
     """
     
     wanted_input = []
@@ -167,7 +167,6 @@ def all_input(wildcards):
             expand(
                 [
                     "results/tables/pathways/{model}.pathways.tsv",
-                    "results/plots/pathways/{model}.pathways.html",
                 ],
                 model=config["diffexp"]["models"],
             )
@@ -276,17 +275,7 @@ def all_input(wildcards):
 
     if config["experiment"]["3-prime-rna-seq"]["activate"]:
         wanted_input.extend(
-                expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt", unit=units.itertuples())
-            )
-
-        wanted_input.extend(
-            expand("results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples())
-        )
-        wanted_input.extend(
-            expand("results/aligned_reads/{unit.sample}-{unit.unit}.read_names.txt",unit=units.itertuples())
-        )
-        wanted_input.extend(
-            expand("results/kallisto_cds/{unit.sample}-{unit.unit}",unit=units.itertuples())
+            expand("results/plots/QC/{model}.QC-plot.html",model=config["diffexp"]["models"])
         )
         wanted_input.extend(
             expand("results/canonical_reads/{unit.sample}-{unit.unit}.fastq",unit=units.itertuples())

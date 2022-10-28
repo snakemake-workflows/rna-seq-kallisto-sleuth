@@ -1,8 +1,6 @@
 sample	unit	fragment_len_mean	fragment_len_sd	fq1	fq2
-1738_17	1	75	1	/home/derma/RNAseq_Essen/20220411_RNAseq_SR_Essen/220405_VH00142_35_AAALH2NHV_BC22_06_Sucker/Analysis/1/Data/fastq/1738_17_S51_L001_R1_001.fastq.gz	
-10435_17	1	75	1	/home/derma/RNAseq_Essen/20220411_RNAseq_SR_Essen/220405_VH00142_35_AAALH2NHV_BC22_06_Sucker/Analysis/1/Data/fastq/10435_17_S72_L001_R1_001.fastq.gz	
-10435_17	2	75	1	/home/derma/RNAseq_Essen/20220411_RNAseq_SR_Essen/220405_VH00142_35_AAALH2NHV_BC22_06_Sucker/Analysis/1/Data/fastq/10435_17_S72_L002_R1_001.fastq.gz	
-10_9448_IIIa	1	75	1	/home/derma/RNAseq_Essen/20220411_RNAseq_SR_Essen/220405_VH00142_35_AAALH2NHV_BC22_06_Sucker/Analysis/1/Data/fastq/10_9448_IIIa_S43_L001_R1_001.fastq.gz	
-10_9448_IIIa	2	75	1	/home/derma/RNAseq_Essen/20220411_RNAseq_SR_Essen/220405_VH00142_35_AAALH2NHV_BC22_06_Sucker/Analysis/1/Data/fastq/10_9448_IIIa_S43_L002_R1_001.fastq.gz	
-15281_17_A	1	75	1	/home/derma/RNAseq_Essen/20220411_RNAseq_SR_Essen/220405_VH00142_35_AAALH2NHV_BC22_06_Sucker/Analysis/1/Data/fastq/15281_17_A_S44_L001_R1_001.fastq.gz	
-15281_17_A	2	75	1	/home/derma/RNAseq_Essen/20220411_RNAseq_SR_Essen/220405_VH00142_35_AAALH2NHV_BC22_06_Sucker/Analysis/1/Data/fastq/15281_17_A_S44_L002_R1_001.fastq.gz	
+A	1			raw/a.chr21.1.fq	raw/a.chr21.2.fq
+B	1			raw/b.chr21.1.fq	raw/b.chr21.2.fq
+B	2	300	14	raw/b.chr21.1.fq	
+C	1			raw/a.chr21.1.fq	raw/a.chr21.2.fq
+D	1			raw/b.chr21.1.fq	raw/b.chr21.2.fq

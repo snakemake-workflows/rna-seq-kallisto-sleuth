@@ -1,5 +1,5 @@
 sample	condition	batch_effect
-1738_17	SuperResp	batch1
-10435_17	Non_resp	batch1
-10_9448_IIIa	SuperResp	batch1
-15281_17_A	SuperResp	batch1
+A   treated batch1
+B   untreated   batch1
+C   treated batch2
+D   untreated   batch2

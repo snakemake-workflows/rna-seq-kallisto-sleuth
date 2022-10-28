@@ -28,7 +28,7 @@ if config["experiment"]["3-prime-rna-seq"]["activate"]:
         script:
             "../scripts/remove_poly_tails.py"
 
-    rule get_3prime_seqs:
+    rule remove_strand_info_from_transcript_header:
         input:
             ref_fasta="resources/transcriptome_clean.cdna.fasta",
         output:
@@ -36,11 +36,11 @@ if config["experiment"]["3-prime-rna-seq"]["activate"]:
         params:
             release=config["resources"]["ref"]["release"],
         log:
-            "logs/get_3prime_seqs/get_3prime_seqs.log",
+            "logs/remove_strand_info_from_transcript_header/remove_strand_info_from_transcript_header.log",
         conda:
             "../envs/r-fasta.yaml"
         script:
-            "../scripts/get_3prime-seqs.py"
+            "../scripts/remove_strand_info.py"
     
     rule get_canonical_ids:
         output:

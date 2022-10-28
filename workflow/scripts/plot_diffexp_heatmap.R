@@ -7,7 +7,7 @@ library(pheatmap)
 library(dplyr)
 library(tidyr)
 #Reading the sleuth log count matrix file
-sleuth_file <- read.csv(snakemake@input[["Sleuth_logcountmatrix_file"]],
+sleuth_file <- read.csv(snakemake@input[["logcountmatrix_file"]],
     sep = "\t", header = TRUE)
 #Adding gene name to corresponding transcript id from sleuth file
 rownames(sleuth_file) <- paste(sleuth_file$gene,

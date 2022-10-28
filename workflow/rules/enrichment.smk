@@ -43,25 +43,6 @@ rule spia:
     script:
         "../scripts/spia.R"
 
-rule plot_spia_pathways:
-    input:
-        pathway_file="results/tables/pathways/{model}.pathways.tsv",
-    output:
-         report(
-            "results/plots/pathways/{model}.pathways.html",
-            caption="../report/plot-pathway.rst",
-            category="Pathway enrichment analysis",
-        )
-    conda:
-        "../envs/QC.yaml"
-    log:
-        "logs/tables/pathways/{model}.spia-plot-pathways.log",
-    script:
-        "../scripts/get_pathway_barplot.py"
-    
-    
-
-
 
 ## gene set enrichment analysis
 
