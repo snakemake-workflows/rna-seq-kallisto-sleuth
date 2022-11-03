@@ -24,19 +24,19 @@ rule render_datavzrd_config_diffexp:
 
 rule spia_datavzrd:
     input:
-        config="results/datavzrd/{type}/{model}.yaml",
+        config="results/datavzrd/spia/{model}.yaml",
         # files required for rendering the given configs
         spia_results="results/tables/pathways/{model}.pathways.tsv",
         
     output:
         report(
-            directory("results/datavzrd-reports/{type}.{model}"),
-            htmlindex="{type}.{model}.spia.html",
-            # see https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html
-            # for additional options like caption, categories and labels
+            directory("results/datavzrd-reports/spia-{model}"),
+            htmlindex="index.html",
+            caption="../report/spia.rst",
+            category="Pathway enrichment analysis",
         ),
     log:
-        "logs/datavzrd-report/{type}.{model}/{type}.{model}.log",
+        "logs/datavzrd-report/spia-{model}/spia-{model}.log",
     wrapper:
         "v1.15.1/utils/datavzrd"
 

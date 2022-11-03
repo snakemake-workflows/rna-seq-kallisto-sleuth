@@ -13,10 +13,9 @@ rule cutadapt_pe:
         "0.31.1/bio/cutadapt/pe"
 
 
-
-
 if config["experiment"]["3-prime-rna-seq"]["activate"]:
-
+    
+    
     rule cutadapt1:
         input:
             get_fastqs,
@@ -29,6 +28,7 @@ if config["experiment"]["3-prime-rna-seq"]["activate"]:
             "results/logs/cutadapt/{sample}-{unit}.1.1.log",
         wrapper:
             "v1.14.1/bio/cutadapt/se"
+    
     
     rule cutadapt2:
         input:
@@ -43,6 +43,7 @@ if config["experiment"]["3-prime-rna-seq"]["activate"]:
         wrapper:
             "v1.14.1/bio/cutadapt/se"
     
+    
     rule cutadapt3:
         input:
             fastq="results/trimmed/{sample}-{unit}.2.1.fastq.gz",
@@ -55,7 +56,11 @@ if config["experiment"]["3-prime-rna-seq"]["activate"]:
             "results/logs/cutadapt/{sample}-{unit}.log",
         wrapper:
             "v1.14.1/bio/cutadapt/se"
+
+
 else:
+    
+    
     rule cutadapt:
         input:
             get_fastqs,
@@ -68,6 +73,7 @@ else:
             "results/logs/cutadapt/{sample}-{unit}.log",
         wrapper:
             "0.31.1/bio/cutadapt/se"
+
 
 rule get_all_fastqs:
     input:

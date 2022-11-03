@@ -164,6 +164,11 @@ rule goatools_go_enrichment:
             caption="../report/go-enrichment-table.rst",
             category="GO term enrichment analysis",
         ),
+        enrichment_sig_terms=report(
+            "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.sig_terms.tsv",
+            caption="../report/go-enrichment-sig_terms.rst",
+            category="GO term enrichment analysis",
+        ),
         plot=report(
             expand(
                 "results/plots/go_terms/{{model}}.go_term_enrichment_{ns}.gene_fdr_{{gene_fdr}}.go_term_fdr_{{go_term_fdr}}.pdf",

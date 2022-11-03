@@ -88,6 +88,3 @@ views:
         Ids:
           display-mode: hidden
           link-to-url: "http://reactome.org/PathwayBrowser/#/{value}"
-
-        # Add view configuration for each column.
-        # I suggest to have a tick plot with log scale for the FDRs, and a heatmap for the direction of the perturbation.

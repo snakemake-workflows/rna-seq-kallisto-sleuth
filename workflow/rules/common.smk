@@ -184,6 +184,7 @@ def all_input(wildcards):
             expand(
                 [
                     "results/tables/pathways/{model}.pathways.tsv",
+                    "results/datavzrd-reports/spia-{model}/",
                 ],
                 model=config["diffexp"]["models"],
             )
@@ -293,9 +294,6 @@ def all_input(wildcards):
     if config["experiment"]["3-prime-rna-seq"]["activate"]:
         wanted_input.extend(
             expand("results/plots/QC/{model}.QC-plot.html",model=config["diffexp"]["models"])
-        )
-        wanted_input.extend(
-            expand("results/canonical_reads/{unit.sample}-{unit.unit}.fastq",unit=units.itertuples())
         )
         if config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all":
             wanted_input.extend(

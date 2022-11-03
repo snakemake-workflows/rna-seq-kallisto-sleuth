@@ -11,6 +11,7 @@ rule kallisto_cds_index:
     wrapper:
         "v1.17.4/bio/kallisto/index"
 
+
 rule kallisto_cds_quant:
     input:
         fastq=get_trimmed,
@@ -25,6 +26,7 @@ rule kallisto_cds_quant:
     wrapper:
         "v1.17.4/bio/kallisto/quant"
 
+
 rule bwa_index:
     input:
         "resources/transcriptome_clean.cdna.fasta"
@@ -38,6 +40,8 @@ rule bwa_index:
         algorithm="bwtsw",
     wrapper:
         "v1.17.2/bio/bwa/index"
+
+
 rule bwa_mem:
     input:
         reads=get_trimmed,
@@ -55,6 +59,7 @@ rule bwa_mem:
     wrapper:
         "v1.17.2/bio/bwa/mem"
 
+
 rule kallisto_3prime_index:
     input:
         fasta="resources/transcriptome_canonical.3prime.fasta",
@@ -65,6 +70,8 @@ rule kallisto_3prime_index:
     threads: 1
     wrapper:
         "v1.17.4/bio/kallisto/index"
+
+
 rule kallisto_3prime_quant:
     input:
         fastq="results/canonical_reads/{sample}-{unit}.fastq",
@@ -78,6 +85,8 @@ rule kallisto_3prime_quant:
     threads: 5
     wrapper:
         "v1.17.4/bio/kallisto/quant"
+
+
 rule mapped_bam:
     input:
         bam_file="results/mapped_mem/{sample}-{unit}.bam",
@@ -89,6 +98,8 @@ rule mapped_bam:
         "../envs/samtools.yaml"
     shell:
         "samtools view -b -F 4 {input.bam_file} > {output.mapped_bam} 2> {log}"
+
+
 rule get_mapped_canonical_transcripts:
     input:
         mapped_bam="results/mapped_bam/{sample}-{unit}.mapped.bam",
@@ -102,6 +113,7 @@ rule get_mapped_canonical_transcripts:
     shell:
         "samtools view -h {input.mapped_bam} |  cut -f1-12 | grep -f {input.canonical_ids} > {output.canonical_mapped_bam}  2> {log}"
 
+
 rule get_mapped_canonical_positions:
     input:
         canonical_mapped_bam="results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.bam",
@@ -113,6 +125,8 @@ rule get_mapped_canonical_positions:
         "../envs/samtools.yaml"
     shell:
         "samtools view {input.canonical_mapped_bam} | cut -f1,3,4,10,11  > {output}  2> {log}"
+
+
 rule get_closest_3prime_aligned_pos:
     input:
         canonical_mapped_bam="results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.bam",
@@ -129,6 +143,7 @@ rule get_closest_3prime_aligned_pos:
     script:
         "../scripts/get-3prime-max-positions.py"
 
+
 rule get_closest_3prime_aligned_pos_bam:
     input:
         canonical_mapped_bam="results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.bam",
@@ -141,6 +156,8 @@ rule get_closest_3prime_aligned_pos_bam:
         "../envs/samtools.yaml"
     shell:
         "samtools view -R {input.canonical_mapped_3prime_pos} {input.canonical_mapped_bam} -o {output.canonical_mapped_3prime_bam}  2> {log}"
+
+
 rule get_canonical_fastq:
     input:
         canonical_3prime_mapped_bam="results/canonical_3prime_mapped_bam/{sample}-{unit}.canonical.3prime_mapped.bam",
@@ -153,6 +170,7 @@ rule get_canonical_fastq:
     shell:
         "samtools bam2fq {input.canonical_3prime_mapped_bam} > {output.canonical_fastq}  2> {log}"
 
+
 rule get_aligned_pos:
     input:
         bam_file="results/kallisto_cds/{sample}-{unit}",
@@ -164,6 +182,7 @@ rule get_aligned_pos:
         "../envs/samtools.yaml"
     shell:
         "samtools view {input.bam_file}/pseudoalignments.bam | cut -f1,3,4,10,11  > {output} 2> {log}"  
+
 
 rule get_read_dist:
     input:
@@ -184,7 +203,10 @@ rule get_read_dist:
     script:
         "../scripts/plot-sample-QC-histogram.py"
 
+
 if config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all":
+    
+    
     rule get_ind_transcript_histograms:
         input:
             aligned_file=expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt", unit=units.itertuples()),

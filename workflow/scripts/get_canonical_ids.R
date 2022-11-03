@@ -16,7 +16,7 @@ get_transcripts_ids <-
 #transcript_mane_select- manually curated primary transcript as it has been encoded in NCBI
 canonical_ids <- get_transcripts_ids %>%
     select(ensembl_transcript_id_version, transcript_is_canonical,
-        transcript_mane_select,chromosome_name) %>%
+        transcript_mane_select, chromosome_name) %>%
             filter(!str_detect(chromosome_name, "patch|PATCH")) %>%
                 filter(str_detect(transcript_mane_select, "")) %>%
                     subset(transcript_is_canonical == 1)

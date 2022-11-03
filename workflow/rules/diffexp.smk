@@ -250,12 +250,11 @@ rule plot_diffexp_heatmap:
             "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
             caption="../report/plot-heatmap.rst",
             category="Heatmaps",
-        )
+            ),
     params:
         model=get_model,
         sample_sheet=config["samples"],
-        groups=lambda wc: config["diffexp"]["models"][wc.model][
-            "primary_variable"],
+        groups=lambda wc: config["diffexp"]["models"][wc.model]["primary_variable"],
     log:
         "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.log",
     conda:
