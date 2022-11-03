@@ -206,24 +206,54 @@ rule get_read_dist:
 
 if config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all":
     
-    
+    rule samtools_sort:
+        input:
+            "results/kallisto_cds/{sample}-{unit}/pseudoalignments.bam",
+        output:
+            temp("results/ind_transcripts/{sample}-{unit}-pseudoalignments.sorted.bam"),
+        log:
+            "results/logs/QC/{sample}-{unit}.sorted.log",
+        params:
+            extra="-m 4G",
+        threads: 8
+        wrapper:
+            "v1.18.3/bio/samtools/sort"
+
+
+    rule samtools_index:
+        input:
+            "results/ind_transcripts/{sample}-{unit}-pseudoalignments.sorted.bam",
+        output:
+            temp("results/ind_transcripts/{sample}-{unit}-pseudoalignments.sorted.bam.bai"),
+        log:
+            "results/logs/QC/{sample}-{unit}.sorted.index.log",
+        params:
+            extra="",  # optional params string
+        threads: 4  # This value - 1 will be sent to -@
+        wrapper:
+            "v1.18.3/bio/samtools/index"
+
+
     rule get_ind_transcript_histograms:
         input:
-            aligned_file=expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt", unit=units.itertuples()),
+            aligned_file=expand("results/QC/{unit.sample}-{unit.unit}.aligned.txt",unit=units.itertuples()),
+            samtools_sort=expand("results/ind_transcripts/{unit.sample}-{unit.unit}-pseudoalignments.sorted.bam",
+                unit=units[["sample", "unit"]].itertuples()),
+            samtools_index=expand("results/ind_transcripts/{unit.sample}-{unit.unit}-pseudoalignments.sorted.bam.bai",
+                unit=units[["sample", "unit"]].itertuples()),
         output:
             report(
-                "results/QC/{ind_transcripts}.QC_plot.html",
+                "results/plots/QC/{ind_transcripts}.QC_plot.html",
                 caption="../report/plot-QC.rst",
                 category="QC",
             ),
         params:
             each_transcript = "{ind_transcripts}",
             read_length="results/stats/max-read-length.json",
-            #samples=expand("results/kallisto_cds/{unit.sample}-{unit.unit}",unit=units.itertuples()),
-            samples=expand("results/kallisto_cds/Mel-86c_p49_Ctrl-1",unit=units.itertuples()),
+            samples=expand("results/kallisto_cds/{unit.sample}-{unit.unit}",unit=units.itertuples()),
         log:
             "results/logs/QC/{ind_transcripts}.QC_plot.log",
         conda:
             "../envs/QC.yaml"
         script:
-            "../scripts/plot_ind-transcripts_histogram.py"
+            "../scripts/plot-ind-sample-QC-histogram.py"
