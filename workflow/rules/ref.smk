@@ -11,7 +11,7 @@ rule get_transcriptome:
         release=config["resources"]["ref"]["release"],
     wildcard_constraints:
         type="cdna|cds|ncrna",
-    cache: True
+    cache: "omit-software"
     wrapper:
         "0.74.0/bio/reference/ensembl-sequence"
 
@@ -26,7 +26,7 @@ rule get_annotation:
         fmt="gtf",
     log:
         "logs/get-annotation.log",
-    cache: True
+    cache: "omit-software"
     wrapper:
         "0.80.1/bio/reference/ensembl-annotation"
 
@@ -41,7 +41,7 @@ rule get_transcript_info:
         "logs/get_transcript_info.log",
     conda:
         "../envs/biomart.yaml"
-    cache: True
+    cache: "omit-software"
     script:
         "../scripts/get-transcript-info.R"
 
