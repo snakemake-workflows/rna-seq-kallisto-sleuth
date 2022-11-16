@@ -293,10 +293,8 @@ def all_input(wildcards):
 
     if config["experiment"]["3-prime-rna-seq"]["activate"]:
         wanted_input.extend(
-            expand("results/plots/QC/{model}.QC-plot.html",model=config["diffexp"]["models"])
-        )
-        if config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all":
-            wanted_input.extend(
-                expand("results/QC/{ind_transcripts}.QC_plot.html",ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"])
-            )
+            expand("results/plots/QC/{model}.{ind_transcripts}.QC-plot.html",
+            model=config["diffexp"]["models"],
+            ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"]
+        ))
     return wanted_input

@@ -1,93 +1,93 @@
 name: ?f"Differential expression analysis for model {wildcards.model}"
 datasets:
-  transcripts_results:
-    path: ?input.transcripts
+  genes_representative:
+    path: ?input.genes_representative
     separator: "\t"
 views:
-  transcripts:
-    dataset: transcripts
+  genes_representative:
+    dataset: genes_representative
     desc: |
-      Differentially expressed transcripts** using the model ``{{   snakemake.params.model["full"] }}``, computed with sleuth. The columns ``b_*`` and ``b_*_se`` display the effect size  :math:`\beta` and the corresponding standard error for every   covariate in the model. They are analog to log2 fold changes. Note that non-binary covariates are binarized by sleuth, leading  to multiple columns ``b_*1``, ``b_*2``, etc. In addition, a signed version of the pi-value score (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/ btr671>`_) is shown. The sign reflects the sign of the effect (i.e. positive for   upregulation, negative for downregulation).
+      Differentially expressed transcripts computed with sleuth. The columns `b_*` and `b_*_se` display the effect size `:math:\beta` and the corresponding standard error for every covariate in the model. They are analog to log2 fold changes. Note that non-binary covariates are binarized by sleuth, leading  to multiple columns `b_*1`, `b_*2`, etc. In addition, a signed version of the pi-value score (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`) is shown. The sign reflects the sign of the effect (i.e. positive for   upregulation, negative for downregulation).
     page-size: 25
     render-table:
       columns:
-        Name:
+        ens_gene:
+          display-mode: hidden       
+        ext_gene:
           display-mode: normal
-          link-to-url: "http://reactome.org/PathwayBrowser/#/{Ids}"
-        number of genes on the pathway:
+        gene_desc:
           display-mode: normal
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - white
-                - "#186904"         
-        number of DE genes per pathway:
+        canonical:
           display-mode: normal
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - white
-                - "#186904"
-        p-value for at least NDE genes:
-          display-mode: hidden
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "#1f77b4"
-                - white
-        total perturbation accumulation:
-          custom: |
-            function(value, row) {
-              if (value < 0) {
-                return `<div style="background-color: #e6550d;">${value}</div>`;
-              } else if (value > 0) {
-                return `<div style="background-color: #6baed6">${value}</div>`;
-              } else {
-                return `${value}`;
-              }
-            }
-        p-value to observe a total accumulation:
-          display-mode: hidden
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "#1f77b4"
-                - white
-        Combined p-value:
-          display-mode: hidden
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "#1f77b4"
-                - white
-        Combined FDR:
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "#1f77b4"
-                - white
-        Combined Bonferroni p-values:
-          display-mode: hidden
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "#1f77b4"
-                - white         
-        Status:
           plot:
             heatmap:
               scale: ordinal
-              color-scheme: accent       
-        Ids:
+              domain:
+                - TRUE
+                - FALSE
+              range:
+                - "#aec7e8"
+                - white
+              custom-content: |
+                function(value, row) {
+                    if(value == "TRUE") {
+                        return "yes"
+                    } else {
+                        return ""
+                    }
+                }
+        target_id:
+          display-mode: normal
+          link-to-url: "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={target_id}"
+        pval:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.000000000000000000000000000000001 
+                - 0.0001
+        qval:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.000000000000000000000000000000001 
+                - 0.0001
+        test_stat:
+          display-mode: hidden 
+        rss:
+          display-mode: hidden   
+        degrees_free:
           display-mode: hidden
-          link-to-url: "http://reactome.org/PathwayBrowser/#/{value}"
-
-        # Add view configuration for each column.
-        # I suggest to have a tick plot with log scale for the FDRs, and a heatmap for the direction of the perturbation.
+        mean_obs:
+          display-mode: hidden
+        var_obs:
+          display-mode: hidden
+        tech_var:
+          display-mode: hidden
+        sigma_sq:
+          display-mode: hidden
+        smooth_sigma_sq:
+          display-mode: hidden
+        final_sigma_sq:
+          display-mode: hidden
+        regex('qval_.+'):
+          display-mode: hidden
+        regex('b_.*'):
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -1
+                - 0
+                - 1
+        regex('signed_pi_value_.+'):
+          display-mode: hidden
+        ?for samples in params.samples:
+          ?samples:
+            display-mode: hidden

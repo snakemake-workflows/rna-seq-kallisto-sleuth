@@ -5,13 +5,10 @@ import sys
 
 sys.stderr = open(snakemake.log[0], "w")
 
-bam_file = snakemake.input["canonical_mapped_bam"]
-sample_name = snakemake.params["samples"]
-
+bam_file = snakemake.input['canonical_mapped_bam']
+sample_name = bam_file.split(".canonical.mapped.sorted.bam")[0]
 #Bam file reading
-pysam.sort(bam_file, "-o", snakemake.output['bam_sorted'])
-pysam.index(snakemake.output['bam_sorted'])
-bam_file = pysam.AlignmentFile(snakemake.output['bam_sorted'],"rb")
+bam_file = pysam.AlignmentFile(snakemake.input['canonical_mapped_bam'],"rb")
 bam_header = bam_file.header.to_dict()
 trans_length_data = pd.DataFrame(bam_header.get('SQ'))
 trans_length_data.rename(columns={'SN': 'Transcript_ID'}, inplace=True)

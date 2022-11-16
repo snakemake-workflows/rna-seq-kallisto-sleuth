@@ -15,7 +15,6 @@ views:
           display-mode: normal
           link-to-url: "http://reactome.org/PathwayBrowser/#/{Ids}"
         number of genes on the pathway:
-          display-mode: normal
           plot:
             heatmap:
               scale: linear
@@ -23,7 +22,6 @@ views:
                 - white
                 - "#186904"         
         number of DE genes per pathway:
-          display-mode: normal
           plot:
             heatmap:
               scale: linear
@@ -32,54 +30,31 @@ views:
                 - "#186904"
         p-value for at least NDE genes:
           display-mode: hidden
+        total perturbation accumulation:
           plot:
             heatmap:
               scale: linear
               range:
-                - "#1f77b4"
-                - white
-        total perturbation accumulation:
-          custom: |
-            function(value, row) {
-              if (value < 0) {
-                return `<div style="background-color: #e6550d;">${value}</div>`;
-              } else if (value > 0) {
-                return `<div style="background-color: #6baed6">${value}</div>`;
-              } else {
-                return `${value}`;
-              }
-            }
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -1
+                - 0
+                - 1
         p-value to observe a total accumulation:
           display-mode: hidden
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "#1f77b4"
-                - white
         Combined p-value:
           display-mode: hidden
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "#1f77b4"
-                - white
         Combined FDR:
           plot:
-            heatmap:
+            bars:
               scale: linear
-              range:
-                - "#1f77b4"
-                - white
+              domain:
+                - 0.000000000000000000000000000000001 
+                - 0.0001
         Combined Bonferroni p-values:
-          display-mode: hidden
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "#1f77b4"
-                - white         
+          display-mode: hidden     
         Status:
           plot:
             heatmap:
@@ -87,4 +62,3 @@ views:
               color-scheme: accent       
         Ids:
           display-mode: hidden
-          link-to-url: "http://reactome.org/PathwayBrowser/#/{value}"
