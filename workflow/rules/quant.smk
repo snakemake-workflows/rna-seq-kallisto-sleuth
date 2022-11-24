@@ -1,28 +1,32 @@
-rule kallisto_cds_index:
+rule kallisto_index:
     input:
-        fasta="resources/transcriptome_clean.cdna.fasta"
+        fasta="resources/transcriptome_clean.{type}.fasta"
             if config["experiment"]["3-prime-rna-seq"]["activate"]
-            else "resources/transcriptome.cdna.fasta",                
+            else "resources/transcriptome.cdna.fasta", 
     output:
-        index="results/kallisto_cds/transcripts.idx",
+        index="results/kallisto/transcripts.{type}.idx"
     log:
-        "results/logs/kallisto_cds/index.log",
+        "results/logs/kallisto/index.{type}.log",
+    wildcard_constraints:
+        type="cdna|3prime",
     threads: 1
     wrapper:
         "v1.17.4/bio/kallisto/index"
 
 
-rule kallisto_cds_quant:
+rule kallisto_quant:
     input:
-        fastq=get_trimmed,
-        index="results/kallisto_cds/transcripts.idx",
+        fastq=kallisto_quant_input,
+        index="results/kallisto/transcripts.{type}.idx",
     output:
-        kallisto_folder=directory("results/kallisto_cds/{sample}-{unit}"),
+        kallisto_folder=directory("results/kallisto_{type}/{sample}-{unit}"),
     log:
-        "results/logs/kallisto_cds/quant/{sample}-{unit}.log",
+        "results/logs/kallisto_{type}/quant/{sample}-{unit}.log",
     params:
         extra=kallisto_params,
     threads: 5
+    wildcard_constraints:
+        type="cdna|3prime",
     wrapper:
         "v1.17.4/bio/kallisto/quant"
 
@@ -60,49 +64,9 @@ rule bwa_mem:
         "v1.17.2/bio/bwa/mem"
 
 
-rule kallisto_3prime_index:
-    input:
-        fasta="resources/transcriptome_canonical.3prime.fasta",
-    output:
-        index="results/kallisto_3prime/transcripts.idx",
-    log:
-        "results/logs/kallisto_3prime/index.log",
-    threads: 1
-    wrapper:
-        "v1.17.4/bio/kallisto/index"
-
-
-rule kallisto_3prime_quant:
-    input:
-        fastq="results/canonical_reads/{sample}-{unit}.fastq",
-        index="results/kallisto_3prime/transcripts.idx",
-    output:
-        kallisto_folder=directory("results/kallisto_3prime/{sample}-{unit}"),
-    log:
-        "results/logs/kallisto_3prime/quant/{sample}-{unit}.log",
-    params:
-        extra=kallisto_params,
-    threads: 5
-    wrapper:
-        "v1.17.4/bio/kallisto/quant"
-
-
-rule mapped_bam:
-    input:
-        bam_file="results/mapped_mem/{sample}-{unit}.bam",
-    output:
-        mapped_bam=temp("results/mapped_bam/{sample}-{unit}.mapped.bam"),
-    log:
-        "results/logs/mapped_bam/{sample}-{unit}.mapped-bam.log",
-    conda:
-        "../envs/samtools.yaml"
-    shell:
-        "samtools view -b -F 4 {input.bam_file} > {output.mapped_bam} 2> {log}"
-
-
 rule get_mapped_canonical_transcripts:
     input:
-        mapped_bam="results/mapped_bam/{sample}-{unit}.mapped.bam",
+        mapped_bam="results/mapped_mem/{sample}-{unit}.bam",
         canonical_ids="resources/canonical_ids.csv",
     output:
         canonical_mapped_bam=temp("results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.bam"),
@@ -111,7 +75,7 @@ rule get_mapped_canonical_transcripts:
     conda:
         "../envs/samtools.yaml"
     shell:
-        "samtools view -h {input.mapped_bam} |  cut -f1-12 | grep -f {input.canonical_ids} > {output.canonical_mapped_bam}  2> {log}"
+        "samtools view -h -F 4 {input.mapped_bam} |  cut -f1-12 | grep -f {input.canonical_ids} | samtools view -o {output.canonical_mapped_bam}  2> {log}"
 
 
 rule get_mapped_canonical_positions:
@@ -198,7 +162,7 @@ rule get_canonical_fastq:
 
 rule get_aligned_pos:
     input:
-        bam_file="results/kallisto_cds/{sample}-{unit}",
+        bam_file="results/kallisto_cdna/{sample}-{unit}",
     output:
         aligned_files=temp("results/QC/{sample}-{unit}.aligned.txt"),
     log:
@@ -210,7 +174,7 @@ rule get_aligned_pos:
 
 rule kallisto_samtools_sort:
     input:
-        "results/kallisto_cds/{sample}-{unit}",
+        "results/kallisto_cdna/{sample}-{unit}",
     output:
         temp("results/kallisto-bam-sorted/{sample}-{unit}-pseudoalignments.sorted.bam"),
     log:
@@ -242,10 +206,11 @@ if(config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all"):
             samtools_index="results/kallisto-bam-sorted/{sample}-{unit}-pseudoalignments.sorted.bam.bai",
             read_length="results/stats/max-read-length.json",
         output:
-            rev_allsamp_hist_fil=temp("results/QC/{sample}-{unit}.{ind_transcripts}.aligned-rev-fil-read-bins.txt"),
             fwrd_allsamp_hist_fil=temp("results/QC/{sample}-{unit}.{ind_transcripts}.aligned-fwd-fil-read-bins.txt"),
+            rev_allsamp_hist_fil=temp("results/QC/{sample}-{unit}.{ind_transcripts}.aligned-rev-fil-read-bins.txt"),
         params:
             each_transcript = "{ind_transcripts}",
+            samples = "{sample}-{unit}",
         log:
             "results/logs/QC/{sample}-{unit}.{ind_transcripts}.aligned-read-bins.log",
         conda:
@@ -256,9 +221,9 @@ if(config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all"):
     rule get_selected_transcripts_sample_QC_histogram:
         input:
             fwrd_allsamp_hist_fil=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-fwd-fil-read-bins.txt",
-            unit=units.itertuples(),ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"]),
-            rev_allsamp_hist_fil=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-rev-fil-read-bins.txt"
-            ,unit=units.itertuples(),ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"]),
+            unit=units.itertuples(), ind_transcripts="{ind_transcripts}"),
+            rev_allsamp_hist_fil=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-rev-fil-read-bins.txt",
+            unit=units.itertuples(),ind_transcripts="{ind_transcripts}"),
             read_length="results/stats/max-read-length.json",
         output:
             full_sample_QC=report(
@@ -273,7 +238,7 @@ if(config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all"):
         conda:
             "../envs/QC.yaml"
         script:
-            "../scripts/plot-sample-QC-histogram.py"
+            "../scripts/plot-3prime-qc-histogram.py"
 else:
     rule get_aligned_read_bins:
         input:
@@ -288,6 +253,7 @@ else:
             rev_allsamp_hist_trim=temp("results/QC/{sample}-{unit}.{ind_transcripts}.aligned-rev-trim-read-bins.txt"),
         params:
             each_transcript = "{ind_transcripts}",
+            samples = "{sample}-{unit}",
         log:
             "results/logs/QC/{sample}-{unit}.{ind_transcripts}.aligned-read-bins.log",
         conda:
@@ -298,14 +264,14 @@ else:
 
     rule get_sample_QC_histogram:
         input:
-            fwrd_allsamp_hist=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-fwd-full-read-bins.txt",unit=units.itertuples(),
-            ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"]),
-            fwrd_allsamp_hist_trim=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-fwd-trim-read-bins.txt",unit=units.itertuples(),
-            ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"]),
-            rev_allsamp_hist=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-rev-full-read-bins.txt",unit=units.itertuples(),
-            ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"]),
-            rev_allsamp_hist_trim=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-rev-trim-read-bins.txt",unit=units.itertuples(),
-            ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"]),
+            fwrd_allsamp_hist=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-fwd-full-read-bins.txt",
+            unit=units.itertuples(), ind_transcripts="{ind_transcripts}"),
+            fwrd_allsamp_hist_trim=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-fwd-trim-read-bins.txt"
+            ,unit=units.itertuples(), ind_transcripts="{ind_transcripts}"),
+            rev_allsamp_hist=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-rev-full-read-bins.txt",
+            unit=units.itertuples(), ind_transcripts="{ind_transcripts}"),
+            rev_allsamp_hist_trim=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-rev-trim-read-bins.txt",
+            unit=units.itertuples(), ind_transcripts="{ind_transcripts}"),
             read_length="results/stats/max-read-length.json",
         output:
             full_sample_QC=report(
@@ -320,4 +286,4 @@ else:
         conda:
             "../envs/QC.yaml"
         script:
-            "../scripts/plot-sample-QC-histogram.py"
+            "../scripts/plot-3prime-qc-histogram.py"

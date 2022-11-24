@@ -3,7 +3,7 @@ units: config/units.tsv
 experiment:
   3-prime-rna-seq: # If set to `true`, this option allows the workflow to analyse 3-prime RNA seq data obtained from Quantseq protocol by Lexogen. For more information https://www.lexogen.com/quantseq-3mrna-sequencing/
     activate: true
-    plot-qc: all #this allows to specify transcripts for which the QC plot shall be generated separately
+    plot-qc: all #this allows to plot QC of aligned read postion for specific transcripts; Currently set to all.  
 
 resources:
   ref:
@@ -51,14 +51,14 @@ diffexp:
     model_Condition:
       full: ~condition
       #full: ~condition + batch_effect
-      reduced: '~1'
+      reduced: 'batch_effect'
       #reduced: '~1'# in case if it takes as numerical
       # Binary valued covariate that shall be used for fold change/effect size
       # based downstream analyses.
       primary_variable: condition
       # base level of the primary variable (will be considered as denominator 
       # in the fold change/effect size estimation).
-      base_level: Non_resp
+      base_level: untreated
   # significance level to use for volcano, ma- and qq-plots
   sig-level:
     volcano-plot: 0.05

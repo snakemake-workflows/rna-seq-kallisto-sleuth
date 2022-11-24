@@ -1,4 +1,3 @@
-# TODO add ability to use gencode (more complete)
 rule get_transcriptome:
     output:
         "resources/transcriptome.{type}.fasta",
@@ -60,7 +59,7 @@ if config["experiment"]["3-prime-rna-seq"]["activate"]:
             fasta="resources/transcriptome.3prime.fasta",
             canonical_ids="resources/canonical_ids.csv",
         output:
-            "resources/transcriptome_canonical.3prime.fasta",
+            "resources/transcriptome_clean.3prime.fasta",
         conda:
             "../envs/get_canonical_ids.yaml"
         shell:

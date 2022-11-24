@@ -52,6 +52,8 @@ rule diffexp_datavzrd:
     output:
         report(
             directory("results/diffexp-reports/diffexp.{model}"),
+            caption="../report/diffexp.rst",
+            category="Differential transcript expression",
             htmlindex="index.html",
             # see https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html
             # for additional options like caption, categories and labels

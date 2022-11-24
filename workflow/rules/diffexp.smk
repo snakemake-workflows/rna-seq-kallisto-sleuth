@@ -4,7 +4,7 @@ if config["experiment"]["3-prime-rna-seq"]["activate"]:
     )
 else:
     kallisto_output = expand(
-        "results/kallisto_cds/{unit.sample}-{unit.unit}", unit=units.itertuples()
+        "results/kallisto_cdna/{unit.sample}-{unit.unit}", unit=units.itertuples()
     )
 
 

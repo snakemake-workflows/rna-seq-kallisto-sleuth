@@ -52,22 +52,7 @@ goeaobj = GOEnrichmentStudyNS(
 goea_results_all = goeaobj.run_study(sig_genes["ens_gene"].tolist())
 
 #run one time to initialize
-GO_items = []
-
-temp = goeaobj.ns2objgoea['BP'].assoc
-for item in temp:
-    GO_items += temp[item]
-    
-
-temp = goeaobj.ns2objgoea['CC'].assoc
-for item in temp:
-    GO_items += temp[item]
-    
-
-temp = goeaobj.ns2objgoea['MF'].assoc
-for item in temp:
-    GO_items += temp[item]
-
+go_items = [val for cat in ["BP", "CC", "MF"] for item, val in goeaobj.nsobjgoea[cat].assoc.items()]
 
 #go_file['per'] = go_file.n_genes/go_file.n_go
 
@@ -109,13 +94,16 @@ outplot_generic = (
 goea_results_sig = [r for r in goea_results_all if r.p_fdr_bh < fdr_level_go_term]
 
 #https://github.com/mousepixels/sanbomics_scripts/blob/main/GO_in_python.ipynb
-go_sig_terms = pd.DataFrame(list(map(lambda x: [x.GO, x.goterm.name, x.goterm.namespace, x.p_uncorrected, x.p_fdr_bh,\
-                   x.ratio_in_study[0], x.ratio_in_study[1], GO_items.count(x.GO),\
-                   ], goea_results_sig)), columns = ['GO', 'term', 'class', 'p', 'p_corr', 'n_genes',\
-                                                    'n_study', 'n_go'])
-
-go_sig_terms['gene_ratio'] = go_sig_terms.n_genes/go_sig_terms.n_go
-go_sig_terms.to_csv(snakemake.output.enrichment_sig_terms, sep='\t', index=False)
+if goea_results_sig != "":
+    go_sig_terms = pd.DataFrame(list(map(lambda x: [x.GO, x.goterm.name, x.goterm.namespace, x.p_uncorrected, x.p_fdr_bh,\
+        x.ratio_in_study[0], x.ratio_in_study[1], GO_items.count(x.GO),\
+            ], goea_results_sig)), columns = ['GO', 'term', 'class', 'p', 'p_corr', 'n_genes',\
+                'n_study', 'n_go'])
+    go_sig_terms['gene_ratio'] = go_sig_terms.n_genes/go_sig_terms.n_go
+    go_sig_terms.to_csv(snakemake.output.enrichment_sig_terms, sep='\t', index=False)
+else:
+    no_sig_terms="no significant terms"
+    no_sig_terms.to_csv(snakemake.output.enrichment_sig_terms, sep='\t', index=False)
 plot_results(
     outplot_generic,
     # use pvals for coloring

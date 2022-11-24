@@ -126,6 +126,22 @@ def get_bioc_pkg_path(wildcards):
         pkg=get_bioc_species_pkg(wildcards)
     )
 
+def kallisto_quant_input(wildcards):    
+    if wildcards.type=="3prime":
+        kallisto_fastq="results/canonical_reads/{sample}-{unit}.fastq",
+    elif not is_single_end(wildcards.sample, wildcards.unit):
+        expand(
+            "results/trimmed/{sample}-{unit}.{group}.fastq.gz",
+            group=[1, 2])
+    else:
+        kallisto_fastq="results/trimmed/{sample}-{unit}.fastq.gz",
+        
+    return(kallisto_fastq)
+
+
+
+
+
 
 def kallisto_params(wildcards, input):
     extra = config["params"]["kallisto"]
@@ -293,7 +309,7 @@ def all_input(wildcards):
 
     if config["experiment"]["3-prime-rna-seq"]["activate"]:
         wanted_input.extend(
-            expand("results/plots/QC/{model}.{ind_transcripts}.QC-plot.html",
+            expand("results/plots/QC/{model}.{ind_transcripts}.3prime-QC-plot.html",
             model=config["diffexp"]["models"],
             ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"]
         ))
