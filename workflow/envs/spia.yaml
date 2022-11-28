@@ -4,6 +4,6 @@ channels:
   - nodefaults
 dependencies:
   - r-base =4.1
-  - bioconductor-spia =2.44
-  - bioconductor-graphite =1.38
+  - bioconductor-spia =2.50
+  - bioconductor-graphite =1.44
   - r-tidyverse =1.3
