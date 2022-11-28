@@ -168,7 +168,7 @@ write_results <- function(so, mode, output, output_all) {
         stop("No canonical transcripts found (does ensembl support canonical transcript annotation for your species?")
       }
       # Control FDR again, because we have less tests now.
-      all$qval <- p.adjust(all$pval)
+      all$qval <- p.adjust(all$pval, method = "BH")
     } else if (mode == "custom") {
       # load custom ID list
       id_version_pattern <- "\\.\\d+$"
