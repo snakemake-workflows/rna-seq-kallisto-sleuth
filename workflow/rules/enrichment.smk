@@ -23,6 +23,7 @@ rule spia:
         samples="results/sleuth/samples.tsv",
         species_anno=get_bioc_pkg_path,
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
+        spia_db="resources/spia-db.rds",
     output:
         table=report(
             "results/tables/pathways/{model}.pathways.tsv",
@@ -32,7 +33,6 @@ rule spia:
         plots="results/plots/pathways/{model}.spia-perturbation-plots.pdf",
     params:
         bioc_pkg=get_bioc_species_pkg,
-        species=get_bioc_species_name(),
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
         common_src=str(workflow.source_path("../scripts/common.R")),

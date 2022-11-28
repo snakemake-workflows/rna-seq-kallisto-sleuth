@@ -13,12 +13,8 @@ source(snakemake@params[["common_src"]])
 pkg <- snakemake@params[["bioc_pkg"]]
 load_bioconductor_package(snakemake@input[["species_anno"]], pkg)
 
-
-
 pw_db <- snakemake@params[["pathway_db"]]
-
-db <- pathways(snakemake@params[["species"]], pw_db)
-db <- convertIdentifiers(db, "ENSEMBL")
+db <- readRDS(snakemake@input[["spia_db"]])
 
 options(Ncpus = snakemake@threads)
 
