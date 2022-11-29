@@ -4,14 +4,12 @@ sink(log, type="message")
 
 library("SPIA")
 library("graphite")
+library(snakemake@params[["bioc_species_pkg"]])
 
 # provides library("tidyverse") and functions load_bioconductor_package() and
 # get_prefix_col(), the latter requires snakemake@output[["samples"]] and
 # snakemake@params[["covariate"]]
 source(snakemake@params[["common_src"]])
-
-pkg <- snakemake@params[["bioc_pkg"]]
-load_bioconductor_package(snakemake@input[["species_anno"]], pkg)
 
 pw_db <- snakemake@params[["pathway_db"]]
 

@@ -8,7 +8,6 @@ from pathlib import Path
 rule spia:
     input:
         samples="results/sleuth/samples.tsv",
-        species_anno=get_bioc_pkg_path,
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
         spia_db="resources/spia-db.rds",
     output:
@@ -19,7 +18,7 @@ rule spia:
         ),
         plots="results/plots/pathways/{model}.spia-perturbation-plots.pdf",
     params:
-        bioc_pkg=get_bioc_species_pkg,
+        bioc_species_pkg=get_bioc_species_pkg,
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
         common_src=str(workflow.source_path("../scripts/common.R")),
@@ -39,7 +38,6 @@ rule fgsea:
     input:
         samples="results/sleuth/samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
-        species_anno=get_bioc_pkg_path,
         gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"],
     output:
         enrichment=report(
@@ -68,7 +66,7 @@ rule fgsea:
             category="Gene set enrichment analysis",
         ),
     params:
-        bioc_pkg=get_bioc_species_pkg,
+        bioc_species_pkg=get_bioc_species_pkg,
         model=get_model,
         gene_set_fdr=config["enrichment"]["fgsea"]["fdr_gene_set"],
         eps=config["enrichment"]["fgsea"]["eps"],
@@ -112,12 +110,10 @@ rule fgsea_plot_gene_sets:
 
 
 rule ens_gene_to_go:
-    input:
-        species_anno=get_bioc_pkg_path,
     output:
         "resources/ontology/ens_gene_to_go.tsv",
     params:
-        bioc_pkg=get_bioc_species_pkg,
+        bioc_species_pkg=get_bioc_species_pkg,
         common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
         enrichment_env

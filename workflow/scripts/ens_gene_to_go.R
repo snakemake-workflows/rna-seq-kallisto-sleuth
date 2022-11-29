@@ -2,11 +2,10 @@ log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")
 
+library(snakemake@params[["bioc_species_pkg"]])
+
 # provides `tidyverse` and load_bioconductor_package()
 source(snakemake@params[["common_src"]])
-
-pkg <- snakemake@params[["bioc_pkg"]]
-load_bioconductor_package(snakemake@input[["species_anno"]], pkg)
 
 ens_gene_to_go <- AnnotationDbi::select(  get(pkg),
                                           keys=keys(get(pkg), keytype="ENSEMBL"),
