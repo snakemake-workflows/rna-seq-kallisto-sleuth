@@ -120,5 +120,6 @@ rule get_spia_db:
     conda:
         "../envs/spia.yaml"
     retries: 3
+    cache: True
     script:
         "../scripts/get-spia-db.R"
