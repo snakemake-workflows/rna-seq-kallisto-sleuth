@@ -125,6 +125,7 @@ def render_enrichment_env():
     return env_path
 
 
+bioc_species_pkg = get_bioc_species_pkg()
 enrichment_env = render_enrichment_env()
 
 
