@@ -9,11 +9,6 @@ resources:
     release: "104"
     # genome build
     build: GRCh38
-    # this is the version of the bioconda package `bioconductor-org.{species}`.eg.db` that
-    # you want -- this needs to be compatible with the versions `r-base` and the
-    # bioconductor packages specified e.g. in `envs/` files `fgsea.yaml`, `spia.yaml` and
-    # `ens_gene_to_go.yaml`
-    species_db_version: "3.13"
     # pfam release to use for annotation of domains in differential splicing analysis
     pfam: "33.0"
     representative_transcripts: canonical
@@ -59,7 +54,7 @@ diffsplice:
   remove_noncoding_orfs: false
   # False discovery rate to control for.
   fdr: 1.0
-  # Minimum size of differential isoform usage effect 
+  # Minimum size of differential isoform usage effect
   # (see dIFcutoff, https://rdrr.io/github/kvittingseerup/IsoformSwitchAnalyzeR/man/IsoformSwitchTestDEXSeq.html)
   min_effect_size: 0.0
 

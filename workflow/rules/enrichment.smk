@@ -1,19 +1,6 @@
 from pathlib import Path
 
 
-rule download_bioconductor_species_database:
-    output:
-        directory("resources/bioconductor/lib/R/library/{package}"),  # TODO: encode version in path!
-    params:
-        path=lambda wc, output: Path(output[0]).parents[3],
-        version=config["resources"]["ref"]["species_db_version"],
-    log:
-        "logs/resources/bioconductor/{package}.log",
-    shell:
-        "conda create --quiet --yes -p {params.path} --channel conda-forge --channel bioconda "
-        "bioconductor-{wildcards.package}={params.version} > {log} 2>&1"
-
-
 # topology- and interaction-aware pathway enrichment analysis
 
 
@@ -37,7 +24,7 @@ rule spia:
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
         common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
-        "../envs/spia.yaml"
+        enrichment_env
     log:
         "logs/tables/pathways/{model}.spia-pathways.log",
     threads: 16
@@ -88,7 +75,7 @@ rule fgsea:
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
         common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
-        "../envs/fgsea.yaml"
+        enrichment_env
     log:
         "logs/tables/fgsea/{model}.gene-set-enrichment.log",
     threads: 8
@@ -114,7 +101,7 @@ rule fgsea_plot_gene_sets:
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
         common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
-        "../envs/fgsea.yaml"
+        enrichment_env
     log:
         "logs/plots/fgsea/{model}.plot_fgsea_gene_set.log",
     script:
@@ -133,7 +120,7 @@ rule ens_gene_to_go:
         bioc_pkg=get_bioc_species_pkg,
         common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
-        "../envs/ens_gene_to_go.yaml"
+        enrichment_env
     log:
         "logs/resources/ens_gene_to_go.log",
     script:
