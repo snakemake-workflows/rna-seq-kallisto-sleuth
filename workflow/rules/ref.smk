@@ -118,7 +118,7 @@ rule get_spia_db:
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
         common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
-        "../envs/spia.yaml"
+        enrichment_env
     retries: 3
     cache: True
     script:
