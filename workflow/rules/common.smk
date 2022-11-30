@@ -122,7 +122,7 @@ def render_enrichment_env():
     env_path.parent.mkdir(parents=True, exist_ok=True)
     with open(env_path, "w") as f:
         yaml.dump(env, f)
-    return env_path
+    return env_path.absolute()
 
 
 bioc_species_pkg = get_bioc_species_pkg()
