@@ -1,0 +1,101 @@
+name: ?f"Gene ontology (GO) term enrichment analysis performed by goatools {wildcards.model}"
+datasets:
+  sig_go:
+    path: ?input.sig_go
+    separator: "\t"
+  go_enrichment:
+    path: ?input.enrichment
+    separator: "\t"
+default-view: sig_go
+views:
+  sig_go:
+    dataset: sig_go
+    desc: |
+        Gene ontology (GO) term enrichment analysis performed by goatools, using the sleuth model. Table contains top significant terms of FDR <0.05
+    page-size: 10
+    render-table:
+      columns:
+        GO:
+          display-mode: normal
+          link-to-url: http://amigo.geneontology.org/amigo/term/{GO}
+        term:
+          display-mode: normal
+        class:
+          plot:
+            heatmap:
+              scale: ordinal
+        p:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.0000000000000000000000000000000000000000000000000000000000000000001
+                - 1
+        p_corr:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.0000000000000000000000000000000000000000000000000000000000000000001
+                - 1
+        n_genes:
+          plot:
+            heatmap:
+              scale: linear
+        n_study:
+          display-mode: normal
+        n_go:
+          plot:
+            heatmap:
+              scale: linear
+        gene_ratio:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.0000000000000000000000000000000000000000000000000000000000000000001
+                - 1
+  go_enrichment:
+    dataset: go_enrichment
+    desc: |
+        Gene ontology (GO) term enrichment analysis performed by goatools, using the sleuth model 
+    page-size: 25
+    render-table:
+      columns:
+        GO:
+          display-mode: normal
+          link-to-url: http://amigo.geneontology.org/amigo/term/{GO}
+        class:
+          display-mode: normal 
+        enrichment:
+          display-mode: hidden
+        term:
+          display-mode: normal 
+        ratio_in_study:
+          display-mode: normal
+        ratio_in_pop:
+          display-mode: normal
+        p_uncorrected:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.0000000000000000000000000000000000000000000000000000000000000000001
+                - 1
+        depth:
+          plot:
+            heatmap:
+              scale: linear
+        study_count:
+          plot:
+            heatmap:
+              scale: linear
+        p_fdr_bh:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.0000000000000000000000000000000000000000000000000000000000000000001
+                - 1
+        study_items:
+          display-mode: normal                                            

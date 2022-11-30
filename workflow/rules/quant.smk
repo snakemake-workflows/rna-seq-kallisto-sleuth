@@ -227,14 +227,14 @@ if(config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all"):
             read_length="results/stats/max-read-length.json",
         output:
             full_sample_QC=report(
-                "results/plots/QC/{model}.{ind_transcripts}.3prime-QC-plot.html",
+                "results/plots/QC/3prime-QC-plot.{ind_transcripts}.html",
                 category="QC",
                 caption="../report/plot-QC.rst",
             ),
         params:
             each_transcript = "{ind_transcripts}",
         log:
-            "results/logs/QC/{model}.{ind_transcripts}.3prime-QC-plot.log",
+            "results/logs/QC/3prime-QC-plot.{ind_transcripts}.log",
         conda:
             "../envs/QC.yaml"
         script:
@@ -275,14 +275,14 @@ else:
             read_length="results/stats/max-read-length.json",
         output:
             full_sample_QC=report(
-                "results/plots/QC/{model}.{ind_transcripts}.3prime-QC-plot.html",
+                "results/plots/QC/3prime-QC-plot.{ind_transcripts}.html",
                 category="QC",
                 caption="../report/plot-QC.rst",
             ),
         params:
             each_transcript = "{ind_transcripts}",
         log:
-            "results/logs/QC/{model}.{ind_transcripts}.3prime-QC-plot.log",
+            "results/logs/QC/3prime-QC-plot.{ind_transcripts}.log",
         conda:
             "../envs/QC.yaml"
         script:

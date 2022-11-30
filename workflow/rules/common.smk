@@ -96,6 +96,15 @@ def get_all_fastqs(wildcards):
             yield f"results/trimmed/{item.sample}-{item.unit}.1.fastq.gz"
             yield f"results/trimmed/{item.sample}-{item.unit}.2.fastq.gz"
 
+def get_model_samples(wildcards):
+    samples = pd.read_csv(config["samples"], sep="\t", dtype=str, comment="#")
+    units = pd.read_csv(config["units"], sep="\t", dtype=str, comment="#")
+    sample_file = units.merge(samples, on = 'sample')
+    sample_file['sample_name'] = sample_file['sample']+"-"+sample_file['unit']
+    gps=config["diffexp"]["models"][wildcards.model]["primary_variable"]
+    sample_groups=sample_file.loc[sample_file[gps].notnull(), ['sample_name']]
+    samples = sample_groups["sample_name"].values
+    return samples
 
 def get_trimmed(wildcards):
     if not is_single_end(**wildcards):
@@ -138,11 +147,6 @@ def kallisto_quant_input(wildcards):
         
     return(kallisto_fastq)
 
-
-
-
-
-
 def kallisto_params(wildcards, input):
     extra = config["params"]["kallisto"]
     if len(input.fastq) == 1 or config["experiment"]["3-prime-rna-seq"]["activate"]:
@@ -168,6 +172,7 @@ def all_input(wildcards):
                 [
                     "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
                     "results/plots/go_terms/{model}.go_term_enrichment_{go_ns}.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.pdf",
+                    "results/datavzrd-reports/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}",
                 ],
                 model=config["diffexp"]["models"],
                 go_ns=["BP", "CC", "MF"],
@@ -220,6 +225,8 @@ def all_input(wildcards):
                 "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
                 "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
                 "results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
+                "results/sleuth/{model}.samples.tsv",
+                "results/datavzrd-reports/diffexp-{model}",
             ],
             model=config["diffexp"]["models"],
         )
@@ -309,7 +316,7 @@ def all_input(wildcards):
 
     if config["experiment"]["3-prime-rna-seq"]["activate"]:
         wanted_input.extend(
-            expand("results/plots/QC/{model}.{ind_transcripts}.3prime-QC-plot.html",
+            expand("results/plots/QC/3prime-QC-plot.{ind_transcripts}.html",
             model=config["diffexp"]["models"],
             ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"]
         ))

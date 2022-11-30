@@ -14,9 +14,9 @@ rule compose_sample_sheet:
         config["units"],
         kallisto_output=kallisto_output,
     output:
-        "results/sleuth/samples.tsv",
+        "results/sleuth/{model}.samples.tsv",
     log:
-        "logs/compose-sample-sheet.log",
+        "logs/{model}.compose-sample-sheet.log",
     params:
         units=units,
         samples=samples,
@@ -29,7 +29,7 @@ rule compose_sample_sheet:
 rule sleuth_init:
     input:
         kallisto=kallisto_output,
-        samples="results/sleuth/samples.tsv",
+        samples="results/sleuth/{model}.samples.tsv",
         transcript_info="resources/transcript-info.rds",
     output:
         sleuth_object="results/sleuth/{model,[^.]+}.rds",

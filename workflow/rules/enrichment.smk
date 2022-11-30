@@ -20,7 +20,7 @@ rule download_bioconductor_species_database:
 # TODO consider cellphonedb for receptor ligand interaction (Sarah Teichmann, Nature Methods?)
 rule spia:
     input:
-        samples="results/sleuth/samples.tsv",
+        samples="results/sleuth/{model}.samples.tsv",
         species_anno=get_bioc_pkg_path,
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
     output:
@@ -50,7 +50,7 @@ rule spia:
 
 rule fgsea:
     input:
-        samples="results/sleuth/samples.tsv",
+        samples="results/sleuth/{model}.samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
         species_anno=get_bioc_pkg_path,
         gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"],
@@ -98,7 +98,7 @@ rule fgsea:
 
 rule fgsea_plot_gene_sets:
     input:
-        samples="results/sleuth/samples.tsv",
+        samples="results/sleuth/{model}.samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
         gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"],
         sig_gene_sets="results/tables/fgsea/{model}.sig-gene-sets.tsv",
