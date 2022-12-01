@@ -110,11 +110,11 @@ def get_bioc_species_name():
 def get_bioc_species_pkg():
     """Get the package bioconductor package name for the the species in config.yaml"""
     species_letters = get_bioc_species_name()[0:2].capitalize()
-    return "bioconductor-org.{species}.eg.db".format(species=species_letters)
+    return "org.{species}.eg.db".format(species=species_letters)
 
 
 def render_enrichment_env():
-    species_pkg = get_bioc_species_pkg()
+    species_pkg = f"bioconductor-{get_bioc_species_pkg()}"
     with open(workflow.source_path("../envs/enrichment.yaml")) as f:
         env = yaml.load(f, Loader=yaml.SafeLoader)
     env["dependencies"].append(species_pkg)
