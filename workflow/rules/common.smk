@@ -110,7 +110,7 @@ def get_bioc_species_name():
 def get_bioc_species_pkg():
     """Get the package bioconductor package name for the the species in config.yaml"""
     species_letters = get_bioc_species_name()[0:2].capitalize()
-    return "org.{species}.eg.db".format(species=species_letters)
+    return "bioconductor-org.{species}.eg.db".format(species=species_letters)
 
 
 def render_enrichment_env():
