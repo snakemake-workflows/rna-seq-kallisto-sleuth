@@ -229,7 +229,7 @@ if(config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all"):
             full_sample_QC=report(
                 "results/plots/QC/3prime-QC-plot.{ind_transcripts}.html",
                 category="QC",
-                caption="../report/plot-QC.rst",
+                caption="../report/plot-3prime-QC-histogram.rst",
             ),
         params:
             each_transcript = "{ind_transcripts}",
@@ -277,7 +277,7 @@ else:
             full_sample_QC=report(
                 "results/plots/QC/3prime-QC-plot.{ind_transcripts}.html",
                 category="QC",
-                caption="../report/plot-QC.rst",
+                caption="../report/plot-3prime-QC-histogram.rst",
             ),
         params:
             each_transcript = "{ind_transcripts}",

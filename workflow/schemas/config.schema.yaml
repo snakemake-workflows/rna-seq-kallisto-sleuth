@@ -9,6 +9,17 @@ properties:
     type: string
   units:
     type: string
+  experiment:
+    type: object
+    properties:
+      3-prime-rna-seq:
+        type: object
+      activate: 
+        type: boolean
+      plot-qc:
+        type: ["string", "array"]
+      required:
+        - plot-qc
 
   resources:
     type: object

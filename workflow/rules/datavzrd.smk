@@ -71,6 +71,8 @@ rule diffexp_datavzrd:
             # see https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html
             # for additional options like caption, categories and labels
         ),
+    params:
+        model=get_model,
     log:
         "logs/datavzrd-report/diffexp.{model}/diffexp.{model}.log",
     wrapper:
