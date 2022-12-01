@@ -2,7 +2,7 @@ log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")
 
-library(snakemake@params[["bioc_species_pkg"]])
+library(snakemake@params[["bioc_species_pkg"]], character.only = TRUE)
 
 # provides `tidyverse` and load_bioconductor_package()
 source(snakemake@params[["common_src"]])

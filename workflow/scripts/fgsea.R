@@ -3,7 +3,7 @@ sink(log)
 sink(log, type="message")
 
 library("fgsea")
-library(snakemake@params[["bioc_species_pkg"]])
+library(snakemake@params[["bioc_species_pkg"]], character.only = TRUE)
 
 # provides library("tidyverse") and functions load_bioconductor_package() and
 # get_prefix_col(), the latter requires snakemake@output[["samples"]] and
