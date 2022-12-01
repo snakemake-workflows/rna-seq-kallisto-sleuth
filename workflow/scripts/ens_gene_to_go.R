@@ -7,8 +7,8 @@ library(snakemake@params[["bioc_species_pkg"]], character.only = TRUE)
 # provides `tidyverse` and load_bioconductor_package()
 source(snakemake@params[["common_src"]])
 
-ens_gene_to_go <- AnnotationDbi::select(  get(pkg),
-                                          keys=keys(get(pkg), keytype="ENSEMBL"),
+ens_gene_to_go <- AnnotationDbi::select(  snakemake@params[["bioc_species_pkg"]],
+                                          keys=keys(snakemake@params[["bioc_species_pkg"]], keytype="ENSEMBL"),
                                           columns=c("GO"),
                                           keytype="ENSEMBL"
                                           ) %>%
