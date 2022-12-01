@@ -4,6 +4,7 @@ sink(log, type="message")
 
 library("SPIA")
 library("graphite")
+print(snakemake@params[["bioc_species_pkg"]])
 library(snakemake@params[["bioc_species_pkg"]])
 
 # provides library("tidyverse") and functions load_bioconductor_package() and
