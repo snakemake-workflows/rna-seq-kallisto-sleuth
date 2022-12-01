@@ -48,12 +48,14 @@ rule spia_datavzrd:
             directory("results/datavzrd-reports/spia-{model}"),
             htmlindex="index.html",
             caption="../report/spia.rst",
-            category="Pathway enrichment analysis",
+            category="Datavzrd reports",
+            subcategory="{model}",
+            patterns=["index.html"],
         ),
     log:
         "logs/datavzrd-report/spia-{model}/spia-{model}.log",
     wrapper:
-        "v1.19.2/utils/datavzrd"
+        "v1.20.0/utils/datavzrd"
 
 rule diffexp_datavzrd:
     input:
@@ -65,9 +67,11 @@ rule diffexp_datavzrd:
     output:
         report(
             directory("results/datavzrd-reports/diffexp-{model}"),
-            caption="../report/diffexp.rst",
-            category="Differential transcript expression",
             htmlindex="index.html",
+            caption="../report/diffexp.rst",
+            category="Datavzrd reports",
+            subcategory="{model}",
+            patterns=["index.html"],
             # see https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html
             # for additional options like caption, categories and labels
         ),
@@ -76,7 +80,7 @@ rule diffexp_datavzrd:
     log:
         "logs/datavzrd-report/diffexp.{model}/diffexp.{model}.log",
     wrapper:
-        "v1.19.2/utils/datavzrd"
+        "v1.20.0/utils/datavzrd"
 
 rule go_enrichment_datavzrd:
     input:
@@ -88,9 +92,11 @@ rule go_enrichment_datavzrd:
             directory("results/datavzrd-reports/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}"),
             htmlindex="index.html",
             caption="../report/go-enrichment-sig_terms.rst",
-            category="GO term enrichment analysis",
+            category="Datavzrd reports",
+            subcategory="{model}",
+            patterns=["index.html"],
         ),
     log:
         "logs/datavzrd-report/go_enrichment-{model}/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     wrapper:
-        "v1.19.2/utils/datavzrd"
+        "v1.20.0/utils/datavzrd"

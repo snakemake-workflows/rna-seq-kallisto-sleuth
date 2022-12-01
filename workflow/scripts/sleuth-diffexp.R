@@ -7,7 +7,7 @@ library("tidyverse")
 library("fs")
 library("grid")
 library("gridExtra")
-
+library("dplyr")
 model <- snakemake@params[["model"]]
 
 sleuth_object <- sleuth_load(snakemake@input[[1]])
@@ -45,7 +45,7 @@ write_results <- function(so, mode, output, output_all) {
     print("Performing likelihood ratio test")
     all <- sleuth_results(so, "reduced:full", "lrt", show_all = TRUE, pval_aggregate = so$pval_aggregate) %>%
             arrange(pval)
-
+    all<- all %>% mutate_if(is.numeric, signif, 3)
     covariates <- colnames(design_matrix(so, "full"))
     covariates <- covariates[covariates != "(Intercept)"]
 
@@ -144,7 +144,7 @@ write_results <- function(so, mode, output, output_all) {
                 distinct() %>%
                 # useful sort for scrolling through output by increasing q-values
                 arrange(qval)
-
+      all <- all %>% mutate_if(is.numeric, signif, 3)
       # qq-plot from likelihood ratio test
       print(str_c("Performing qq-plot from likelihood ratio test"))
       qq_plot_title_trans <- str_c(plot_model, ": qq-plot from likelihood ratio test")
@@ -169,6 +169,7 @@ write_results <- function(so, mode, output, output_all) {
       }
       # Control FDR again, because we have less tests now.
       all$qval <- p.adjust(all$pval, method = "BH")
+      all <- all %>% mutate_if(is.numeric, signif, 3)
     } else if (mode == "custom") {
       # load custom ID list
       id_version_pattern <- "\\.\\d+$"
@@ -178,6 +179,7 @@ write_results <- function(so, mode, output, output_all) {
         mutate(target_id_stem = str_replace(target_id, id_version_pattern, "")) %>% 
         filter(target_id_stem %in% ids) %>% 
         mutate(target_id_stem = NULL)
+      all <- all %>% mutate_if(is.numeric, signif, 3)
       if (nrow(all) == 0) {
         stop("The given list of representative transcript ids does not match any of the transcript ids of the chosen species.")
       }
@@ -188,9 +190,9 @@ write_results <- function(so, mode, output, output_all) {
     ggsave(snakemake@output[["qq_plots"]], plot = marrange_qq, width = 14)
 
     write_rds(all, path = output_all, compress = "none")
-
     # add sample expressions
     all <- all %>% left_join(as_tibble(sleuth_to_matrix(so, "obs_norm", "est_counts"), rownames="target_id"))
+    all <- all %>% mutate_if(is.numeric, signif, 3)
     write_tsv(all, path = output, escape = "none")
 }
 

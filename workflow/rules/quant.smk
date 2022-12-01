@@ -4,9 +4,9 @@ rule kallisto_index:
             if config["experiment"]["3-prime-rna-seq"]["activate"]
             else "resources/transcriptome.cdna.fasta", 
     output:
-        index="results/kallisto/transcripts.{type}.idx"
+        index="results/kallisto_{type}/transcripts.{type}.idx"
     log:
-        "results/logs/kallisto/index.{type}.log",
+        "results/logs/kallisto_{type}/index.{type}.log",
     wildcard_constraints:
         type="cdna|3prime",
     threads: 1
