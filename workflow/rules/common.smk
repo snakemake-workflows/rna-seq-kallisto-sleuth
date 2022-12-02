@@ -1,6 +1,7 @@
 from snakemake.utils import validate
 import pandas as pd
-
+import yaml
+from pathlib import Path
 
 ##### load config and sample sheets #####
 
@@ -106,16 +107,26 @@ def get_bioc_species_name():
     return first_letter + subspecies
 
 
-def get_bioc_species_pkg(wildcards):
+def get_bioc_species_pkg():
     """Get the package bioconductor package name for the the species in config.yaml"""
     species_letters = get_bioc_species_name()[0:2].capitalize()
     return "org.{species}.eg.db".format(species=species_letters)
 
 
-def get_bioc_pkg_path(wildcards):
-    return "resources/bioconductor/lib/R/library/{pkg}".format(
-        pkg=get_bioc_species_pkg(wildcards)
-    )
+def render_enrichment_env():
+    species_pkg = f"bioconductor-{get_bioc_species_pkg()}"
+    with open(workflow.source_path("../envs/enrichment.yaml")) as f:
+        env = yaml.load(f, Loader=yaml.SafeLoader)
+    env["dependencies"].append(species_pkg)
+    env_path = Path("resources/envs/enrichment.yaml")
+    env_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(env_path, "w") as f:
+        yaml.dump(env, f)
+    return env_path.absolute()
+
+
+bioc_species_pkg = get_bioc_species_pkg()
+enrichment_env = render_enrichment_env()
 
 
 def kallisto_params(wildcards, input):

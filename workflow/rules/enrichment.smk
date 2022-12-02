@@ -1,19 +1,6 @@
 from pathlib import Path
 
 
-rule download_bioconductor_species_database:
-    output:
-        directory("resources/bioconductor/lib/R/library/{package}"),  # TODO: encode version in path!
-    params:
-        path=lambda wc, output: Path(output[0]).parents[3],
-        version=config["resources"]["ref"]["species_db_version"],
-    log:
-        "logs/resources/bioconductor/{package}.log",
-    shell:
-        "conda create --quiet --yes -p {params.path} --channel conda-forge --channel bioconda "
-        "bioconductor-{wildcards.package}={params.version} > {log} 2>&1"
-
-
 # topology- and interaction-aware pathway enrichment analysis
 
 
@@ -21,8 +8,8 @@ rule download_bioconductor_species_database:
 rule spia:
     input:
         samples="results/sleuth/samples.tsv",
-        species_anno=get_bioc_pkg_path,
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
+        spia_db="resources/spia-db.rds",
     output:
         table=report(
             "results/tables/pathways/{model}.pathways.tsv",
@@ -31,13 +18,12 @@ rule spia:
         ),
         plots="results/plots/pathways/{model}.spia-perturbation-plots.pdf",
     params:
-        bioc_pkg=get_bioc_species_pkg,
-        species=get_bioc_species_name(),
+        bioc_species_pkg=bioc_species_pkg,
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
         common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
-        "../envs/spia.yaml"
+        enrichment_env
     log:
         "logs/tables/pathways/{model}.spia-pathways.log",
     threads: 16
@@ -52,7 +38,6 @@ rule fgsea:
     input:
         samples="results/sleuth/samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
-        species_anno=get_bioc_pkg_path,
         gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"],
     output:
         enrichment=report(
@@ -81,14 +66,14 @@ rule fgsea:
             category="Gene set enrichment analysis",
         ),
     params:
-        bioc_pkg=get_bioc_species_pkg,
+        bioc_species_pkg=bioc_species_pkg,
         model=get_model,
         gene_set_fdr=config["enrichment"]["fgsea"]["fdr_gene_set"],
         eps=config["enrichment"]["fgsea"]["eps"],
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
         common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
-        "../envs/fgsea.yaml"
+        enrichment_env
     log:
         "logs/tables/fgsea/{model}.gene-set-enrichment.log",
     threads: 8
@@ -114,7 +99,7 @@ rule fgsea_plot_gene_sets:
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
         common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
-        "../envs/fgsea.yaml"
+        enrichment_env
     log:
         "logs/plots/fgsea/{model}.plot_fgsea_gene_set.log",
     script:
@@ -125,15 +110,13 @@ rule fgsea_plot_gene_sets:
 
 
 rule ens_gene_to_go:
-    input:
-        species_anno=get_bioc_pkg_path,
     output:
         "resources/ontology/ens_gene_to_go.tsv",
     params:
-        bioc_pkg=get_bioc_species_pkg,
+        bioc_species_pkg=bioc_species_pkg,
         common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
-        "../envs/ens_gene_to_go.yaml"
+        enrichment_env
     log:
         "logs/resources/ens_gene_to_go.log",
     script:

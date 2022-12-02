@@ -3,14 +3,12 @@ sink(log)
 sink(log, type="message")
 
 library("fgsea")
+library(snakemake@params[["bioc_species_pkg"]], character.only = TRUE)
 
 # provides library("tidyverse") and functions load_bioconductor_package() and
 # get_prefix_col(), the latter requires snakemake@output[["samples"]] and
 # snakemake@params[["covariate"]]
 source(snakemake@params[["common_src"]])
-
-pkg <- snakemake@params[["bioc_pkg"]]
-load_bioconductor_package(snakemake@input[["species_anno"]], pkg)
 
 gene_sets <- gmtPathways(snakemake@input[["gene_sets"]])
 diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>%
@@ -128,7 +126,7 @@ height = .7 * (length(selected_gene_sets) + 2)
 
 # table plot of all gene sets
 tg <- plotGseaTable(
-            pathway = selected_gene_sets,
+            pathways = selected_gene_sets,
             stats = ranked_genes,
             fgseaRes = fgsea_res,
             gseaParam = 1,
@@ -143,7 +141,7 @@ height = .7 * (length(selected_gene_sets) + 2)
 
 # table plot of all gene sets
 tg <- plotGseaTable(
-            pathway = selected_gene_sets,
+            pathways = selected_gene_sets,
             stats = ranked_genes,
             fgseaRes = fgsea_res,
             gseaParam = 1,

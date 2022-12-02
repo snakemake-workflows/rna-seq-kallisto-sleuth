@@ -9,18 +9,13 @@ resources:
     release: "104"
     # genome build
     build: GRCh38
-    # this is the version of the bioconda package `bioconductor-org.{species}`.eg.db` that
-    # you want -- this needs to be compatible with the versions `r-base` and the
-    # bioconductor packages specified e.g. in `envs/` files `fgsea.yaml`, `spia.yaml` and
-    # `ens_gene_to_go.yaml`
-    species_db_version: "3.13"
     # pfam release to use for annotation of domains in differential splicing analysis
     pfam: "33.0"
     # Choose strategy for selecting representative transcripts for each gene.
     # Possible values:
     #   - canonical (use the canonical transcript from ensembl, only works for human at the moment)
     #   - mostsignificant (use the most significant transcript)
-    #   - path/to/any/file.txt (a path to a file with ensembl transcript IDs to use; 
+    #   - path/to/any/file.txt (a path to a file with ensembl transcript IDs to use;
     #     the user has to ensure that there is only one ID per gene given)
     representative_transcripts: canonical
   ontology:
@@ -49,7 +44,7 @@ diffexp:
       # Binary valued covariate that shall be used for fold change/effect size
       # based downstream analyses.
       primary_variable: condition
-      # base level of the primary variable (will be considered as denominator 
+      # base level of the primary variable (will be considered as denominator
       # in the fold change/effect size estimation).
       base_level: untreated
   # significance level to use for volcano, ma- and qq-plots
@@ -67,7 +62,7 @@ diffsplice:
   remove_noncoding_orfs: false
   # False discovery rate to control for.
   fdr: 0.05
-  # Minimum size of differential isoform usage effect 
+  # Minimum size of differential isoform usage effect
   # (see dIFcutoff, https://rdrr.io/github/kvittingseerup/IsoformSwitchAnalyzeR/man/IsoformSwitchTestDEXSeq.html)
   min_effect_size: 0.1
 
