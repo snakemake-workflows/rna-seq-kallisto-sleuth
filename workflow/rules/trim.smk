@@ -15,7 +15,7 @@ rule cutadapt_pe:
 
 if is_3prime_experiment:
 
-    # Rule cutadapt1 checks and remove poly-A tails and sequence qualilty score <20.
+    # Rule cutadapt1 checks and removes poly-A tails and sequence qualilty score <20.
     # reasoning behind parameters:
     #   * `-m 20`:
     #   * Discards any read under 20bp by -m 20
