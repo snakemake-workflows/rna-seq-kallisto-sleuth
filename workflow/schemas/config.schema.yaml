@@ -33,8 +33,6 @@ properties:
             type: string
           build:
             type: string
-          species_db_version:
-            type: string
           pfam:
             type: string
           representative_transcripts:
@@ -43,7 +41,6 @@ properties:
           - species
           - release
           - build
-          - species_db_version
           - pfam
           - representative_transcripts
       ontology:
@@ -146,7 +143,6 @@ properties:
             type: string
         required:
           - pathway_database
-
 
   bootstrap_plots:
     type: object

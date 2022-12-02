@@ -10,7 +10,7 @@ rule get_transcriptome:
         release=config["resources"]["ref"]["release"],
     wildcard_constraints:
         type="cdna|cds|ncrna",
-    cache: True
+    cache: "omit-software"
     wrapper:
         "v1.7.1/bio/reference/ensembl-sequence"
 
@@ -75,7 +75,7 @@ rule get_annotation:
         fmt="gtf",
     log:
         "logs/get-annotation.log",
-    cache: True
+    cache: "omit-software"
     wrapper:
         "0.80.1/bio/reference/ensembl-annotation"
 
@@ -90,7 +90,7 @@ rule get_transcript_info:
         "logs/get_transcript_info.log",
     conda:
         "../envs/biomart.yaml"
-    cache: True
+    cache: "omit-software"
     script:
         "../scripts/get-transcript-info.R"
 
@@ -154,3 +154,21 @@ rule calculate_cpat_logit_model:
     shell:
         "make_logitModel.py --hex={input.hexamers} --cgene={input.cds} "
         "--ngene={input.ncrna} -o {params.prefix} 2> {log}"
+
+
+rule get_spia_db:
+    output:
+        "resources/spia-db.rds",
+    log:
+        "logs/spia-db.log",
+    params:
+        bioc_species_pkg=bioc_species_pkg,
+        species=get_bioc_species_name(),
+        pathway_db=config["enrichment"]["spia"]["pathway_database"],
+        common_src=str(workflow.source_path("../scripts/common.R")),
+    conda:
+        enrichment_env
+    retries: 3
+    cache: True
+    script:
+        "../scripts/get-spia-db.R"

@@ -3,13 +3,12 @@ sink(log)
 sink(log, type="message")
 
 library("fgsea")
+library(snakemake@params[["bioc_species_pkg"]], character.only = TRUE)
+
 # provides library("tidyverse") and functions load_bioconductor_package() and
 # get_prefix_col(), the latter requires snakemake@output[["samples"]] and
 # snakemake@params[["covariate"]]
 source(snakemake@params[["common_src"]])
-
-pkg <- snakemake@params[["bioc_pkg"]]
-load_bioconductor_package(snakemake@input[["species_anno"]], pkg)
 
 gene_sets <- gmtPathways(snakemake@input[["gene_sets"]])
 diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>%
@@ -28,7 +27,6 @@ diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>%
                     mutate(target_id = str_c(target_id, collapse=",")) %>%
                     mutate(ens_gene = str_c(ens_gene, collapse=",")) %>%
                   distinct()
-print(diffexp)
 
 signed_pi <- get_prefix_col("signed_pi_value", colnames(diffexp))
 
@@ -87,8 +85,8 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
                     unnest(leadingEdge) %>%
                     mutate(
                         leading_edge_symbol = str_to_title(leadingEdge),
-                        leading_edge_entrez_id = mapIds(leading_edge_symbol, x=get(pkg), keytype="SYMBOL", column="ENTREZID"),
-                        leading_edge_ens_gene = mapIds(leading_edge_symbol, x=get(pkg), keytype="SYMBOL", column="ENSEMBL")
+                        leading_edge_entrez_id = mapIds(leading_edge_symbol, x=get(snakemake@params[["bioc_species_pkg"]]), keytype="SYMBOL", column="ENTREZID"),
+                        leading_edge_ens_gene = mapIds(leading_edge_symbol, x=get(snakemake@params[["bioc_species_pkg"]]), keytype="SYMBOL", column="ENSEMBL")
                         ) %>%
                     group_by(pathway) %>%
                     summarise(
@@ -127,7 +125,7 @@ height = .7 * (length(selected_gene_sets) + 2)
 
 # table plot of all gene sets
 tg <- plotGseaTable(
-            pathway = selected_gene_sets,
+            pathways = selected_gene_sets,
             stats = ranked_genes,
             fgseaRes = fgsea_res,
             gseaParam = 1,
@@ -142,7 +140,7 @@ height = .7 * (length(selected_gene_sets) + 2)
 
 # table plot of all gene sets
 tg <- plotGseaTable(
-            pathway = selected_gene_sets,
+            pathways = selected_gene_sets,
             stats = ranked_genes,
             fgseaRes = fgsea_res,
             gseaParam = 1,
