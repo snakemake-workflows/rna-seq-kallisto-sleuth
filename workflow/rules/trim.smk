@@ -110,6 +110,8 @@ rule max_read_length:
         get_all_fastqs,
     output:
         "results/stats/max-read-length.json",
+    log:
+        "logs/max-read-length.log",
     conda:
         "../envs/pysam.yaml"
     script:
