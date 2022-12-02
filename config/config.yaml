@@ -1,9 +1,13 @@
 samples: config/samples.tsv
 units: config/units.tsv
+
 experiment:
-  3-prime-rna-seq: # If set to `true`, this option allows the workflow to analyse 3-prime RNA seq data obtained from Quantseq protocol by Lexogen. For more information https://www.lexogen.com/quantseq-3mrna-sequencing/
-    activate: true
-    plot-qc: all #this allows to plot QC of aligned read postion for specific transcripts; Currently set to all.  
+  # If set to `true`, this option allows the workflow to analyse 3-prime RNA seq data obtained from Quantseq protocol by Lexogen.
+  # For more information https://www.lexogen.com/quantseq-3mrna-sequencing/
+  3-prime-rna-seq:
+    activate: false
+    # this allows to plot QC of aligned read postion for specific transcripts (or 'all' transcripts)
+    plot-qc: all
 
 resources:
   ref:
@@ -25,7 +29,6 @@ resources:
   ontology:
     # gene ontology to download, used e.g. in goatools
     gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
-
 
 pca:
   labels:
@@ -109,8 +112,8 @@ plot_vars:
   sig_level: 0.1
 
 params:
-    #For reads that are produced by 3’-end sequencing, the --single-overhang option does not discard 
-    #reads where the expected fragment size goes beyond the transcript start
+  #For reads that are produced by 3’-end sequencing, the --single-overhang option does not discard
+  #reads where the expected fragment size goes beyond the transcript start
   kallisto: "-b 100"
   # these cutadapt parameters need to contain the required flag(s) for
   # the type of adapter(s) to trim, i.e.:

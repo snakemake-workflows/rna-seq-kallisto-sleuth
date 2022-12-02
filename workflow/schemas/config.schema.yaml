@@ -14,12 +14,14 @@ properties:
     properties:
       3-prime-rna-seq:
         type: object
-      activate: 
-        type: boolean
-      plot-qc:
-        type: ["string", "array"]
-      required:
-        - plot-qc
+        properties:
+          activate:
+            type: boolean
+          plot-qc:
+            type: ["string", "array"]
+          required:
+            - plot-qc
+            - activate
 
   resources:
     type: object

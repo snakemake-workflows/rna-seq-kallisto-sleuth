@@ -46,6 +46,10 @@ wildcard_constraints:
 
 ####### helpers ###########
 
+is_3prime_experiment = config.get("experiment", dict()).get("3-prime-rna-seq", dict())[
+    "activate"
+]
+
 
 def check_config():
     representative_transcripts_keywords = ["canonical", "mostsignificant"]
@@ -97,15 +101,17 @@ def get_all_fastqs(wildcards):
             yield f"results/trimmed/{item.sample}-{item.unit}.1.fastq.gz"
             yield f"results/trimmed/{item.sample}-{item.unit}.2.fastq.gz"
 
+
 def get_model_samples(wildcards):
     samples = pd.read_csv(config["samples"], sep="\t", dtype=str, comment="#")
     units = pd.read_csv(config["units"], sep="\t", dtype=str, comment="#")
-    sample_file = units.merge(samples, on = 'sample')
-    sample_file['sample_name'] = sample_file['sample']+"-"+sample_file['unit']
-    gps=config["diffexp"]["models"][wildcards.model]["primary_variable"]
-    sample_groups=sample_file.loc[sample_file[gps].notnull(), ['sample_name']]
+    sample_file = units.merge(samples, on="sample")
+    sample_file["sample_name"] = sample_file["sample"] + "-" + sample_file["unit"]
+    gps = config["diffexp"]["models"][wildcards.model]["primary_variable"]
+    sample_groups = sample_file.loc[sample_file[gps].notnull(), ["sample_name"]]
     samples = sample_groups["sample_name"].values
     return samples
+
 
 def get_trimmed(wildcards):
     if not is_single_end(**wildcards):
@@ -146,17 +152,17 @@ def render_enrichment_env():
 bioc_species_pkg = get_bioc_species_pkg()
 enrichment_env = render_enrichment_env()
 
-def kallisto_quant_input(wildcards):    
-    if wildcards.type=="3prime":
-        kallisto_fastq="results/canonical_reads/{sample}-{unit}.fastq",
+
+def kallisto_quant_input(wildcards):
+    if wildcards.type == "3prime":
+        kallisto_fastq = ("results/canonical_reads/{sample}-{unit}.fastq",)
     elif not is_single_end(wildcards.sample, wildcards.unit):
-        expand(
-            "results/trimmed/{sample}-{unit}.{group}.fastq.gz",
-            group=[1, 2])
+        expand("results/trimmed/{sample}-{unit}.{group}.fastq.gz", group=[1, 2])
     else:
-        kallisto_fastq="results/trimmed/{sample}-{unit}.fastq.gz",
-        
-    return(kallisto_fastq)
+        kallisto_fastq = ("results/trimmed/{sample}-{unit}.fastq.gz",)
+
+    return kallisto_fastq
+
 
 def kallisto_params(wildcards, input):
     extra = config["params"]["kallisto"]
@@ -169,11 +175,12 @@ def kallisto_params(wildcards, input):
         extra += " --fusion"
     return extra
 
+
 def all_input(wildcards):
     """
     Function defining all requested inputs for the rule all (below).
     """
-    
+
     wanted_input = []
 
     # request goatools if 'activated' in config.yaml
@@ -327,8 +334,10 @@ def all_input(wildcards):
 
     if config["experiment"]["3-prime-rna-seq"]["activate"]:
         wanted_input.extend(
-            expand("results/plots/QC/3prime-QC-plot.{ind_transcripts}.html",
-            model=config["diffexp"]["models"],
-            ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"]
-        ))
+            expand(
+                "results/plots/QC/3prime-QC-plot.{ind_transcripts}.html",
+                model=config["diffexp"]["models"],
+                ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"],
+            )
+        )
     return wanted_input
