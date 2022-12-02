@@ -17,7 +17,7 @@ rule kallisto_index:
 rule kallisto_quant:
     input:
         fastq=kallisto_quant_input,
-        index="results/kallisto/transcripts.{type}.idx",
+        index="results/kallisto_{type}/transcripts.{type}.idx",
     output:
         kallisto_folder=directory("results/kallisto_{type}/{sample}-{unit}"),
     log:
