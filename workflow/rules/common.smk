@@ -168,7 +168,7 @@ def kallisto_quant_input(wildcards):
 
 def kallisto_params(wildcards, input):
     extra = config["params"]["kallisto"]
-    if len(input.fastq) == 1 or config["experiment"]["3-prime-rna-seq"]["activate"]:
+    if len(input.fastq) == 1 or is_3prime_experiment:
         extra += " --single --single-overhang --pseudobam"
         extra += (
             " --fragment-length {unit.fragment_len_mean} " "--sd {unit.fragment_len_sd}"
@@ -334,7 +334,7 @@ def all_input(wildcards):
             )
         )
 
-    if config["experiment"]["3-prime-rna-seq"]["activate"]:
+    if is_3prime_experiment:
         wanted_input.extend(
             expand(
                 "results/plots/QC/3prime-QC-plot.{ind_transcripts}.html",

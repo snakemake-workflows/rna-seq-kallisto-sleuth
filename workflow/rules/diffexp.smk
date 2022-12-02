@@ -1,4 +1,4 @@
-if config["experiment"]["3-prime-rna-seq"]["activate"]:
+if is_3prime_experiment:
     kallisto_output = expand(
         "results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples()
     )
@@ -250,7 +250,7 @@ rule plot_diffexp_heatmap:
             "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
             caption="../report/plot-heatmap.rst",
             category="Heatmaps",
-            ),
+        ),
     params:
         model=get_model,
         sample_sheet=config["samples"],
