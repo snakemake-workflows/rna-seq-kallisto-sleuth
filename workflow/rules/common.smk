@@ -157,13 +157,13 @@ enrichment_env = render_enrichment_env()
 
 def kallisto_quant_input(wildcards):
     if wildcards.type == "3prime":
-        kallisto_fastq = "results/canonical_reads/{sample}-{unit}.fastq"
+        return "results/canonical_reads/{sample}-{unit}.fastq"
     elif not is_single_end(wildcards.sample, wildcards.unit):
-        expand("results/trimmed/{{sample}}-{{unit}}.{group}.fastq.gz", group=[1, 2])
+        return expand(
+            "results/trimmed/{{sample}}-{{unit}}.{group}.fastq.gz", group=[1, 2]
+        )
     else:
-        kallisto_fastq = "results/trimmed/{sample}-{unit}.fastq.gz"
-
-    return kallisto_fastq
+        return "results/trimmed/{sample}-{unit}.fastq.gz"
 
 
 def kallisto_params(wildcards, input):
