@@ -126,7 +126,7 @@ height = .7 * (length(selected_gene_sets) + 2)
 
 # table plot of all gene sets
 tg <- plotGseaTable(
-            pathway = selected_gene_sets,
+            pathways = selected_gene_sets,
             stats = ranked_genes,
             fgseaRes = fgsea_res,
             gseaParam = 1,
@@ -141,7 +141,7 @@ height = .7 * (length(selected_gene_sets) + 2)
 
 # table plot of all gene sets
 tg <- plotGseaTable(
-            pathway = selected_gene_sets,
+            pathways = selected_gene_sets,
             stats = ranked_genes,
             fgseaRes = fgsea_res,
             gseaParam = 1,
