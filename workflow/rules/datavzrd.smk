@@ -3,11 +3,12 @@ rule render_datavzrd_config_spia:
         template=workflow.source_path("../resources/datavzrd/spia-template.yaml"),
         spia_results="results/tables/pathways/{model}.pathways.tsv",
     output:
-        "results/datavzrd/spia/{model}.yaml"
+        "results/datavzrd/spia/{model}.yaml",
     log:
-        "logs/yte/render-datavzrd-config-spia/{model}.log"
+        "logs/yte/render-datavzrd-config-spia/{model}.log",
     template_engine:
         "yte"
+
 
 rule render_datavzrd_config_diffexp:
     input:
@@ -21,41 +22,45 @@ rule render_datavzrd_config_diffexp:
     params:
         samples=get_model_samples,
     log:
-        "logs/yte/render-datavzrd-config-diffexp/{model}.log"
+        "logs/yte/render-datavzrd-config-diffexp/{model}.log",
     template_engine:
         "yte"
 
+
 rule render_datavzrd_config_go_enrichment:
     input:
-        template=workflow.source_path("../resources/datavzrd/go-enrichment-template.yaml"),
+        template=workflow.source_path(
+            "../resources/datavzrd/go-enrichment-template.yaml"
+        ),
         enrichment="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
         sig_go="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.sig_terms.tsv",
     output:
         "results/datavzrd/go_terms/{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.yaml",
     log:
-        "logs/yte/render-datavzrd-config-go_terms/{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log"
+        "logs/yte/render-datavzrd-config-go_terms/{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     template_engine:
         "yte"
+
 
 rule spia_datavzrd:
     input:
         config="results/datavzrd/spia/{model}.yaml",
         # files required for rendering the given configs
         spia_results="results/tables/pathways/{model}.pathways.tsv",
-        
     output:
         report(
             directory("results/datavzrd-reports/spia-{model}"),
             htmlindex="index.html",
             caption="../report/spia.rst",
             category="Datavzrd reports",
-            subcategory="{model}",
             patterns=["index.html"],
+            labels={"model": "{model}"},
         ),
     log:
         "logs/datavzrd-report/spia-{model}/spia-{model}.log",
     wrapper:
         "v1.20.0/utils/datavzrd"
+
 
 rule diffexp_datavzrd:
     input:
@@ -70,10 +75,8 @@ rule diffexp_datavzrd:
             htmlindex="index.html",
             caption="../report/diffexp.rst",
             category="Datavzrd reports",
-            subcategory="{model}",
             patterns=["index.html"],
-            # see https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html
-            # for additional options like caption, categories and labels
+            labels={"model": "{model}"},
         ),
     params:
         model=get_model,
@@ -82,6 +85,7 @@ rule diffexp_datavzrd:
     wrapper:
         "v1.20.0/utils/datavzrd"
 
+
 rule go_enrichment_datavzrd:
     input:
         config="results/datavzrd/go_terms/{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.yaml",
@@ -89,12 +93,19 @@ rule go_enrichment_datavzrd:
         sig_go="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.sig_terms.tsv",
     output:
         report(
-            directory("results/datavzrd-reports/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}"),
+            directory(
+                "results/datavzrd-reports/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}"
+            ),
             htmlindex="index.html",
             caption="../report/go-enrichment-sig_terms.rst",
             category="Datavzrd reports",
             subcategory="{model}",
             patterns=["index.html"],
+            labels={
+                "model": "{model}",
+                "gene_fdr": "{gene_fdr}",
+                "go_term_fdr": "{go_term_fdr}",
+            },
         ),
     log:
         "logs/datavzrd-report/go_enrichment-{model}/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
