@@ -46,9 +46,11 @@ wildcard_constraints:
 
 ####### helpers ###########
 
-is_3prime_experiment = config.get("experiment", dict()).get("3-prime-rna-seq", dict())[
-    "activate"
-]
+is_3prime_experiment = (
+    config.get("experiment", dict())
+    .get("3-prime-rna-seq", dict())
+    .get("activate", False)
+)
 
 
 def check_config():
