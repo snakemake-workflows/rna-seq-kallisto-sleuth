@@ -10,15 +10,16 @@ rule get_transcriptome:
         release=config["resources"]["ref"]["release"],
     wildcard_constraints:
         type="cdna|cds|ncrna",
-    cache: True
+    cache: "omit-software"
     wrapper:
         "v1.7.1/bio/reference/ensembl-sequence"
 
-if config["experiment"]["3-prime-rna-seq"]["activate"]:
+
+if is_3prime_experiment:
 
     rule cds_polyA_T_removal:
         input:
-            ref_fasta="resources/transcriptome.cdna.fasta"
+            ref_fasta="resources/transcriptome.cdna.fasta",
         output:
             "resources/transcriptome_clean.cdna.fasta",
         log:
@@ -41,19 +42,19 @@ if config["experiment"]["3-prime-rna-seq"]["activate"]:
             "../envs/r-fasta.yaml"
         script:
             "../scripts/remove_strand_info.py"
-    
+
     rule get_canonical_ids:
         output:
             "resources/canonical_ids.csv",
         log:
-           "logs/filter_canonical/get_canonical_ids.log",
+            "logs/filter_canonical/get_canonical_ids.log",
         params:
             release=config["resources"]["ref"]["release"],
         conda:
             "../envs/get_canonical_ids.yaml"
         script:
             "../scripts/get_canonical_ids.R"
-    
+
     rule get_canonical_transcripts:
         input:
             fasta="resources/transcriptome.3prime.fasta",
@@ -65,6 +66,7 @@ if config["experiment"]["3-prime-rna-seq"]["activate"]:
         shell:
             """bioawk -cfastx 'BEGIN{{while((getline k <"{input.canonical_ids}")>0)i[k]=1}}{{if(i[$name])print ">"$name"\\n"$seq}}' {input.fasta} > {output}"""
 
+
 rule get_annotation:
     output:
         "resources/genome.gtf",
@@ -75,7 +77,7 @@ rule get_annotation:
         fmt="gtf",
     log:
         "logs/get-annotation.log",
-    cache: True
+    cache: "omit-software"
     wrapper:
         "0.80.1/bio/reference/ensembl-annotation"
 
@@ -90,7 +92,7 @@ rule get_transcript_info:
         "logs/get_transcript_info.log",
     conda:
         "../envs/biomart.yaml"
-    cache: True
+    cache: "omit-software"
     script:
         "../scripts/get-transcript-info.R"
 
@@ -154,3 +156,21 @@ rule calculate_cpat_logit_model:
     shell:
         "make_logitModel.py --hex={input.hexamers} --cgene={input.cds} "
         "--ngene={input.ncrna} -o {params.prefix} 2> {log}"
+
+
+rule get_spia_db:
+    output:
+        "resources/spia-db.rds",
+    log:
+        "logs/spia-db.log",
+    params:
+        bioc_species_pkg=bioc_species_pkg,
+        species=get_bioc_species_name(),
+        pathway_db=config["enrichment"]["spia"]["pathway_database"],
+        common_src=str(workflow.source_path("../scripts/common.R")),
+    conda:
+        enrichment_env
+    retries: 3
+    cache: True
+    script:
+        "../scripts/get-spia-db.R"

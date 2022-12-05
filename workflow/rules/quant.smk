@@ -1,10 +1,10 @@
 rule kallisto_index:
     input:
         fasta="resources/transcriptome_clean.{type}.fasta"
-            if config["experiment"]["3-prime-rna-seq"]["activate"]
-            else "resources/transcriptome.cdna.fasta", 
+        if is_3prime_experiment
+        else "resources/transcriptome.cdna.fasta",
     output:
-        index="results/kallisto_{type}/transcripts.{type}.idx"
+        index="results/kallisto_{type}/transcripts.{type}.idx",
     log:
         "results/logs/kallisto_{type}/index.{type}.log",
     wildcard_constraints:
@@ -17,7 +17,7 @@ rule kallisto_index:
 rule kallisto_quant:
     input:
         fastq=kallisto_quant_input,
-        index="results/kallisto/transcripts.{type}.idx",
+        index="results/kallisto_{type}/transcripts.{type}.idx",
     output:
         kallisto_folder=directory("results/kallisto_{type}/{sample}-{unit}"),
     log:
@@ -34,8 +34,8 @@ rule kallisto_quant:
 rule bwa_index:
     input:
         "resources/transcriptome_clean.cdna.fasta"
-        if config["experiment"]["3-prime-rna-seq"]["activate"]
-        else "resources/transcriptome.cdna.fasta", 
+        if is_3prime_experiment
+        else "resources/transcriptome.cdna.fasta",
     output:
         idx=multiext("resources/transcriptome", ".amb", ".ann", ".bwt", ".pac", ".sa"),
     log:
@@ -69,7 +69,9 @@ rule get_mapped_canonical_transcripts:
         mapped_bam="results/mapped_mem/{sample}-{unit}.bam",
         canonical_ids="resources/canonical_ids.csv",
     output:
-        canonical_mapped_bam=temp("results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.bam"),
+        canonical_mapped_bam=temp(
+            "results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.bam"
+        ),
     log:
         "results/logs/canonical_mapped_bam/{sample}-{unit}.canonical-mapped-bam.log",
     conda:
@@ -82,13 +84,16 @@ rule get_mapped_canonical_positions:
     input:
         canonical_mapped_bam="results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.bam",
     output:
-        canonical_mapped_pos=temp("results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.position.txt"),
+        canonical_mapped_pos=temp(
+            "results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.position.txt"
+        ),
     log:
         "results/logs/canonical_mapped_bam/{sample}-{unit}.canonical-mapped-pos.log",
     conda:
         "../envs/samtools.yaml"
     shell:
         "samtools view {input.canonical_mapped_bam} | cut -f1,3,4,10,11  > {output}  2> {log}"
+
 
 rule bwa_samtools_sort:
     input:
@@ -108,7 +113,9 @@ rule bwa_samtools_index:
     input:
         "results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.sorted.bam",
     output:
-        temp("results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.sorted.bam.bai"),
+        temp(
+            "results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.sorted.bam.bai"
+        ),
     log:
         "results/logs/QC/{sample}-{unit}.sorted.index.log",
     params:
@@ -124,11 +131,13 @@ rule get_closest_3prime_aligned_pos:
         canonical_mapped_bam_index="results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.sorted.bam.bai",
         canonical_mapped_pos="results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.position.txt",
     output:
-        canonical_mapped_3prime_pos=temp("results/mapped_3prime_bam/{sample}-{unit}.canonical.mapped.3prime_pos.txt"),
+        canonical_mapped_3prime_pos=temp(
+            "results/mapped_3prime_bam/{sample}-{unit}.canonical.mapped.3prime_pos.txt"
+        ),
     log:
         "results/logs/mapped_3prime_bam/{sample}-{unit}.mapped.pos.log",
     conda:
-        "../envs/QC.yaml",
+        "../envs/QC.yaml"
     script:
         "../scripts/get-3prime-max-positions.py"
 
@@ -138,7 +147,9 @@ rule get_closest_3prime_aligned_pos_bam:
         canonical_mapped_bam="results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.bam",
         canonical_mapped_3prime_pos="results/mapped_3prime_bam/{sample}-{unit}.canonical.mapped.3prime_pos.txt",
     output:
-        canonical_mapped_3prime_bam=temp("results/canonical_3prime_mapped_bam/{sample}-{unit}.canonical.3prime_mapped.bam"),
+        canonical_mapped_3prime_bam=temp(
+            "results/canonical_3prime_mapped_bam/{sample}-{unit}.canonical.3prime_mapped.bam"
+        ),
     log:
         "results/logs/canonical_3prime_mapped_bam/{sample}-{unit}.canonical.3prime_mapped.log",
     conda:
@@ -170,7 +181,8 @@ rule get_aligned_pos:
     conda:
         "../envs/samtools.yaml"
     shell:
-        "samtools view {input.bam_file}/pseudoalignments.bam | cut -f1,3,4,10,11  > {output} 2> {log}"  
+        "samtools view {input.bam_file}/pseudoalignments.bam | cut -f1,3,4,10,11  > {output} 2> {log}"
+
 
 rule kallisto_samtools_sort:
     input:
@@ -189,7 +201,9 @@ rule kallisto_samtools_index:
     input:
         "results/kallisto-bam-sorted/{sample}-{unit}-pseudoalignments.sorted.bam",
     output:
-        temp("results/kallisto-bam-sorted/{sample}-{unit}-pseudoalignments.sorted.bam.bai"),
+        temp(
+            "results/kallisto-bam-sorted/{sample}-{unit}-pseudoalignments.sorted.bam.bai"
+        ),
     log:
         "results/logs/QC/{sample}-{unit}.sorted.index.log",
     params:
@@ -198,7 +212,9 @@ rule kallisto_samtools_index:
     wrapper:
         "v1.18.3/bio/samtools/index"
 
-if(config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all"):
+
+if is_3prime_experiment and config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all":
+
     rule get_selected_transcripts_aligned_read_bins:
         input:
             aligned_file="results/QC/{sample}-{unit}.aligned.txt",
@@ -206,24 +222,34 @@ if(config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all"):
             samtools_index="results/kallisto-bam-sorted/{sample}-{unit}-pseudoalignments.sorted.bam.bai",
             read_length="results/stats/max-read-length.json",
         output:
-            fwrd_allsamp_hist_fil=temp("results/QC/{sample}-{unit}.{ind_transcripts}.aligned-fwd-fil-read-bins.txt"),
-            rev_allsamp_hist_fil=temp("results/QC/{sample}-{unit}.{ind_transcripts}.aligned-rev-fil-read-bins.txt"),
+            fwrd_allsamp_hist_fil=temp(
+                "results/QC/{sample}-{unit}.{ind_transcripts}.aligned-fwd-fil-read-bins.txt"
+            ),
+            rev_allsamp_hist_fil=temp(
+                "results/QC/{sample}-{unit}.{ind_transcripts}.aligned-rev-fil-read-bins.txt"
+            ),
         params:
-            each_transcript = "{ind_transcripts}",
-            samples = "{sample}-{unit}",
+            each_transcript="{ind_transcripts}",
+            samples="{sample}-{unit}",
         log:
             "results/logs/QC/{sample}-{unit}.{ind_transcripts}.aligned-read-bins.log",
         conda:
             "../envs/QC.yaml"
         script:
             "../scripts/get-sample-hist-bins.py"
-    
+
     rule get_selected_transcripts_sample_QC_histogram:
         input:
-            fwrd_allsamp_hist_fil=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-fwd-fil-read-bins.txt",
-            unit=units.itertuples(), ind_transcripts="{ind_transcripts}"),
-            rev_allsamp_hist_fil=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-rev-fil-read-bins.txt",
-            unit=units.itertuples(),ind_transcripts="{ind_transcripts}"),
+            fwrd_allsamp_hist_fil=expand(
+                "results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-fwd-fil-read-bins.txt",
+                unit=units.itertuples(),
+                ind_transcripts="{ind_transcripts}",
+            ),
+            rev_allsamp_hist_fil=expand(
+                "results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-rev-fil-read-bins.txt",
+                unit=units.itertuples(),
+                ind_transcripts="{ind_transcripts}",
+            ),
             read_length="results/stats/max-read-length.json",
         output:
             full_sample_QC=report(
@@ -232,14 +258,17 @@ if(config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all"):
                 caption="../report/plot-3prime-QC-histogram.rst",
             ),
         params:
-            each_transcript = "{ind_transcripts}",
+            each_transcript="{ind_transcripts}",
         log:
             "results/logs/QC/3prime-QC-plot.{ind_transcripts}.log",
         conda:
             "../envs/QC.yaml"
         script:
             "../scripts/plot-3prime-qc-histogram.py"
+
+
 else:
+
     rule get_aligned_read_bins:
         input:
             aligned_file="results/QC/{sample}-{unit}.aligned.txt",
@@ -247,13 +276,21 @@ else:
             samtools_index="results/kallisto-bam-sorted/{sample}-{unit}-pseudoalignments.sorted.bam.bai",
             read_length="results/stats/max-read-length.json",
         output:
-            fwrd_allsamp_hist=temp("results/QC/{sample}-{unit}.{ind_transcripts}.aligned-fwd-full-read-bins.txt"),
-            fwrd_allsamp_hist_trim=temp("results/QC/{sample}-{unit}.{ind_transcripts}.aligned-fwd-trim-read-bins.txt"),
-            rev_allsamp_hist=temp("results/QC/{sample}-{unit}.{ind_transcripts}.aligned-rev-full-read-bins.txt"),
-            rev_allsamp_hist_trim=temp("results/QC/{sample}-{unit}.{ind_transcripts}.aligned-rev-trim-read-bins.txt"),
+            fwrd_allsamp_hist=temp(
+                "results/QC/{sample}-{unit}.{ind_transcripts}.aligned-fwd-full-read-bins.txt"
+            ),
+            fwrd_allsamp_hist_trim=temp(
+                "results/QC/{sample}-{unit}.{ind_transcripts}.aligned-fwd-trim-read-bins.txt"
+            ),
+            rev_allsamp_hist=temp(
+                "results/QC/{sample}-{unit}.{ind_transcripts}.aligned-rev-full-read-bins.txt"
+            ),
+            rev_allsamp_hist_trim=temp(
+                "results/QC/{sample}-{unit}.{ind_transcripts}.aligned-rev-trim-read-bins.txt"
+            ),
         params:
-            each_transcript = "{ind_transcripts}",
-            samples = "{sample}-{unit}",
+            each_transcript="{ind_transcripts}",
+            samples="{sample}-{unit}",
         log:
             "results/logs/QC/{sample}-{unit}.{ind_transcripts}.aligned-read-bins.log",
         conda:
@@ -261,17 +298,28 @@ else:
         script:
             "../scripts/get-sample-hist-bins.py"
 
-
     rule get_sample_QC_histogram:
         input:
-            fwrd_allsamp_hist=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-fwd-full-read-bins.txt",
-            unit=units.itertuples(), ind_transcripts="{ind_transcripts}"),
-            fwrd_allsamp_hist_trim=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-fwd-trim-read-bins.txt"
-            ,unit=units.itertuples(), ind_transcripts="{ind_transcripts}"),
-            rev_allsamp_hist=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-rev-full-read-bins.txt",
-            unit=units.itertuples(), ind_transcripts="{ind_transcripts}"),
-            rev_allsamp_hist_trim=expand("results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-rev-trim-read-bins.txt",
-            unit=units.itertuples(), ind_transcripts="{ind_transcripts}"),
+            fwrd_allsamp_hist=expand(
+                "results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-fwd-full-read-bins.txt",
+                unit=units.itertuples(),
+                ind_transcripts="{ind_transcripts}",
+            ),
+            fwrd_allsamp_hist_trim=expand(
+                "results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-fwd-trim-read-bins.txt",
+                unit=units.itertuples(),
+                ind_transcripts="{ind_transcripts}",
+            ),
+            rev_allsamp_hist=expand(
+                "results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-rev-full-read-bins.txt",
+                unit=units.itertuples(),
+                ind_transcripts="{ind_transcripts}",
+            ),
+            rev_allsamp_hist_trim=expand(
+                "results/QC/{unit.sample}-{unit.unit}.{ind_transcripts}.aligned-rev-trim-read-bins.txt",
+                unit=units.itertuples(),
+                ind_transcripts="{ind_transcripts}",
+            ),
             read_length="results/stats/max-read-length.json",
         output:
             full_sample_QC=report(
@@ -280,7 +328,7 @@ else:
                 caption="../report/plot-3prime-QC-histogram.rst",
             ),
         params:
-            each_transcript = "{ind_transcripts}",
+            each_transcript="{ind_transcripts}",
         log:
             "results/logs/QC/3prime-QC-plot.{ind_transcripts}.log",
         conda:
