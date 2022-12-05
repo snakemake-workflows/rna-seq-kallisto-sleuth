@@ -16,6 +16,7 @@ rule render_datavzrd_config_diffexp:
         transcripts="results/tables/diffexp/{model}.transcripts.diffexp.tsv",
         genes_aggregated="results/tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
         genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
+        volcano_plots="results/plots/interactive/volcano/{model}.vl.json",
     output:
         "results/datavzrd/diffexp/{model}.yaml",
     params:
@@ -64,6 +65,7 @@ rule diffexp_datavzrd:
         transcripts="results/tables/diffexp/{model}.transcripts.diffexp.tsv",
         genes_aggregated="results/tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
         genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
+        volcano_plots="results/plots/interactive/volcano/{model}.vl.json"
     output:
         report(
             directory("results/datavzrd-reports/diffexp-{model}"),

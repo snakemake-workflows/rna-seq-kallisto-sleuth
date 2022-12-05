@@ -6,6 +6,12 @@ datasets:
       link to transcripts:
         column: ens_gene
         table-row: transcripts/ens_gene
+      link to log-count matrix:
+        column: target_id
+        table-row : logcount_matrix/transcript
+      link to volcano plot:
+        column: ens_gene
+        view: volcano-plots
     separator: "\t"
   transcripts:
     path: ?input.transcripts
@@ -111,6 +117,12 @@ views:
         ?for sample in params.samples:
           ?sample:
             display-mode: hidden
+  volcano-plots:
+    dataset: genes_representative
+    desc: |
+      Interactive volcano plot of differentially expressed genes
+    render-plot:
+      spec-path: ?input.volcano_plots  
   transcripts:
     dataset: transcripts
     desc: |

@@ -1,12 +1,6 @@
 {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "description": "A simple bar chart with embedded data.",
-    "data": {
-        "values": "$data",
-        "format": {
-            "type": "tsv"
-        }
-    },
     "spacing": 15,
     "bounds": "flush",
     "vconcat": [
@@ -52,6 +46,9 @@
                                         "reverse": true,
                                         "domainMax": 1
                                     }
+                                },
+                                "href": {
+                                    "field": "link to genes_representative"
                                 },
                                 "size": {
                                     "field": "$beta_se_column",
