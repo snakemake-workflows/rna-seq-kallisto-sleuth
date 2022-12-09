@@ -48,7 +48,7 @@
                                     }
                                 },
                                 "href": {
-                                    "field": "link to genes_representative"
+                                    "field": "link to genes representative"
                                 },
                                 "size": {
                                     "field": "$beta_se_column",
@@ -60,6 +60,7 @@
                                         "value": "#aaa"
                                     }
                                 },
+                                
                                 "tooltip": [
                                     {
                                         "field": "ext_gene",

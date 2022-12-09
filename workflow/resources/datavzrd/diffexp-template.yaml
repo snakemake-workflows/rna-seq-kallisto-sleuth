@@ -9,6 +9,9 @@ datasets:
       link to log-count matrix:
         column: target_id
         table-row : logcount_matrix/transcript
+      link to genes representative:
+        column: ens_gene
+        table-row: genes_representative/ens_gene
       link to volcano plot:
         column: ens_gene
         view: volcano-plots
@@ -16,7 +19,7 @@ datasets:
   transcripts:
     path: ?input.transcripts
     links:
-      link to genes_representative:
+      link to genes representative:
         column: ens_gene
         table-row: genes_representative/ens_gene
     separator: "\t"  
@@ -25,6 +28,10 @@ datasets:
     separator: "\t"
   logcount_matrix:
     path: ?input.logcount_matrix
+    links:  
+      link to transcripts:
+        column: transcript
+        table-row: transcripts/target_id
     separator: "\t"
 default-view: genes_representative
 views:

@@ -1,15 +1,15 @@
 name: ?f"Gene ontology (GO) term enrichment analysis performed by goatools {wildcards.model}"
 datasets:
-  sig_go:
-    path: ?input.sig_go
+  significant_terms:
+    path: ?input.significant_terms
     separator: "\t"
   go_enrichment:
     path: ?input.enrichment
     separator: "\t"
-default-view: sig_go
+default-view: significant_terms
 views:
-  sig_go:
-    dataset: sig_go
+  significant_terms:
+    dataset: significant_terms
     desc: |
         Gene ontology (GO) term enrichment analysis performed by goatools, using the sleuth model. Table contains top significant terms of FDR <0.05
     page-size: 10

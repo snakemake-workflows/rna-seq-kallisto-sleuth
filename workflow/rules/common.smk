@@ -108,7 +108,9 @@ def get_model_samples(wildcards):
     samples = pd.read_csv(config["samples"], sep="\t", dtype=str, comment="#")
     units = pd.read_csv(config["units"], sep="\t", dtype=str, comment="#")
     sample_file = units.merge(samples, on="sample")
-    sample_file["sample_name"] = f"{sample_file['sample']}-{sample_file['unit']}"
+    sample_file["sample_name"] = sample_file.apply(
+        lambda row: "{}-{}".format(row["sample"], row["unit"]), axis=1
+    )
     gps = config["diffexp"]["models"][wildcards.model]["primary_variable"]
     sample_groups = sample_file.loc[sample_file[gps].notnull(), ["sample_name"]]
     samples = sample_groups["sample_name"].values
@@ -163,7 +165,7 @@ def kallisto_quant_input(wildcards):
             "results/trimmed/{{sample}}-{{unit}}.{group}.fastq.gz", group=[1, 2]
         )
     else:
-        return "results/trimmed/{sample}-{unit}.fastq.gz"
+        return expand("results/trimmed/{sample}-{unit}.fastq.gz", **wildcards)
 
 
 def kallisto_params(wildcards, input):

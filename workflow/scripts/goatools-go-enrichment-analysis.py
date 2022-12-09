@@ -25,11 +25,9 @@ for nspc, id2gos in ns2assoc.items():
 
 # read gene diffexp table
 all_genes = pd.read_table(snakemake.input.diffexp)
-
 # select genes significantly differentially expressed according to BH FDR of sleuth
-fdr_level_gene = float(snakemake.params.gene_fdr)
+fdr_level_gene = float(snakemake.params.gene_fdr) 
 sig_genes = all_genes[all_genes["qval"] < fdr_level_gene]
-
 
 # initialize GOEA object
 fdr_level_go_term = float(snakemake.params.go_term_fdr)
@@ -54,7 +52,6 @@ go_items = [val for cat in ["BP", "CC", "MF"] for item, val in goeaobj.ns2objgoe
 
 #goea_results_all.rename(columns={'# GO': 'GO'})
 
-print(goea_results_all)
 
 if goea_results_all:
     go_terms = pd.DataFrame(list(map(lambda x: [x.GO, x.goterm.name, x.goterm.namespace, x.p_uncorrected, x.p_fdr_bh,\
@@ -108,7 +105,7 @@ if goea_results_sig != "":
 else:
     no_sig_terms="no significant terms"
     no_sig_terms.to_csv(snakemake.output.enrichment_sig_terms, sep='\t', index=False)
-    
+
 plot_results(
     outplot_generic,
     # use pvals for coloring
