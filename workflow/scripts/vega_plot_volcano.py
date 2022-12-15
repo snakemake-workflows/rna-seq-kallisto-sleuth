@@ -63,13 +63,9 @@ def main(snakemake):
         beta_se_column=beta_col + "_se",
     )
 
-    html = Template(HTML).safe_substitute(json=json)
-
     with open(snakemake.output.json, "wt") as f:
         f.write(json)
 
-    with open(snakemake.output.html, "wt") as f:
-        f.write(html)
 
 
 if __name__ == "__main__":
