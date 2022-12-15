@@ -21,17 +21,6 @@ vargenes <-
 #Selecting top 50 variable genes
 selectedgenes <-
     names(vargenes[order(vargenes, decreasing = TRUE)][1:50])
-#Adding corresponding sample groups
-groups <- read.csv(snakemake@params[["sample_sheet"]],
-    sep = "\t", header = TRUE)
-model_name <- snakemake@params[["groups"]]
-sel_model <- groups %>% select(model_name)
-model <- sel_model[!(is.na(sel_model) | sel_model == ""), ]
-anno <- data.frame(model, row.names = colnames(sleuth_file))
-colnames(anno) <- snakemake@params[["groups"]]
-#Plotting the heatmap
 pdf(file = snakemake@output[[1]], height = 10, width = 10)
-
-pheatmap(sleuth_file[selectedgenes, ], annotation = anno, scale = "row")
-
+pheatmap(sleuth_file[selectedgenes, ], scale = "row")
 dev.off()

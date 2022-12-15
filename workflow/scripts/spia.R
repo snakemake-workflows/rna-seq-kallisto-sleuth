@@ -49,7 +49,8 @@ if(nrow(sig_genes) == 0) {
     pathway_names <- db[res$Name]
     pathway_names <- db[res$Name]
     path_ids <- as.matrix(lapply(pathway_names@entries, slot, "id"))
-    path_ids_data_frame <-
+    if (length(path_ids) > 0 ) {
+            path_ids_data_frame <-
         data.frame(Ids = matrix(unlist(path_ids),
             nrow = length(path_ids), byrow = TRUE))
     final_res <- cbind(res,
@@ -65,4 +66,13 @@ if(nrow(sig_genes) == 0) {
     names(res_reorder)[names(res_reorder) == "pPERT"] <- "p-value to observe a total accumulation"
     names(res_reorder)[names(res_reorder) == "pNDE"] <- "p-value for at least NDE genes"
     write_tsv(res_reorder, snakemake@output[["table"]])
+    }else {
+        columns <- c("Combined Bonferroni p-values", "Combined FDR",
+        "total perturbation accumulation", "number of genes on the pathway",
+        "Combined p-value no", "p-value to observe a total accumulation",
+        "p-value for at least NDE genes")
+        emtpy_data_frame <- data.frame(matrix(nrow = 0, ncol = length(columns)))
+        colnames(emtpy_data_frame) <- columns
+        write_tsv(emtpy_data_frame, snakemake@output[["table"]])
+    }
 }

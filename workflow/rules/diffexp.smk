@@ -252,9 +252,7 @@ rule plot_diffexp_heatmap:
             category="Heatmaps",
         ),
     params:
-        model=get_model,
-        sample_sheet=config["samples"],
-        groups=lambda wc: config["diffexp"]["models"][wc.model]["primary_variable"],
+        model=get_model
     log:
         "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.log",
     conda:
@@ -369,9 +367,6 @@ rule vega_volcano_plot:
         spec=workflow.source_path("../../resources/vega_volcano_plot.json"),
     output:
         json="results/plots/interactive/volcano/{model}.vl.json",
-        html=report(
-            "results/plots/interactive/volcano/{model}.html", category="Volcano plots"
-        ),
     params:
         model=get_model,
         sig_level_volcano=config["diffexp"]["sig-level"]["volcano-plot"],

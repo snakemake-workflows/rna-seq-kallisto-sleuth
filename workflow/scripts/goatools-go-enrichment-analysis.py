@@ -63,16 +63,17 @@ else:
     # write empty table to indicate that nothing was found
     with open(snakemake.output.enrichment, "w") as out:
         print(
-            "# GO",
-            "NS",
-            "enrichment",
+            "GO",
+            "term",
+            "class",
             "name",
+            "p_uncorrected",
+            "p_fdr_bh",
+            "p_uncorrected",
             "ratio_in_study",
             "ratio_in_pop",
-            "p_uncorrected",
             "depth",
             "study_count",
-            "p_fdr_bh",
             "study_items",
             sep="\t",
             file=out,
@@ -95,7 +96,7 @@ outplot_generic = (
 goea_results_sig = [r for r in goea_results_all if r.p_fdr_bh < fdr_level_go_term]
 
 #https://github.com/mousepixels/sanbomics_scripts/blob/main/GO_in_python.ipynb
-if goea_results_sig != "":
+if goea_results_sig:
     go_sig_terms = pd.DataFrame(list(map(lambda x: [x.GO, x.goterm.name, x.goterm.namespace, x.p_uncorrected, x.p_fdr_bh,\
         x.ratio_in_study[0], x.ratio_in_study[1], x.ratio_in_pop[0],\
             ], goea_results_sig)), columns = ['GO', 'term', 'class', 'p', 'p_corr', 'n_genes',\
@@ -103,8 +104,20 @@ if goea_results_sig != "":
     go_sig_terms['gene_ratio'] = go_sig_terms.n_genes/go_sig_terms.n_go
     go_sig_terms.to_csv(snakemake.output.enrichment_sig_terms, sep='\t', index=False)
 else:
-    no_sig_terms="no significant terms"
-    no_sig_terms.to_csv(snakemake.output.enrichment_sig_terms, sep='\t', index=False)
+    # write empty table to indicate that nothing was found
+    with open(snakemake.output.enrichment_sig_terms, "w") as out:
+        print(
+            "GO",
+            "term",
+            "class",
+            "p",
+            "p_corr",
+            "n_genes",
+            "n_study",
+            "n_go",
+            sep="\t",
+            file=out,
+        )
 
 plot_results(
     outplot_generic,

@@ -48,7 +48,7 @@ views:
           plot:
             heatmap:
               scale: linear
-        gene_ratio:
+        n_go:
           plot:
             bars:
               scale: linear
@@ -67,8 +67,6 @@ views:
           link-to-url: http://amigo.geneontology.org/amigo/term/{GO}
         class:
           display-mode: normal 
-        enrichment:
-          display-mode: hidden
         term:
           display-mode: normal 
         ratio_in_study:
