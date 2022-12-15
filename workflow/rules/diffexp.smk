@@ -252,7 +252,7 @@ rule plot_diffexp_heatmap:
             category="Heatmaps",
         ),
     params:
-        model=get_model
+        model=get_model,
     log:
         "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.log",
     conda:
