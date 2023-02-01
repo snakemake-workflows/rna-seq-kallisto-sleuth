@@ -1,5 +1,5 @@
-samples: 3-prime-config/samples.tsv
-units: 3-prime-config/units.tsv
+samples: config/samples.tsv
+units: config/units.tsv
 
 experiment:
   # If set to `true`, this option allows the workflow to analyse 3-prime RNA seq data obtained from Quantseq protocol by Lexogen.
