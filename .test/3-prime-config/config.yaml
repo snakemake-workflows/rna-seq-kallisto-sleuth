@@ -1,1 +1,139 @@
+samples: config/samples.tsv
+units: config/units.tsv
 
+experiment:
+  # If set to `true`, this option allows the workflow to analyse 3-prime RNA seq data obtained from Quantseq protocol by Lexogen.
+  # For more information https://www.lexogen.com/quantseq-3mrna-sequencing/
+  3-prime-rna-seq:
+    activate: true
+    # this allows to plot QC of aligned read postion for specific transcripts (or 'all' transcripts)
+    plot-qc: all
+
+resources:
+  ref:
+    # ensembl species name
+    species: homo_sapiens
+    # ensembl release version
+    release: "104"
+    # genome build
+    build: GRCh38
+    # pfam release to use for annotation of domains in differential splicing analysis
+    pfam: "33.0"
+    # Choose strategy for selecting representative transcripts for each gene.
+    # Possible values:
+    #   - canonical (use the canonical transcript from ensembl, only works for human at the moment)
+    #   - mostsignificant (use the most significant transcript)
+    #   - path/to/any/file.txt (a path to a file with ensembl transcript IDs to use;
+    #     the user has to ensure that there is only one ID per gene given)
+    representative_transcripts: canonical
+  ontology:
+    # gene ontology to download, used e.g. in goatools
+    gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
+
+pca:
+  labels:
+    # columns of sample sheet to use for PCA
+    - condition
+
+scatter:
+  # for use as diagnostic plots
+  # all samples are compared in pairs to assess their correlation
+  # scatter plots are only created if parameter 'activate' is set to 'true'
+  activate: false
+
+diffexp:
+  # samples to exclude (e.g. outliers due to technical problems)
+  exclude:
+  # model for sleuth differential expression analysis
+  models:
+    model_X:
+      full: ~condition + batch_effect
+      reduced: batch_effect
+      #reduced: '~1'# in case if it takes as numerical
+      # Binary valued covariate that shall be used for fold change/effect size
+      # based downstream analyses.
+      primary_variable: condition
+      # base level of the primary variable (will be considered as denominator
+      # in the fold change/effect size estimation).
+      base_level: untreated
+  # significance level to use for volcano, ma- and qq-plots
+  sig-level:
+    volcano-plot: 0.05
+    ma-plot: 0.05
+    qq-plot: 0.05
+
+diffsplice:
+  activate: false
+  # codingCutoff parameter of isoformSwitchAnalyzer, see
+  # https://rdrr.io/bioc/IsoformSwitchAnalyzeR/man/analyzeCPAT.html
+  coding_cutoff: 0.725
+  # Should be set to true when using de-novo assembled transcripts.
+  remove_noncoding_orfs: false
+  # False discovery rate to control for.
+  fdr: 0.05
+  # Minimum size of differential isoform usage effect
+  # (see dIFcutoff, https://rdrr.io/github/kvittingseerup/IsoformSwitchAnalyzeR/man/IsoformSwitchTestDEXSeq.html)
+  min_effect_size: 0.1
+
+enrichment:
+  goatools:
+    # tool is only run if set to `true`
+    activate: false
+    fdr_genes: 0.05
+    fdr_go_terms: 0.05
+  fgsea:
+    # tool is only run if set to `true`
+    activate: false
+    # if activated, you need to provide a GMT file with gene sets of interest
+    gene_sets_file: "resources/gene_sets/dummy.gmt"
+    fdr_gene_set: 0.05
+    # minimum achievable p-value  (equivalent to the reciprocal of the number of permutations, see fgsea docs)
+    eps: 1.0e-50
+  spia:
+    # tool is only run if set to `true`
+    activate: false
+    # pathway database to use in SPIA, needs to be available for
+    # the species specified by resources -> ref -> species above
+    pathway_database: "reactome"
+
+bootstrap_plots:
+  # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
+  FDR: 0.01
+  # maximum number of bootstrap plots to generate, i.e. top n discoveries to plot
+  top_n: 20
+  color_by: condition
+  # for now, this will plot the sleuth-normalised kallisto count estimations with kallisto
+  # for all the transcripts of the respective genes
+  genes_of_interest:
+    - A4galt
+
+plot_vars:
+  # significance level used for plot_vars() plots
+  sig_level: 0.1
+
+params:
+  #For reads that are produced by 3’-end sequencing, the --single-overhang option does not discard
+  #reads where the expected fragment size goes beyond the transcript start
+  kallisto: "-b 100"
+  # these cutadapt parameters need to contain the required flag(s) for
+  # the type of adapter(s) to trim, i.e.:
+  # * https://cutadapt.readthedocs.io/en/stable/guide.html#adapter-types
+  #   * `-a` for 3' adapter in the forward reads
+  #   * `-g` for 5' adapter in the forward reads
+  #   * `-b` for adapters anywhere in the forward reads
+  # also, separate capitalised letter flags are required for adapters in
+  # the reverse reads of paired end sequencing:
+  # * https://cutadapt.readthedocs.io/en/stable/guide.html#trimming-paired-end-reads
+  cutadapt-se: ""
+  # reasoning behind parameters:
+  #   For reads that are produced by 3’-end sequencing, depending on the protocol, it might be recommended to remove some leading bases (e.g. see https://www.nature.com/articles/s41598-019-55434-x#Sec10)
+  #   * `--minimum-length 33`:
+  #     * kallisto needs non-empty reads in current versions (fixed for future releases:
+  #       https://github.com/pachterlab/kallisto/commit/64fe837ca86f3664496483bcd2787c9376584fed)
+  #     * kallisto default k-mer length is 31 and 33 should give at least 3 k-mers for a read
+  #   * `-e 0.005`: the default cutadapt maximum error rate of `0.2` is far too high, for Illumina
+  #     data the error rate is more in the range of `0.005` and setting it accordingly should avoid
+  #     false positive adapter matches
+  #   * `--minimum-overlap 7`: the cutadapt default minimum overlap of `5` did trimming on the level
+  #     of expected adapter matches by chance
+  cutadapt-pe: "-a ACGGATCGATCGATCGATCGAT -g GGATCGATCGATCGATCGAT -A ACGGATCGATCGATCGATCGAT -G GGATCGATCGATCGATCGAT --minimum-length 33 -e 0.005 --overlap 7"
