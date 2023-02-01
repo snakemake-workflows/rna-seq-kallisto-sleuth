@@ -101,7 +101,7 @@ else:
         log:
             "results/logs/cutadapt/{sample}-{unit}.log",
         wrapper:
-            "v1.22.0/bio/cutadapt/pe"
+            "v1.22.0/bio/cutadapt/se"
 
 
 rule max_read_length:
