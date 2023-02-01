@@ -10,7 +10,7 @@ rule cutadapt_pe:
     log:
         "results/logs/cutadapt/{sample}-{unit}.log",
     wrapper:
-        "0.31.1/bio/cutadapt/pe"
+        "v1.22.0/bio/cutadapt/pe"
 
 
 if is_3prime_experiment:
@@ -101,7 +101,7 @@ else:
         log:
             "results/logs/cutadapt/{sample}-{unit}.log",
         wrapper:
-            "0.31.1/bio/cutadapt/se"
+            "v1.22.0/bio/cutadapt/pe"
 
 
 rule max_read_length:
