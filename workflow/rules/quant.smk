@@ -266,7 +266,6 @@ if is_3prime_experiment and config["experiment"]["3-prime-rna-seq"]["plot-qc"] !
         script:
             "../scripts/plot-3prime-qc-histogram.py"
 
-
 else:
 
     rule get_aligned_read_bins:

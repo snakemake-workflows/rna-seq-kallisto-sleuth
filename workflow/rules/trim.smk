@@ -88,7 +88,6 @@ if is_3prime_experiment:
         wrapper:
             "v1.14.1/bio/cutadapt/se"
 
-
 else:
 
     rule cutadapt:
