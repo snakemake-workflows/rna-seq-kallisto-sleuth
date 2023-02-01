@@ -6,7 +6,7 @@ rule cutadapt_pe:
         fastq2="results/trimmed/{sample}-{unit}.2.fastq.gz",
         qc="results/trimmed/{sample}-{unit}.qc.txt",
     params:
-        "{}".format(config["params"]["cutadapt-pe"]),
+        extra="{}".format(config["params"]["cutadapt-pe"]),
     log:
         "results/logs/cutadapt/{sample}-{unit}.log",
     wrapper:
@@ -97,7 +97,7 @@ else:
             fastq="results/trimmed/{sample}-{unit}.fastq.gz",
             qc="results/trimmed/{sample}-{unit}.qc.txt",
         params:
-            "{}".format(config["params"]["cutadapt-se"]),
+            extra="{}".format(config["params"]["cutadapt-se"]),
         log:
             "results/logs/cutadapt/{sample}-{unit}.log",
         wrapper:
