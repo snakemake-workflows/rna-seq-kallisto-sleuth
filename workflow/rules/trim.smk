@@ -97,7 +97,7 @@ else:
             fastq="results/trimmed/{sample}-{unit}.fastq.gz",
             qc="results/trimmed/{sample}-{unit}.qc.txt",
         params:
-            adapters="{}".format(config["params"]["cutadapt-se"]),
+            extra="{}".format(config["params"]["cutadapt-se"]),
         log:
             "results/logs/cutadapt/{sample}-{unit}.log",
         wrapper:
