@@ -1,5 +1,5 @@
-samples: config/samples.tsv
-units: config/units.tsv
+samples: 3-prime-config/samples.tsv
+units: 3-prime-config/units.tsv
 
 experiment:
   # If set to `true`, this option allows the workflow to analyse 3-prime RNA seq data obtained from Quantseq protocol by Lexogen.
@@ -124,7 +124,7 @@ params:
   # also, separate capitalised letter flags are required for adapters in
   # the reverse reads of paired end sequencing:
   # * https://cutadapt.readthedocs.io/en/stable/guide.html#trimming-paired-end-reads
-  cutadapt-se: ""
+  cutadapt-se: " "
   # reasoning behind parameters:
   #   For reads that are produced by 3’-end sequencing, depending on the protocol, it might be recommended to remove some leading bases (e.g. see https://www.nature.com/articles/s41598-019-55434-x#Sec10)
   #   * `--minimum-length 33`:

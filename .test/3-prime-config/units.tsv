@@ -1,0 +1,6 @@
+sample	unit	fragment_len_mean	fragment_len_sd	fq1	fq2
+A	1	300	14	ngs-test-data/reads/a.chr21.2.fq
+B	1	300	14	ngs-test-data/reads/b.chr21.1.fq
+B	2	300	14	ngs-test-data/reads/b.chr21.2.fq
+C	1	300	14	ngs-test-data/reads/a.chr21.2.fq
+D	1	300	14	ngs-test-data/reads/b.chr21.2.fq
