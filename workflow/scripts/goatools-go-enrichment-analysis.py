@@ -102,7 +102,8 @@ if goea_results_sig:
             ], goea_results_sig)), columns = ['GO', 'term', 'class', 'p', 'p_corr', 'n_genes',\
                 'n_study', 'n_go'])
     go_sig_terms['gene_ratio'] = go_sig_terms.n_genes/go_sig_terms.n_go
-    go_sig_terms.to_csv(snakemake.output.enrichment_sig_terms, sep='\t', index=False)
+    go_sig_terms_sorted = go_sig_terms.sort_values(by=['class','p_corr'])
+    go_sig_terms_sorted.to_csv(snakemake.output.enrichment_sig_terms, sep='\t', index=False)
 else:
     # write empty table to indicate that nothing was found
     with open(snakemake.output.enrichment_sig_terms, "w") as out:
