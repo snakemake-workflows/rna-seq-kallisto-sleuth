@@ -5,12 +5,13 @@ rule cutadapt_pe:
         fastq1="results/trimmed/{sample}-{unit}.1.fastq.gz",
         fastq2="results/trimmed/{sample}-{unit}.2.fastq.gz",
         qc="results/trimmed/{sample}-{unit}.qc.txt",
+    threads: 8
     params:
-        "{}".format(config["params"]["cutadapt-pe"]),
+        extra="{}".format(config["params"]["cutadapt-pe"]),
     log:
         "results/logs/cutadapt/{sample}-{unit}.log",
     wrapper:
-        "0.31.1/bio/cutadapt/pe"
+        "v1.22.0/bio/cutadapt/pe"
 
 
 rule cutadapt:
@@ -19,9 +20,10 @@ rule cutadapt:
     output:
         fastq="results/trimmed/{sample}-{unit}.fastq.gz",
         qc="results/trimmed/{sample}-{unit}.qc.txt",
+    threads: 8
     params:
-        "{}".format(config["params"]["cutadapt-se"]),
+        extra="{}".format(config["params"]["cutadapt-se"]),
     log:
         "results/logs/cutadapt/{sample}-{unit}.log",
     wrapper:
-        "0.31.1/bio/cutadapt/se"
+        "v1.22.0/bio/cutadapt/se"
