@@ -23,6 +23,11 @@ rule kallisto_quant:
         extra=kallisto_params,
     conda:
         "../envs/kallisto.yaml"
+    # around 4 gb of memory usage with 1 thread. (hg38)
+    # around 5.5gb peak memory usage with 8 threads. (hg38)
+    threads: 8
+    resources:
+        mem_mb=8000,
     shell:
         "kallisto quant -i {input.idx} -o {output} "
-        "{params.extra} {input.fq} 2> {log}"
+        "{params.extra} -t {threads} {input.fq} 2> {log}"
