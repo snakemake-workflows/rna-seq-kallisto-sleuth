@@ -5,6 +5,7 @@ rule cutadapt_pe:
         fastq1="results/trimmed/{sample}-{unit}.1.fastq.gz",
         fastq2="results/trimmed/{sample}-{unit}.2.fastq.gz",
         qc="results/trimmed/{sample}-{unit}.qc.txt",
+    threads: 8
     params:
         extra="{}".format(config["params"]["cutadapt-pe"]),
     log:
@@ -19,6 +20,7 @@ rule cutadapt:
     output:
         fastq="results/trimmed/{sample}-{unit}.fastq.gz",
         qc="results/trimmed/{sample}-{unit}.qc.txt",
+    threads: 8
     params:
         extra="{}".format(config["params"]["cutadapt-se"]),
     log:
