@@ -124,4 +124,4 @@ params:
   #     false positive adapter matches
   #   * `--minimum-overlap 7`: the cutadapt default minimum overlap of `5` did trimming on the level
   #     of expected adapter matches by chance
-  cutadapt-pe: "-j 0 -a ACGGATCGATCGATCGATCGAT -g GGATCGATCGATCGATCGAT -A ACGGATCGATCGATCGATCGAT -G GGATCGATCGATCGATCGAT --minimum-length 33 -e 0.005 --overlap 7"
+  cutadapt-pe: "-a ACGGATCGATCGATCGATCGAT -g GGATCGATCGATCGATCGAT -A ACGGATCGATCGATCGATCGAT -G GGATCGATCGATCGATCGAT --minimum-length 33 -e 0.005 --overlap 7"
