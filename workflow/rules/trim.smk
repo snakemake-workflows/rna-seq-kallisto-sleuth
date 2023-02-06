@@ -7,7 +7,8 @@ rule cutadapt_pe:
         qc="results/trimmed/{sample}-{unit}.qc.txt",
     threads: 8
     params:
-        extra="{}".format(config["params"]["cutadapt-pe"]),
+        adapters=config["params"]["cutadapt-pe"]["adapters"],
+        extra=config["params"]["cutadapt-pe"]["extra"],
     log:
         "results/logs/cutadapt/{sample}-{unit}.log",
     wrapper:
@@ -22,7 +23,8 @@ rule cutadapt:
         qc="results/trimmed/{sample}-{unit}.qc.txt",
     threads: 8
     params:
-        extra="{}".format(config["params"]["cutadapt-se"]),
+        adapters=config["params"]["cutadapt-se"]["adapters"],
+        extra=config["params"]["cutadapt-se"]["extra"],
     log:
         "results/logs/cutadapt/{sample}-{unit}.log",
     wrapper:
