@@ -8,6 +8,9 @@ properties:
   condition:
     type: string
     description: sample condition that will be compared during differential expression analysis (e.g. a treatment, a tissue time, a disease)
-
+  batch_effect:
+    type: string
+    description: The batch that the sample belongs to
+    
 required:
   - sample
