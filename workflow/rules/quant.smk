@@ -13,7 +13,7 @@ rule kallisto_index:
 
 rule kallisto_quant:
     input:
-        fq=get_trimmed,
+        fastq=get_trimmed,
         index="results/kallisto/transcripts.idx",
     output:
         directory("results/kallisto/{sample}-{unit}"),

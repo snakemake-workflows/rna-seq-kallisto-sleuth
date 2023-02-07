@@ -132,7 +132,7 @@ enrichment_env = render_enrichment_env()
 
 def kallisto_params(wildcards, input):
     extra = config["params"]["kallisto"]
-    if len(input.fq) == 1:
+    if len(input.fastq) == 1:
         extra += " --single"
         extra += (
             " --fragment-length {unit.fragment_len_mean} " "--sd {unit.fragment_len_sd}"
