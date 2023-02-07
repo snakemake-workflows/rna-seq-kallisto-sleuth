@@ -179,9 +179,19 @@ properties:
       kallisto:
         type: string
       cutadapt-se:
-        type: string
+        type: object
+        properties:
+          adapters:
+            type: string
+          extra:
+            type: string
       cutadapt-pe:
-        type: string
+        type: object
+        properties:
+          adapters:
+            type: string
+          extra:
+            type: string
     required:
       - kallisto
       - cutadapt-se
