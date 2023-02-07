@@ -82,6 +82,7 @@ def is_single_end(sample, unit):
 
 def get_fastqs(wildcards):
     """Get raw FASTQ files from unit sheet."""
+    # TODO Upgrade to parse common remote prefixes as well as local (e.g. s3://, https://)
     if is_single_end(wildcards.sample, wildcards.unit):
         return units.loc[(wildcards.sample, wildcards.unit), "fq1"]
     else:

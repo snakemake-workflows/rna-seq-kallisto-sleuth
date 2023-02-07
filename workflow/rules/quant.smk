@@ -13,7 +13,7 @@ rule kallisto_index:
 
 rule kallisto_quant:
     input:
-        fastq=get_trimmed,
+        fq=get_trimmed,
         index="results/kallisto/transcripts.idx",
     output:
         directory("results/kallisto/{sample}-{unit}"),
@@ -21,8 +21,6 @@ rule kallisto_quant:
         "results/logs/kallisto/quant/{sample}-{unit}.log",
     params:
         extra=kallisto_params,
-    conda:
-        "../envs/kallisto.yaml"
     # around 4 gb of memory usage with 1 thread. (hg38)
     # over 8gb peak memory usage with 8 threads. (hg38)
     threads: 8
