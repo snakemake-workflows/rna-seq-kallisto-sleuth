@@ -9,6 +9,7 @@ from goatools.obo_parser import GODag
 from goatools.anno.idtogos_reader import IdToGosReader
 from goatools.goea.go_enrichment_ns import GOEnrichmentStudyNS
 from goatools.godag_plot import plot_results  # , plot_goid2goobj, plot_gos
+
 # read in directed acyclic graph of GO terms / IDs
 obodag = GODag(snakemake.input.obo)
 
@@ -26,7 +27,7 @@ for nspc, id2gos in ns2assoc.items():
 # read gene diffexp table
 all_genes = pd.read_table(snakemake.input.diffexp)
 # select genes significantly differentially expressed according to BH FDR of sleuth
-fdr_level_gene = float(snakemake.params.gene_fdr) 
+fdr_level_gene = float(snakemake.params.gene_fdr)
 sig_genes = all_genes[all_genes["qval"] < fdr_level_gene]
 
 # initialize GOEA object
@@ -48,17 +49,48 @@ goeaobj = GOEnrichmentStudyNS(
 
 goea_results_all = goeaobj.run_study(sig_genes["ens_gene"].tolist())
 
-go_items = [val for cat in ["BP", "CC", "MF"] for item, val in goeaobj.ns2objgoea[cat].assoc.items()]
+go_items = [
+    val
+    for cat in ["BP", "CC", "MF"]
+    for item, val in goeaobj.ns2objgoea[cat].assoc.items()
+]
 
-#goea_results_all.rename(columns={'# GO': 'GO'})
+# goea_results_all.rename(columns={'# GO': 'GO'})
 
 
 if goea_results_all:
-    go_terms = pd.DataFrame(list(map(lambda x: [x.GO, x.goterm.name, x.goterm.namespace, x.p_uncorrected, x.p_fdr_bh,\
-        x.ratio_in_study, x.ratio_in_pop, x.depth,x.study_count,x.study_items, \
-            ], goea_results_all)), columns = ['GO', 'term', 'class', 'p_uncorrected', 'p_fdr_bh', 'ratio_in_study',\
-                'ratio_in_pop', 'depth','study_count','study_items'])
-    go_terms.to_csv(snakemake.output.enrichment, sep='\t', index=False)
+    go_terms = pd.DataFrame(
+        list(
+            map(
+                lambda x: [
+                    x.GO,
+                    x.goterm.name,
+                    x.goterm.namespace,
+                    x.p_uncorrected,
+                    x.p_fdr_bh,
+                    x.ratio_in_study,
+                    x.ratio_in_pop,
+                    x.depth,
+                    x.study_count,
+                    x.study_items,
+                ],
+                goea_results_all,
+            )
+        ),
+        columns=[
+            "GO",
+            "term",
+            "class",
+            "p_uncorrected",
+            "p_fdr_bh",
+            "ratio_in_study",
+            "ratio_in_pop",
+            "depth",
+            "study_count",
+            "study_items",
+        ],
+    )
+    go_terms.to_csv(snakemake.output.enrichment, sep="\t", index=False)
 else:
     # write empty table to indicate that nothing was found
     with open(snakemake.output.enrichment, "w") as out:
@@ -95,15 +127,31 @@ outplot_generic = (
 
 goea_results_sig = [r for r in goea_results_all if r.p_fdr_bh < fdr_level_go_term]
 
-#https://github.com/mousepixels/sanbomics_scripts/blob/main/GO_in_python.ipynb
+# https://github.com/mousepixels/sanbomics_scripts/blob/main/GO_in_python.ipynb
 if goea_results_sig:
-    go_sig_terms = pd.DataFrame(list(map(lambda x: [x.GO, x.goterm.name, x.goterm.namespace, x.p_uncorrected, x.p_fdr_bh,\
-        x.ratio_in_study[0], x.ratio_in_study[1], x.ratio_in_pop[0],\
-            ], goea_results_sig)), columns = ['GO', 'term', 'class', 'p', 'p_corr', 'n_genes',\
-                'n_study', 'n_go'])
-    go_sig_terms['gene_ratio'] = go_sig_terms.n_genes/go_sig_terms.n_go
-    go_sig_terms_sorted = go_sig_terms.sort_values(by=['class','p_corr'])
-    go_sig_terms_sorted.to_csv(snakemake.output.enrichment_sig_terms, sep='\t', index=False)
+    go_sig_terms = pd.DataFrame(
+        list(
+            map(
+                lambda x: [
+                    x.GO,
+                    x.goterm.name,
+                    x.goterm.namespace,
+                    x.p_uncorrected,
+                    x.p_fdr_bh,
+                    x.ratio_in_study[0],
+                    x.ratio_in_study[1],
+                    x.ratio_in_pop[0],
+                ],
+                goea_results_sig,
+            )
+        ),
+        columns=["GO", "term", "class", "p", "p_corr", "n_genes", "n_study", "n_go"],
+    )
+    go_sig_terms["gene_ratio"] = go_sig_terms.n_genes / go_sig_terms.n_go
+    go_sig_terms_sorted = go_sig_terms.sort_values(by=["class", "p_corr"])
+    go_sig_terms_sorted.to_csv(
+        snakemake.output.enrichment_sig_terms, sep="\t", index=False
+    )
 else:
     # write empty table to indicate that nothing was found
     with open(snakemake.output.enrichment_sig_terms, "w") as out:

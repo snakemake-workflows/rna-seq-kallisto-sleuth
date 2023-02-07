@@ -61,6 +61,7 @@ diffexp:
     volcano-plot: 0.05
     ma-plot: 0.05
     qq-plot: 0.05
+  pre-define-genelist: "resources/genelist.tsv"
 
 diffsplice:
   activate: false

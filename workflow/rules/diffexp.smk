@@ -246,7 +246,7 @@ rule plot_diffexp_heatmap:
     input:
         logcountmatrix_file="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
     output:
-        report(
+        diffexp_heatmap=report(
             "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
             caption="../report/plot-heatmap.rst",
             category="Heatmaps",
@@ -264,15 +264,19 @@ rule plot_diffexp_heatmap:
 rule plot_heatmap_predefined:
     input:
         logcountmatrix_file="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
-        predef_genelist="resources/selected_gene_from_ref.txt",
+        predef_genelist=config["diffexp"]["pre-define-genelist"],
     output:
-        predefgene_png="results/heatmaps/predefgenes_heatmap.png",
+        predefgene_pdf=report(
+            "results/heatmaps/{model}.predefgenes_heatmap.pdf",
+            caption="../report/plot-heatmap.rst",
+            category="Heatmaps",
+        ),
     log:
-        "results/logs/heatmaps/predefgenes_heatmap.log",
+        "results/logs/heatmaps/{model}.predefgenes_heatmap.log",
     conda:
         "../envs/heatmap.yaml"
     script:
-        "../scripts/plot_heatmap_predefined.R"
+        "../scripts/plot_diffexp_heatmap.R"
 
 
 rule plot_group_density:

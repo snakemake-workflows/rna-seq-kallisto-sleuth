@@ -77,15 +77,15 @@ views:
             bars:
               scale: linear
               domain:
-                - 0.0000000000000000000000000000000000000000000000000000000000000000001
-                - 1
+                - 0.0
+                - 1.0
         qval:
           plot:
             bars:
               scale: linear
               domain:
-                - 0.0000000000000000000000000000000000000000000000000000000000000000001
-                - 1
+                - 0.0
+                - 1.0
         test_stat:
           display-mode: hidden 
         rss:
@@ -170,15 +170,15 @@ views:
             bars:
               scale: linear
               domain:
-                - 0.0000000000000000000000000000000000000000000000000000000000000000001
-                - 1
+                - 0.0
+                - 1.0
         qval:
           plot:
             bars:
               scale: linear
               domain:
-                - 0.0000000000000000000000000000000000000000000000000000000000000000001
-                - 1
+                - 0.0
+                - 1.0
         test_stat:
           display-mode: hidden 
         rss:
@@ -241,15 +241,15 @@ views:
             bars:
               scale: linear
               domain:
-                - 0.0000000000000000000000000000000000000000000000000000000000000000001
-                - 1
+                - 0.0
+                - 1.0
         qval:
           plot:
             bars:
               scale: linear
               domain:
-                - 0.0000000000000000000000000000000000000000000000000000000000000000001
-                - 1
+                - 0.0
+                - 1.0
         ?for sample in params.samples:
           ?sample:
             display-mode: hidden

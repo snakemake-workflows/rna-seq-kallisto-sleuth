@@ -340,7 +340,17 @@ def all_input(wildcards):
         wanted_input.extend(
             expand(
                 "results/plots/QC/3prime-QC-plot.{ind_transcripts}.html",
-                model=config["diffexp"]["models"],
+                ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"],
+            )
+        )
+
+    if (
+        is_3prime_experiment
+        and config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all"
+    ):
+        wanted_input.extend(
+            expand(
+                "results/plots/QC/3prime-ind-QC-plot.{ind_transcripts}.html",
                 ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"],
             )
         )
