@@ -1,20 +1,20 @@
 rule kallisto_index:
     input:
-        "resources/transcriptome.cdna.fasta",
+        fasta="resources/transcriptome.cdna.fasta",
     output:
-        "results/kallisto/transcripts.idx",
+        index="results/kallisto/transcripts.idx",
+    params:
+        extra="",  # optional parameters
     log:
         "results/logs/kallisto/index.log",
-    conda:
-        "../envs/kallisto.yaml"
-    shell:
-        "kallisto index -i {output} {input} 2> {log}"
+    wrapper:
+        "v1.23.1/bio/kallisto/index"
 
 
 rule kallisto_quant:
     input:
-        fq=get_trimmed,
-        idx="results/kallisto/transcripts.idx",
+        fastq=get_trimmed,
+        index="results/kallisto/transcripts.idx",
     output:
         directory("results/kallisto/{sample}-{unit}"),
     log:
@@ -28,6 +28,5 @@ rule kallisto_quant:
     threads: 8
     resources:
         mem_mb=10000,
-    shell:
-        "kallisto quant -i {input.idx} -o {output} "
-        "{params.extra} -t {threads} {input.fq} 2> {log}"
+    wrapper:
+        "v1.23.1/bio/kallisto/quant"
