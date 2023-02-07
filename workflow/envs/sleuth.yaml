@@ -4,9 +4,9 @@ channels:
   - bioconda
   - nodefaults
 dependencies:
-  - r-sleuth=0.30.1=r42hdfd78af_0
-  - bioconductor-rhdf5=2.42.0=r42hbe1951d_1
-  - bioconductor-rhdf5lib=1.20.0=r42hc0cfd56_0
+  - r-sleuth =0.30
+  - bioconductor-rhdf5lib =1.20
+  - bioconductor-rhdf5 =2.42
   - r-gridextra =2.3
   - r-pheatmap=1.0.12=r42hc72bb7e_3
   - r-tidyverse=1.3.2=r42hc72bb7e_1
