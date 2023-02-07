@@ -8,8 +8,8 @@ dependencies:
   - bioconductor-rhdf5lib =1.20
   - bioconductor-rhdf5 =2.42
   - r-gridextra =2.3
-  - r-pheatmap=1.0.12=r42hc72bb7e_3
-  - r-tidyverse=1.3.2=r42hc72bb7e_1
+  - r-pheatmap=1.0
+  - r-tidyverse=1.3
   - r-ggpubr =0.4
   - r-base=4.2.2=ha7d60f8_3
   - bioconductor-limma =3.54
