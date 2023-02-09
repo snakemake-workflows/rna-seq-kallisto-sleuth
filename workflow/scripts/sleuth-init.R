@@ -37,6 +37,7 @@ samples_out <- if (!is.null(model[["full"]])) {
     # TODO migrate this to tidyverse
     # Ensure that primary variable factors are sorted such that base_level comes first.
     # This is important for fold changes, effect sizes to have the expected sign.
+    # BUG when base_level is numerical
     samples[, primary_variable] <- relevel(samples[, primary_variable, drop = TRUE], base_level)
 
     samples %>% select(c(sample, all_of(variables)))
