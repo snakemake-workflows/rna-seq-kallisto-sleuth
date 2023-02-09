@@ -29,15 +29,15 @@ views:
             bars:
               scale: linear
               domain:
-                - 0.0000000000000000000000000000000000000000000000000000000000000000001
-                - 1
+                - 0.0
+                - 1.0
         p_corr:
           plot:
             bars:
               scale: linear
               domain:
-                - 0.0000000000000000000000000000000000000000000000000000000000000000001
-                - 1
+                - 0.0
+                - 1.0
         n_genes:
           plot:
             heatmap:
@@ -52,9 +52,6 @@ views:
           plot:
             bars:
               scale: linear
-              domain:
-                - 0.0000000000000000000000000000000000000000000000000000000000000000001
-                - 1
   go_enrichment:
     dataset: go_enrichment
     desc: |
@@ -78,8 +75,8 @@ views:
             bars:
               scale: linear
               domain:
-                - 0.0000000000000000000000000000000000000000000000000000000000000000001
-                - 1
+                - 0.0
+                - 1.0
         depth:
           plot:
             heatmap:
@@ -93,7 +90,7 @@ views:
             bars:
               scale: linear
               domain:
-                - 0.0000000000000000000000000000000000000000000000000000000000000000001
-                - 1
+                - 0.0
+                - 1.0
         study_items:
           display-mode: normal                                            

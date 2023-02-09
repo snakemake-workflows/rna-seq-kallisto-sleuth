@@ -7,7 +7,7 @@ import json
 import csv
 
 
-#sys.stderr = open(snakemake.log[0], "w")
+sys.stderr = open(snakemake.log[0], "w")
 
 # Get the read-length
 f = open(snakemake.input["read_length"])
