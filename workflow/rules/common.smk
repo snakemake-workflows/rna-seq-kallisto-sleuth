@@ -158,7 +158,7 @@ enrichment_env = render_enrichment_env()
 
 
 def kallisto_quant_input(wildcards):
-    if wildcards.type == "3prime":
+    if is_3prime_experiment:
         return "results/canonical_reads/{sample}-{unit}.fastq"
     elif not is_single_end(wildcards.sample, wildcards.unit):
         return expand(

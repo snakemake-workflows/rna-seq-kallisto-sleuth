@@ -13,19 +13,28 @@ rule get_aligned_pos:
 
 if is_3prime_experiment:
 
-    rule kallisto_quant:
+    rule kallisto_3prime_index:
+        input:
+            fasta="resources/transcriptome.3prime.fasta",
+        output:
+            index="results/kallisto_3prime/transcripts.3prime.idx",
+        log:
+            "results/logs/kallisto_3prime/index.3prime.log",
+        threads: 1
+        wrapper:
+            "v1.17.4/bio/kallisto/index"
+
+    rule kallisto_3prime_quant:
         input:
             fastq=kallisto_quant_input,
-            index="results/kallisto_{type}/transcripts.{type}.idx",
+            index="results/kallisto_3prime/transcripts.3prime.idx",
         output:
-            kallisto_folder=directory("results/kallisto_{type}/{sample}-{unit}"),
+            kallisto_folder=directory("results/kallisto_3prime/{sample}-{unit}"),
         log:
-            "results/logs/kallisto_{type}/quant/{sample}-{unit}.log",
+            "results/logs/kallisto_3prime/quant/{sample}-{unit}.log",
         params:
             extra=kallisto_params,
         threads: 5
-        wildcard_constraints:
-            type="cdna|3prime",
         wrapper:
             "v1.17.4/bio/kallisto/quant"
 

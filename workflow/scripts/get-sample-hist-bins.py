@@ -7,7 +7,7 @@ import json
 import csv
 
 
-sys.stderr = open(snakemake.log[0], "w")
+#sys.stderr = open(snakemake.log[0], "w")
 
 # Get the read-length
 f = open(snakemake.input["read_length"])
@@ -59,7 +59,6 @@ aligned_reads = forward_strand.loc[
         sample_name + "_forward_strand"
     ].idxmin()
 ]
-
 if aligned_reads["Transcript"].str.contains(transcript_ids).any():
     # Get aligned read postion of the given transcript
     fwrd_filtered_transcript_data = aligned_reads.query("Transcript == @transcript_ids")
