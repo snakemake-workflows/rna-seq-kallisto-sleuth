@@ -67,7 +67,9 @@ properties:
               primary_variable:
                 type: string
               base_level:
-                type: ["number", "string"]
+              # BUG if base_level contains integer @seluth-init.R#L46, relevel(ref="string")
+                type: string
+                
             required:
               - full
               - reduced
