@@ -11,7 +11,7 @@ rule kallisto_index:
         type="cdna|3prime",
     threads: 1
     wrapper:
-        "v1.17.4/bio/kallisto/index"
+        "v1.23.1//bio/kallisto/index"
 
 
 rule kallisto_quant:
@@ -28,4 +28,4 @@ rule kallisto_quant:
     wildcard_constraints:
         type="cdna|3prime",
     wrapper:
-        "v1.17.4/bio/kallisto/quant"
+        "v1.23.1//bio/kallisto/quant"

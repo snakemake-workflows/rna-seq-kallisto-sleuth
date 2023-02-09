@@ -65,7 +65,6 @@ if ("canonical" %in% colnames(so$target_mapping)) {
     # Hence we fix it here.
     so$target_mapping$canonical <- as.logical(so$target_mapping$canonical)
 }
-
 custom_transcripts <- so$obs_raw %>%
                         # find transcripts not in the target_mapping
                         filter(!target_id %in% so$target_mapping$target_id) %>%

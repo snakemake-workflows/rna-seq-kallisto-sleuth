@@ -11,22 +11,6 @@ rule get_aligned_pos:
         "samtools view {input.bam_file}/pseudoalignments.bam | cut -f1,3,4,10,11  > {output} 2> {log}"
 
 
-rule kallisto_index:
-    input:
-        fasta="resources/transcriptome_clean.{type}.fasta"
-        if is_3prime_experiment
-        else "resources/transcriptome.cdna.fasta",
-    output:
-        index="results/kallisto_{type}/transcripts.{type}.idx",
-    log:
-        "results/logs/kallisto_{type}/index.{type}.log",
-    wildcard_constraints:
-        type="cdna|3prime",
-    threads: 1
-    wrapper:
-        "v1.17.4/bio/kallisto/index"
-
-
 if is_3prime_experiment:
 
     rule kallisto_quant:
