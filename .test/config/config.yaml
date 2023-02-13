@@ -1,6 +1,18 @@
 samples: config/samples.tsv
 units: config/units.tsv
 
+experiment:
+  # If set to `true`, this option allows the workflow to analyse 3-prime RNA seq data obtained from Quantseq protocol by Lexogen.
+  # For more information https://www.lexogen.com/quantseq-3mrna-sequencing/
+  3-prime-rna-seq:
+    activate: true
+    # this allows to plot QC of aligned read postion for specific transcripts (or 'all' transcripts)
+    # Specify vendor of the used protocol. Currently, only lexogene is supported.
+    vendor: lexogen
+    plot-qc: all
+
+
+
 resources:
   ref:
     # ensembl species name
@@ -44,7 +56,11 @@ diffexp:
     volcano-plot: 0.05
     ma-plot: 0.05
     qq-plot: 0.05
-  pre-define-genelist: "resources/genelist.tsv"
+  # Optional (comment in to use): provide a list of genes that shall be shown in a heatmap
+  # and for which bootstrap plots (see below) shall be created.  
+  genes_of_interest:
+    activate: false
+    genelist: "resources/gene_list.tsv"
 
 diffsplice:
   activate: true
@@ -87,8 +103,6 @@ bootstrap_plots:
   color_by: condition
   # for now, this will plot the sleuth-normalised kallisto count estimations with kallisto
   # for all the transcripts of the respective genes
-  genes_of_interest:
-    - A4galt
 
 plot_vars:
   # significance level used for plot_vars() plots
@@ -105,11 +119,11 @@ params:
   # also, separate capitalised letter flags are required for adapters in
   # the reverse reads of paired end sequencing:
   # * https://cutadapt.readthedocs.io/en/stable/guide.html#trimming-paired-end-reads
-  
   cutadapt-se:
     adapters: "-a AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC"
     extra: "-q 20"
   # reasoning behind parameters:
+  #   For reads that are produced by 3’-end sequencing, depending on the protocol, it might be recommended to remove some leading bases (e.g. see https://www.nature.com/articles/s41598-019-55434-x#Sec10)
   #   * `--minimum-length 33`:
   #     * kallisto needs non-empty reads in current versions (fixed for future releases:
   #       https://github.com/pachterlab/kallisto/commit/64fe837ca86f3664496483bcd2787c9376584fed)
