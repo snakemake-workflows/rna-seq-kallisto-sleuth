@@ -51,6 +51,18 @@ is_3prime_experiment = (
     .get("3-prime-rna-seq", dict())
     .get("activate", False)
 )
+is_3prime_vendor = (
+    config.get("experiment", dict())
+    .get("3-prime-rna-seq", dict())
+    .get("vendor", dict())
+)
+
+if is_3prime_experiment: 
+    if not is_3prime_vendor == "lexogen":
+        raise ValueError(
+            f"Currently, only lexogene is supported. Please check the vendor "
+            "in the config file and try again"
+        )
 
 
 def check_config():

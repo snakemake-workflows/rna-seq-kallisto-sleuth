@@ -5,8 +5,10 @@ experiment:
   # If set to `true`, this option allows the workflow to analyse 3-prime RNA seq data obtained from Quantseq protocol by Lexogen.
   # For more information https://www.lexogen.com/quantseq-3mrna-sequencing/
   3-prime-rna-seq:
-    activate: false
+    activate: true
     # this allows to plot QC of aligned read postion for specific transcripts (or 'all' transcripts)
+    # Specify vendor of the used protocol. Currently, only lexogene is supported.
+    vendor: lexogen
     plot-qc: all
 
 resources:
@@ -61,7 +63,11 @@ diffexp:
     volcano-plot: 0.05
     ma-plot: 0.05
     qq-plot: 0.05
-  pre-define-genelist: "resources/genelist.tsv"
+  # Optional (comment in to use): provide a list of genes that shall be shown in a heatmap
+  # and for which bootstrap plots (see below) shall be created.  
+  genes_of_interest:
+    activate: false
+    genelist: "resources/gene_list.tsv"
 
 diffsplice:
   activate: false
@@ -105,8 +111,6 @@ bootstrap_plots:
   color_by: condition
   # for now, this will plot the sleuth-normalised kallisto count estimations with kallisto
   # for all the transcripts of the respective genes
-  genes_of_interest:
-    - A4galt
 
 plot_vars:
   # significance level used for plot_vars() plots

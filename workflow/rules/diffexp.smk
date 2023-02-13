@@ -170,7 +170,7 @@ rule plot_bootstrap:
         color_by=config["bootstrap_plots"]["color_by"],
         fdr=config["bootstrap_plots"]["FDR"],
         top_n=config["bootstrap_plots"]["top_n"],
-        genes=config["bootstrap_plots"]["genes_of_interest"],
+        genes=config["diffexp"]["genes_of_interest"]["genelist"],
     log:
         "logs/plots/bootstrap/{model}/{model}.plot_bootstrap.log",
     script:
@@ -253,26 +253,10 @@ rule plot_diffexp_heatmap:
         ),
     params:
         model=get_model,
+        predef_genelist=config["diffexp"]["genes_of_interest"],
+        is_3prime_experiment=is_3prime_experiment,
     log:
         "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.log",
-    conda:
-        "../envs/heatmap.yaml"
-    script:
-        "../scripts/plot_diffexp_heatmap.R"
-
-
-rule plot_heatmap_predefined:
-    input:
-        logcountmatrix_file="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
-        predef_genelist=config["diffexp"]["pre-define-genelist"],
-    output:
-        predefgene_pdf=report(
-            "results/heatmaps/{model}.predefgenes_heatmap.pdf",
-            caption="../report/plot-heatmap.rst",
-            category="Heatmaps",
-        ),
-    log:
-        "results/logs/heatmaps/{model}.predefgenes_heatmap.log",
     conda:
         "../envs/heatmap.yaml"
     script:

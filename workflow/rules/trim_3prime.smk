@@ -8,14 +8,14 @@ if is_3prime_experiment:
     #   * Removes reads having polyA (18bp) or polyG (18bp) and repeat the process twice by -n 2
     # In short, it removes reads that are predominantly polyA or polyG.
 
-    # Rule cutadapt2 checks if reads are obtained from nextseq and removes adapters specific to nextseq
+    # Rule cutadapt2 checks if reads contains the polyA-stretch + adapter at the 3'
+    # end with minimum overlap 3bp, maximum error of 1bp every 10bp
     # reasoning behind parameters:
     #   * `-m 20`:
     #   * Discards any read under 20bp by -m 20
     #   * `--nextseq-trim=10`
     #   * Quality score<20 is trimmed, based on NextSeq/NovaSeq 2-color SBS system
     #   * `-a A{18}AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=3;max_error_rate=0.100000`
-    #   * Trims the polyA-stretch + adapter at the 3' end with minimum overlap 3bp, maximum error of 1bp every 10bp
 
     # Rule cutadapt3 removes final set of adapters from 5'end and discards reads based on trimmed read length
     # reasoning behind parameters:
