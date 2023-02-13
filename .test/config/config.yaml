@@ -5,7 +5,7 @@ experiment:
   # If set to `true`, this option allows the workflow to analyse 3-prime RNA seq data obtained from Quantseq protocol by Lexogen.
   # For more information https://www.lexogen.com/quantseq-3mrna-sequencing/
   3-prime-rna-seq:
-    activate: true
+    activate: false
     # this allows to plot QC of aligned read postion for specific transcripts (or 'all' transcripts)
     # Specify vendor of the used protocol. Currently, only lexogene is supported.
     vendor: lexogen
