@@ -57,7 +57,7 @@ is_3prime_vendor = (
     .get("vendor", dict())
 )
 
-if is_3prime_experiment: 
+if is_3prime_experiment:
     if not is_3prime_vendor == "lexogen":
         raise ValueError(
             f"Currently, only lexogene is supported. Please check the vendor "
