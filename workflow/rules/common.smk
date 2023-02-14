@@ -58,7 +58,7 @@ is_3prime_vendor = (
 )
 
 if is_3prime_experiment:
-    if not is_3prime_vendor == "lexogen":
+    if 3prime_vendor != "lexogen":
         raise ValueError(
             f"Currently, only lexogene is supported. Please check the vendor "
             "in the config file and try again"
