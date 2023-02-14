@@ -7,7 +7,7 @@ experiment:
   3-prime-rna-seq:
     activate: true
     # this allows to plot QC of aligned read postion for specific transcripts (or 'all' transcripts)
-    # Specify vendor of the used protocol. Currently, only lexogene is supported.
+    # Specify vendor of the used protocol. Currently, only lexogen is supported.
     vendor: lexogen
     plot-qc: all
 
