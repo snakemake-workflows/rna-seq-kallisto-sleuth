@@ -51,7 +51,7 @@ is_3prime_experiment = (
     .get("3-prime-rna-seq", dict())
     .get("activate", False)
 )
-is_3prime_vendor = (
+3prime_vendor = (
     config.get("experiment", dict())
     .get("3-prime-rna-seq", dict())
     .get("vendor")
