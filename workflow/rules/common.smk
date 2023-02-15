@@ -52,9 +52,7 @@ is_3prime_experiment = (
     .get("activate", False)
 )
 three_prime_vendor = (
-    config.get("experiment", dict())
-    .get("3-prime-rna-seq", dict())
-    .get("vendor")
+    config.get("experiment", dict()).get("3-prime-rna-seq", dict()).get("vendor")
 )
 
 if is_3prime_experiment:
