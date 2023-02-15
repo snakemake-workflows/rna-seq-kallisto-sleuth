@@ -254,7 +254,6 @@ rule plot_diffexp_heatmap:
     params:
         model=get_model,
         predef_genelist=config["diffexp"]["genes_of_interest"],
-        is_3prime_experiment=is_3prime_experiment,
     log:
         "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.log",
     conda:
