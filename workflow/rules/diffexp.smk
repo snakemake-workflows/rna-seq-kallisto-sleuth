@@ -247,10 +247,12 @@ rule plot_diffexp_heatmap:
         logcountmatrix_file="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
     output:
         diffexp_heatmap=report(
-            "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
+            "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
             caption="../report/plot-heatmap.rst",
             category="Heatmaps",
         ),
+    wildcard_constraints:
+        mode="topn|predefined"
     params:
         model=get_model,
         predef_genelist=config["diffexp"]["genes_of_interest"],
