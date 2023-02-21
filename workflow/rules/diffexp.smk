@@ -245,19 +245,17 @@ rule logcount_matrix:
 rule plot_diffexp_heatmap:
     input:
         logcountmatrix_file="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
+        predef_genelist=input_genelist,
     output:
         diffexp_heatmap=report(
             "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
             caption="../report/plot-heatmap.rst",
             category="Heatmaps",
         ),
-    wildcard_constraints:
-        mode="topn|predefined"
     params:
         model=get_model,
-        predef_genelist=config["diffexp"]["genes_of_interest"],
     log:
-        "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.log",
+        "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.log",
     conda:
         "../envs/heatmap.yaml"
     script:

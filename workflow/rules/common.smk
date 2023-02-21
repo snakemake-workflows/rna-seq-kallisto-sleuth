@@ -190,6 +190,15 @@ def kallisto_params(wildcards, input):
     return extra
 
 
+def input_genelist(predef_genelist):
+    if config["diffexp"]["genes_of_interest"]["activate"] == True:
+        predef_genelist = config["diffexp"]["genes_of_interest"]["genelist"]
+    else:
+        predef_genelist = []
+
+    return predef_genelist
+
+
 def all_input(wildcards):
     """
     Function defining all requested inputs for the rule all (below).
@@ -230,7 +239,6 @@ def all_input(wildcards):
                 model=config["diffexp"]["models"],
             )
         )
-
     # request spia if 'activated' in config.yaml
     if config["enrichment"]["spia"]["activate"]:
         wanted_input.extend(
@@ -244,7 +252,6 @@ def all_input(wildcards):
         )
 
     # workflow output that is always wanted
-
     # general sleuth output
     wanted_input.extend(
         expand(
@@ -255,7 +262,6 @@ def all_input(wildcards):
                 "results/plots/ma/{model}.ma-plots.pdf",
                 "results/plots/qq/{model}.qq-plots.pdf",
                 "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
-                "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf",
                 "results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
                 "results/sleuth/{model}.samples.tsv",
                 "results/datavzrd-reports/diffexp-{model}",
@@ -263,6 +269,27 @@ def all_input(wildcards):
             model=config["diffexp"]["models"],
         )
     )
+    if config["diffexp"]["genes_of_interest"]["activate"] == True:
+        wanted_input.extend(
+            expand(
+                [
+                    "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
+                ],
+                model=config["diffexp"]["models"],
+                mode=["topn", "predefined"],
+            )
+        )
+    else:
+        wanted_input.extend(
+            expand(
+                [
+                    "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
+                ],
+                model=config["diffexp"]["models"],
+                mode=["topn"],
+            )
+        )
+        return wanted_input
 
     # ihw false discovery rate control
     wanted_input.extend(

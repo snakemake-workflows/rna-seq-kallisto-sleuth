@@ -59,7 +59,7 @@ diffexp:
   # Optional (comment in to use): provide a list of genes that shall be shown in a heatmap
   # and for which bootstrap plots (see below) shall be created.  
   genes_of_interest:
-    activate: false
+    activate: true
     genelist: "resources/gene_list.tsv"
 
 diffsplice:
