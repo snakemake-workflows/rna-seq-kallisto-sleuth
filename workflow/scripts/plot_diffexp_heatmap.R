@@ -63,9 +63,10 @@ if (all(selectedgenes == 0)) {
     )
     dev.off()
 } else {
+    pdf_height <- round(nrow(selectedgenes) / 7)
     pdf(
         file = snakemake@output[["diffexp_heatmap"]],
-        height = 10, width = 10
+        height = pdf_height, width = ncol(selectedgenes)
     )
     pheatmap(selectedgenes, scale = "row")
     dev.off()

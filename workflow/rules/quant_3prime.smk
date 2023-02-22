@@ -22,7 +22,7 @@ if is_3prime_experiment:
             "results/logs/kallisto_3prime/index.3prime.log",
         threads: 1
         wrapper:
-            "v1.17.4/bio/kallisto/index"
+            "v1.23.1/bio/kallisto/index"
 
     rule kallisto_3prime_quant:
         input:
@@ -36,7 +36,7 @@ if is_3prime_experiment:
             extra=kallisto_params,
         threads: 5
         wrapper:
-            "v1.17.4/bio/kallisto/quant"
+            "v1.23.1/bio/kallisto/quant"
 
 
 rule bwa_index:

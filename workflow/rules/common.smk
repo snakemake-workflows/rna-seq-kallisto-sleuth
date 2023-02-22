@@ -289,7 +289,6 @@ def all_input(wildcards):
                 mode=["topn"],
             )
         )
-        return wanted_input
 
     # ihw false discovery rate control
     wanted_input.extend(

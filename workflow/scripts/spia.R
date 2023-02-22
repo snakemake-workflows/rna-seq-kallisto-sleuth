@@ -23,13 +23,16 @@ universe <- diffexp %>% pull(var = ens_gene)
 sig_genes <- diffexp %>% filter(qval <= 0.05)
 
 if (nrow(sig_genes) == 0) {
-    cols <- c(
-        "Name", "pSize", "NDE", "pNDE", "tA",
-        "pPERT", "pG", "pGFdr", "pGFWER", "Status"
+    print("sig genes is zero")
+    cols <- c("Combined Bonferroni p-values", "Combined FDR",
+            "total perturbation accumulation", "number of genes on the pathway",
+            "Combined p-value no", "p-value to observe a total accumulation",
+            "p-value for at least NDE genes"
     )
-    res <- data.frame(matrix(ncol = 10, nrow = 0, dimnames = list(NULL, cols)))
+    res <- data.frame(matrix(ncol = 7, nrow = 0, dimnames = list(NULL, cols)))
     # create empty perturbation plots
     pdf(file = snakemake@output[["plots"]])
+    write_tsv(res, snakemake@output[["table"]])
     dev.off()
 } else {
     # get logFC equivalent (the sum of beta scores of covariates of interest)
@@ -58,6 +61,7 @@ if (nrow(sig_genes) == 0) {
     pathway_names <- db[res$Name]
     path_ids <- as.matrix(lapply(pathway_names@entries, slot, "id"))
     if (length(path_ids) > 0) {
+        print("yes entered")
         path_ids_data_frame <-
             data.frame(Ids = matrix(unlist(path_ids),
                 nrow = length(path_ids), byrow = TRUE
@@ -71,13 +75,14 @@ if (nrow(sig_genes) == 0) {
         )
         res_reorder <- res_reorder %>%
             rename(
-                "pGFdr" = "Combined Bonferroni p-values",
-                "tA" = "total perturbation accumulation",
-                "pSize" = "number of genes on the pathway",
-                "NDE" = "number of DE genes per pathway",
-                "pG" = "Combined p-value",
-                "pPERT" = "p-value to observe a total accumulation",
-                "pNDE" = "p-value for at least NDE genes"
+                "Combined Bonferroni p-values" = "pGFWER",
+                "Combined FDR" = "pGFdr",
+                "total perturbation accumulation" = "tA",
+                "number of genes on the pathway" = "pSize",
+                "number of DE genes per pathway" = "NDE",
+                "Combined p-value" = "pG",
+                "p-value to observe a total accumulation" = "pPERT",
+                "p-value for at least NDE genes" = "pNDE"
             )
         write_tsv(res_reorder, snakemake@output[["table"]])
     } else {
