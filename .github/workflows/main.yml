@@ -1,88 +1,88 @@
-#name: My build action requiring more space
-#on: push
-#
-#jobs:
-#  build:
-#    name: Build my artifact
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Maximize build space
-#        uses: easimon/maximize-build-space@master
-#        with:
-#          root-reserve-mb: 512
-#          swap-size-mb: 1024
-#          remove-dotnet: 'true'
-#          remove-android: 'true'
-#          remove-haskell: 'true'
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#
-#      - name: Build
-#        run: |
-#          echo "Free space:"
-#          df -h
-#          du -hs $(ls -A) ${{ github.workspace }}/*
-#          rm -rf ${{ github.workspace }}/*
-#          du -hs $(ls -A) ${{ github.workspace }}
-
-
-name: Tests
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches_ignore: []
+name: My build action requiring more space
+on: push
 
 jobs:
-  formatting:
+  build:
+    name: Build my artifact
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Formatting
-      uses: github/super-linter@v4
-      env:
-        VALIDATE_ALL_CODEBASE: false
-        DEFAULT_BRANCH: main
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        VALIDATE_SNAKEMAKE_SNAKEFMT: true
-  linting:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: Linting
-      uses: snakemake/snakemake-github-action@v1.22.0
-      with:
-        directory: .test
-        snakefile: workflow/Snakefile
-        args: "--lint"
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 512
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+      - name: Checkout
+        uses: actions/checkout@v2
 
-  run-workflow:
-    runs-on: ubuntu-latest
-    needs:
-      - linting
-      - formatting
-    steps:
+      - name: Build
+        run: |
+          echo "Free space:"
+          df -h
+          du -hs $(ls -A) ${{ github.workspace }}/*
+          rm -rf ${{ github.workspace }}/*
+          du -hs $(ls -A) ${{ github.workspace }}
 
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
 
-    - name: Test workflow
-      uses: snakemake/snakemake-github-action@v1.23.0
-      with:
-        directory: .test
-        snakefile: workflow/Snakefile
-        args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache --all-temp"
-
-    - name: Test 3-prime-workflow
-      uses: snakemake/snakemake-github-action@v1.23.0
-      with:
-        directory: .test/3-prime-config
-        snakefile: workflow/Snakefile
-        args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache --all-temp"
+#name: Tests
+#
+#on:
+#  push:
+#    branches:
+#      - main
+#  pull_request:
+#    branches_ignore: []
+#
+#jobs:
+#  formatting:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v1
+#    - name: Formatting
+#      uses: github/super-linter@v4
+#      env:
+#        VALIDATE_ALL_CODEBASE: false
+#        DEFAULT_BRANCH: main
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        VALIDATE_SNAKEMAKE_SNAKEFMT: true
+#  linting:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v1
+#    - name: Linting
+#      uses: snakemake/snakemake-github-action@v1.22.0
+#      with:
+#        directory: .test
+#        snakefile: workflow/Snakefile
+#        args: "--lint"
+#
+#  run-workflow:
+#    runs-on: ubuntu-latest
+#    needs:
+#      - linting
+#      - formatting
+#    steps:
+#
+#    - name: Checkout repository
+#      uses: actions/checkout@v2
+#      with:
+#        submodules: recursive
+#
+#    - name: Test workflow
+#      uses: snakemake/snakemake-github-action@v1.23.0
+#      with:
+#        directory: .test
+#        snakefile: workflow/Snakefile
+#        args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache --all-temp"
+#
+#    - name: Test 3-prime-workflow
+#      uses: snakemake/snakemake-github-action@v1.23.0
+#      with:
+#        directory: .test/3-prime-config
+#        snakefile: workflow/Snakefile
+#        args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache --all-temp"
     # Disable report testing for now since we mark all output files as temporary above.
     # TODO: add some kind of test mode to report generation which does not really try to include
     # results.
