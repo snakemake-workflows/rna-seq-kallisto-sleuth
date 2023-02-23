@@ -22,6 +22,8 @@ jobs:
           echo "Free space:"
           df -h
           du -hs $(ls -A) ${{ github.workspace }}/*
+          rm -rf ${{ github.workspace }}/*
+          du -hs $(ls -A) ${{ github.workspace }}/*
 
 
 #name: Tests
