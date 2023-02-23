@@ -70,12 +70,12 @@ jobs:
       with:
         submodules: recursive
 
-#    - name: Test workflow
-#      uses: snakemake/snakemake-github-action@v1.23.0
-#      with:
-#        directory: .test
-#        snakefile: workflow/Snakefile
-#        args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache --all-temp"
+    - name: Test workflow
+      uses: snakemake/snakemake-github-action@v1.23.0
+      with:
+        directory: .test
+        snakefile: workflow/Snakefile
+        args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache --all-temp"
 
     - name: Test 3-prime-workflow
       uses: snakemake/snakemake-github-action@v1.23.0
