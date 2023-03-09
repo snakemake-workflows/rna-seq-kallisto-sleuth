@@ -70,13 +70,21 @@ jobs:
       with:
         submodules: recursive
 
-#    - name: Test workflow
-#      uses: snakemake/snakemake-github-action@v1.23.0
-#      with:
-#        directory: .test
-#        snakefile: workflow/Snakefile
-#        args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache --all-temp"
-
+    - name: Test workflow
+      uses: snakemake/snakemake-github-action@v1.23.0
+      with:
+        directory: .test
+        snakefile: workflow/Snakefile
+        args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache --all-temp"
+    
+    - name: Build
+      run: |
+        echo "Free space:"
+          df -h
+          du -hs $(ls -A) ${{ github.workspace }}/*
+          rm -rf ${{ github.workspace }}/*
+          du -hs $(ls -A) ${{ github.workspace }}
+          
     - name: Test 3-prime-workflow
       uses: snakemake/snakemake-github-action@v1.23.0
       with:
