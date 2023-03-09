@@ -82,7 +82,8 @@ jobs:
         echo "Free space:"
           df -h
           du -hs $(ls -A) ${{ github.workspace }}/*
-          rm -rf ${{ github.workspace }}/*
+          rm -rf ${{ github.workspace }}/resources
+          rm -rf ${{ github.workspace }}/results
           du -hs $(ls -A) ${{ github.workspace }}
           
     - name: Test 3-prime-workflow
