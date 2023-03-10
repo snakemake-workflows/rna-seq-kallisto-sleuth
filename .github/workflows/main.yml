@@ -28,7 +28,7 @@
 #          du -hs $(ls -A) .test/*
 
 
-name: Tests
+name: RNA-seq test
 
 on:
   push:
@@ -79,6 +79,49 @@ jobs:
         snakefile: workflow/Snakefile
         args: "--use-conda --show-failed-logs --cores 1 --conda-cleanup-pkgs cache --all-temp"
 
+name: 3prime-RNA seq Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches_ignore: []
+
+jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Formatting
+      uses: github/super-linter@v4
+      env:
+        VALIDATE_ALL_CODEBASE: false
+        DEFAULT_BRANCH: main
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VALIDATE_SNAKEMAKE_SNAKEFMT: true
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Linting
+      uses: snakemake/snakemake-github-action@v1.22.0
+      with:
+        directory: .test
+        snakefile: workflow/Snakefile
+        args: "--lint"
+
+  run-workflow:
+    runs-on: ubuntu-latest
+    needs:
+      - linting
+      - formatting
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
 
     - name: Test 3-prime-workflow
       uses: snakemake/snakemake-github-action@v1.23.0
