@@ -55,7 +55,7 @@ if (all(selectedgenes == 0)) {
 } else if (nrow(selectedgenes) > 100) {
     pdf_height <- round(nrow(selectedgenes) / 7)
     pdf(snakemake@output[["diffexp_heatmap"]],
-        height = pdf_height, width = ncol(selectedgenes)
+        height = pdf_height, width = ncol(selectedgenes) * 2
     )
     pheatmap(selectedgenes, selectedgenes,
         cluster_rows = FALSE, display_numbers = TRUE,
