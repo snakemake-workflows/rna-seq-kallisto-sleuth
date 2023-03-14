@@ -95,7 +95,9 @@ properties:
           activate: 
             type: boolean
           genelist:
-            type: string 
+            type: string
+        required:
+          - genelist
     required:
       - models
       - genes_of_interest

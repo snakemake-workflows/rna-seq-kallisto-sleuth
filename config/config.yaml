@@ -5,7 +5,7 @@ experiment:
   # If set to `true`, this option allows the workflow to analyse 3-prime RNA seq data obtained from Quantseq protocol by Lexogen.
   # For more information https://www.lexogen.com/quantseq-3mrna-sequencing/
   3-prime-rna-seq:
-    activate: true
+    activate: false
     # Specify vendor of the used protocol. Currently, only lexogen is supported.
     vendor: lexogen
     # this allows to plot QC of aligned read postion for specific transcripts (or 'all' transcripts)
@@ -52,8 +52,7 @@ diffexp:
   models:
     model_X:
       full: ~condition + batch_effect
-      reduced: batch_effect
-      #reduced: '~1'# in case if it takes as numerical
+      reduced: ~batch_effect
       # Binary valued covariate that shall be used for fold change/effect size
       # based downstream analyses.
       primary_variable: condition
@@ -72,7 +71,7 @@ diffexp:
     genelist: "resources/gene_list.tsv"
 
 diffsplice:
-  activate: false
+  activate: true
   # codingCutoff parameter of isoformSwitchAnalyzer, see
   # https://rdrr.io/bioc/IsoformSwitchAnalyzeR/man/analyzeCPAT.html
   coding_cutoff: 0.725

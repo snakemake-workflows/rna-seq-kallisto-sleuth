@@ -170,7 +170,7 @@ rule plot_bootstrap:
         color_by=config["bootstrap_plots"]["color_by"],
         fdr=config["bootstrap_plots"]["FDR"],
         top_n=config["bootstrap_plots"]["top_n"],
-        genes=config["diffexp"]["genes_of_interest"]["genelist"],
+        genes=config["diffexp"]["genes_of_interest"],
     log:
         "logs/plots/bootstrap/{model}/{model}.plot_bootstrap.log",
     script:

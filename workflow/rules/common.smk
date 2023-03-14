@@ -265,28 +265,20 @@ def all_input(wildcards):
                 "results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
                 "results/sleuth/{model}.samples.tsv",
                 "results/datavzrd-reports/diffexp-{model}",
+                "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
             ],
             model=config["diffexp"]["models"],
+            mode=["topn"],
         )
     )
-    if config["diffexp"]["genes_of_interest"]["activate"] == True:
+    if config["diffexp"]["genes_of_interest"]["activate"]:
         wanted_input.extend(
             expand(
                 [
                     "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
                 ],
                 model=config["diffexp"]["models"],
-                mode=["topn", "predefined"],
-            )
-        )
-    else:
-        wanted_input.extend(
-            expand(
-                [
-                    "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
-                ],
-                model=config["diffexp"]["models"],
-                mode=["topn"],
+                mode=["predefined"],
             )
         )
 

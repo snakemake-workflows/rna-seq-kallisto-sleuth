@@ -26,7 +26,7 @@ if (nrow(sig_genes) == 0) {
     print("sig genes is zero")
     cols <- c("Combined Bonferroni p-values", "Combined FDR",
             "total perturbation accumulation", "number of genes on the pathway",
-            "Combined p-value no", "p-value to observe a total accumulation",
+            "Combined p-value", "p-value to observe a total accumulation",
             "p-value for at least NDE genes"
     )
     res <- data.frame(matrix(ncol = 7, nrow = 0, dimnames = list(NULL, cols)))
@@ -89,7 +89,7 @@ if (nrow(sig_genes) == 0) {
         columns <- c(
             "Combined Bonferroni p-values", "Combined FDR",
             "total perturbation accumulation", "number of genes on the pathway",
-            "Combined p-value no", "p-value to observe a total accumulation",
+            "Combined p-value", "p-value to observe a total accumulation",
             "p-value for at least NDE genes"
         )
         emtpy_data_frame <- data.frame(matrix(nrow = 0, ncol = length(columns)))
