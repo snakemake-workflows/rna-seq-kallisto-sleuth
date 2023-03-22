@@ -2,6 +2,7 @@ name: ?f"Pathway impact analysis for model {wildcards.model}"
 datasets:
   spia_results:
     path: ?input.spia_results
+    offer-excel: true
     separator: "\t"
 views:
   impacted_pathways:
@@ -13,7 +14,9 @@ views:
       columns:
         Name:
           display-mode: normal
-          link-to-url: "http://reactome.org/PathwayBrowser/#/{Ids}"
+          link-to-url: 
+            reactome:
+              url: "http://reactome.org/PathwayBrowser/#/{Ids}"
         number of genes on the pathway:
           plot:
             heatmap:
@@ -56,6 +59,6 @@ views:
           plot:
             heatmap:
               scale: ordinal
-              color-scheme: accent       
+              color-scheme: accent
         Ids:
-          display-mode: hidden
+          display-mode: hidden  

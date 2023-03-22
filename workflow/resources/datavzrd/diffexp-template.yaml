@@ -2,6 +2,7 @@ name: ?f"Differential expression analysis for model {wildcards.model}"
 datasets:
   genes_representative:
     path: ?input.genes_representative
+    offer-excel: true
     links:
       link to transcripts:
         column: ens_gene
@@ -18,6 +19,7 @@ datasets:
     separator: "\t"
   transcripts:
     path: ?input.transcripts
+    offer-excel: true
     links:
       link to genes representative:
         column: ens_gene
@@ -25,9 +27,11 @@ datasets:
     separator: "\t"  
   genes_aggregated:
     path: ?input.genes_aggregated
+    offer-excel: true
     separator: "\t"
   logcount_matrix:
     path: ?input.logcount_matrix
+    offer-excel: true
     links:  
       link to transcripts:
         column: transcript
@@ -71,7 +75,9 @@ views:
                 }
         target_id:
           display-mode: normal
-          link-to-url: "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={target_id}"
+          link-to-url: 
+            Ensembl:
+              url: "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={target_id}"
         pval:
           plot:
             bars:
@@ -164,7 +170,9 @@ views:
                 }
         target_id:
           display-mode: normal
-          link-to-url: "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={target_id}"
+          link-to-url: 
+            Ensembl:
+              url: "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={target_id}"
         pval:
           plot:
             bars:

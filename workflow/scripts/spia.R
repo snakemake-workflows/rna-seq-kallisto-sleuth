@@ -24,10 +24,10 @@ sig_genes <- diffexp %>% filter(qval <= 0.05)
 
 if (nrow(sig_genes) == 0) {
     print("sig genes is zero")
-    cols <- c("Combined Bonferroni p-values", "Combined FDR",
+    cols <- c("Name","Combined Bonferroni p-values", "Combined FDR",
             "total perturbation accumulation", "number of genes on the pathway",
             "Combined p-value", "p-value to observe a total accumulation",
-            "p-value for at least NDE genes"
+            "p-value for at least NDE genes", "Status"
     )
     res <- data.frame(matrix(ncol = 7, nrow = 0, dimnames = list(NULL, cols)))
     # create empty perturbation plots
@@ -87,10 +87,10 @@ if (nrow(sig_genes) == 0) {
         write_tsv(res_reorder, snakemake@output[["table"]])
     } else {
         columns <- c(
-            "Combined Bonferroni p-values", "Combined FDR",
+            "Name", "Combined Bonferroni p-values", "Combined FDR",
             "total perturbation accumulation", "number of genes on the pathway",
             "Combined p-value", "p-value to observe a total accumulation",
-            "p-value for at least NDE genes"
+            "p-value for at least NDE genes", "Status"
         )
         emtpy_data_frame <- data.frame(matrix(nrow = 0, ncol = length(columns)))
         colnames(emtpy_data_frame) <- columns

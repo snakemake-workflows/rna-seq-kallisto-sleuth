@@ -58,6 +58,7 @@ if is_3prime_experiment and config["experiment"]["3-prime-rna-seq"]["plot-qc"] !
                 "results/plots/QC/3prime-ind-QC-plot.{ind_transcripts}.html",
                 category="QC",
                 caption="../report/plot-3prime-QC-histogram.rst",
+                labels={"QC-plot": "{ind_transcripts}-QC-plot"},
             ),
         params:
             each_transcript="{ind_transcripts}",
@@ -98,6 +99,7 @@ else:
                 "results/plots/QC/3prime-QC-plot.{ind_transcripts}.html",
                 category="QC",
                 caption="../report/plot-3prime-QC-histogram.rst",
+                labels={"QC-plot": "{ind_transcripts}-QC-plot"},
             ),
         params:
             each_transcript="{ind_transcripts}",

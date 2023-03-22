@@ -35,8 +35,11 @@ rule render_datavzrd_config_go_enrichment:
         ),
         enrichment="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
         significant_terms="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.sig_terms.tsv",
+        genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
     output:
         "results/datavzrd/go_terms/{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.yaml",
+    params:
+        samples=get_model_samples,
     log:
         "logs/yte/render-datavzrd-config-go_terms/{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     template_engine:
@@ -60,7 +63,7 @@ rule spia_datavzrd:
     log:
         "logs/datavzrd-report/spia-{model}/spia-{model}.log",
     wrapper:
-        "v1.20.0/utils/datavzrd"
+        "v1.23.5/utils/datavzrd"
 
 
 rule diffexp_datavzrd:
@@ -85,7 +88,7 @@ rule diffexp_datavzrd:
     log:
         "logs/datavzrd-report/diffexp.{model}/diffexp.{model}.log",
     wrapper:
-        "v1.20.0/utils/datavzrd"
+        "v1.23.5/utils/datavzrd"
 
 
 rule go_enrichment_datavzrd:
@@ -112,4 +115,4 @@ rule go_enrichment_datavzrd:
     log:
         "logs/datavzrd-report/go_enrichment-{model}/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     wrapper:
-        "v1.20.0/utils/datavzrd"
+        "v1.23.5/utils/datavzrd"

@@ -57,21 +57,25 @@ rule sleuth_diffexp:
             "results/plots/mean-var/{model}.mean-variance-plot.pdf",
             caption="../report/plot-mean-var.rst",
             category="QC",
+            labels={"model": "{model}-mean-variance-plot"},
         ),
         volcano_plots=report(
             "results/plots/volcano/{model}.volcano-plots.pdf",
             caption="../report/plot-volcano.rst",
             category="QC",
+            labels={"model": "{model}-volcano-plot"},
         ),
         ma_plots=report(
             "results/plots/ma/{model}.ma-plots.pdf",
             caption="../report/plot-ma.rst",
             category="QC",
+            labels={"model": "{model}-ma-plot"},
         ),
         qq_plots=report(
             "results/plots/qq/{model}.qq-plots.pdf",
             caption="../report/plot-qq.rst",
             category="QC",
+            labels={"model": "{model}-qq-plot"},
         ),
         transcripts_rds="results/sleuth/diffexp/{model}.transcripts.diffexp.rds",
         genes_aggregated_rds=(
@@ -80,21 +84,9 @@ rule sleuth_diffexp:
         genes_representative_rds=(
             "results/sleuth/diffexp/{model}.genes-representative.diffexp.rds"
         ),
-        transcripts=report(
-            "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
-            caption="../report/diffexp.rst",
-            category="Differential transcript expression",
-        ),
-        genes_aggregated=report(
-            "results/tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
-            caption="../report/diffexp-genes.rst",
-            category="Differential gene expression",
-        ),
-        genes_representative=report(
-            "results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
-            caption="../report/diffexp-representative.rst",
-            category="Differential gene expression",
-        ),
+        transcripts="results/tables/diffexp/{model}.transcripts.diffexp.tsv",
+        genes_aggregated="results/tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
+        genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
     params:
         model=get_model,
         sig_level_volcano=config["diffexp"]["sig-level"]["volcano-plot"],
@@ -119,31 +111,37 @@ rule ihw_fdr_control:
             "results/tables/ihw/{model}.{level}.ihw-results.tsv",
             caption="../report/ihw-results.rst",
             category="IHW",
+            labels={"model": "{model}-{level}-ihw-results"},
         ),
         dispersion=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-dispersion.pdf",
             caption="../report/plot-dispersion-ihw.rst",
             category="IHW",
+            labels={"model": "{model}-{level}-plot-dispersion"},
         ),
         histograms=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-histograms.pdf",
             caption="../report/plot-histograms-ihw.rst",
             category="IHW",
+            labels={"model": "{model}-{level}-plot-histograms"},
         ),
         trends=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-trends.pdf",
             caption="../report/plot-trends-ihw.rst",
             category="IHW",
+            labels={"model": "{model}-{level}-plot-trends"},
         ),
         decision=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-decision.pdf",
             caption="../report/plot-decision-ihw.rst",
             category="IHW",
+            labels={"model": "{model}-{level}-plot-decision"},
         ),
         adj_pvals=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-adj-pvals.pdf",
             caption="../report/plot-adj-pvals-ihw.rst",
             category="IHW",
+            labels={"model": "{model}-{level}-plot-adj-pvals"},
         ),
     conda:
         "../envs/ihw.yaml"
@@ -163,6 +161,7 @@ rule plot_bootstrap:
             patterns=["{gene}.{transcript}.{model}.bootstrap.pdf"],
             caption="../report/plot-bootstrap.rst",
             category="Expression Plots",
+            labels={"model": "{gene}-{transcript}-{model}"},
         ),
     conda:
         "../envs/sleuth.yaml"
@@ -185,16 +184,19 @@ rule plot_pca:
             "results/plots/pca/{covariate}.pca.pdf",
             caption="../report/plot-pca.rst",
             category="PCA",
+            labels={"covariate": "{covariate}-pca"},
         ),
         pc_var=report(
             "results/plots/pc-variance/{covariate}.pc-variance-plot.pdf",
             caption="../report/plot-pc-variance.rst",
             category="PCA",
+            labels={"covariate": "{covariate}-pc-variance-plot"},
         ),
         loadings=report(
             "results/plots/loadings/{covariate}.loadings-plot.pdf",
             caption="../report/plot-loadings.rst",
             category="PCA",
+            labels={"covariate": "{covariate}-loadings-plot"},
         ),
     conda:
         "../envs/sleuth.yaml"
@@ -212,6 +214,7 @@ rule plot_diffexp_pval_hist:
             "results/plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf",
             caption="../report/plot-pval-hist.rst",
             category="QC",
+            labels={"model": "{model}-{level}-diffexp-pval-hist"},
         ),
     params:
         model=get_model,
@@ -227,11 +230,7 @@ rule logcount_matrix:
     input:
         "results/sleuth/{model}.rds",
     output:
-        report(
-            "results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
-            caption="../report/logcount-matrix.rst",
-            category="Expression Matrices",
-        ),
+        "results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
     params:
         model=get_model,
     conda:
@@ -251,6 +250,7 @@ rule plot_diffexp_heatmap:
             "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
             caption="../report/plot-heatmap.rst",
             category="Heatmaps",
+            labels={"model": "{model}-{mode}"},
         ),
     params:
         model=get_model,
@@ -270,6 +270,7 @@ rule plot_group_density:
             "results/plots/group_density/{model}.group_density.pdf",
             caption="../report/plot-group-density.rst",
             category="QC",
+            labels={"model": "{model}-group_density"},
         ),
     conda:
         "../envs/sleuth.yaml"
@@ -287,6 +288,7 @@ rule plot_scatter:
             "results/plots/scatter/{model}.scatter.pdf",
             caption="../report/plot-scatter.rst",
             category="QC",
+            labels={"model": "{model}-scatter-plot"},
         ),
     # params:
     #     covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"]
@@ -306,6 +308,7 @@ rule plot_fragment_length_dist:
             "results/plots/fld/{sample}-{unit}.fragment-length-dist.pdf",
             caption="../report/plot-fld.rst",
             category="Fragment length distribution",
+            labels={"samples": "{sample}-{unit}"},
         ),
     conda:
         "../envs/sleuth.yaml"
@@ -323,6 +326,7 @@ rule plot_vars:
             "results/plots/variance/{model}.transcripts.plot_vars.pdf",
             caption="../report/plot-vars.rst",
             category="QC",
+            labels={"model": "{model}-transcripts-plot-vars"},
         ),
     params:
         model=get_model,

@@ -9,7 +9,6 @@ from goatools.obo_parser import GODag
 from goatools.anno.idtogos_reader import IdToGosReader
 from goatools.goea.go_enrichment_ns import GOEnrichmentStudyNS
 from goatools.godag_plot import plot_results  # , plot_goid2goobj, plot_gos
-
 # read in directed acyclic graph of GO terms / IDs
 obodag = GODag(snakemake.input.obo)
 
@@ -48,6 +47,7 @@ goeaobj = GOEnrichmentStudyNS(
 )
 
 goea_results_all = goeaobj.run_study(sig_genes["ens_gene"].tolist())
+ensembl_id_to_symbol = dict(zip(all_genes["ens_gene"], all_genes["ext_gene"]))
 
 go_items = [
     val
@@ -90,6 +90,9 @@ if goea_results_all:
             "study_items",
         ],
     )
+    go_terms['study_items'] = go_terms['study_items'].str.join(',')
+    go_terms['study_items']=go_terms.study_items.str.replace('\w+(?=,|$)', lambda m: ensembl_id_to_symbol.get(m.group(0)))
+    go_terms
     go_terms.to_csv(snakemake.output.enrichment, sep="\t", index=False)
 else:
     # write empty table to indicate that nothing was found
@@ -113,7 +116,7 @@ else:
 
 
 # plot results
-ensembl_id_to_symbol = dict(zip(all_genes["ens_gene"], all_genes["ext_gene"]))
+#ensembl_id_to_symbol = dict(zip(all_genes["ens_gene"], all_genes["ext_gene"]))
 
 
 # from first plot output file name, create generic file name to trigger
@@ -141,14 +144,17 @@ if goea_results_sig:
                     x.ratio_in_study[0],
                     x.ratio_in_study[1],
                     x.ratio_in_pop[0],
+                    x.study_items
                 ],
                 goea_results_sig,
             )
         ),
-        columns=["GO", "term", "class", "p", "p_corr", "n_genes", "n_study", "n_go"],
+        columns=["GO", "term", "class", "p-value", "p_corrected", "n_genes_diff_exp", "n_genes_diff_exp_study", "n_go_genes","study_items"],
     )
-    go_sig_terms["gene_ratio"] = go_sig_terms.n_genes / go_sig_terms.n_go
-    go_sig_terms_sorted = go_sig_terms.sort_values(by=["class", "p_corr"])
+    go_sig_terms["gene_ratio"] = go_sig_terms.n_genes_diff_exp / go_sig_terms.n_go_genes
+    go_sig_terms_sorted = go_sig_terms.sort_values(by=["class", "p_corrected"])
+    go_sig_terms_sorted['study_items'] = go_sig_terms_sorted['study_items'].str.join(',')
+    go_sig_terms_sorted['study_items']=go_sig_terms_sorted.study_items.str.replace('\w+(?=,|$)', lambda m: ensembl_id_to_symbol.get(m.group(0)))
     go_sig_terms_sorted.to_csv(
         snakemake.output.enrichment_sig_terms, sep="\t", index=False
     )
@@ -159,15 +165,14 @@ else:
             "GO",
             "term",
             "class",
-            "p",
-            "p_corr",
-            "n_genes",
-            "n_study",
-            "n_go",
+            "p-value",
+            "p_corrected",
+            "n_genes_diff_exp",
+            "n_genes_diff_exp_study",
+            "n_go_genes",
             sep="\t",
             file=out,
         )
-
 plot_results(
     outplot_generic,
     # use pvals for coloring
@@ -175,7 +180,7 @@ plot_results(
     # print general gene symbol instead of Ensembl ID
     id2symbol=ensembl_id_to_symbol,
     # number of genes to print, or True for printing all (including count of genes)
-    study_items=True,
+    study_items=None,
     # number of genes to print per line
     items_p_line=6,
     # p-values to use for coloring of GO term nodes (argument name determined from code and testing against value "p_uncorrected")
