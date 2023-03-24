@@ -12,3 +12,4 @@ dependencies:
   - r-ggpubr =0.4
   - r-base =4.0
   - bioconductor-limma =3.46
+  - openssl =1.1.1
