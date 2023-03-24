@@ -7,3 +7,4 @@ dependencies:
   - bioconductor-rhdf5 =2.36
   - r-tidyverse =1.3
   - r-base =4.1
+  - r-dplyr =1.0.10
