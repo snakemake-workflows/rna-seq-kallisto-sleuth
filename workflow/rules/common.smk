@@ -65,7 +65,7 @@ check_config()
 
 
 def is_activated(config_element):
-    return config_element["activate"] in {"true", "True"}
+    return config_element["activate"] in {true, True}
 
 
 def get_model(wildcards):
