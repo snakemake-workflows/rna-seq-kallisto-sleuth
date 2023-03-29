@@ -115,37 +115,37 @@ rule ihw_fdr_control:
             "results/tables/ihw/{model}.{level}.ihw-results.tsv",
             caption="../report/ihw-results.rst",
             category="IHW",
-            labels={"model": "{model}", "level":"{level}-ihw-results"},
+            labels={"model": "{model}", "level": "{level}-ihw-results"},
         ),
         dispersion=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-dispersion.pdf",
             caption="../report/plot-dispersion-ihw.rst",
             category="IHW",
-            labels={"model": "{model}", "level":"{level}","plot":"dispersion"},
+            labels={"model": "{model}", "level": "{level}", "plot": "dispersion"},
         ),
         histograms=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-histograms.pdf",
             caption="../report/plot-histograms-ihw.rst",
             category="IHW",
-            labels={"model": "{model}","level":"{level}","plot":"histograms"},
+            labels={"model": "{model}", "level": "{level}", "plot": "histograms"},
         ),
         trends=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-trends.pdf",
             caption="../report/plot-trends-ihw.rst",
             category="IHW",
-            labels={"model": "{model}","level":"{level}","plot":"trends"},
+            labels={"model": "{model}", "level": "{level}", "plot": "trends"},
         ),
         decision=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-decision.pdf",
             caption="../report/plot-decision-ihw.rst",
             category="IHW",
-            labels={"model": "{model}","level":"{level}","plot":"decision"},
+            labels={"model": "{model}", "level": "{level}", "plot": "decision"},
         ),
         adj_pvals=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-adj-pvals.pdf",
             caption="../report/plot-adj-pvals-ihw.rst",
             category="IHW",
-            labels={"model": "{model}","level":"{level}","plot":"adj-pvals"},
+            labels={"model": "{model}", "level": "{level}", "plot": "adj-pvals"},
         ),
     conda:
         "../envs/ihw.yaml"
@@ -188,19 +188,19 @@ rule plot_pca:
             "results/plots/pca/{covariate}.pca.pdf",
             caption="../report/plot-pca.rst",
             category="PCA",
-            labels={"covariate": "{covariate}","plot":"pca"},
+            labels={"covariate": "{covariate}", "plot": "pca"},
         ),
         pc_var=report(
             "results/plots/pc-variance/{covariate}.pc-variance-plot.pdf",
             caption="../report/plot-pc-variance.rst",
             category="PCA",
-            labels={"covariate": "{covariate}","plot":"pc-variance-plot"},
+            labels={"covariate": "{covariate}", "plot": "pc-variance-plot"},
         ),
         loadings=report(
             "results/plots/loadings/{covariate}.loadings-plot.pdf",
             caption="../report/plot-loadings.rst",
             category="PCA",
-            labels={"covariate": "{covariate}","plot":"loadings-plot"},
+            labels={"covariate": "{covariate}", "plot": "loadings-plot"},
         ),
     conda:
         "../envs/sleuth.yaml"
@@ -313,7 +313,7 @@ rule plot_fragment_length_dist:
             caption="../report/plot-fld.rst",
             category="QC",
             subcategory="per-sample",
-            labels={"sample": "{sample}-{unit}", "plot": "fragment lengths"}
+            labels={"sample": "{sample}-{unit}", "plot": "fragment lengths"},
         ),
     conda:
         "../envs/sleuth.yaml"
