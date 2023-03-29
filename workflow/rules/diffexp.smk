@@ -57,25 +57,29 @@ rule sleuth_diffexp:
             "results/plots/mean-var/{model}.mean-variance-plot.pdf",
             caption="../report/plot-mean-var.rst",
             category="QC",
-            labels={"model": "{model}-mean-variance-plot"},
+            subcategory="per-model",
+            labels={"model": "{model}", "plot": "mean-variance"},
         ),
         volcano_plots=report(
             "results/plots/volcano/{model}.volcano-plots.pdf",
             caption="../report/plot-volcano.rst",
             category="QC",
-            labels={"model": "{model}-volcano-plot"},
+            subcategory="per-model",
+            labels={"model": "{model}", "plot": "volcano-plot"},
         ),
         ma_plots=report(
             "results/plots/ma/{model}.ma-plots.pdf",
             caption="../report/plot-ma.rst",
             category="QC",
-            labels={"model": "{model}-ma-plot"},
+            subcategory="per-model",
+            labels={"model": "{model}", "plot": "ma-plot"},
         ),
         qq_plots=report(
             "results/plots/qq/{model}.qq-plots.pdf",
             caption="../report/plot-qq.rst",
             category="QC",
-            labels={"model": "{model}-qq-plot"},
+            subcategory="per-model",
+            labels={"model": "{model}", "plot": "qq-plot"},
         ),
         transcripts_rds="results/sleuth/diffexp/{model}.transcripts.diffexp.rds",
         genes_aggregated_rds=(
@@ -111,37 +115,37 @@ rule ihw_fdr_control:
             "results/tables/ihw/{model}.{level}.ihw-results.tsv",
             caption="../report/ihw-results.rst",
             category="IHW",
-            labels={"model": "{model}-{level}-ihw-results"},
+            labels={"model": "{model}", "level":"{level}-ihw-results"},
         ),
         dispersion=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-dispersion.pdf",
             caption="../report/plot-dispersion-ihw.rst",
             category="IHW",
-            labels={"model": "{model}-{level}-plot-dispersion"},
+            labels={"model": "{model}", "level":"{level}","plot":"dispersion"},
         ),
         histograms=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-histograms.pdf",
             caption="../report/plot-histograms-ihw.rst",
             category="IHW",
-            labels={"model": "{model}-{level}-plot-histograms"},
+            labels={"model": "{model}","level":"{level}","plot":"histograms"},
         ),
         trends=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-trends.pdf",
             caption="../report/plot-trends-ihw.rst",
             category="IHW",
-            labels={"model": "{model}-{level}-plot-trends"},
+            labels={"model": "{model}","level":"{level}","plot":"trends"},
         ),
         decision=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-decision.pdf",
             caption="../report/plot-decision-ihw.rst",
             category="IHW",
-            labels={"model": "{model}-{level}-plot-decision"},
+            labels={"model": "{model}","level":"{level}","plot":"decision"},
         ),
         adj_pvals=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-adj-pvals.pdf",
             caption="../report/plot-adj-pvals-ihw.rst",
             category="IHW",
-            labels={"model": "{model}-{level}-plot-adj-pvals"},
+            labels={"model": "{model}","level":"{level}","plot":"adj-pvals"},
         ),
     conda:
         "../envs/ihw.yaml"
@@ -184,19 +188,19 @@ rule plot_pca:
             "results/plots/pca/{covariate}.pca.pdf",
             caption="../report/plot-pca.rst",
             category="PCA",
-            labels={"covariate": "{covariate}-pca"},
+            labels={"covariate": "{covariate}","plot":"pca"},
         ),
         pc_var=report(
             "results/plots/pc-variance/{covariate}.pc-variance-plot.pdf",
             caption="../report/plot-pc-variance.rst",
             category="PCA",
-            labels={"covariate": "{covariate}-pc-variance-plot"},
+            labels={"covariate": "{covariate}","plot":"pc-variance-plot"},
         ),
         loadings=report(
             "results/plots/loadings/{covariate}.loadings-plot.pdf",
             caption="../report/plot-loadings.rst",
             category="PCA",
-            labels={"covariate": "{covariate}-loadings-plot"},
+            labels={"covariate": "{covariate}","plot":"loadings-plot"},
         ),
     conda:
         "../envs/sleuth.yaml"
@@ -307,8 +311,9 @@ rule plot_fragment_length_dist:
         report(
             "results/plots/fld/{sample}-{unit}.fragment-length-dist.pdf",
             caption="../report/plot-fld.rst",
-            category="Fragment length distribution",
-            labels={"samples": "{sample}-{unit}"},
+            category="QC",
+            subcategory="per-sample",
+            labels={"sample": "{sample}-{unit}", "plot": "fragment lengths"}
         ),
     conda:
         "../envs/sleuth.yaml"

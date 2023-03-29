@@ -57,8 +57,12 @@ if is_3prime_experiment and config["experiment"]["3-prime-rna-seq"]["plot-qc"] !
             full_sample_QC=report(
                 "results/plots/QC/3prime-ind-QC-plot.{ind_transcripts}.html",
                 category="QC",
+                subcategory="global",
                 caption="../report/plot-3prime-QC-histogram.rst",
-                labels={"QC-plot": "{ind_transcripts}-QC-plot"},
+                labels={
+                    "plot": "3-prime read positioning",
+                    "subset": "{ind_transcripts}",
+                },
             ),
         params:
             each_transcript="{ind_transcripts}",

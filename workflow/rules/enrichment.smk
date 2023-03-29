@@ -152,7 +152,7 @@ rule goatools_go_enrichment:
         ),
     params:
         species=get_bioc_species_name(),
-        model=get_model,
+        model=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
         gene_fdr=lambda wc: wc.gene_fdr.replace("-", "."),
         go_term_fdr=lambda wc: wc.go_term_fdr.replace("-", "."),
     conda:
