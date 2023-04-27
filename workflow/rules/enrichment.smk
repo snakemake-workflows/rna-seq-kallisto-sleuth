@@ -12,6 +12,8 @@ rule spia:
         spia_db="resources/spia-db.rds",
     output:
         table="results/tables/pathways/{model}.pathways.tsv",
+        table_activated="results/tables/pathways/{model}.activated-pathways.tsv",
+        table_inhibited="results/tables/pathways/{model}.inhibited-pathways.tsv",
         plots="results/plots/pathways/{model}.spia-perturbation-plots.pdf",
     params:
         bioc_species_pkg=bioc_species_pkg,

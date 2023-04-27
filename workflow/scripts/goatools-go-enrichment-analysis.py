@@ -31,6 +31,7 @@ sig_genes = all_genes[all_genes["qval"] < fdr_level_gene]
 
 # initialize GOEA object
 fdr_level_go_term = float(snakemake.params.go_term_fdr)
+model = snakemake.params.model
 
 goeaobj = GOEnrichmentStudyNS(
     # list of 'population' of genes looked at in total
@@ -90,9 +91,10 @@ if goea_results_all:
             "study_items",
         ],
     )
-    go_terms['study_items'] = go_terms['study_items'].str.join(',')
-    go_terms['study_items']=go_terms.study_items.str.replace('\w+(?=,|$)', lambda m: ensembl_id_to_symbol.get(m.group(0)))
-    go_terms
+    go_terms["study_items"] = go_terms["study_items"].str.join(",")
+    go_terms["study_items"] = go_terms.study_items.str.replace(
+        "\w+(?=,|$)", lambda m: ensembl_id_to_symbol.get(m.group(0))
+    )
     go_terms.to_csv(snakemake.output.enrichment, sep="\t", index=False)
 else:
     # write empty table to indicate that nothing was found
@@ -116,8 +118,6 @@ else:
 
 
 # plot results
-#ensembl_id_to_symbol = dict(zip(all_genes["ens_gene"], all_genes["ext_gene"]))
-
 
 # from first plot output file name, create generic file name to trigger
 # separate plots for each of the gene ontology name spaces
@@ -144,17 +144,45 @@ if goea_results_sig:
                     x.ratio_in_study[0],
                     x.ratio_in_study[1],
                     x.ratio_in_pop[0],
-                    x.study_items
+                    x.study_items,
                 ],
                 goea_results_sig,
             )
         ),
-        columns=["GO", "term", "class", "p-value", "p_corrected", "n_genes_diff_exp", "n_genes_diff_exp_study", "n_go_genes","study_items"],
+        columns=[
+            "GO",
+            "term",
+            "class",
+            "p-value",
+            "p_corrected",
+            "n_genes_diff_exp",
+            "n_genes_diff_exp_study",
+            "n_go_genes",
+            "study_items",
+        ],
     )
     go_sig_terms["gene_ratio"] = go_sig_terms.n_genes_diff_exp / go_sig_terms.n_go_genes
     go_sig_terms_sorted = go_sig_terms.sort_values(by=["class", "p_corrected"])
-    go_sig_terms_sorted['study_items'] = go_sig_terms_sorted['study_items'].str.join(',')
-    go_sig_terms_sorted['study_items']=go_sig_terms_sorted.study_items.str.replace('\w+(?=,|$)', lambda m: ensembl_id_to_symbol.get(m.group(0)))
+    go_sig_terms_sorted["study_items"] = go_sig_terms_sorted["study_items"].str.join(
+        ","
+    )
+    go_sig_terms_sorted["study_items"] = go_sig_terms_sorted.study_items.str.replace(
+        "\w+(?=,|$)", lambda m: ensembl_id_to_symbol.get(m.group(0))
+    )
+    # Append fold change values to gene names
+    gene_to_fold_change = dict(
+        zip(sig_genes["ext_gene"], sig_genes.filter(regex=("b_" + model)).iloc[:, 0])
+    )
+    go_sig_terms_sorted["study_items"] = go_sig_terms_sorted.study_items.astype("str")
+    go_sig_terms_sorted["study_items"] = go_sig_terms_sorted.study_items.str.split(",")
+    # As go terms contains 0 genes associated with terms, assign empty key to dict fold change as 0
+    gene_to_fold_change[""] = 0
+    gene_to_fold_change["nan"] = 0
+    go_sig_terms_sorted["study_items"] = go_sig_terms_sorted.study_items.map(
+        lambda x: ", ".join(
+            [f"{gene_symbol}:{gene_to_fold_change[gene_symbol]}" for gene_symbol in x]
+        )
+    )
     go_sig_terms_sorted.to_csv(
         snakemake.output.enrichment_sig_terms, sep="\t", index=False
     )

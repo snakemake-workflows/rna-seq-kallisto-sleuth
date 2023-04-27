@@ -85,6 +85,10 @@ if (nrow(sig_genes) == 0) {
                 "p-value for at least NDE genes" = "pNDE"
             )
         write_tsv(res_reorder, snakemake@output[["table"]])
+        sort_activated <- res_reorder[res_reorder$Status == "Activated", ]
+        sort_inhibited <- res_reorder[res_reorder$Status == "Inhibited", ]
+        write_tsv(sort_activated, snakemake@output[["table_activated"]])
+        write_tsv(sort_inhibited, snakemake@output[["table_inhibited"]])
     } else {
         columns <- c(
             "Name", "Combined Bonferroni p-values", "Combined FDR",
