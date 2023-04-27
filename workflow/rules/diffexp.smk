@@ -115,7 +115,7 @@ rule ihw_fdr_control:
             "results/tables/ihw/{model}.{level}.ihw-results.tsv",
             caption="../report/ihw-results.rst",
             category="IHW",
-            labels={"model": "{model}", "level":"{level}-ihw-results"},
+            labels={"model": "{model}", "level": "{level}-ihw-results"},
         ),
         dispersion=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-dispersion.pdf",
@@ -218,7 +218,11 @@ rule plot_diffexp_pval_hist:
             "results/plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf",
             caption="../report/plot-pval-hist.rst",
             category="QC",
-            labels={"model": "{model}","level":"{level}", "plot":"diffexp-pval-hist"},
+            labels={
+                "model": "{model}",
+                "level": "{level}",
+                "plot": "diffexp-pval-hist",
+            },
         ),
     params:
         model=get_model,
