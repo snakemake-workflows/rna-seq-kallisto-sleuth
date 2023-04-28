@@ -24,7 +24,7 @@ sig_genes <- diffexp %>% filter(qval <= 0.05)
 
 if (nrow(sig_genes) == 0) {
     print("sig genes is zero")
-    cols <- c("Name","Combined Bonferroni p-values", "Combined FDR",
+    cols <- c("Name", "Combined Bonferroni p-values", "Combined FDR",
             "total perturbation accumulation", "number of genes on the pathway",
             "Combined p-value", "p-value to observe a total accumulation",
             "p-value for at least NDE genes", "Status"
@@ -33,6 +33,8 @@ if (nrow(sig_genes) == 0) {
     # create empty perturbation plots
     pdf(file = snakemake@output[["plots"]])
     write_tsv(res, snakemake@output[["table"]])
+    write_tsv(res, snakemake@output[["table_activated"]])
+    write_tsv(res, snakemake@output[["table_inhibited"]])
     dev.off()
 } else {
     # get logFC equivalent (the sum of beta scores of covariates of interest)
@@ -99,5 +101,7 @@ if (nrow(sig_genes) == 0) {
         emtpy_data_frame <- data.frame(matrix(nrow = 0, ncol = length(columns)))
         colnames(emtpy_data_frame) <- columns
         write_tsv(emtpy_data_frame, snakemake@output[["table"]])
+        write_tsv(emtpy_data_frame, snakemake@output[["table_activated"]])
+        write_tsv(emtpy_data_frame, snakemake@output[["table_inhibited"]])
     }
 }
