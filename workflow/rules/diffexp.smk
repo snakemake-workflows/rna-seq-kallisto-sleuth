@@ -348,7 +348,6 @@ rule plot_vars:
         "../scripts/plot-variances.R"
 
 
-
 rule vega_volcano_plot:
     input:
         tsv="results/tables/diffexp/{model}.transcripts.diffexp.tsv",
