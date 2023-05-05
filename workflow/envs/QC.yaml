@@ -10,3 +10,4 @@ dependencies:
   - altair_saver =0.5.0
   - scipy =1.7.3
   - matplotlib =3.5.2
+  - pandas =1

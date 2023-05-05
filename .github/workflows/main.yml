@@ -85,14 +85,6 @@ jobs:
       - linting
       - formatting
     steps:
-    - name: Start SSH
-      uses: Tofandel/ssh-server-action@v1.0.0
-      with:
-        hostname: dev.com # Optional, the display hostname of the server
-        port: 22 # Optional, default value is 22. The exposed ssh port
-        user_name: manuel # Optional, default value is ssh-user
-        sudo_access: true # Optional, allow user to use sudo without password, default: false
-        public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC2myShN/m2/OehhfraXnmH5OBQz3ACJ7ZJjlOB1NZlOYfqUdYdCrG0ilxakJ73bnZw9iq8lB3i6acmaB6njA8AqTWLqbfYVNuOCKenxTWj4aKFoRx+1RZ2W0dtsxXDEt8DxRCYVFLWtGh89gHx/HCs47n/LyrmRoZZddOvO8vCxYTEJIXipMzBFyMgoU/m/oc19en7XWBuapGXlcmgPIhl/ctYG2HI9KQb2DBnZgkqp1RV8k2vX6YAU1opZGan5xzlfwYEgClUC5hbJeGduial1w5sRTmChVW6mrdqOPhucxTVT8Qf3uO1RKhNaNLBIn5+7UyTfmV7RTuhkbrFACRjvMF0CTfFV5AnPUHv1dSI5xI+Fkb+HAHPuOEdBogjDP3I9LcS26ogtzDlme62cz19EMLfDbgrL0b6pD7SOukPHnr6/iH8BDDmF/Oe0cI2EqUMqAP5cyNSOb/Gh193sXbYnDhonL3ovbKnlJ5Y9jsQDSia96KdFay7WCESlXPT7xk= manuel@manuel-ThinkPad-T460 # Optional, Public key authorized to access the server
     
     - name: Checkout repository
       uses: actions/checkout@v2
