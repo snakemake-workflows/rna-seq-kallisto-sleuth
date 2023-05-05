@@ -106,7 +106,6 @@ else:
             "name",
             "p_uncorrected",
             "p_fdr_bh",
-            "p_uncorrected",
             "ratio_in_study",
             "ratio_in_pop",
             "depth",
@@ -198,6 +197,8 @@ else:
             "n_genes_diff_exp",
             "n_genes_diff_exp_study",
             "n_go_genes",
+            "gene_ratio",
+            "study_items",
             sep="\t",
             file=out,
         )

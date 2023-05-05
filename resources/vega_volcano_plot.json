@@ -102,9 +102,8 @@
                               },
                               "opacity": {
                                 "condition": {
-                                  "test": {"or": [
-                                    {"param": "brush", "empty": false}
-                                  ]},
+                                  "test": 
+                                    {"param": "brush", "empty": false},
                                   "value": 1
                                 },
                                 "value": 0

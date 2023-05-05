@@ -23,11 +23,12 @@ universe <- diffexp %>% pull(var = ens_gene)
 sig_genes <- diffexp %>% filter(qval <= 0.05)
 
 if (nrow(sig_genes) == 0) {
-    print("sig genes is zero")
-    cols <- c("Name", "Combined Bonferroni p-values", "Combined FDR",
-            "total perturbation accumulation", "number of genes on the pathway",
-            "Combined p-value", "p-value to observe a total accumulation",
-            "p-value for at least NDE genes", "Status"
+    cols <- c(
+        "Name", "Status", "Combined FDR",
+        "total perturbation accumulation", "number of genes on the pathway",
+        "number of DE genes per pathway", "p-value for at least NDE genes",
+        "Combined Bonferroni p-values",
+        "p-value to observe a total accumulation", "Combined p-value", "Ids"
     )
     res <- data.frame(matrix(ncol = 7, nrow = 0, dimnames = list(NULL, cols)))
     # create empty perturbation plots
@@ -63,7 +64,6 @@ if (nrow(sig_genes) == 0) {
     pathway_names <- db[res$Name]
     path_ids <- as.matrix(lapply(pathway_names@entries, slot, "id"))
     if (length(path_ids) > 0) {
-        print("yes entered")
         path_ids_data_frame <-
             data.frame(Ids = matrix(unlist(path_ids),
                 nrow = length(path_ids), byrow = TRUE
@@ -93,10 +93,10 @@ if (nrow(sig_genes) == 0) {
         write_tsv(sort_inhibited, snakemake@output[["table_inhibited"]])
     } else {
         columns <- c(
-            "Name", "Combined Bonferroni p-values", "Combined FDR",
-            "total perturbation accumulation", "number of genes on the pathway",
-            "Combined p-value", "p-value to observe a total accumulation",
-            "p-value for at least NDE genes", "Status"
+            "Name", "Status", "Combined FDR", "total perturbation accumulation",
+            "number of genes on the pathway", "number of DE genes per pathway",
+            "p-value for at least NDE genes", "Combined Bonferroni p-values",
+            "p-value to observe a total accumulation", "Combined p-value", "Ids"
         )
         emtpy_data_frame <- data.frame(matrix(nrow = 0, ncol = length(columns)))
         colnames(emtpy_data_frame) <- columns
