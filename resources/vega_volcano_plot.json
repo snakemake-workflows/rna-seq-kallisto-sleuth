@@ -18,7 +18,7 @@
                 "x": {
                     "bin": true,
                     "field": "$beta_column",
-                    "axis": null
+                    "axis": null            
                 },
                 "y": {
                     "aggregate": "count",
@@ -53,6 +53,9 @@
                                         "domainMax": 1
                                     }
                                 },
+                                "href": {
+                                    "field": "link to genes representative"
+                                },
                                 "size": {
                                     "field": "$beta_se_column",
                                     "type": "quantitative"
@@ -63,6 +66,7 @@
                                         "value": "#aaa"
                                     }
                                 },
+                                
                                 "tooltip": [
                                     {
                                         "field": "ext_gene",
@@ -81,6 +85,33 @@
                                         "type": "quantitative"
                                     }
                                 ]
+                            }
+                        },
+                        {
+                            "mark": {"type": "text", "dx": 3,"baseline":"middle", "aria":false},
+                            "params": [{
+                                "name": "brush",
+                                "select": {"type": "interval"}
+                              }],
+                            "encoding": {
+                              "x": {"field": "$beta_column", "type": "quantitative"},
+                              
+                              "y": {
+                                "field": "qval",
+                                "type": "quantitative"
+                              },
+                              "opacity": {
+                                "condition": {
+                                  "test": 
+                                    {"param": "brush", "empty": false},
+                                  "value": 1
+                                },
+                                "value": 0
+                              },
+                              "text": {
+                                "condition": {"param": "brush",  "field": "ext_gene", "type": "ordinal"}
+                                 
+                              }     
                             }
                         },
                         {

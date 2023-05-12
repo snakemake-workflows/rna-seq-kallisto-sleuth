@@ -9,7 +9,23 @@ properties:
     type: string
   units:
     type: string
-
+  experiment:
+    type: object
+    properties:
+      3-prime-rna-seq:
+        type: object
+        properties:
+          activate:
+            type: boolean
+          vendor:
+            type: string
+          plot-qc:
+            type: ["string", "array"]
+          required:
+            - plot-qc
+            - vendor
+            - activate
+      
   resources:
     type: object
     properties:
@@ -73,8 +89,18 @@ properties:
               - reduced
               - primary_variable
               - base_level
+      genes_of_interest:
+        type: object
+        properties:
+          activate: 
+            type: boolean
+          genelist:
+            type: string
+        required:
+          - genelist
     required:
       - models
+      - genes_of_interest
 
   diffsplice:
     type: object
@@ -142,15 +168,10 @@ properties:
         type: integer
       color_by:
         type: string
-      genes_of_interest:
-        type: array
-        items:
-          type: string
     required:
       - FDR
       - top_n
       - color_by
-      - genes_of_interest
 
   plot_vars:
     type: object

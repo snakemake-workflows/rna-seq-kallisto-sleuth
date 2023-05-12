@@ -7,15 +7,13 @@ from pathlib import Path
 # TODO consider cellphonedb for receptor ligand interaction (Sarah Teichmann, Nature Methods?)
 rule spia:
     input:
-        samples="results/sleuth/samples.tsv",
+        samples="results/sleuth/{model}.samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
         spia_db="resources/spia-db.rds",
     output:
-        table=report(
-            "results/tables/pathways/{model}.pathways.tsv",
-            caption="../report/spia.rst",
-            category="Pathway enrichment analysis",
-        ),
+        table="results/tables/pathways/{model}.pathways.tsv",
+        table_activated="results/tables/pathways/{model}.activated-pathways.tsv",
+        table_inhibited="results/tables/pathways/{model}.inhibited-pathways.tsv",
         plots="results/plots/pathways/{model}.spia-perturbation-plots.pdf",
     params:
         bioc_species_pkg=bioc_species_pkg,
@@ -26,7 +24,7 @@ rule spia:
         enrichment_env
     log:
         "logs/tables/pathways/{model}.spia-pathways.log",
-    threads: 16
+    threads: 38
     script:
         "../scripts/spia.R"
 
@@ -36,7 +34,7 @@ rule spia:
 
 rule fgsea:
     input:
-        samples="results/sleuth/samples.tsv",
+        samples="results/sleuth/{model}.samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
         gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"],
     output:
@@ -44,26 +42,31 @@ rule fgsea:
             "results/tables/fgsea/{model}.all-gene-sets.tsv",
             caption="../report/fgsea-table-all.rst",
             category="Gene set enrichment analysis",
+            labels={"model": "{model}"},
         ),
         rank_ties=report(
             "results/tables/fgsea/{model}.rank-ties.tsv",
             caption="../report/fgsea-rank-ties.rst",
             category="Gene set enrichment analysis",
+            labels={"model": "{model}"},
         ),
         significant=report(
             "results/tables/fgsea/{model}.sig-gene-sets.tsv",
             caption="../report/fgsea-table-significant.rst",
             category="Gene set enrichment analysis",
+            labels={"model": "{model}"},
         ),
         plot=report(
             "results/plots/fgsea/{model}.table-plot.pdf",
             caption="../report/fgsea-table-plot.rst",
             category="Gene set enrichment analysis",
+            labels={"model": "{model}"},
         ),
         plot_collapsed=report(
             "results/plots/fgsea/{model}.collapsed_pathways.table-plot.pdf",
             caption="../report/fgsea-collapsed-table-plot.rst",
             category="Gene set enrichment analysis",
+            labels={"model": "{model}"},
         ),
     params:
         bioc_species_pkg=bioc_species_pkg,
@@ -76,14 +79,14 @@ rule fgsea:
         enrichment_env
     log:
         "logs/tables/fgsea/{model}.gene-set-enrichment.log",
-    threads: 8
+    threads: 25
     script:
         "../scripts/fgsea.R"
 
 
 rule fgsea_plot_gene_sets:
     input:
-        samples="results/sleuth/samples.tsv",
+        samples="results/sleuth/{model}.samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
         gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"],
         sig_gene_sets="results/tables/fgsea/{model}.sig-gene-sets.tsv",
@@ -93,6 +96,7 @@ rule fgsea_plot_gene_sets:
             patterns=["{model}.{gene_set}.gene-set-plot.pdf"],
             caption="../report/plot-fgsea-gene-set.rst",
             category="Gene set enrichment analysis",
+            labels={"model": "{model}"},
         ),
     params:
         model=get_model,
@@ -142,22 +146,15 @@ rule goatools_go_enrichment:
         ens_gene_to_go="resources/ontology/ens_gene_to_go.tsv",
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
     output:
-        enrichment=report(
-            "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
-            caption="../report/go-enrichment-table.rst",
-            category="GO term enrichment analysis",
-        ),
-        plot=report(
-            expand(
-                "results/plots/go_terms/{{model}}.go_term_enrichment_{ns}.gene_fdr_{{gene_fdr}}.go_term_fdr_{{go_term_fdr}}.pdf",
-                ns=["BP", "CC", "MF"],
-            ),
-            caption="../report/go-enrichment-plot.rst",
-            category="GO term enrichment analysis",
+        enrichment="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
+        enrichment_sig_terms="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.sig_terms.tsv",
+        plot=expand(
+            "results/plots/go_terms/{{model}}.go_term_enrichment_{ns}.gene_fdr_{{gene_fdr}}.go_term_fdr_{{go_term_fdr}}.pdf",
+            ns=["BP", "CC", "MF"],
         ),
     params:
         species=get_bioc_species_name(),
-        model=get_model,
+        model=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
         gene_fdr=lambda wc: wc.gene_fdr.replace("-", "."),
         go_term_fdr=lambda wc: wc.go_term_fdr.replace("-", "."),
     conda:

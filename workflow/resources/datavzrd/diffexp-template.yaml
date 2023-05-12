@@ -1,0 +1,288 @@
+name: ?f"Differential expression analysis for model {wildcards.model}"
+datasets:
+  genes_representative:
+    path: ?input.genes_representative
+    offer-excel: true
+    links:
+      link to transcripts:
+        column: ens_gene
+        table-row: transcripts/ens_gene
+      link to log-count matrix:
+        column: target_id
+        table-row : logcount_matrix/transcript
+      link to genes representative:
+        column: ens_gene
+        table-row: genes_representative/ens_gene
+      link to volcano plot:
+        column: ens_gene
+        view: volcano-plots
+    separator: "\t"
+  transcripts:
+    path: ?input.transcripts
+    offer-excel: true
+    links:
+      link to genes representative:
+        column: ens_gene
+        table-row: genes_representative/ens_gene
+    separator: "\t"  
+  genes_aggregated:
+    path: ?input.genes_aggregated
+    offer-excel: true
+    separator: "\t"
+  logcount_matrix:
+    path: ?input.logcount_matrix
+    offer-excel: true
+    links:  
+      link to transcripts:
+        column: transcript
+        table-row: transcripts/target_id
+    separator: "\t"
+default-view: genes_representative
+views:
+  genes_representative:
+    dataset: genes_representative
+    desc: |
+      Differentially expressed genes using the model computed with sleuth by taking only a manually configured representative transcript for each gene.
+      The columns `b_*` and `b_*_se` display the effect size β and the corresponding standard error for every covariate in the model. They are analog to log2 fold changes. Note that non-binary covariates are binarized by sleuth, leading to multiple columns `b_*1`, `b_*2`, etc.
+      In addition, a signed version of the pi-value score (as proposed by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`) is shown. The sign reflects the sign of the effect (i.e. positive for upregulation, negative for downregulation).
+    page-size: 25
+    render-table:
+      columns:
+        ens_gene:
+          display-mode: hidden       
+        ext_gene:
+          display-mode: normal
+        gene_desc:
+          display-mode: normal
+        canonical:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: ordinal
+              domain:
+                - TRUE
+                - FALSE
+              range:
+                - "#aec7e8"
+                - white
+              custom-content: |
+                function(value, row) {
+                    if(value == "TRUE") {
+                        return "yes"
+                    } else {
+                        return ""
+                    }
+                }
+        target_id:
+          display-mode: normal
+          link-to-url: 
+            Ensembl:
+              url: "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={target_id}"
+        pval:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.0
+                - 1.0
+        qval:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.0
+                - 1.0
+        test_stat:
+          display-mode: hidden 
+        rss:
+          display-mode: hidden   
+        degrees_free:
+          display-mode: hidden
+        mean_obs:
+          display-mode: hidden
+        var_obs:
+          display-mode: hidden
+        tech_var:
+          display-mode: hidden
+        sigma_sq:
+          display-mode: hidden
+        smooth_sigma_sq:
+          display-mode: hidden
+        final_sigma_sq:
+          display-mode: hidden
+        regex('qval_.+'):
+          display-mode: hidden
+        regex('b_.*'):
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -1
+                - 0
+                - 1
+        regex('signed_pi_value_.+'):
+          display-mode: hidden
+        ?for sample in params.samples:
+          ?sample:
+            display-mode: hidden
+  volcano-plots:
+    dataset: genes_representative
+    desc: |
+      Interactive volcano plot of differentially expressed genes
+    render-plot:
+      spec-path: ?input.volcano_plots  
+  transcripts:
+    dataset: transcripts
+    desc: |
+      Differentially expressed transcripts using the model and computed with sleuth. The columns `b_*` and `b_*_se` display the effect size β and the corresponding standard error for every covariate in the model. They are analog to log2 fold changes. Note that non-binary covariates are binarized by sleuth, leading to multiple columns `b_*1`, `b_*2`, etc. In addition, a signed version of the pi-value score (as proposed by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`) is shown. The sign reflects the sign of the effect (i.e. positive for upregulation, negative for downregulation).
+    page-size: 25
+    render-table:
+      columns:
+        ens_gene:
+          display-mode: hidden       
+        ext_gene:
+          display-mode: normal         
+        gene_desc:
+          display-mode: normal
+        canonical:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: ordinal
+              domain:
+                - TRUE
+                - FALSE
+              range:
+                - "#aec7e8"
+                - white
+              custom-content: |
+                function(value, row) {
+                    if(value == "TRUE") {
+                        return "yes"
+                    } else {
+                        return ""
+                    }
+                }
+        target_id:
+          display-mode: normal
+          link-to-url: 
+            Ensembl:
+              url: "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={target_id}"
+        pval:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.0
+                - 1.0
+        qval:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.0
+                - 1.0
+        test_stat:
+          display-mode: hidden 
+        rss:
+          display-mode: hidden   
+        degrees_free:
+          display-mode: hidden
+        mean_obs:
+          display-mode: hidden
+        var_obs:
+          display-mode: hidden
+        tech_var:
+          display-mode: hidden
+        sigma_sq:
+          display-mode: hidden
+        smooth_sigma_sq:
+          display-mode: hidden
+        final_sigma_sq:
+          display-mode: hidden
+        regex('qval_.+'):
+          display-mode: hidden
+        regex('b_.*'):
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -1
+                - 0
+                - 1
+        regex('signed_pi_value_.+'):
+          display-mode: hidden
+        ?for sample in params.samples:
+          ?sample:
+            display-mode: hidden
+  genes_aggregated:
+    dataset: genes_aggregated
+    desc: |
+      Differentially expressed genes computed with sleuth. The columns `b_*` and `b_*_se` display the effect size `:math:\beta` and the corresponding standard error for every covariate in the model. They are analog to log2 fold changes. Note that non-binary covariates are binarized by sleuth, leading  to multiple columns `b_*1`, `b_*2`, etc. In addition, a signed version of the pi-value score (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`) is shown. The sign reflects the sign of the effect (i.e. positive for   upregulation, negative for downregulation).
+    page-size: 25
+    render-table:
+      columns:
+        target_id:
+          display-mode: normal
+        ext_gene:
+          display-mode: normal
+        gene_desc:
+          display-mode: normal
+        canonical:
+          display-mode: normal
+        num_aggregated_transcripts:
+          display-mode: normal
+        sum_mean_obs_counts:
+          display-mode: normal
+        pval:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.0
+                - 1.0
+        qval:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.0
+                - 1.0
+        ?for sample in params.samples:
+          ?sample:
+            display-mode: hidden
+  logcount_matrix:    
+    dataset: logcount_matrix
+    desc: |
+        Transcript expression matrix (transcript x samples) as normalized and batch-corrected log counts. Expressions are normalized and corrected for batch effects with the model ~batch_effect, while protecting the model, using Limma.
+    page-size: 25
+    render-table:
+      columns:
+        transcript:
+          display-mode: normal
+        gene:
+          display-mode: normal
+        ?for sample in params.samples:
+          ?sample:
+            display-mode: normal
+            plot:
+              heatmap:
+                scale: linear
+                range:
+                  - "#e6550d"
+                  - "white"
+                  - "#6baed6"
+                domain:
+                  - -1
+                  - 0
+                  - 1

@@ -27,7 +27,6 @@ diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>%
                     mutate(target_id = str_c(target_id, collapse=",")) %>%
                     mutate(ens_gene = str_c(ens_gene, collapse=",")) %>%
                   distinct()
-print(diffexp)
 
 signed_pi <- get_prefix_col("signed_pi_value", colnames(diffexp))
 
@@ -86,8 +85,8 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
                     unnest(leadingEdge) %>%
                     mutate(
                         leading_edge_symbol = str_to_title(leadingEdge),
-                        leading_edge_entrez_id = mapIds(leading_edge_symbol, x=get(pkg), keytype="SYMBOL", column="ENTREZID"),
-                        leading_edge_ens_gene = mapIds(leading_edge_symbol, x=get(pkg), keytype="SYMBOL", column="ENSEMBL")
+                        leading_edge_entrez_id = mapIds(leading_edge_symbol, x=get(snakemake@params[["bioc_species_pkg"]]), keytype="SYMBOL", column="ENTREZID"),
+                        leading_edge_ens_gene = mapIds(leading_edge_symbol, x=get(snakemake@params[["bioc_species_pkg"]]), keytype="SYMBOL", column="ENSEMBL")
                         ) %>%
                     group_by(pathway) %>%
                     summarise(
@@ -119,7 +118,7 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
 }
 
 # select significant pathways
-top_pathways <- fgsea_res %>% arrange(padj) %>% head(n=1000) %>% filter(padj < snakemake@params[["gene_set_fdr"]]) %>% arrange(-NES) %>% pull(pathway)
+top_pathways <- fgsea_res %>% arrange(padj) %>% head(n=1000) %>% filter(padj <= snakemake@params[["gene_set_fdr"]]) %>% arrange(-NES) %>% pull(pathway)
 selected_gene_sets <- gene_sets[top_pathways]
 
 height = .7 * (length(selected_gene_sets) + 2)
@@ -134,7 +133,7 @@ tg <- plotGseaTable(
         )
 ggsave(filename = snakemake@output[["plot"]], plot = tg, width = 15, height = height, limitsize=FALSE)
 
-collapsed_pathways <- collapsePathways(fgsea_res %>% arrange(pval) %>% filter(padj < snakemake@params[["gene_set_fdr"]]), gene_sets, ranked_genes)
+collapsed_pathways <- collapsePathways(fgsea_res %>% arrange(pval) %>% filter(padj <= snakemake@params[["gene_set_fdr"]]), gene_sets, ranked_genes)
 main_pathways <- fgsea_res %>% filter(pathway %in% collapsed_pathways$mainPathways) %>% arrange(-NES) %>% pull(pathway)
 selected_gene_sets <- gene_sets[main_pathways]
 height = .7 * (length(selected_gene_sets) + 2)

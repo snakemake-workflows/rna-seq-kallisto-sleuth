@@ -1,0 +1,5 @@
+sample	condition	batch_effect
+A	treated	batch1
+B	untreated	batch1
+C	treated	batch2
+D	untreated	batch2

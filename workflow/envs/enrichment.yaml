@@ -8,3 +8,4 @@ dependencies:
   - bioconductor-graphite =1.44
   - r-tidyverse =1.3
   - bioconductor-fgsea =1.24
+  - r-ggplot2 =3.4.0

@@ -1,4 +1,3 @@
-# TODO add ability to use gencode (more complete)
 rule get_transcriptome:
     output:
         "resources/transcriptome.{type}.fasta",
@@ -13,7 +12,7 @@ rule get_transcriptome:
         type="cdna|cds|ncrna",
     cache: "omit-software"
     wrapper:
-        "0.74.0/bio/reference/ensembl-sequence"
+        "v1.7.1/bio/reference/ensembl-sequence"
 
 
 rule get_annotation:

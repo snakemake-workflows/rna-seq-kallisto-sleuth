@@ -46,6 +46,22 @@ wildcard_constraints:
 
 ####### helpers ###########
 
+is_3prime_experiment = (
+    config.get("experiment", dict())
+    .get("3-prime-rna-seq", dict())
+    .get("activate", False)
+)
+three_prime_vendor = (
+    config.get("experiment", dict()).get("3-prime-rna-seq", dict()).get("vendor")
+)
+
+if is_3prime_experiment:
+    if three_prime_vendor != "lexogen":
+        raise ValueError(
+            f"Currently, only lexogene is supported. Please check the vendor "
+            "in the config file and try again"
+        )
+
 
 def check_config():
     representative_transcripts_keywords = ["canonical", "mostsignificant"]
@@ -89,6 +105,28 @@ def get_fastqs(wildcards):
         return [f"{u.fq1}", f"{u.fq2}"]
 
 
+def get_all_fastqs(wildcards):
+    for item in units[["sample", "unit"]].itertuples():
+        if is_single_end(item.sample, item.unit):
+            yield f"results/trimmed/{item.sample}-{item.unit}.fastq.gz"
+        else:
+            yield f"results/trimmed/{item.sample}-{item.unit}.1.fastq.gz"
+            yield f"results/trimmed/{item.sample}-{item.unit}.2.fastq.gz"
+
+
+def get_model_samples(wildcards):
+    samples = pd.read_csv(config["samples"], sep="\t", dtype=str, comment="#")
+    units = pd.read_csv(config["units"], sep="\t", dtype=str, comment="#")
+    sample_file = units.merge(samples, on="sample")
+    sample_file["sample_name"] = sample_file.apply(
+        lambda row: "{}-{}".format(row["sample"], row["unit"]), axis=1
+    )
+    gps = config["diffexp"]["models"][wildcards.model]["primary_variable"]
+    sample_groups = sample_file.loc[sample_file[gps].notnull(), ["sample_name"]]
+    samples = sample_groups["sample_name"].values
+    return samples
+
+
 def get_trimmed(wildcards):
     if not is_single_end(**wildcards):
         # paired-end sample
@@ -129,16 +167,36 @@ bioc_species_pkg = get_bioc_species_pkg()
 enrichment_env = render_enrichment_env()
 
 
+def kallisto_quant_input(wildcards):
+    if is_3prime_experiment:
+        return "results/canonical_reads/{sample}-{unit}.fastq"
+    elif not is_single_end(wildcards.sample, wildcards.unit):
+        return expand(
+            "results/trimmed/{{sample}}-{{unit}}.{group}.fastq.gz", group=[1, 2]
+        )
+    else:
+        return expand("results/trimmed/{sample}-{unit}.fastq.gz", **wildcards)
+
+
 def kallisto_params(wildcards, input):
     extra = config["params"]["kallisto"]
-    if len(input.fq) == 1:
-        extra += " --single"
+    if len(input.fastq) == 1 or is_3prime_experiment:
+        extra += " --single --single-overhang --pseudobam"
         extra += (
             " --fragment-length {unit.fragment_len_mean} " "--sd {unit.fragment_len_sd}"
         ).format(unit=units.loc[(wildcards.sample, wildcards.unit)])
     else:
         extra += " --fusion"
     return extra
+
+
+def input_genelist(predef_genelist):
+    if config["diffexp"]["genes_of_interest"]["activate"] == True:
+        predef_genelist = config["diffexp"]["genes_of_interest"]["genelist"]
+    else:
+        predef_genelist = []
+
+    return predef_genelist
 
 
 def all_input(wildcards):
@@ -155,6 +213,7 @@ def all_input(wildcards):
                 [
                     "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
                     "results/plots/go_terms/{model}.go_term_enrichment_{go_ns}.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.pdf",
+                    "results/datavzrd-reports/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}",
                 ],
                 model=config["diffexp"]["models"],
                 go_ns=["BP", "CC", "MF"],
@@ -180,34 +239,47 @@ def all_input(wildcards):
                 model=config["diffexp"]["models"],
             )
         )
-
     # request spia if 'activated' in config.yaml
     if config["enrichment"]["spia"]["activate"]:
         wanted_input.extend(
             expand(
-                ["results/tables/pathways/{model}.pathways.tsv"],
+                [
+                    "results/tables/pathways/{model}.pathways.tsv",
+                    "results/datavzrd-reports/spia-{model}/",
+                ],
                 model=config["diffexp"]["models"],
             )
         )
 
     # workflow output that is always wanted
-
     # general sleuth output
     wanted_input.extend(
         expand(
             [
                 "results/plots/mean-var/{model}.mean-variance-plot.pdf",
                 "results/plots/volcano/{model}.volcano-plots.pdf",
-                "results/plots/interactive/volcano/{model}.svg",
                 "results/plots/ma/{model}.ma-plots.pdf",
                 "results/plots/qq/{model}.qq-plots.pdf",
                 "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
-                # "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.pdf", # see rule plot_diffexp_heatmap
                 "results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
+                "results/sleuth/{model}.samples.tsv",
+                "results/datavzrd-reports/diffexp-{model}",
+                "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
             ],
             model=config["diffexp"]["models"],
+            mode=["topn"],
         )
     )
+    if config["diffexp"]["genes_of_interest"]["activate"]:
+        wanted_input.extend(
+            expand(
+                [
+                    "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
+                ],
+                model=config["diffexp"]["models"],
+                mode=["predefined"],
+            )
+        )
 
     # ihw false discovery rate control
     wanted_input.extend(
@@ -291,4 +363,22 @@ def all_input(wildcards):
             )
         )
 
+    if is_3prime_experiment:
+        wanted_input.extend(
+            expand(
+                "results/plots/QC/3prime-QC-plot.{ind_transcripts}.html",
+                ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"],
+            )
+        )
+
+    if (
+        is_3prime_experiment
+        and config["experiment"]["3-prime-rna-seq"]["plot-qc"] != "all"
+    ):
+        wanted_input.extend(
+            expand(
+                "results/plots/QC/3prime-ind-QC-plot.{ind_transcripts}.html",
+                ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"],
+            )
+        )
     return wanted_input

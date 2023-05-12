@@ -1,0 +1,181 @@
+name: ?f"Pathway impact analysis for model {wildcards.model}"
+datasets:
+  spia_table:
+    path: ?input.spia_table
+    offer-excel: true
+    separator: "\t"
+  spia_table_activated:
+    path: ?input.spia_table_activated
+    offer-excel: true
+    separator: "\t"
+  spia_table_inhibited:
+    path: ?input.spia_table_inhibited
+    offer-excel: true
+    separator: "\t"
+default-view: spia_table
+views:
+  spia_table:
+    dataset: spia_table
+    desc: |
+        The table contains the following columns pSize is the number of genes on the pathway; NDE is the number of DE genes per pathway; tA is the observed total perturbation accumulation in the pathway; pNDE is the probability to observe at least NDE genes on the pathway using a hypergeometric model; pPERT is the probability to observe a total accumulation more extreme than tA only by chance; pG is the p-value obtained by combining pNDE and pPERT; pGFdr and pGFWER are the False Discovery Rate and respectively Bonferroni adjusted global p-values; and the Status gives the direction in which the pathway is perturbed (activated or inhibited).
+    page-size: 25
+    render-table:
+      columns:
+        Name:
+          display-mode: normal
+          link-to-url: 
+            reactome:
+              url: "http://reactome.org/PathwayBrowser/#/{Ids}"
+        number of genes on the pathway:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - white
+                - "#186904"        
+        number of DE genes per pathway:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - white
+                - "#186904"
+        p-value for at least NDE genes:
+          display-mode: hidden
+        total perturbation accumulation:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -1
+                - 0
+                - 1
+        p-value to observe a total accumulation:
+          display-mode: hidden
+        Combined p-value:
+          display-mode: hidden
+        Combined FDR:
+          plot:
+            bars:
+              scale: linear
+        Combined Bonferroni p-values:
+          display-mode: hidden     
+        Status:
+          plot:
+            heatmap:
+              scale: ordinal
+              color-scheme: accent
+        Ids:
+          display-mode: hidden
+  spia_table_activated:
+    dataset: spia_table_activated
+    desc: |
+        The table (sorted by "Status:Activated") contains the following columns pSize is the number of genes on the pathway; NDE is the number of DE genes per pathway; tA is the observed total perturbation accumulation in the pathway; pNDE is the probability to observe at least NDE genes on the pathway using a hypergeometric model; pPERT is the probability to observe a total accumulation more extreme than tA only by chance; pG is the p-value obtained by combining pNDE and pPERT; pGFdr and pGFWER are the False Discovery Rate and respectively Bonferroni adjusted global p-values; and the Status gives the direction in which the pathway is perturbed (activated).
+    page-size: 25
+    render-table:
+      columns:
+        Name:
+          display-mode: normal
+          link-to-url: 
+            reactome:
+              url: "http://reactome.org/PathwayBrowser/#/{Ids}"
+        number of genes on the pathway:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - white
+                - "#186904"        
+        number of DE genes per pathway:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - white
+                - "#186904"
+        p-value for at least NDE genes:
+          display-mode: hidden
+        total perturbation accumulation:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -1
+                - 0
+                - 1
+        p-value to observe a total accumulation:
+          display-mode: hidden
+        Combined p-value:
+          display-mode: hidden
+        Combined FDR:
+          plot:
+            bars:
+              scale: linear
+        Combined Bonferroni p-values:
+          display-mode: hidden     
+        Status:
+          display-mode: normal
+        Ids:
+          display-mode: hidden 
+  spia_table_inhibited:
+    dataset: spia_table_inhibited
+    desc: |
+        The table (sorted by "Status:Inhibited") contains the following columns pSize is the number of genes on the pathway; NDE is the number of DE genes per pathway; tA is the observed total perturbation accumulation in the pathway; pNDE is the probability to observe at least NDE genes on the pathway using a hypergeometric model; pPERT is the probability to observe a total accumulation more extreme than tA only by chance; pG is the p-value obtained by combining pNDE and pPERT; pGFdr and pGFWER are the False Discovery Rate and respectively Bonferroni adjusted global p-values; and the Status gives the direction in which the pathway is perturbed (inhibited).
+    page-size: 25
+    render-table:
+      columns:
+        Name:
+          display-mode: normal
+          link-to-url: 
+            reactome:
+              url: "http://reactome.org/PathwayBrowser/#/{Ids}"
+        number of genes on the pathway:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - white
+                - "#186904"        
+        number of DE genes per pathway:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - white
+                - "#186904"
+        p-value for at least NDE genes:
+          display-mode: hidden
+        total perturbation accumulation:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -1
+                - 0
+                - 1
+        p-value to observe a total accumulation:
+          display-mode: hidden
+        Combined p-value:
+          display-mode: hidden
+        Combined FDR:
+          plot:
+            bars:
+              scale: linear
+        Combined Bonferroni p-values:
+          display-mode: hidden     
+        Status:
+          display-mode: normal
+        Ids:
+          display-mode: hidden  

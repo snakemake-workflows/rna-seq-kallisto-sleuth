@@ -1,28 +1,27 @@
 rule kallisto_index:
     input:
-        "resources/transcriptome.cdna.fasta",
+        fasta="resources/transcriptome_clean.cdna.fasta"
+        if is_3prime_experiment
+        else "resources/transcriptome.cdna.fasta",
     output:
-        "results/kallisto/transcripts.idx",
+        index="results/kallisto_cdna/transcripts.cdna.idx",
     log:
-        "results/logs/kallisto/index.log",
-    conda:
-        "../envs/kallisto.yaml"
-    shell:
-        "kallisto index -i {output} {input} 2> {log}"
+        "results/logs/kallisto_cdna/index.cdna.log",
+    threads: 1
+    wrapper:
+        "v1.23.1/bio/kallisto/index"
 
 
 rule kallisto_quant:
     input:
-        fq=get_trimmed,
-        idx="results/kallisto/transcripts.idx",
+        fastq=kallisto_quant_input,
+        index="results/kallisto_cdna/transcripts.cdna.idx",
     output:
-        directory("results/kallisto/{sample}-{unit}"),
+        kallisto_folder=directory("results/kallisto_cdna/{sample}-{unit}"),
     log:
-        "results/logs/kallisto/quant/{sample}-{unit}.log",
+        "results/logs/kallisto_cdna/quant/{sample}-{unit}.log",
     params:
         extra=kallisto_params,
-    conda:
-        "../envs/kallisto.yaml"
-    shell:
-        "kallisto quant -i {input.idx} -o {output} "
-        "{params.extra} {input.fq} 2> {log}"
+    threads: 5
+    wrapper:
+        "v1.23.1/bio/kallisto/quant"

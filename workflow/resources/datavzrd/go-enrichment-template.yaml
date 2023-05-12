@@ -1,0 +1,105 @@
+name: ?f"Gene ontology (GO) term enrichment analysis performed by goatools {wildcards.model}"
+datasets:
+  significant_terms:
+    path: ?input.significant_terms
+    offer-excel: true
+    separator: "\t"
+  go_enrichment:
+    path: ?input.enrichment
+    offer-excel: true
+    separator: "\t"
+default-view: significant_terms
+views:
+  significant_terms:
+    dataset: significant_terms
+    desc: |
+        Gene ontology (GO) term enrichment analysis performed by goatools, using the sleuth model. Table contains top significant terms of FDR <0.05
+        The table contains the following columns. "GO" is the GO ID, "term" is the term associated with the GO, "class" is the corresponding class to which the GO term belongs (biological process/cellular component/molecular function), "p-value" is the p-value obtained, "p_corrected" is the corrected p-value, "n_genes_diff_exp" is the number of differentialy expressed genes that belongs to the particular GO term, "n_genes_diff_exp_study" is the total number of differentially expressed genes in the current study, "n_go_genes" is the total number of genes associated with the particular GO term, "gene_ratio" gives the ratio of genes corresponding to each GO term.
+    page-size: 10
+    render-table:
+      columns:
+        GO:
+          display-mode: normal
+          link-to-url: 
+            geneontology:
+              url: http://amigo.geneontology.org/amigo/term/{GO}
+        term:
+          display-mode: normal
+        class:
+          plot:
+            heatmap:
+              scale: ordinal
+        p-value:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.0
+                - 1.0
+        p_corrected:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.0
+                - 1.0
+        n_genes_diff_exp:
+          plot:
+            heatmap:
+              scale: linear
+        n_genes_diff_exp_study:
+          display-mode: normal
+        n_go_genes:
+          plot:
+            bars:
+              scale: linear
+        gene_ratio:
+          plot:
+            heatmap:
+              scale: linear
+        study_items:
+          display-mode: normal
+  go_enrichment:
+    dataset: go_enrichment
+    desc: |
+        Gene ontology (GO) term enrichment analysis performed by goatools, using the sleuth model. The table contains the following columns. "GO" is the GO ID, "term" is the term associated with the GO, "class" is the corresponding class to which the GO term belongs (biological process/cellular component/molecular function), "p_uncorrected" is the p-value obtained, "p_fdr_bh" is the p value obtained from false discovery, "ratio_in_study" is the ratio of differentially expressed genes in the current study, "ratio_in_pop" is the ratio of total genes present in the current analysis, "depth" is the total number of GO terms associated with the current ID, "study_count" is the number of differentially expressed genes in that particular GO term, "study_items" is the name of each differentially expressed genes. Each gene contains its corresponding "b" value with is the fold change seperated by ":". "Gene ratio" gives the ratio of gene corresponding to each term.  
+    page-size: 25
+    render-table:
+      columns:
+        GO:
+          display-mode: normal
+          link-to-url: 
+            geneontology: 
+              url: http://amigo.geneontology.org/amigo/term/{GO}
+        class:
+          display-mode: normal 
+        term:
+          display-mode: normal 
+        ratio_in_study:
+          display-mode: normal
+        ratio_in_pop:
+          display-mode: normal
+        p_uncorrected:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.0
+                - 1.0
+        depth:
+          plot:
+            heatmap:
+              scale: linear
+        study_count:
+          plot:
+            heatmap:
+              scale: linear
+        p_fdr_bh:
+          plot:
+            bars:
+              scale: linear
+              domain:
+                - 0.0
+                - 1.0
+        study_items:
+          display-mode: normal                        
