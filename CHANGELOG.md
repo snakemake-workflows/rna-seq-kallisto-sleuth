@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.5.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.4.3...v2.5.0) (2023-05-13)
+
+
+### Features
+
+* Support for 3-prime RNA sequencing  ([#62](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/62)) ([c06c573](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/c06c57369ea50a5e6f5f0d63a40c0ef7ae33c362))
+
+
+### Bug Fixes
+
+* fix report labels ([#72](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/72)) ([76c7fd9](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/76c7fd93a59a5f7ffae2add8b63159733a7b6c5e))
+
 ## [2.4.3](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.4.2...v2.4.3) (2023-02-06)
 
 
