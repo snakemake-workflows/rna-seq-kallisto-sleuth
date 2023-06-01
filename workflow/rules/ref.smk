@@ -36,6 +36,7 @@ rule get_transcript_info:
     params:
         species=get_bioc_species_name(),
         version=config["resources"]["ref"]["release"],
+        three_prime_activated=is_3prime_experiment,
     log:
         "logs/get_transcript_info.log",
     conda:

@@ -92,6 +92,15 @@ views:
               domain:
                 - 0.0
                 - 1.0
+        chromosome_name:
+          optional: true
+          display-mode: hidden
+        transcript_mane_select:
+          optional: true
+          display-mode: hidden
+        ensembl_transcript_id_version:
+          optional: true
+          display-mode: hidden
         test_stat:
           display-mode: hidden 
         rss:

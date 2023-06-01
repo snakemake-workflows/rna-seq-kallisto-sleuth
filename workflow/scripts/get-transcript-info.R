@@ -1,16 +1,17 @@
-log <- file(snakemake@log[[1]], open="wt")
-sink(log)
-sink(log, type="message")
+ log <- file(snakemake@log[[1]], open="wt")
+ sink(log)
+ sink(log, type="message")
 
 library("biomaRt")
 library("tidyverse")
+library("dplyr")
 
 # this variable holds a mirror name until
-# useEnsembl succeeds ("www" is last, because 
+# useEnsembl succeeds ("www" is last, because
 # of very frequent "Internal Server Error"s)
 mart <- "useast"
 rounds <- 0
-while ( class(mart)[[1]] != "Mart" ) {
+while (class(mart)[[1]] != "Mart") {
   mart <- tryCatch(
     {
       # done here, because error function does not
@@ -39,69 +40,124 @@ while ( class(mart)[[1]] != "Mart" ) {
       }
       # hop to next mirror
       mart <- switch(mart,
-                     useast = "uswest",
-                     uswest = "asia",
-                     asia = "www",
-                     www = {
-                       # wait before starting another round through the mirrors,
-                       # hoping that intermittent problems disappear
-                       Sys.sleep(30)
-                       "useast"
-                     }
-              )
+        useast = "uswest",
+        uswest = "asia",
+        asia = "www",
+        www = {
+          # wait before starting another round through the mirrors,
+          # hoping that intermittent problems disappear
+          Sys.sleep(30)
+          "useast"
+        }
+      )
     }
   )
 }
+three_prime_activated <- snakemake@params[["three_prime_activated"]]
 
 attributes <- c("ensembl_transcript_id",
                 "ensembl_gene_id",
                 "external_gene_name",
                 "description")
-
-has_canonical <- "transcript_is_canonical" %in% biomaRt::listAttributes(mart=mart)$name
+has_canonical <-
+  "transcript_is_canonical" %in% biomaRt::listAttributes(mart = mart)$name
 
 if (has_canonical) {
   attributes <- c(attributes, "transcript_is_canonical")
 }
 
-t2g <- biomaRt::getBM(
-            attributes = attributes,
-            mart = mart,
-            useCache = FALSE
-            )
 if (!has_canonical) {
   t2g <- t2g %>% add_column(transcript_is_canonical = NA)
 }
+if (three_prime_activated)  {
 
-t2g <- t2g %>%
-        rename( target_id = ensembl_transcript_id,
-                ens_gene = ensembl_gene_id,
-                ext_gene = external_gene_name,
-                gene_desc = description,
-                canonical = transcript_is_canonical
-                ) %>%
-        mutate_at(
-          vars(gene_desc),
-          function(values) { str_trim(map(values, function (v) { str_split(v, r"{\[}")[[1]][1]})) } # remove trailing source annotation (e.g. [Source:HGNC Symbol;Acc:HGNC:5])
-        ) %>%
-        mutate_at(
-          vars(canonical),
-          function(values) {
-            as_vector(
-              map(
-                str_trim(values), 
-                function(v) {
-                  if (is.na(v)) {
-                    NA
-                  } else if (v == "1") { 
-                    TRUE 
-                  } else if (v == "0") {
-                    FALSE
-                  }
-                }
-              )
-            )
-          }
+  attributes <- c(attributes, "transcript_is_canonical",
+    "chromosome_name", "transcript_mane_select",
+      "ensembl_transcript_id_version")
+  t2g <- biomaRt::getBM(
+  attributes = attributes,
+  mart = mart,
+  useCache = FALSE
+  )
+  t2g <- t2g %>%
+    rename(
+      target_id = ensembl_transcript_id,
+      ens_gene = ensembl_gene_id,
+      ext_gene = external_gene_name,
+      gene_desc = description,
+      canonical = transcript_is_canonical,
+      chromosome_name = chromosome_name,
+      transcript_mane_select = transcript_mane_select,
+    ) %>%
+    filter(!str_detect(chromosome_name, "patch|PATCH")) %>%
+    filter(str_detect(transcript_mane_select, "")) %>%
+    mutate_at(
+      vars(gene_desc),
+      function(values) {
+        str_trim(map(values, function(v) {
+          str_split(v, r"{\[}")[[1]][1]
+        }))
+      } # remove trailing source annotation (e.g. [Source:HGNC Symbol;Acc:HGNC:5])
+    ) %>%
+    mutate_at(
+      vars(canonical),
+      function(values) {
+        as_vector(
+          map(
+            str_trim(values),
+            function(v) {
+              if (is.na(v)) {
+                NA
+              } else if (v == "1") {
+                TRUE
+              } else if (v == "0") {
+                FALSE
+              }
+            }
+          )
         )
-
+      }
+    )
+  }else {
+  t2g <- biomaRt::getBM(
+  attributes = attributes,
+  mart = mart,
+  useCache = FALSE
+  )
+  t2g <- t2g %>%
+    rename(
+      target_id = ensembl_transcript_id,
+      ens_gene = ensembl_gene_id,
+      ext_gene = external_gene_name,
+      gene_desc = description,
+      canonical = transcript_is_canonical,
+    ) %>%
+    mutate_at(
+      vars(gene_desc),
+      function(values) {
+        str_trim(map(values, function(v) {
+          str_split(v, r"{\[}")[[1]][1]
+        }))
+      } # remove trailing source annotation (e.g. [Source:HGNC Symbol;Acc:HGNC:5])
+    ) %>%
+    mutate_at(
+      vars(canonical),
+      function(values) {
+        as_vector(
+          map(
+            str_trim(values),
+            function(v) {
+              if (is.na(v)) {
+                NA
+              } else if (v == "1") {
+                TRUE
+              } else if (v == "0") {
+                FALSE
+              }
+            }
+          )
+        )
+      }
+    )
+  }
 write_rds(t2g, file = snakemake@output[[1]], compress = "gz")

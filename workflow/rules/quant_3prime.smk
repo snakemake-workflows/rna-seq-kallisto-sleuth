@@ -15,7 +15,7 @@ if is_3prime_experiment:
 
     rule kallisto_3prime_index:
         input:
-            fasta="resources/transcriptome.3prime.fasta",
+            fasta="resources/transcriptome_clean.3prime.fasta",
         output:
             index="results/kallisto_3prime/transcripts.3prime.idx",
         log:
