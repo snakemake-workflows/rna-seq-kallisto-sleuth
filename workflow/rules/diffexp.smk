@@ -115,7 +115,6 @@ rule ihw_fdr_control:
             "results/tables/ihw/{model}.{level}.ihw-results.tsv",
             caption="../report/ihw-results.rst",
             category="IHW",
-            labels={"model": "{model}", "level": "{level}-ihw-results"},
         ),
         dispersion=report(
             "results/plots/ihw/{level}/{model}.{level}.plot-dispersion.pdf",
