@@ -61,103 +61,67 @@ attributes <- c("ensembl_transcript_id",
                 "description")
 has_canonical <-
   "transcript_is_canonical" %in% biomaRt::listAttributes(mart = mart)$name
-
-if (has_canonical) {
-  attributes <- c(attributes, "transcript_is_canonical")
+#Check if three_prime_activated is activated or else if transcipts are cononical
+if (has_canonical && three_prime_activated) {
+  attributes <- c(attributes, "transcript_is_canonical", "chromosome_name",
+    "transcript_mane_select", "ensembl_transcript_id_version")
+}else if (has_canonical) {
+     attributes <- c(attributes, "transcript_is_canonical")
 }
-
-if (!has_canonical) {
-  t2g <- t2g %>% add_column(transcript_is_canonical = NA)
+t2g <- biomaRt::getBM(
+attributes = attributes,
+mart = mart,
+useCache = FALSE
+)
+# Set columns as NA if three_prime_activated is set to false or if the transcipts are not canonical
+if (!has_canonical || !three_prime_activated) {
+  t2g <- t2g %>% add_column(chromosome_name = NA, transcript_mane_select = NA,
+      ensembl_transcript_id_version = NA)
+}else if (!has_canonical) {
+   t2g <- t2g %>% add_column(transcript_is_canonical = NA)
 }
-if (three_prime_activated)  {
-
-  attributes <- c(attributes, "transcript_is_canonical",
-    "chromosome_name", "transcript_mane_select",
-      "ensembl_transcript_id_version")
-  t2g <- biomaRt::getBM(
-  attributes = attributes,
-  mart = mart,
-  useCache = FALSE
+t2g <- t2g %>%
+  rename(
+    target_id = ensembl_transcript_id,
+    ens_gene = ensembl_gene_id,
+    ext_gene = external_gene_name,
+    gene_desc = description,
+    canonical = transcript_is_canonical,
+    chromosome_name = chromosome_name,
+    transcript_mane_select = transcript_mane_select,
+    ensembl_transcript_id_version = ensembl_transcript_id_version,
+  ) %>%
+  mutate_at(
+    vars(gene_desc),
+    function(values) {
+      str_trim(map(values, function(v) {
+        str_split(v, r"{\[}")[[1]][1]
+      }))
+    } # remove trailing source annotation (e.g. [Source:HGNC Symbol;Acc:HGNC:5])
+  ) %>%
+  mutate_at(
+    vars(canonical,),
+    function(values) {
+      as_vector(
+        map(
+          str_trim(values),
+          function(v) {
+            if (is.na(v)) {
+              NA
+            } else if (v == "1") {
+              TRUE
+            } else if (v == "0") {
+              FALSE
+            }
+          }
+        )
+      )
+    }
   )
+# Filter transcipts that are canonical, mane selected and filter chromosomes that are defined as "patch" 
+if (three_prime_activated && has_canonical) {
   t2g <- t2g %>%
-    rename(
-      target_id = ensembl_transcript_id,
-      ens_gene = ensembl_gene_id,
-      ext_gene = external_gene_name,
-      gene_desc = description,
-      canonical = transcript_is_canonical,
-      chromosome_name = chromosome_name,
-      transcript_mane_select = transcript_mane_select,
-    ) %>%
     filter(!str_detect(chromosome_name, "patch|PATCH")) %>%
-    filter(str_detect(transcript_mane_select, "")) %>%
-    mutate_at(
-      vars(gene_desc),
-      function(values) {
-        str_trim(map(values, function(v) {
-          str_split(v, r"{\[}")[[1]][1]
-        }))
-      } # remove trailing source annotation (e.g. [Source:HGNC Symbol;Acc:HGNC:5])
-    ) %>%
-    mutate_at(
-      vars(canonical),
-      function(values) {
-        as_vector(
-          map(
-            str_trim(values),
-            function(v) {
-              if (is.na(v)) {
-                NA
-              } else if (v == "1") {
-                TRUE
-              } else if (v == "0") {
-                FALSE
-              }
-            }
-          )
-        )
-      }
-    )
-  }else {
-  t2g <- biomaRt::getBM(
-  attributes = attributes,
-  mart = mart,
-  useCache = FALSE
-  )
-  t2g <- t2g %>%
-    rename(
-      target_id = ensembl_transcript_id,
-      ens_gene = ensembl_gene_id,
-      ext_gene = external_gene_name,
-      gene_desc = description,
-      canonical = transcript_is_canonical,
-    ) %>%
-    mutate_at(
-      vars(gene_desc),
-      function(values) {
-        str_trim(map(values, function(v) {
-          str_split(v, r"{\[}")[[1]][1]
-        }))
-      } # remove trailing source annotation (e.g. [Source:HGNC Symbol;Acc:HGNC:5])
-    ) %>%
-    mutate_at(
-      vars(canonical),
-      function(values) {
-        as_vector(
-          map(
-            str_trim(values),
-            function(v) {
-              if (is.na(v)) {
-                NA
-              } else if (v == "1") {
-                TRUE
-              } else if (v == "0") {
-                FALSE
-              }
-            }
-          )
-        )
-      }
-    )
-  }
+    filter(str_detect(transcript_mane_select, ""))
+}
 write_rds(t2g, file = snakemake@output[[1]], compress = "gz")
