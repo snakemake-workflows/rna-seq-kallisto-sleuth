@@ -65,6 +65,8 @@ has_canonical <-
 if (has_canonical && three_prime_activated) {
   attributes <- c(attributes, "transcript_is_canonical", "chromosome_name",
     "transcript_mane_select", "ensembl_transcript_id_version")
+  has_mane_select <-
+  "transcript_mane_select" %in% biomaRt::listAttributes(mart = mart)$name
 }else if (has_canonical) {
      attributes <- c(attributes, "transcript_is_canonical")
 }
@@ -100,7 +102,7 @@ t2g <- t2g %>%
     } # remove trailing source annotation (e.g. [Source:HGNC Symbol;Acc:HGNC:5])
   ) %>%
   mutate_at(
-    vars(canonical,),
+    vars(canonical),
     function(values) {
       as_vector(
         map(
@@ -118,10 +120,15 @@ t2g <- t2g %>%
       )
     }
   )
-# Filter transcipts that are canonical, mane selected and filter chromosomes that are defined as "patch" 
-if (three_prime_activated && has_canonical) {
+# Check if 3-prime-rna-seq is activated, filter transcipts that are mane selected and filter chromosomes that are defined as "patch" 
+if (three_prime_activated && has_mane_select) {
   t2g <- t2g %>%
     filter(!str_detect(chromosome_name, "patch|PATCH")) %>%
     filter(str_detect(transcript_mane_select, ""))
+}else if (three_prime_activated && !has_mane_select) {
+  stop(
+    str_c(
+        "needed mane_selected column in biomart if three prime mode is activated"
+          ))
 }
 write_rds(t2g, file = snakemake@output[[1]], compress = "gz")
