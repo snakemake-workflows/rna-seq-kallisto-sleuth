@@ -121,14 +121,17 @@ t2g <- t2g %>%
     }
   )
 # Check if 3-prime-rna-seq is activated, filter transcipts that are mane selected and filter chromosomes that are defined as "patch" 
-if (three_prime_activated && has_mane_select) {
-  t2g <- t2g %>%
+if (three_prime_activated) {
+  if (has_mane_select) {
+    t2g <- t2g %>%
     filter(!str_detect(chromosome_name, "patch|PATCH")) %>%
     filter(str_detect(transcript_mane_select, ""))
-}else if (three_prime_activated && !has_mane_select) {
-  stop(
-    str_c(
+  }else {
+    stop(
+      str_c(
         "needed mane_selected column in biomart if three prime mode is activated"
-          ))
+      )
+    )
+  }
 }
 write_rds(t2g, file = snakemake@output[[1]], compress = "gz")
