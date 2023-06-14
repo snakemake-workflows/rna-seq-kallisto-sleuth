@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.1](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.5.0...v2.5.1) (2023-06-14)
+
+
+### Bug Fixes
+
+* Updated the get-transcript-info.R file and its dependencies ([#73](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/73)) ([e44d424](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/e44d424aede76e5443f194dd42154256e0826241))
+
 ## [2.5.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.4.3...v2.5.0) (2023-05-13)
 
 
