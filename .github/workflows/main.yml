@@ -41,9 +41,9 @@ jobs:
   formatting:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: Formatting
-      uses: github/super-linter@v4
+      uses: github/super-linter@v5
       env:
         VALIDATE_ALL_CODEBASE: false
         DEFAULT_BRANCH: main
@@ -52,9 +52,9 @@ jobs:
   linting:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: Linting
-      uses: snakemake/snakemake-github-action@v1.22.0
+      uses: snakemake/snakemake-github-action@v1
       with:
         directory: .test
         snakefile: workflow/Snakefile
@@ -68,12 +68,12 @@ jobs:
     steps:
 
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         submodules: recursive
 
     - name: Test workflow
-      uses: snakemake/snakemake-github-action@v1.23.0
+      uses: snakemake/snakemake-github-action@v1
       with:
         directory: .test
         snakefile: workflow/Snakefile
@@ -87,12 +87,12 @@ jobs:
     steps:
     
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         submodules: recursive
 
     - name: Test 3-prime-workflow
-      uses: snakemake/snakemake-github-action@v1.23.0
+      uses: snakemake/snakemake-github-action@v1
       with:
         directory: .test/3-prime-config
         snakefile: workflow/Snakefile
@@ -101,7 +101,7 @@ jobs:
     # TODO: add some kind of test mode to report generation which does not really try to include
     # results.
     # - name: Test report
-    #   uses: snakemake/snakemake-github-action@v1.22.0
+    #   uses: snakemake/snakemake-github-action@v1
     #   with:
     #     directory: .test
     #     snakefile: workflow/Snakefile
