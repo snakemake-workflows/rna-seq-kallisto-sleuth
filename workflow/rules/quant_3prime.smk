@@ -57,13 +57,13 @@ rule bwa_mem:
         reads=get_trimmed,
         idx=multiext("resources/transcriptome", ".amb", ".ann", ".bwt", ".pac", ".sa"),
     output:
-        "results/mapped_mem/{sample}-{unit}.bam",
+        "results/mapped_mem/{sample}-{unit}.sorted.bam",
     log:
         "logs/bwa_mem/{sample}-{unit}.log",
     params:
         extra=r"-R '@RG\tID:{sample}\tSM:{sample}'",
-        sorting="none",  # Can be 'none', 'samtools' or 'picard'.
-        sort_order="queryname",  # Can be 'queryname' or 'coordinate'.
+        sorting="samtools",  # Can be 'none', 'samtools' or 'picard'.
+        sort_order="coordinate",  # Can be 'queryname' or 'coordinate'.
         sort_extra="",  # Extra args for samtools/picard.
     threads: 8
     wrapper:
