@@ -4,6 +4,4 @@ channels:
   - nodefaults
 dependencies:
   - bioconductor-biomart =2.46
-  - r-dplyr =1.0.9
-  - bioawk =1.0
   - r-tidyverse =1.3

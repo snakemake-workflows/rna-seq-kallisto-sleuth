@@ -4,7 +4,6 @@ sink(log, type = "message")
 
 
 library(biomaRt)
-library(dplyr)
 library(tidyverse)
 
 ensembl <- useEnsembl(
