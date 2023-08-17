@@ -11,8 +11,9 @@ with open(snakemake.output[0], "w") as transcript_clean_cdna_fasta:
         print(
             ">",
             seq_record.id,
+            " ",
             seq_record.description,
-            sep=" ",
+            sep="",
             file=transcript_clean_cdna_fasta,
         )
         print(polyrem_seq, file=transcript_clean_cdna_fasta)
