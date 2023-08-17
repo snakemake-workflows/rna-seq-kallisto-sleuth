@@ -132,8 +132,7 @@ use rule samtools_index as samtools_index_canonical with:
 
 rule get_closest_3prime_aligned_pos:
     input:
-        canonical_mapped_bam="results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam",
-        canonical_mapped_bam_index="results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam.bai",
+        canonical_ids="resources/canonical_ids.bed",
         canonical_mapped_pos="results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.position.txt",
     output:
         canonical_mapped_3prime_pos=temp(

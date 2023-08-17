@@ -3,13 +3,14 @@ import sys
 
 sys.stderr = open(snakemake.log[0], "w")
 
-bam_file = snakemake.input["canonical_mapped_bam"]
-sample_name = bam_file.split(".canonical.mapped.sorted.bam")[0]
-# Bam file reading
-bam_file = pysam.AlignmentFile(snakemake.input["canonical_mapped_bam"], "rb")
-bam_header = bam_file.header.to_dict()
-trans_length_data = pd.DataFrame(bam_header.get("SQ"))
-trans_length_data.rename(columns={"SN": "transcript"}, inplace=True)
+sample_name = f"{snakemake.wildcards['sample']}-{snakemake.wildcards['unit']}"
+
+# BED file reading
+trans_length_data = pd.read_csv(
+    snakemake.input["canonical_ids"],
+    sep="\t",
+    names=["transcript", "transcript_start", "transcript_length", "strand"],
+).drop(columns = ["transcript_start"])
 
 # Aligned text file reading
 align_bam_txt = pd.read_csv(
@@ -17,8 +18,6 @@ align_bam_txt = pd.read_csv(
     sep="\t",
     names=["read_name", "transcript", "start", "read", "quality"],
 )
-align_bam_txt["strand"] = align_bam_txt["transcript"].str.split("_", 1).str[1]
-align_bam_txt["Transcript"] = align_bam_txt["transcript"].str.split("_", 1).str[0]
 merge_data = align_bam_txt.merge(trans_length_data, on="transcript")
 
 # reads aligned to forward strand

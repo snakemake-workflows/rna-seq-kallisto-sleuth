@@ -24,12 +24,6 @@ rev_allsamp_hist_fil = pd.DataFrame([])
 # Get the sample names
 sample_name = snakemake.params["samples"]
 
-# Bam file reading
-bam_file = pysam.AlignmentFile(snakemake.input["samtools_sort"], "rb")
-bam_header = bam_file.header.to_dict()
-trans_length_data = pd.DataFrame(bam_header.get("SQ"))
-trans_length_data.rename(columns={"SN": "transcript"}, inplace=True)
-
 # BED file reading
 trans_length_data = pd.read_csv(
     snakemake.input["canonical_ids"],
