@@ -49,3 +49,24 @@ Effect size estimates are calculated as so-called beta-values by `sleuth`.
 For binary comparisons (your variable of interest has two factor levels), they resemble a log2 fold change.
 To know which variable of interest to use for the effect size calculation, you need to provide its column name as the `primary_variable:`.
 And for sleuth to know what level of that variable of interest to use as the base level, specify the respective entry as the `base_level:`.
+
+## Lexogen 3' QuantSeq data analysis
+
+For Lexogen 3' QuantSeq data analysis, please set `experiment: 3-prime-rna-seq: activate: true` in the `config/config.yaml` file.
+For more information information on Lexogen QuantSeq 3' sequencing, see: https://www.lexogen.com/quantseq-3mrna-sequencing/
+In addition, for Lexogen 3' FWD QuantSeq data, we recommend setting the `params: cutadapt-se:` with:
+```
+    adapters: "-a r1adapter=AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=7;max_error_rate=0.005"
+    extra: "--minimum-length 33 --nextseq-trim=20 --poly-a"
+```
+This is an adaptation of the [Lexogen read preprocessing recommendations for 3' FWD QuantSeq data](https://faqs.lexogen.com/faq/what-is-the-adapter-sequence-i-need-to-use-for-t-1).
+Changes to the recommendations are motivated as follows:
+* `-m`: We switched to the easier to read `--minimum-length` and apply this minimum length globally. In addition, we increase the minimum length to a default of 33 that makes more sense for kallisto quantification.
+* `-O`: Instead of this option, minimum overlap is specified per expression.
+* `-a "polyA=A{20}"`: We replace this with `cutudapt`s dedicated option for `--poly-a` tail removal (which is run after adapter trimming).
+* `-a "QUALITY=G{20}"`: We replace this with `cutudapt`s dedicated option for the removal artifactual trailing `G`s in NextSeq and NovaSeq data: `--nextseq-trim=20`.
+* `-n`: With the dedicated `cutadapt` options getting applied in the right order, this option is not needed any more.
+* `-a "r1adapter=A{18}AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=3;max_error_rate=0.100000"`: We remove A{18}, as this is handled by `--poly-a`. We increase `min_overlap` to 7 and set the `max_error_rate` to the Illumina error rate of about 0.005, both to avoid spurious adapter matches being removed.
+* `-g "r1adapter=AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=20"`: This is not needed any more, as `-a` option will lead to complete removal of read sequence if adapter is found at the start of the read, see: https://cutadapt.readthedocs.io/en/stable/guide.html#rightmost
+* `--discard-trimmed`: We omit this, as the `-a` with the adapter sequence will lead to complete read sequence removal if adapter is found at start, and the `--minimum-length` will then discard such empty reads.
+
