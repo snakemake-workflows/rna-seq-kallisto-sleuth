@@ -14,19 +14,37 @@ get_transcripts_ids <-
     getBM(
         attributes = c(
             "ensembl_transcript_id_version",
-            "transcript_is_canonical", "transcript_mane_select", "chromosome_name"
+            "transcript_is_canonical",
+            "transcript_mane_select",
+            "chromosome_name",
+            "transcript_length",
+            "strand"
         ),
         mart = ensembl
     )
 # transcript_mane_select- manually curated primary transcript as it has been encoded in NCBI
 canonical_ids <- get_transcripts_ids %>%
-    select(
-        ensembl_transcript_id_version, transcript_is_canonical,
-        transcript_mane_select, chromosome_name
-    ) %>%
     filter(!str_detect(chromosome_name, "patch|PATCH")) %>%
     filter(str_detect(transcript_mane_select, "")) %>%
-    subset(transcript_is_canonical == 1)
-write.csv(canonical_ids$ensembl_transcript_id_version,
-    file = snakemake@output[[1]], quote = FALSE, row.names = FALSE
+    filter(transcript_is_canonical == 1) %>%
+    # add columns necessary for valid BED file and sort accordingly, see:
+    # https://bedtools.readthedocs.io/en/latest/content/general-usage.html
+    add_column(
+        start = 0,
+        name = "",
+        score = ""
+    ) %>%
+    select(
+        ensembl_transcript_id_version,
+        start,
+        transcript_length,
+        name,
+        score,
+        strand
+    )
+
+write_tsv(
+    canonical_ids,
+    snakemake@output[[1]],
+    col_names = FALSE
 )

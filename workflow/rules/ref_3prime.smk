@@ -12,23 +12,9 @@ if is_3prime_experiment:
         script:
             "../scripts/remove_poly_tails.py"
 
-    rule remove_strand_info_from_transcript_header:
-        input:
-            ref_fasta="resources/transcriptome_clean.cdna.fasta",
-        output:
-            "resources/transcriptome.3prime.fasta",
-        params:
-            release=config["resources"]["ref"]["release"],
-        log:
-            "logs/remove_strand_info_from_transcript_header/remove_strand_info_from_transcript_header.log",
-        conda:
-            "../envs/biopython.yaml"
-        script:
-            "../scripts/remove_strand_info.py"
-
     rule get_canonical_ids:
         output:
-            "resources/canonical_ids.csv",
+            "resources/canonical_ids.bed",
         log:
             "logs/filter_canonical/get_canonical_ids.log",
         params:
