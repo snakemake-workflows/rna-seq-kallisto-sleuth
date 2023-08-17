@@ -1,6 +1,4 @@
 import pandas as pd
-import numpy as np
-import pysam
 import sys
 
 sys.stderr = open(snakemake.log[0], "w")

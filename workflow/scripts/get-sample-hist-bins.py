@@ -1,10 +1,6 @@
 import pandas as pd
-import numpy as np
-import pysam
-from scipy import stats
 import sys
 import json
-import csv
 
 
 sys.stderr = open(snakemake.log[0], "w")

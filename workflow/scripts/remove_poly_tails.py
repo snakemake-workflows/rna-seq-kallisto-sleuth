@@ -1,4 +1,3 @@
-import Bio
 import sys
 import re
 from Bio import SeqIO
