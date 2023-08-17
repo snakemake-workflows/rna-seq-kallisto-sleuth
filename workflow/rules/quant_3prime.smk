@@ -134,7 +134,7 @@ rule get_closest_3prime_aligned_pos:
     input:
         canonical_mapped_bam="results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam",
         canonical_mapped_bam_index="results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam.bai",
-        canonical_mapped_pos="results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.txt",
+        canonical_mapped_pos="results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.position.txt",
     output:
         canonical_mapped_3prime_pos=temp(
             "results/mapped_3prime_bam/{sample}-{unit}.sorted.canonical.3prime_pos.txt"
