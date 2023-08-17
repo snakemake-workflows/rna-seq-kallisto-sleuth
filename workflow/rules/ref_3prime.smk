@@ -37,7 +37,7 @@ if is_3prime_experiment:
         shell:
             # TODO: make this use a BED file, possibly bedtools getfasta
             "bedtools getfasta "
-            "  --fullHeader "
+            "  -fullHeader "
             "  -fi {input.fasta} "
             "  -bed {input.canonical_ids} "
             "  -fo {output} "
