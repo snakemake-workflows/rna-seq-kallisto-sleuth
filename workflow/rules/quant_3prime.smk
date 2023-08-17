@@ -15,7 +15,7 @@ if is_3prime_experiment:
 
     rule kallisto_3prime_index:
         input:
-            fasta="resources/transcriptome_clean.3prime.fasta",
+            fasta="resources/transcriptome.cdna.without_poly_a.canonical.fasta",
         output:
             index="results/kallisto_3prime/transcripts.3prime.idx",
         log:
@@ -41,7 +41,7 @@ if is_3prime_experiment:
 
 rule bwa_index:
     input:
-        "resources/transcriptome_clean.cdna.fasta",
+        "resources/transcriptome.cdna.without_poly_a.fasta",
     output:
         idx=multiext("resources/transcriptome", ".amb", ".ann", ".bwt", ".pac", ".sa"),
     log:
@@ -70,28 +70,45 @@ rule bwa_mem:
         "v1.17.2/bio/bwa/mem"
 
 
+rule samtools_index:
+    input:
+        "results/mapped_mem/{sample}-{unit}.sorted.bam",
+    output:
+        temp(
+            "results/mapped_mem/{sample}-{unit}.sorted.bam.bai",
+        ),
+    log:
+        "logs/mapped_mem/{sample}-{unit}.sorted.samtools_index.log",
+    params:
+        extra="",  # optional params string
+    threads: 4  # This value - 1 will be sent to -@
+    wrapper:
+        "v1.18.3/bio/samtools/index"
+
+
 rule get_mapped_canonical_transcripts:
     input:
-        mapped_bam="results/mapped_mem/{sample}-{unit}.bam",
-        canonical_ids="resources/canonical_ids.csv",
+        mapped_bam="results/mapped_mem/{sample}-{unit}.sorted.bam",
+        mapped_bai="results/mapped_mem/{sample}-{unit}.sorted.bam.bai",
+        canonical_ids="resources/canonical_ids.bed",
     output:
         canonical_mapped_bam=temp(
-            "results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.bam"
+            "results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam"
         ),
     log:
         "results/logs/canonical_mapped_bam/{sample}-{unit}.canonical-mapped-bam.log",
     conda:
         "../envs/samtools.yaml"
     shell:
-        "samtools view -h -F 4 {input.mapped_bam} |  cut -f1-12 | grep -f {input.canonical_ids} | samtools view -o {output.canonical_mapped_bam}  2> {log}"
+        "samtools view -F 4 -o {output.canonical_mapped_bam} --targets-file {input.canonical_ids} {input.mapped_bam} 2> {log}"
 
 
 rule get_mapped_canonical_positions:
     input:
-        canonical_mapped_bam="results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.bam",
+        canonical_mapped_bam="results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam",
     output:
         canonical_mapped_pos=temp(
-            "results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.position.txt"
+            "results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.position.txt"
         ),
     log:
         "results/logs/canonical_mapped_bam/{sample}-{unit}.canonical-mapped-pos.log",
@@ -101,47 +118,29 @@ rule get_mapped_canonical_positions:
         "samtools view {input.canonical_mapped_bam} | cut -f1,3,4,10,11  > {output}  2> {log}"
 
 
-rule bwa_samtools_sort:
-    input:
-        "results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.bam",
-    output:
-        temp("results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.sorted.bam"),
-    log:
-        "results/logs/QC/{sample}-{unit}.sorted.log",
-    params:
-        extra="-m 4G",
-    threads: 8
-    wrapper:
-        "v1.18.3/bio/samtools/sort"
 
-
-rule bwa_samtools_index:
+use rule samtools_index as samtools_index_canonical with:
     input:
-        "results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.sorted.bam",
+        "results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam",
     output:
         temp(
-            "results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.sorted.bam.bai"
+            "results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam.bai"
         ),
     log:
-        "results/logs/QC/{sample}-{unit}.sorted.index.log",
-    params:
-        extra="",  # optional params string
-    threads: 4  # This value - 1 will be sent to -@
-    wrapper:
-        "v1.18.3/bio/samtools/index"
+        "logs/canonical_mapped_bam/{sample}-{unit}.sorted.samtools_index.log",
 
 
 rule get_closest_3prime_aligned_pos:
     input:
-        canonical_mapped_bam="results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.sorted.bam",
-        canonical_mapped_bam_index="results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.sorted.bam.bai",
-        canonical_mapped_pos="results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.position.txt",
+        canonical_mapped_bam="results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam",
+        canonical_mapped_bam_index="results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam.bai",
+        canonical_mapped_pos="results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.txt",
     output:
         canonical_mapped_3prime_pos=temp(
-            "results/mapped_3prime_bam/{sample}-{unit}.canonical.mapped.3prime_pos.txt"
+            "results/mapped_3prime_bam/{sample}-{unit}.sorted.canonical.3prime_pos.txt"
         ),
     log:
-        "results/logs/mapped_3prime_bam/{sample}-{unit}.mapped.pos.log",
+        "logs/mapped_3prime_bam/{sample}-{unit}.mapped.pos.log",
     conda:
         "../envs/QC.yaml"
     script:
@@ -150,14 +149,14 @@ rule get_closest_3prime_aligned_pos:
 
 rule get_closest_3prime_aligned_pos_bam:
     input:
-        canonical_mapped_bam="results/canonical_mapped_bam/{sample}-{unit}.canonical.mapped.bam",
-        canonical_mapped_3prime_pos="results/mapped_3prime_bam/{sample}-{unit}.canonical.mapped.3prime_pos.txt",
+        canonical_mapped_bam="results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam",
+        canonical_mapped_3prime_pos="results/mapped_3prime_bam/{sample}-{unit}.sorted.canonical.3prime_pos.txt",
     output:
         canonical_mapped_3prime_bam=temp(
-            "results/canonical_3prime_mapped_bam/{sample}-{unit}.canonical.3prime_mapped.bam"
+            "results/canonical_3prime_mapped_bam/{sample}-{unit}.sorted.canonical.3prime_mapped.bam"
         ),
     log:
-        "results/logs/canonical_3prime_mapped_bam/{sample}-{unit}.canonical.3prime_mapped.log",
+        "logs/canonical_3prime_mapped_bam/{sample}-{unit}.sorted.canonical.3prime_mapped.log",
     conda:
         "../envs/samtools.yaml"
     shell:
@@ -166,11 +165,11 @@ rule get_closest_3prime_aligned_pos_bam:
 
 rule get_canonical_fastq:
     input:
-        canonical_3prime_mapped_bam="results/canonical_3prime_mapped_bam/{sample}-{unit}.canonical.3prime_mapped.bam",
+        canonical_3prime_mapped_bam="results/canonical_3prime_mapped_bam/{sample}-{unit}.sorted.canonical.3prime_mapped.bam",
     output:
         canonical_fastq="results/canonical_reads/{sample}-{unit}.fastq",
     log:
-        "results/logs/canonical_3prime_mapped_bam/{sample}-{unit}.canonical_3prime_mapped.fastq.log",
+        "logs/canonical_3prime_mapped_bam/{sample}-{unit}.sorted.canonical.3prime_mapped.fastq.log",
     conda:
         "../envs/samtools.yaml"
     shell:
@@ -183,14 +182,14 @@ rule kallisto_samtools_sort:
     output:
         temp("results/kallisto-bam-sorted/{sample}-{unit}-pseudoalignments.sorted.bam"),
     log:
-        "results/logs/QC/{sample}-{unit}.sorted.log",
+        "logs/QC/{sample}-{unit}.sorted.log",
     conda:
         "../envs/samtools.yaml"
     shell:
         "samtools sort {input}/pseudoalignments.bam > {output} 2> {log}"
 
 
-rule kallisto_samtools_index:
+use rule samtools_index as kallisto_samtools_index with:
     input:
         "results/kallisto-bam-sorted/{sample}-{unit}-pseudoalignments.sorted.bam",
     output:
@@ -198,9 +197,4 @@ rule kallisto_samtools_index:
             "results/kallisto-bam-sorted/{sample}-{unit}-pseudoalignments.sorted.bam.bai"
         ),
     log:
-        "results/logs/QC/{sample}-{unit}.sorted.index.log",
-    params:
-        extra="",  # optional params string
-    threads: 4  # This value - 1 will be sent to -@
-    wrapper:
-        "v1.18.3/bio/samtools/index"
+        "logs/QC/{sample}-{unit}.sorted.index.log",

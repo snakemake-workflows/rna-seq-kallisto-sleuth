@@ -4,7 +4,7 @@ if is_3prime_experiment:
         input:
             ref_fasta="resources/transcriptome.cdna.fasta",
         output:
-            "resources/transcriptome_clean.cdna.fasta",
+            "resources/transcriptome.cdna.without_poly_a.fasta",
         log:
             "results/logs/kallisto_cds/cds_polyA_T_removal.log",
         conda:
@@ -26,16 +26,19 @@ if is_3prime_experiment:
 
     rule get_canonical_transcripts:
         input:
-            fasta="resources/transcriptome.3prime.fasta",
-            canonical_ids="resources/canonical_ids.csv",
+            fasta="resources/transcriptome.cdna.without_poly_a.fasta",
+            canonical_ids="resources/canonical_ids.bed",
         output:
-            "resources/transcriptome_clean.3prime.fasta",
+            "resources/transcriptome.cdna.without_poly_a.canonical.fasta",
         log:
             "logs/get_canonical_transcripts/get_canonical_transcripts.log",
         conda:
-            "../envs/get_canonical_ids.yaml"
+            "../envs/bedtools.yaml"
         shell:
-            """bioawk -cfastx \
-            'BEGIN{{while((getline k <"{input.canonical_ids}")>0)i[k]=1}} \
-            {{if(i[$name])print ">"$name"\\n"$seq}}' \
-            {input.fasta} > {output}"""
+            # TODO: make this use a BED file, possibly bedtools getfasta
+            "bedtools getfasta "
+            "  --fullHeader "
+            "  -fi {input.fasta} "
+            "  -bed {input.canonical_ids} "
+            "  -fo {output} "
+            "2> {log}"
