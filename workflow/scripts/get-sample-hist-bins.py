@@ -32,40 +32,44 @@ sample_name = snakemake.params["samples"]
 bam_file = pysam.AlignmentFile(snakemake.input["samtools_sort"], "rb")
 bam_header = bam_file.header.to_dict()
 trans_length_data = pd.DataFrame(bam_header.get("SQ"))
-trans_length_data.rename(columns={"SN": "Transcript_ID"}, inplace=True)
+trans_length_data.rename(columns={"SN": "transcript"}, inplace=True)
+
+# BED file reading
+trans_length_data = pd.read_csv(
+    snakemake.input["canonical_ids"],
+    sep="\t",
+    names=["transcript", "transcript_start", "transcript_length", "strand"],
+).drop(columns = ["transcript_start"])
 
 # Aligned text file reading
 align_bam_txt = pd.read_csv(
     snakemake.input["aligned_file"],
     sep="\t",
-    names=["read_Name", "Transcript_ID", "Start", "reads", "Quality"],
+    names=["read_Name", "transcript", "start", "reads", "quality"],
 )
-align_bam_txt["Strand"] = align_bam_txt["Transcript_ID"].str.split("_", 1).str[1]
-align_bam_txt["Transcript"] = align_bam_txt["Transcript_ID"].str.split("_", 1).str[0]
-
 
 # Both transcript len and start postion are merged based on same transcript ID
-merge_data = align_bam_txt.merge(trans_length_data, on="Transcript_ID")
+merge_data = align_bam_txt.merge(trans_length_data, on="transcript")
 
 # Forward strand
-forward_strand = merge_data.loc[merge_data["Strand"] == "1"]
+forward_strand = merge_data.loc[merge_data["strand"] == "1"]
 
 # Each read postion is calcuated
 forward_strand[sample_name + "_forward_strand"] = (
-    forward_strand["LN"] - forward_strand["Start"]
+    forward_strand["transcript_length"] - forward_strand["start"]
 )
 aligned_reads = forward_strand.loc[
     forward_strand.groupby(["read_Name", "reads"])[
         sample_name + "_forward_strand"
     ].idxmin()
 ]
-if aligned_reads["Transcript"].str.contains(transcript_ids).any():
+if aligned_reads["transcript"].str.contains(transcript_ids).any():
     # Get aligned read postion of the given transcript
-    fwrd_filtered_transcript_data = aligned_reads.query("Transcript == @transcript_ids")
+    fwrd_filtered_transcript_data = aligned_reads.query("transcript == @transcript_ids")
     Freq_fwrd_fil, bins_fwrd_fil = np.histogram(
         fwrd_filtered_transcript_data[sample_name + "_forward_strand"],
         bins=read_length,
-        range=[0, max(fwrd_filtered_transcript_data["LN"])],
+        range=[0, max(fwrd_filtered_transcript_data["transcript_length"])],
     )
     hist_fwrd_fil = pd.DataFrame(
         {
@@ -80,7 +84,7 @@ elif transcript_ids == "all":
     Freq_fwrd, bins_fwrd = np.histogram(
         aligned_reads[sample_name + "_forward_strand"],
         bins=read_length,
-        range=[0, max(aligned_reads["LN"])],
+        range=[0, max(aligned_reads["transcript_length"])],
     )
     Freq_fwrd_trim, bins_fwrd_trim = np.histogram(
         forward_strand[sample_name + "_forward_strand"],
@@ -113,20 +117,20 @@ elif transcript_ids == "all":
     )
 
 # Reverse strand
-reverse_strand = merge_data.loc[merge_data["Strand"] == "-1"]
+reverse_strand = merge_data.loc[merge_data["strand"] == "-1"]
 
 # Minimum aligned start postion is taken
 read_min = reverse_strand.loc[
-    reverse_strand.groupby(["read_Name", "reads"])["Start"].idxmin()
+    reverse_strand.groupby(["read_Name", "reads"])["start"].idxmin()
 ]
 
-if read_min["Transcript"].str.contains(transcript_ids).any():
+if read_min["transcript"].str.contains(transcript_ids).any():
     # Get aligned read postion of the given transcript
-    rev_filtered_transcript_data = read_min.query("Transcript == @transcript_ids")
+    rev_filtered_transcript_data = read_min.query("transcript == @transcript_ids")
     Freq_rev_fil, bins_rev_fil = np.histogram(
-        rev_filtered_transcript_data["Start"],
+        rev_filtered_transcript_data["start"],
         bins=read_length,
-        range=[0, max(rev_filtered_transcript_data["LN"])],
+        range=[0, max(rev_filtered_transcript_data["transcript_length"])],
     )
     hist_rev_fil = pd.DataFrame(
         {
@@ -140,10 +144,10 @@ if read_min["Transcript"].str.contains(transcript_ids).any():
 elif transcript_ids == "all":
     # Values added to corresponding bins
     Freq_rev, bins_rev = np.histogram(
-        read_min["Start"], bins=read_length, range=[0, max(read_min["LN"])]
+        read_min["start"], bins=read_length, range=[0, max(read_min["transcript_length"])]
     )
     Freq_rev_trim, bins_rev_trim = np.histogram(
-        read_min["Start"], bins=read_length, range=[0, 20000]
+        read_min["start"], bins=read_length, range=[0, 20000]
     )
 
     # Dataframe created for bins

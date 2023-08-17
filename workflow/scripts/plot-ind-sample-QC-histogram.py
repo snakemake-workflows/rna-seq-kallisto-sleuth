@@ -33,32 +33,32 @@ for each_sample in samples:
     bam_file = pysam.AlignmentFile('results/ind_transcripts/' + sample_name + '-pseudoalignments.sorted.bam',"rb")
     bam_header = bam_file.header.to_dict()
     get_trans_length = pd.DataFrame(bam_header.get('SQ'))
-    get_trans_length.rename(columns={'SN': 'Transcript_ID'}, inplace=True)
+    get_trans_length.rename(columns={'SN': 'transcript'}, inplace=True)
 
     # Aligned text file reading
     align_bam_txt = pd.read_csv('results/QC/' + sample_name + '.aligned.txt', 
-    sep="\t",names=["read_Name","Transcript_ID", "Start","reads", "Quality"])
-    align_bam_txt["Strand"] =align_bam_txt['Transcript_ID'].str.split('_', 1).str[1]
-    align_bam_txt["Transcript"] =align_bam_txt['Transcript_ID'].str.split('_', 1).str[0]
+    sep="\t",names=["read_Name","transcript", "start","reads", "quality"])
+    align_bam_txt["strand"] =align_bam_txt['transcript'].str.split('_', 1).str[1]
+    align_bam_txt["Transcript"] =align_bam_txt['transcript'].str.split('_', 1).str[0]
 
     # merging aligned bam text file based on transcript id from bam file
-    merge_align_trans_data = align_bam_txt.merge(get_trans_length, on='Transcript_ID')
+    merge_align_trans_data = align_bam_txt.merge(get_trans_length, on='transcript')
     filtered_transcript_data = merge_align_trans_data.query("Transcript == @transcript_ids")
 
     # Forward strand
-    if ((filtered_transcript_data['Strand']=='1')).any():
+    if ((filtered_transcript_data['strand']=='1')).any():
         fwrd_flag = 1          
-        filtered_transcript_data[sample_name + '_forward_strand'] = filtered_transcript_data['LN'] - filtered_transcript_data['Start']
+        filtered_transcript_data[sample_name + '_forward_strand'] = filtered_transcript_data['transcript_length'] - filtered_transcript_data['start']
         aligned_reads = filtered_transcript_data.loc[filtered_transcript_data.groupby(['read_Name','reads'])[sample_name + '_forward_strand'].idxmin()]
-        Freq_fwrd, bins_fwrd = np.histogram(aligned_reads[sample_name + '_forward_strand'], bins = read_length, range=[0,max(aligned_reads['LN'])])
+        Freq_fwrd, bins_fwrd = np.histogram(aligned_reads[sample_name + '_forward_strand'], bins = read_length, range=[0,max(aligned_reads['transcript_length'])])
         hist_fwrd = pd.DataFrame({'sample_Name': sample_name, 'Freq_forward': Freq_fwrd, 'bins_foward': bins_fwrd[:-1]})
         fwrd_allsamp_hist = pd.concat([fwrd_allsamp_hist, hist_fwrd])
-    elif ((filtered_transcript_data['Strand']=='-1')).any():
+    elif ((filtered_transcript_data['strand']=='-1')).any():
     # reverse strand
         rev_flag = 1
-        reverse_strand = filtered_transcript_data.loc[filtered_transcript_data['Strand'] == '-1']
-        read_min = reverse_strand.loc[reverse_strand.groupby(['read_Name','reads'])['Start'].idxmin()]
-        Freq_rev, bins_rev = np.histogram(read_min['Start'], bins =read_length, range=[0, max(read_min['LN'])])
+        reverse_strand = filtered_transcript_data.loc[filtered_transcript_data['strand'] == '-1']
+        read_min = reverse_strand.loc[reverse_strand.groupby(['read_Name','reads'])['start'].idxmin()]
+        Freq_rev, bins_rev = np.histogram(read_min['start'], bins =read_length, range=[0, max(read_min['transcript_length'])])
         hist_rev = pd.DataFrame({'sample_Name': sample_name, 'Freq_rev': Freq_rev,'bins_rev': bins_rev[:-1]})
         rev_allsamp_hist = pd.concat([rev_allsamp_hist, hist_rev])
 

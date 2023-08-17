@@ -1,8 +1,7 @@
 rule get_selected_transcripts_aligned_read_bins:
     input:
         aligned_file="results/QC/{sample}-{unit}.aligned.txt",
-        samtools_sort="results/kallisto-bam-sorted/{sample}-{unit}-pseudoalignments.sorted.bam",
-        samtools_index="results/kallisto-bam-sorted/{sample}-{unit}-pseudoalignments.sorted.bam.bai",
+        canonical_ids="resources/canonical_ids.bed",
         read_length="results/stats/max-read-length.json",
     output:
         fwrd_allsamp_hist_fil=temp(

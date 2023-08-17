@@ -30,16 +30,14 @@ canonical_ids <- get_transcripts_ids %>%
     # add columns necessary for valid BED file and sort accordingly, see:
     # https://bedtools.readthedocs.io/en/latest/content/general-usage.html
     add_column(
-        start = 0,
-        name = "",
-        score = ""
+        start = 0
     ) %>%
+    # Here, we hijack the `name` field of the BED format to encode the strand,
+    # as biomart gives the strand as `1` vs `-1`, as opposed to BED's `+` vs. `-`.
     select(
         ensembl_transcript_id_version,
         start,
         transcript_length,
-        name,
-        score,
         strand
     )
 
