@@ -123,7 +123,7 @@ params:
     # This setup is for Lexogen QuantSeq FWD data, based on (but simplfied):
     # https://faqs.lexogen.com/faq/what-is-the-adapter-sequence-i-need-to-use-for-t-1
     # For more details, see the QuantSeq section in the `config/README.md` file.
-    adapters: "-a r1adapter=AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=7;max_error_rate=0.005"
+    adapters: "-a 'r1adapter=AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=7;max_error_rate=0.005'"
     extra: "--minimum-length 33 --nextseq-trim=20 --poly-a"
   # reasoning behind parameters:
   #   For reads that are produced by 3’-end sequencing, depending on the protocol, it might be recommended to remove some leading bases (e.g. see https://www.nature.com/articles/s41598-019-55434-x#Sec10)

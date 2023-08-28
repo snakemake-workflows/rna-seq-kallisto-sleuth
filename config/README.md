@@ -56,7 +56,7 @@ For Lexogen 3' QuantSeq data analysis, please set `experiment: 3-prime-rna-seq: 
 For more information information on Lexogen QuantSeq 3' sequencing, see: https://www.lexogen.com/quantseq-3mrna-sequencing/
 In addition, for Lexogen 3' FWD QuantSeq data, we recommend setting the `params: cutadapt-se:` with:
 ```
-    adapters: "-a r1adapter=AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=7;max_error_rate=0.005"
+    adapters: "-a 'r1adapter=AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=7;max_error_rate=0.005'"
     extra: "--minimum-length 33 --nextseq-trim=20 --poly-a"
 ```
 This is an adaptation of the [Lexogen read preprocessing recommendations for 3' FWD QuantSeq data](https://faqs.lexogen.com/faq/what-is-the-adapter-sequence-i-need-to-use-for-t-1).
