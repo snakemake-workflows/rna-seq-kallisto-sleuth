@@ -30,6 +30,7 @@ rule cutadapt:
     wrapper:
         "v1.22.0/bio/cutadapt/se"
 
+
 rule max_read_length:
     input:
         get_all_fastqs,
