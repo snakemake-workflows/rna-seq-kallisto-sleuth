@@ -21,7 +21,6 @@ diffexp <- read_tsv(snakemake@input[["diffexp"]]) %>%
     mutate(ens_gene = str_c("ENSEMBL:", ens_gene))
 universe <- diffexp %>% pull(var = ens_gene)
 sig_genes <- diffexp %>% filter(qval <= 0.05)
-
 if (nrow(sig_genes) == 0) {
     cols <- c(
         "Name", "Status", "Combined FDR",
@@ -30,7 +29,7 @@ if (nrow(sig_genes) == 0) {
         "Combined Bonferroni p-values",
         "p-value to observe a total accumulation", "Combined p-value", "Ids"
     )
-    res <- data.frame(matrix(ncol = 7, nrow = 0, dimnames = list(NULL, cols)))
+    res <- data.frame(matrix(ncol = 11, nrow = 0, dimnames = list(NULL, cols)))
     # create empty perturbation plots
     pdf(file = snakemake@output[["plots"]])
     write_tsv(res, snakemake@output[["table"]])
