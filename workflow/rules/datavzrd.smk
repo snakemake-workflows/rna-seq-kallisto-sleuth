@@ -69,6 +69,7 @@ rule spia_datavzrd:
     wrapper:
         "v2.6.0/utils/datavzrd"
 
+
 rule diffexp_datavzrd:
     input:
         config="results/datavzrd/diffexp/{model}.yaml",
@@ -118,4 +119,4 @@ rule go_enrichment_datavzrd:
     log:
         "logs/datavzrd-report/go_enrichment-{model}/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     wrapper:
-       "v2.6.0/utils/datavzrd"
+        "v2.6.0/utils/datavzrd"
