@@ -118,14 +118,11 @@ rule get_mapped_canonical_positions:
         "samtools view {input.canonical_mapped_bam} | cut -f1,3,4,10,11  > {output}  2> {log}"
 
 
-
 use rule samtools_index as samtools_index_canonical with:
     input:
         "results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam",
     output:
-        temp(
-            "results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam.bai"
-        ),
+        temp("results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam.bai"),
     log:
         "logs/canonical_mapped_bam/{sample}-{unit}.sorted.samtools_index.log",
 
