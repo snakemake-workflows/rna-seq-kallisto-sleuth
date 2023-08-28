@@ -12,7 +12,7 @@ rule cutadapt_pe:
     log:
         "results/logs/cutadapt/{sample}-{unit}.log",
     wrapper:
-        "v1.22.0/bio/cutadapt/pe"
+        "v2.6.0/bio/cutadapt/pe"
 
 
 rule cutadapt:
@@ -28,7 +28,7 @@ rule cutadapt:
     log:
         "results/logs/cutadapt/{sample}-{unit}.log",
     wrapper:
-        "v1.22.0/bio/cutadapt/se"
+        "v2.6.0/bio/cutadapt/se"
 
 
 rule max_read_length:
