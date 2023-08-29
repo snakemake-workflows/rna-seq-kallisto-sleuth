@@ -6,11 +6,9 @@ sys.stderr = open(snakemake.log[0], "w")
 
 with open(snakemake.output[0], "w") as transcript_clean_cdna_fasta:
     for seq_record in SeqIO.parse(snakemake.input["ref_fasta"], "fasta"):
-        polyrem_seq = re.sub("TTTT+$|AAAA+$", "", str(seq_record.seq))
-        print(
-            ">",
-            seq_record.description,
-            sep="",
-            file=transcript_clean_cdna_fasta,
+        seq_record.seq = re.sub("TTTT+$|AAAA+$", "", str(seq_record.seq))
+        SeqIO.write(
+            seq_record,
+            transcript_clean_cdna_fasta,
+            "fasta"
         )
-        print(polyrem_seq, file=transcript_clean_cdna_fasta)
