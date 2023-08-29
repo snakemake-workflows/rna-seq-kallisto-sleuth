@@ -33,12 +33,6 @@ if is_3prime_experiment:
         log:
             "logs/get_canonical_transcripts/get_canonical_transcripts.log",
         conda:
-            "../envs/bedtools.yaml"
-        shell:
-            # TODO: make this use a BED file, possibly bedtools getfasta
-            "bedtools getfasta "
-            "  -fullHeader "
-            "  -fi {input.fasta} "
-            "  -bed {input.canonical_ids} "
-            "  -fo {output} "
-            "2> {log}"
+            "../envs/biopython.yaml"
+        script:
+            "../scripts/get_canonical_transcripts_fasta.py"
