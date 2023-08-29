@@ -9,8 +9,6 @@ with open(snakemake.output[0], "w") as transcript_clean_cdna_fasta:
         polyrem_seq = re.sub("TTTT+$|AAAA+$", "", str(seq_record.seq))
         print(
             ">",
-            seq_record.id,
-            " ",
             seq_record.description,
             sep="",
             file=transcript_clean_cdna_fasta,
