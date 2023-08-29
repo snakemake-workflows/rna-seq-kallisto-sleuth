@@ -4,7 +4,7 @@ rule get_aligned_pos:
     output:
         aligned_files=temp("results/QC/{sample}-{unit}.aligned.txt"),
     log:
-        "results/logs/QC/{sample}-{unit}.aligned.log",
+        "logs/QC/{sample}-{unit}.aligned.log",
     conda:
         "../envs/samtools.yaml"
     shell:
@@ -19,7 +19,7 @@ if is_3prime_experiment:
         output:
             index="results/kallisto_3prime/transcripts.3prime.idx",
         log:
-            "results/logs/kallisto_3prime/index.3prime.log",
+            "logs/kallisto_3prime/index.3prime.log",
         threads: 1
         wrapper:
             "v1.23.1/bio/kallisto/index"
@@ -31,7 +31,7 @@ if is_3prime_experiment:
         output:
             kallisto_folder=directory("results/kallisto_3prime/{sample}-{unit}"),
         log:
-            "results/logs/kallisto_3prime/quant/{sample}-{unit}.log",
+            "logs/kallisto_3prime/quant/{sample}-{unit}.log",
         params:
             extra=kallisto_params,
         threads: 5
@@ -96,7 +96,7 @@ rule get_mapped_canonical_transcripts:
             "results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam"
         ),
     log:
-        "results/logs/canonical_mapped_bam/{sample}-{unit}.canonical-mapped-bam.log",
+        "logs/canonical_mapped_bam/{sample}-{unit}.canonical-mapped-bam.log",
     conda:
         "../envs/samtools.yaml"
     shell:
@@ -111,7 +111,7 @@ rule get_mapped_canonical_positions:
             "results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.position.txt"
         ),
     log:
-        "results/logs/canonical_mapped_bam/{sample}-{unit}.canonical-mapped-pos.log",
+        "logs/canonical_mapped_bam/{sample}-{unit}.canonical-mapped-pos.log",
     conda:
         "../envs/samtools.yaml"
     shell:

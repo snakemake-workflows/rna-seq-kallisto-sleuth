@@ -35,7 +35,7 @@ if is_3prime_experiment and three_prime_vendor == "lexogen":
                 "-m 20 -O 20 -a " "polyA=A{20}" " -a " "QUALITY=G{20}" " -n 2"
             ),
         log:
-            "results/logs/cutadapt/{sample}-{unit}.1.1.log",
+            "logs/cutadapt/{sample}-{unit}.1.1.log",
         wrapper:
             "v1.14.1/bio/cutadapt/se"
 
@@ -52,7 +52,7 @@ if is_3prime_experiment and three_prime_vendor == "lexogen":
                 ""
             ),
         log:
-            "results/logs/cutadapt/{sample}-{unit}.2.1.log",
+            "logs/cutadapt/{sample}-{unit}.2.1.log",
         wrapper:
             "v1.14.1/bio/cutadapt/se"
 
@@ -69,7 +69,7 @@ if is_3prime_experiment and three_prime_vendor == "lexogen":
                 " --discard-trimmed"
             ),
         log:
-            "results/logs/cutadapt/{sample}-{unit}.log",
+            "logs/cutadapt/{sample}-{unit}.log",
         wrapper:
             "v1.14.1/bio/cutadapt/se"
 

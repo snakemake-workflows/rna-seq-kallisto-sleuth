@@ -14,7 +14,7 @@ rule get_selected_transcripts_aligned_read_bins:
         each_transcript="{ind_transcripts}",
         samples="{sample}-{unit}",
     log:
-        "results/logs/QC/{sample}-{unit}.{ind_transcripts}.aligned-read-bins.log",
+        "logs/QC/{sample}-{unit}.{ind_transcripts}.aligned-read-bins.log",
     conda:
         "../envs/QC.yaml"
     script:
@@ -66,7 +66,7 @@ if is_3prime_experiment and config["experiment"]["3-prime-rna-seq"]["plot-qc"] !
         params:
             each_transcript="{ind_transcripts}",
         log:
-            "results/logs/QC/3prime-QC-plot.{ind_transcripts}.log",
+            "logs/QC/3prime-QC-plot.{ind_transcripts}.log",
         conda:
             "../envs/QC.yaml"
         script:
@@ -107,7 +107,7 @@ else:
         params:
             each_transcript="{ind_transcripts}",
         log:
-            "results/logs/QC/3prime-QC-plot.{ind_transcripts}.log",
+            "logs/QC/3prime-QC-plot.{ind_transcripts}.log",
         conda:
             "../envs/QC.yaml"
         script:

@@ -6,7 +6,7 @@ if is_3prime_experiment:
         output:
             "resources/transcriptome.cdna.without_poly_a.fasta",
         log:
-            "results/logs/kallisto_cds/cds_polyA_T_removal.log",
+            "logs/kallisto_cds/cds_polyA_T_removal.log",
         conda:
             "../envs/biopython.yaml"
         script:

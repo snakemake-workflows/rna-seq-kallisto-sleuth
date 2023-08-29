@@ -10,7 +10,7 @@ rule cutadapt_pe:
         adapters=config["params"]["cutadapt-pe"]["adapters"],
         extra=config["params"]["cutadapt-pe"]["extra"],
     log:
-        "results/logs/cutadapt/{sample}-{unit}.log",
+        "logs/cutadapt/{sample}-{unit}.log",
     wrapper:
         "v1.22.0/bio/cutadapt/pe"
 
@@ -28,6 +28,6 @@ if not is_3prime_experiment:
             adapters=config["params"]["cutadapt-se"]["adapters"],
             extra=config["params"]["cutadapt-se"]["extra"],
         log:
-            "results/logs/cutadapt/{sample}-{unit}.log",
+            "logs/cutadapt/{sample}-{unit}.log",
         wrapper:
             "v1.22.0/bio/cutadapt/se"
