@@ -7,3 +7,4 @@ dependencies:
   - altair =4.2.0
   - matplotlib =3.5.2
   - pandas =1
+  - numpy =1.22.0
