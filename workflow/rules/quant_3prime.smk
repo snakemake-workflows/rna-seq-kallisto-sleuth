@@ -156,7 +156,7 @@ rule get_closest_3prime_aligned_pos_bam:
     conda:
         "../envs/samtools.yaml"
     shell:
-        "samtools view -R {input.canonical_mapped_3prime_pos} {input.canonical_mapped_bam} -o {output.canonical_mapped_3prime_bam}  2> {log}"
+        "samtools view -N {input.canonical_mapped_3prime_pos} {input.canonical_mapped_bam} -o {output.canonical_mapped_3prime_bam}  2> {log}"
 
 
 rule get_canonical_fastq:
