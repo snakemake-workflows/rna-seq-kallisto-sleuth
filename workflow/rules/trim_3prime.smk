@@ -1,5 +1,4 @@
 if is_3prime_experiment and three_prime_vendor == "lexogen":
-
     # Rule cutadapt1 checks and removes poly-A tails and sequence qualilty score <20.
     # reasoning behind parameters:
     #   * `-m 20`:
