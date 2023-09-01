@@ -21,7 +21,7 @@ align_bam_txt = pd.read_csv(
 merge_data = align_bam_txt.merge(trans_length_data, on="transcript")
 
 # reads aligned to forward strand
-forward_strand = merge_data.loc[merge_data["strand"] == "1"]
+forward_strand = merge_data.loc[merge_data["strand"] == 1]
 forward_strand[sample_name + "_forward_strand"] = (
     forward_strand["transcript_length"] - forward_strand["start"]
 )
@@ -32,7 +32,7 @@ aligned_reads = forward_strand.loc[
 ]
 
 # reads aligned to reverse strand
-reverse_strand = merge_data.loc[merge_data["strand"] == "-1"]
+reverse_strand = merge_data.loc[merge_data["strand"] == -1]
 read_min = reverse_strand.loc[
     reverse_strand.groupby(["read_name", "read"])["start"].idxmin()
 ]
