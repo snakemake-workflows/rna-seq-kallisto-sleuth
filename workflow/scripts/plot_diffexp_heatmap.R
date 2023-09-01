@@ -53,7 +53,7 @@ if (all(selectedgenes == 0)) {
     # If number of transcripts is more than 100,
     # Since for RNA-seq multiple transcripts may present for a single gene.
 } else if (nrow(selectedgenes) > 100) {
-    pdf_height <- round(nrow(selectedgenes) / 7)
+    pdf_height <- round(nrow(selectedgenes) / 5)
     pdf(snakemake@output[["diffexp_heatmap"]],
         height = pdf_height, width = ncol(selectedgenes) * 2
     )
@@ -63,7 +63,7 @@ if (all(selectedgenes == 0)) {
     )
     dev.off()
 } else {
-    pdf_height <- round(nrow(selectedgenes) / 7)
+    pdf_height <- round(nrow(selectedgenes) / 5)
     pdf(
         file = snakemake@output[["diffexp_heatmap"]],
         height = pdf_height, width = ncol(selectedgenes) * 2
