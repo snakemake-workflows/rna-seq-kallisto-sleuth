@@ -103,6 +103,15 @@ rule get_mapped_canonical_transcripts:
         "samtools view -F 4 -o {output.canonical_mapped_bam} --targets-file {input.canonical_ids} {input.mapped_bam} 2> {log}"
 
 
+use rule samtools_index as samtools_index_canonical with:
+    input:
+        "results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam",
+    output:
+        temp("results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam.bai"),
+    log:
+        "logs/canonical_mapped_bam/{sample}-{unit}.sorted.samtools_index.log",
+
+
 rule get_mapped_canonical_positions:
     input:
         canonical_mapped_bam="results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam",
@@ -116,15 +125,6 @@ rule get_mapped_canonical_positions:
         "../envs/samtools.yaml"
     shell:
         "samtools view {input.canonical_mapped_bam} | cut -f1,3,4,10,11  > {output}  2> {log}"
-
-
-use rule samtools_index as samtools_index_canonical with:
-    input:
-        "results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam",
-    output:
-        temp("results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam.bai"),
-    log:
-        "logs/canonical_mapped_bam/{sample}-{unit}.sorted.samtools_index.log",
 
 
 rule get_closest_3prime_aligned_pos:
