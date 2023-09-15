@@ -29,8 +29,8 @@ sample_name = snakemake.params["samples"]
 trans_length_data = pd.read_csv(
     snakemake.input["canonical_ids"],
     sep="\t",
-    names=["transcript", "transcript_start", "transcript_length", "strand"],
-).drop(columns = ["transcript_start"])
+    names=["transcript", "transcript_start", "transcript_length", "name", "transcript_mane_select", "strand"],
+).drop(columns = ["transcript_start", "name", "transcript_mane_select"])
 
 # Aligned text file reading
 align_bam_txt = pd.read_csv(
@@ -43,7 +43,7 @@ align_bam_txt = pd.read_csv(
 merge_data = align_bam_txt.merge(trans_length_data, on="transcript")
 
 # Forward strand
-forward_strand = merge_data.loc[merge_data["strand"] == "1"]
+forward_strand = merge_data.loc[merge_data["strand"] == "+"]
 
 # Each read postion is calcuated
 forward_strand[sample_name + "_forward_strand"] = (
@@ -108,7 +108,7 @@ elif transcript_ids == "all":
     )
 
 # Reverse strand
-reverse_strand = merge_data.loc[merge_data["strand"] == "-1"]
+reverse_strand = merge_data.loc[merge_data["strand"] == "-"]
 
 # Minimum aligned start postion is taken
 read_min = reverse_strand.loc[

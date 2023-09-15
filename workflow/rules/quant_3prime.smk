@@ -90,7 +90,7 @@ rule get_mapped_canonical_transcripts:
     input:
         mapped_bam="results/mapped_mem/{sample}-{unit}.sorted.bam",
         mapped_bai="results/mapped_mem/{sample}-{unit}.sorted.bam.bai",
-        canonical_ids="resources/canonical_ids.bed",
+        canonical_ids="resources/mane_select_transcripts.bed",
     output:
         canonical_mapped_bam=temp(
             "results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.bam"
@@ -129,7 +129,7 @@ rule get_mapped_canonical_positions:
 
 rule get_closest_3prime_aligned_pos:
     input:
-        canonical_ids="resources/canonical_ids.bed",
+        canonical_ids="resources/mane_select_transcripts.bed",
         canonical_mapped_pos="results/canonical_mapped_bam/{sample}-{unit}.sorted.canonical.position.txt",
     output:
         canonical_mapped_3prime_pos=temp(

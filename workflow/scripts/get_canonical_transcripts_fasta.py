@@ -10,8 +10,8 @@ with open(snakemake.output[0], "w") as transcript_clean_cdna_fasta:
         pd.read_csv(
             snakemake.input["canonical_ids"],
             sep="\t",
-            names=["transcript", "transcript_start", "transcript_length", "strand"],
-        ).drop(columns = ["transcript_start", "transcript_length", "strand"])
+            names=["transcript", "transcript_start", "transcript_length", "name", "transcript_mane_select", "strand"],
+        ).drop(columns = ["transcript_start", "transcript_length", "name", "transcript_mane_select", "strand"])
         .loc[:, "transcript"]
     )
 

@@ -10,9 +10,10 @@ rule cds_polyA_T_removal:
     script:
         "../scripts/remove_poly_tails.py"
 
-rule get_canonical_ids:
+rule get_transcripts:
     output:
-        "resources/canonical_ids.bed",
+        all="resources/all_transcripts.bed",
+        mane_select="resources/mane_select_transcripts.bed",
     log:
         "logs/filter_canonical/get_canonical_ids.log",
     params:
@@ -20,12 +21,12 @@ rule get_canonical_ids:
     conda:
         "../envs/get_canonical_ids.yaml"
     script:
-        "../scripts/get_canonical_ids.R"
+        "../scripts/get_transcripts.R"
 
-rule get_canonical_transcripts:
+rule get_canonical_transcripts_fasta:
     input:
         fasta="resources/transcriptome.cdna.without_poly_a.fasta",
-        canonical_ids="resources/canonical_ids.bed",
+        canonical_ids="resources/mane_select_transcripts.bed",
     output:
         "resources/transcriptome.cdna.without_poly_a.canonical.fasta",
     log:
