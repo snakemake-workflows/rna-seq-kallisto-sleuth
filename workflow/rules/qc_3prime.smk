@@ -1,3 +1,16 @@
+rule get_aligned_pos:
+    input:
+        bam_file="results/kallisto_cdna/{sample}-{unit}",
+    output:
+        aligned_files=temp("results/QC/{sample}-{unit}.aligned.txt"),
+    log:
+        "logs/QC/{sample}-{unit}.aligned.log",
+    conda:
+        "../envs/samtools.yaml"
+    shell:
+        "samtools view {input.bam_file}/pseudoalignments.bam | cut -f1,3,4,10,11  > {output} 2> {log}"
+
+
 rule get_selected_transcripts_aligned_read_bins:
     input:
         aligned_file="results/QC/{sample}-{unit}.aligned.txt",
