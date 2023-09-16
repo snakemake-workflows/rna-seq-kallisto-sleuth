@@ -6,17 +6,16 @@ from Bio import SeqIO
 sys.stderr = open(snakemake.log[0], "w")
 
 with open(snakemake.output[0], "w") as transcript_clean_cdna_fasta:
-    canonical_ids = set(
+    mane_select_transcripts = set(
         pd.read_csv(
-            snakemake.input["canonical_ids"],
+            snakemake.input["mane_select_transcripts"],
             sep="\t",
-            names=["transcript", "transcript_start", "transcript_length", "name", "transcript_mane_select", "strand"],
-        ).drop(columns = ["transcript_start", "transcript_length", "name", "transcript_mane_select", "strand"])
-        .loc[:, "transcript"]
+            usecols=["transcript"],
+        )
     )
 
     for seq_record in SeqIO.parse(snakemake.input["fasta"], "fasta"):
-        if seq_record.id in canonical_ids:
+        if seq_record.id in mane_select_transcripts:
             SeqIO.write(
                 seq_record,
                 transcript_clean_cdna_fasta,

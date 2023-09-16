@@ -14,7 +14,7 @@ rule get_aligned_pos:
 rule get_selected_transcripts_aligned_read_bins:
     input:
         aligned_file="results/QC/{sample}-{unit}.aligned.txt",
-        canonical_ids="resources/mane_select_transcripts.bed",
+        mane_select_transcripts="resources/mane_select_transcripts.tsv",
         read_length="results/stats/max-read-length.json",
     output:
         fwrd_allsamp_hist_fil=temp(

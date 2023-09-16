@@ -13,7 +13,7 @@ rule cds_polyA_T_removal:
 rule get_transcripts:
     output:
         all="resources/all_transcripts.bed",
-        mane_select="resources/mane_select_transcripts.bed",
+        mane_select="resources/mane_select_transcripts.tsv",
     log:
         "logs/filter_canonical/get_canonical_ids.log",
     params:
@@ -26,7 +26,7 @@ rule get_transcripts:
 rule get_canonical_transcripts_fasta:
     input:
         fasta="resources/transcriptome.cdna.without_poly_a.fasta",
-        canonical_ids="resources/mane_select_transcripts.bed",
+        mane_select_transcripts="resources/mane_select_transcripts.tsv",
     output:
         "resources/transcriptome.cdna.without_poly_a.canonical.fasta",
     log:

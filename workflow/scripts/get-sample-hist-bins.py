@@ -25,12 +25,11 @@ rev_allsamp_hist_fil = pd.DataFrame([])
 # Get the sample names
 sample_name = snakemake.params["samples"]
 
-# BED file reading
+# TSV file reading
 trans_length_data = pd.read_csv(
-    snakemake.input["canonical_ids"],
+    snakemake.input["mane_select_transcripts"],
     sep="\t",
-    names=["transcript", "transcript_start", "transcript_length", "name", "transcript_mane_select", "strand"],
-).drop(columns = ["transcript_start", "name", "transcript_mane_select"])
+).drop(columns = ["transcript_mane_select"])
 
 # Aligned text file reading
 align_bam_txt = pd.read_csv(
