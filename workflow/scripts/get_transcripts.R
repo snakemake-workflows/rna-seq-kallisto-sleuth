@@ -15,9 +15,9 @@ transcripts <-
         attributes = c(
             "ensembl_transcript_id_version",
             "transcript_length",
-            "strand"
+            "strand",
             "transcript_mane_select",
-            "chromosome_name",
+            "chromosome_name"
         ),
         mart = ensembl
     )
@@ -27,6 +27,7 @@ cleaned_transcripts <- transcripts %>%
     rename(transcript = ensembl_transcript_id_version) %>%
     mutate(
         strand = case_match(
+            strand,
             1 ~ "+",
             -1 ~ "-"
         ),
