@@ -27,7 +27,7 @@ sample_name = snakemake.params["samples"]
 
 # TSV file reading
 trans_length_data = pd.read_csv(
-    snakemake.input["mane_select_transcripts"],
+    snakemake.input["transcripts_annotation"],
     sep="\t",
 ).drop(columns = ["transcript_mane_select"])
 

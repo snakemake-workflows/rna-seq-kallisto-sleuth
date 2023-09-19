@@ -3,8 +3,10 @@
  sink(log, type="message")
 
 library("biomaRt")
+# tidy syntax
 library("tidyverse")
-library("dplyr")
+# useful error messages upon aborting
+library("cli")
 
 # this variable holds a mirror name until
 # useEnsembl succeeds ("www" is last, because
@@ -53,85 +55,140 @@ while (class(mart)[[1]] != "Mart") {
     }
   )
 }
+
 three_prime_activated <- snakemake@params[["three_prime_activated"]]
 
-attributes <- c("ensembl_transcript_id",
-                "ensembl_gene_id",
-                "external_gene_name",
-                "description")
-has_canonical <-
-  "transcript_is_canonical" %in% biomaRt::listAttributes(mart = mart)$name
-#Check if three_prime_activated is activated or else if transcipts are cononical
-if (has_canonical && three_prime_activated) {
-  attributes <- c(attributes, "transcript_is_canonical", "chromosome_name",
-    "transcript_mane_select", "ensembl_transcript_id_version")
-  has_mane_select <-
-  "transcript_mane_select" %in% biomaRt::listAttributes(mart = mart)$name
-}else if (has_canonical) {
-     attributes <- c(attributes, "transcript_is_canonical")
-}
-t2g <- biomaRt::getBM(
-attributes = attributes,
-mart = mart,
-useCache = FALSE
+# define and keep those separately, to filter out below
+sleuth_attributes <- c(
+  "ensembl_transcript_id",
+  "ensembl_gene_id",
+  "external_gene_name",
+  "description"
 )
-# Set columns as NA if three_prime_activated is set to false or if the transcipts are not canonical
-if (!has_canonical || !three_prime_activated) {
-  t2g <- t2g %>% add_column(chromosome_name = NA, transcript_mane_select = NA,
-      ensembl_transcript_id_version = NA)
-}else if (!has_canonical) {
-   t2g <- t2g %>% add_column(transcript_is_canonical = NA)
-}
-t2g <- t2g %>%
-  rename(
-    target_id = ensembl_transcript_id,
-    ens_gene = ensembl_gene_id,
-    ext_gene = external_gene_name,
-    gene_desc = description,
-    canonical = transcript_is_canonical,
-    chromosome_name = chromosome_name,
-    transcript_mane_select = transcript_mane_select,
-    ensembl_transcript_id_version = ensembl_transcript_id_version,
-  ) %>%
-  mutate_at(
-    vars(gene_desc),
-    function(values) {
-      str_trim(map(values, function(v) {
-        str_split(v, r"{\[}")[[1]][1]
-      }))
-    } # remove trailing source annotation (e.g. [Source:HGNC Symbol;Acc:HGNC:5])
-  ) %>%
-  mutate_at(
-    vars(canonical),
-    function(values) {
-      as_vector(
-        map(
-          str_trim(values),
-          function(v) {
-            if (is.na(v)) {
-              NA
-            } else if (v == "1") {
-              TRUE
-            } else if (v == "0") {
-              FALSE
-            }
-          }
-        )
-      )
-    }
-  )
-# Check if 3-prime-rna-seq is activated, filter transcipts that are mane selected and filter chromosomes that are defined as "patch" 
-if (three_prime_activated) {
-  if (has_mane_select) {
-    t2g <- t2g %>%
-    filter(!str_detect(chromosome_name, "patch|PATCH")) %>%
-    filter(str_detect(transcript_mane_select, ""))
-  }else {
-    stop(
-      str_c(
-        "needed mane_selected column in biomart if three prime mode is activated"
-      )
-    )
+
+wanted_attributes <- sleuth_attributes
+
+# get attributes to be able to check below, whether this species and version has
+# ensembl canonical and MANE select annotations available
+available_attributes <- biomaRt::listAttributes(mart = mart)$name
+
+use_if_available <- function(attribute_name, available_attributes) {
+  if (attribute_name %in% available_attributes) {
+    attribute_name
   }
 }
-write_rds(t2g, file = snakemake@output[[1]], compress = "gz")
+
+wanted_attributes <- c(
+  wanted_attributes,
+  use_if_available("transcript_is_canonical", available_attributes),
+  # always get this if present, as this might be a useful annotation
+  # for final results
+  use_if_available("transcript_mane_select", available_attributes)
+)
+
+
+three_prime_attributes <- c(
+  "ensembl_transcript_id_version",
+  "chromosome_name",
+  "transcript_length",
+  "strand"
+)
+
+if (three_prime_activated & !("transcript_mane_select" %in% available_attributes)) {
+  cli_abort(
+    str_c(
+      "Three prime mode for Lexogen QuantSeq analysis is activated, which ",
+      "needs the transcript_mane_select attribute from biomart. However, ",
+      "this attribute is not available for the species '",
+      snakemake@params[["species"]],
+      "' in the ensembl release version: ",
+      snakemake@params[["version"]]
+    )
+  )
+}
+
+wanted_attributes <- c(
+  wanted_attributes,
+  three_prime_attributes
+)
+
+all_annotations <- biomaRt::getBM(
+  attributes = wanted_attributes,
+  mart = mart,
+  useCache = FALSE
+) |> as_tibble()
+
+
+column_renames <- c(
+  target_id = "ensembl_transcript_id",
+  ens_gene = "ensembl_gene_id",
+  ext_gene = "external_gene_name",
+  gene_desc = "description",
+  canonical = "transcript_is_canonical",
+  mane = "transcript_mane_select"
+)
+
+t2g <- all_annotations |>
+  rename(
+    any_of(
+      column_renames
+    )
+  ) |>
+  select(
+    -any_of(three_prime_attributes)
+  ) |>
+  mutate(
+    # remove trailing source annotation (e.g. " [Source:HGNC Symbol;Acc:HGNC:5]")
+    gene_desc = str_replace(
+      gene_desc,
+      " +\\[[^\\[\\]]+\\]",
+      ""
+    ),
+    canonical = case_match(
+      canonical,
+      NA ~ NA,
+      1 ~ TRUE,
+      0 ~ FALSE
+    )
+  )
+
+write_rds(
+  t2g,
+  file = snakemake@output[[1]],
+  compress = "gz"
+)
+
+other_annotations <- all_annotations |>
+  # TODO: determine why this filtering is done, and if this should also happen
+  # for non-3-prime kallisto-sleuth input
+  filter(!str_detect(chromosome_name, "patch|PATCH")) |>
+  select(-c(chromosome_name, sleuth_attributes)) |>
+  select(
+    -any_of("transcript_is_canonical")
+  ) |>
+  rename(transcript = ensembl_transcript_id_version) |>
+  mutate(
+    strand = case_match(
+        strand,
+        1 ~ "+",
+        -1 ~ "-"
+    )
+  )
+
+if ("transcript_mane_select" %in% colnames(other_annotations)) {
+  other_annotations <- other_annotations |>
+    mutate(
+      # we don't need the NCBI IDs that match the MANE transcripts, only an
+      # indicator whether a transcript is in MANE select
+      transcript_mane_select = if_else(transcript_mane_select != "", 1, 0, NA)
+    )
+} else {
+  other_annotations <- other_annotations |>
+    # ensure consistent column presence in the output file
+    add_column(transcript_mane_select = NA)
+}
+
+write_tsv(
+  other_annotations,
+  snakemake@output[[2]]
+)
