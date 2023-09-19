@@ -2,5 +2,5 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - bioconductor-biomart =2.46
-  - r-tidyverse =1.3
+  - bioconductor-biomart =2.56
+  - r-tidyverse =2.0
