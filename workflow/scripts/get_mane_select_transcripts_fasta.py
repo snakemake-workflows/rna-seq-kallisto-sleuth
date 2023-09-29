@@ -1,17 +1,19 @@
 import sys
-import re
 import pandas as pd
 from Bio import SeqIO
 
 sys.stderr = open(snakemake.log[0], "w")
 
 with open(snakemake.output[0], "w") as transcript_clean_cdna_fasta:
-    mane_select_transcripts = set(
-        pd.read_csv(
+    all_transcripts = pd.read_csv(
             snakemake.input["mane_select_transcripts"],
             sep="\t",
-            usecols=["transcript"],
         )
+    mane_select_transcripts = set(
+        all_transcripts.loc[
+            all_transcripts["transcript_mane_select"] == 1,
+            "transcript"
+        ] 
     )
 
     for seq_record in SeqIO.parse(snakemake.input["fasta"], "fasta"):
