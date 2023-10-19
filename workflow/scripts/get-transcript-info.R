@@ -144,11 +144,14 @@ t2g <- all_annotations |>
       " +\\[[^\\[\\]]+\\]",
       ""
     ),
-    canonical = case_match(
-      canonical,
-      NA ~ NA,
-      1 ~ TRUE,
-      0 ~ FALSE
+    across(
+      any_of("canonical"),
+      ~ case_match(
+        .x,
+        NA ~ NA,
+        1 ~ TRUE,
+        0 ~ FALSE
+      )
     )
   )
 
