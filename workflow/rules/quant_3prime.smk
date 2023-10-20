@@ -47,7 +47,7 @@ rule get_only_mane_select_reads_closest_to_3_prime:
 
 rule get_mane_fastq:
     input:
-        bam="results/mapped_3prime_mane/{sample}-{unit}.mane_select_closest_to_3_prime.bam"
+        bam="results/mapped_3prime_mane/{sample}-{unit}.mane_select_closest_to_3_prime.bam",
     output:
         fastq="results/mane_3prime_reads/{sample}-{unit}.fastq",
     log:

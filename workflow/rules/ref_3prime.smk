@@ -10,6 +10,7 @@ rule cds_polyA_T_removal:
     script:
         "../scripts/remove_poly_tails.py"
 
+
 rule get_mane_transcripts_fasta:
     input:
         fasta="resources/transcriptome.cdna.without_poly_a.fasta",

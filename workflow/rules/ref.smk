@@ -32,7 +32,11 @@ rule get_annotation:
 
 rule get_transcript_info:
     output:
-        multiext("resources/transcripts_annotation", ".results.rds", ".mane_strand_length.tsv"),
+        multiext(
+            "resources/transcripts_annotation",
+            ".results.rds",
+            ".mane_strand_length.tsv",
+        ),
     params:
         species=get_bioc_species_name(),
         version=config["resources"]["ref"]["release"],
