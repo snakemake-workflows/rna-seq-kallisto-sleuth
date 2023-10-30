@@ -36,7 +36,9 @@ while (class(mart)[[1]] != "Mart") {
           str_c(
             "Have tried all 4 available Ensembl biomaRt mirrors ",
             rounds,
-            " times. You might have a connection problem, or no mirror is responsive."
+            " times. You might have a connection problem, or no mirror is responsive.\n",
+            "The last error message was:\n",
+            e
           )
         )
       }
