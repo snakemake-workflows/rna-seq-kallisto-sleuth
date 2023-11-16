@@ -4,14 +4,6 @@ datasets:
     path: ?input.spia_table
     offer-excel: true
     separator: "\t"
-  spia_table_activated:
-    path: ?input.spia_table_activated
-    offer-excel: true
-    separator: "\t"
-  spia_table_inhibited:
-    path: ?input.spia_table_inhibited
-    offer-excel: true
-    separator: "\t"
 default-view: spia_table
 views:
   spia_table:
