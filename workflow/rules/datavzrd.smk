@@ -6,6 +6,8 @@ rule render_datavzrd_config_spia:
         "results/datavzrd/spia/{model}.yaml",
     log:
         "logs/yte/render-datavzrd-config-spia/{model}.log",
+    params:
+        pathway_db=config["enrichment"]["spia"]["pathway_database"],
     template_engine:
         "yte"
 
