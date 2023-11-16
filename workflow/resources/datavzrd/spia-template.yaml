@@ -1,4 +1,4 @@
-name: ?f"Pathway impact analysis for model {wildcards.model}"
+name: ?f"spia pathway impact analysis for model {wildcards.model}"
 datasets:
   spia_table:
     path: ?input.spia_table
@@ -9,57 +9,60 @@ views:
   spia_table:
     dataset: spia_table
     desc: |
-        The table contains the following columns pSize is the number of genes on the pathway; NDE is the number of DE genes per pathway; tA is the observed total perturbation accumulation in the pathway; pNDE is the probability to observe at least NDE genes on the pathway using a hypergeometric model; pPERT is the probability to observe a total accumulation more extreme than tA only by chance; pG is the p-value obtained by combining pNDE and pPERT; pGFdr and pGFWER are the False Discovery Rate and respectively Bonferroni adjusted global p-values; and the Status gives the direction in which the pathway is perturbed (activated or inhibited).
+      ?f"spia pathway impact analysis for model {wildcards.model}"
     page-size: 25
     render-table:
       columns:
         Name:
           display-mode: normal
           link-to-url: 
-            reactome:
-              url: "http://reactome.org/PathwayBrowser/#/{Ids}"
+            pathway:
+              ?if params.pathway_db == "reactome":
+                url: "http://reactome.org/PathwayBrowser/#/{pathway id}"
+              ?elif params.pathway_db == "panther":
+                url: "https://www.pantherdb.org/pathway/pathwayDiagram.jsp?catAccession={pathway id}"
+              # we should add all the pathway databases that bioconductor-graphite enables (see its `pathwayDatabases()` function)
+              ?else: # not sure what a good fallback would be here
+                url: "http://reactome.org/PathwayBrowser/#/{pathway id}"
         number of genes on the pathway:
           plot:
             heatmap:
               scale: linear
               range:
-                - white
-                - "#186904"        
+                - "#F7F7F7"
+                - "#B2182B"
         number of DE genes per pathway:
           plot:
             heatmap:
               scale: linear
               range:
-                - white
-                - "#186904"
+                - "#F7F7F7"
+                - "#B2182B"
         p-value for at least NDE genes:
-          display-mode: hidden
+          display-mode: detail
         total perturbation accumulation:
           plot:
             heatmap:
               scale: linear
               range:
-                - "#e6550d"
-                - "white"
-                - "#6baed6"
-              domain:
-                - -1
-                - 0
-                - 1
+                - "#B2182B"
+                - "#F7F7F7"
+                - "#2166AC"
+              domain-mid: 0
         p-value to observe a total accumulation:
-          display-mode: hidden
+          display-mode: detail
         Combined p-value:
-          display-mode: hidden
+          display-mode: detail
         Combined FDR:
           plot:
             bars:
               scale: linear
         Combined Bonferroni p-values:
-          display-mode: hidden     
+          display-mode: detail     
         Status:
           plot:
             heatmap:
               scale: ordinal
               color-scheme: accent
-        Ids:
-          display-mode: hidden
+        pathway id:
+          display-mode: detail
