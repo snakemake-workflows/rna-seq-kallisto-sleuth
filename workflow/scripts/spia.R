@@ -48,69 +48,69 @@ if (nrow(sig_genes) == 0) {
   write_tsv(res, snakemake@output[["table_activated"]])
   write_tsv(res, snakemake@output[["table_inhibited"]])
 } else {
-    # get logFC equivalent (the sum of beta scores of covariates of interest)
+  # get logFC equivalent (the sum of beta scores of covariates of interest)
 
-    beta_col <- get_prefix_col("b", colnames(sig_genes))
+  beta_col <- get_prefix_col("b", colnames(sig_genes))
 
-    beta <- sig_genes |>
-        dplyr::select(ens_gene, !!beta_col) |>
-        deframe()
+  beta <- sig_genes |>
+    dplyr::select(ens_gene, !!beta_col) |>
+    deframe()
 
-    t <- tempdir(check = TRUE)
-    olddir <- getwd()
-    setwd(t)
-    prepareSPIA(db, pw_db)
-    res <- runSPIA(
-        de = beta,
-        all = universe,
-        pw_db,
-        plots = TRUE,
-        verbose = TRUE
-    )
-    setwd(olddir)
+  t <- tempdir(check = TRUE)
+  olddir <- getwd()
+  setwd(t)
+  prepareSPIA(db, pw_db)
+  res <- runSPIA(
+    de = beta,
+    all = universe,
+    pw_db,
+    plots = TRUE,
+    verbose = TRUE
+  )
+  setwd(olddir)
 
-    file.copy(
-        file.path(t, "SPIAPerturbationPlots.pdf"),
-        snakemake@output[["plots"]]
-    )
-    pathway_names <- db[res$Name]
-    if (length(pathway_names) > 0) {
-        pathway_ids_tibble <- pathway_names@entries |>
-          map(slot, "id") |>
-          unlist() |>
-          as_tibble(
-            rownames="pathway_name"
-          ) |>
-          rename(
-            `pathway id` = value
-          )
-        final_res <- as_tibble(res) |>
-          left_join(
-            pathway_ids_tibble,
-            join_by(Name == pathway_name)
-          ) |>
-          rename(
-            "number of genes on the pathway" = "pSize",
-            "number of DE genes per pathway" = "NDE",
-            "p-value for at least NDE genes" = "pNDE",
-            "total perturbation accumulation" = "tA",
-            "p-value to observe a total accumulation" = "pPERT",
-            "Combined p-value" = "pG",
-            "Combined FDR" = "pGFdr",
-            "Combined Bonferroni p-values" = "pGFWER"
-          ) |>
-          dplyr::select(
-            all_of(
-                columns
-            )
-          ) |>
-          arrange(
-            desc(`total perturbation accumulation`)
-          )
-        write_tsv(final_res, snakemake@output[["table"]])
-    } else {
-        # the best hack for an empty tibble from a column specification I could find
-        emtpy_data_frame <- read_csv("\n", col_names = columns)
-        write_tsv(emtpy_data_frame, snakemake@output[["table"]])
-    }
+  file.copy(
+    file.path(t, "SPIAPerturbationPlots.pdf"),
+    snakemake@output[["plots"]]
+  )
+  pathway_names <- db[res$Name]
+  if (length(pathway_names) > 0) {
+    pathway_ids_tibble <- pathway_names@entries |>
+      map(slot, "id") |>
+      unlist() |>
+      as_tibble(
+        rownames="pathway_name"
+      ) |>
+      rename(
+        `pathway id` = value
+      )
+    final_res <- as_tibble(res) |>
+      left_join(
+        pathway_ids_tibble,
+        join_by(Name == pathway_name)
+      ) |>
+      rename(
+        "number of genes on the pathway" = "pSize",
+        "number of DE genes per pathway" = "NDE",
+        "p-value for at least NDE genes" = "pNDE",
+        "total perturbation accumulation" = "tA",
+        "p-value to observe a total accumulation" = "pPERT",
+        "Combined p-value" = "pG",
+        "Combined FDR" = "pGFdr",
+        "Combined Bonferroni p-values" = "pGFWER"
+      ) |>
+      dplyr::select(
+        all_of(
+            columns
+        )
+      ) |>
+      arrange(
+        desc(`total perturbation accumulation`)
+      )
+    write_tsv(final_res, snakemake@output[["table"]])
+  } else {
+    # the best hack for an empty tibble from a column specification I could find
+    emtpy_data_frame <- read_csv("\n", col_names = columns)
+    write_tsv(emtpy_data_frame, snakemake@output[["table"]])
+  }
 }
