@@ -2,8 +2,6 @@ rule render_datavzrd_config_spia:
     input:
         template=workflow.source_path("../resources/datavzrd/spia-template.yaml"),
         spia_table="results/tables/pathways/{model}.pathways.tsv",
-        spia_table_activated="results/tables/pathways/{model}.activated-pathways.tsv",
-        spia_table_inhibited="results/tables/pathways/{model}.inhibited-pathways.tsv",
     output:
         "results/datavzrd/spia/{model}.yaml",
     log:
@@ -53,8 +51,6 @@ rule spia_datavzrd:
         config="results/datavzrd/spia/{model}.yaml",
         # files required for rendering the given configs
         spia_table="results/tables/pathways/{model}.pathways.tsv",
-        spia_table_activated="results/tables/pathways/{model}.activated-pathways.tsv",
-        spia_table_inhibited="results/tables/pathways/{model}.inhibited-pathways.tsv",
     output:
         report(
             directory("results/datavzrd-reports/spia-{model}"),
