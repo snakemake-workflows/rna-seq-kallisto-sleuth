@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.5.2](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.5.1...v2.5.2) (2023-09-14)
+
+
+### Bug Fixes
+
+* simpler three prime QuantSeq cutadapt setup ([#78](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/78)) ([ecc9ab7](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/ecc9ab712b94e175a2c9e7c79b365faa98a3df44))
+* update samtools.yaml to latest `1.17` and update github actions ([#75](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/75)) ([0fe7948](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/0fe79485566aad4fd9856ef62ee92ab81c6e4974))
+
+
+### Performance Improvements
+
+* bump datavzrd wrapper to 2.6.0 and general bug fixes ([#80](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/80)) ([657c465](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/657c4656d6ef45e044c0a534522e3d57d225b3e5))
+
 ## [2.5.1](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.5.0...v2.5.1) (2023-06-14)
 
 
