@@ -185,6 +185,8 @@ write_results <- function(so, mode, output, output_all) {
       }
     }
 
+    save.image(file = "sleuth-diffexp.dump.RData")
+
     # saving qq-plots
     marrange_qq <- marrangeGrob(grobs=qq_list, nrow=1, ncol=1, top = NULL)
     ggsave(snakemake@output[["qq_plots"]], plot = marrange_qq, width = 14)
