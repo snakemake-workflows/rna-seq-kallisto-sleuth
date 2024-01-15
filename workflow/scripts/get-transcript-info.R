@@ -196,12 +196,9 @@ if ("transcript_mane_select" %in% colnames(other_annotations)) {
     )
 } else {
   other_annotations <- other_annotations |>
-    mutate(
+    rename(
     # ensure consistent column presence in the output file
-      main_transcript_per_gene = if_else(transcript_is_canonical, 1, 0, NA)
-    ) |>
-    select(
-      -any_of("transcript_is_canonical")
+      main_transcript_per_gene = "transcript_is_canonical"
     )
 }
 
