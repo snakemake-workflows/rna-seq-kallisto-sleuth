@@ -29,29 +29,29 @@ rule bwa_mem:
         "v1.17.2/bio/bwa/mem"
 
 
-rule get_only_mane_select_reads_closest_to_3_prime:
+rule get_only_main_transcript_reads_closest_to_3_prime:
     input:
         bam="results/mapped_mem/{sample}-{unit}.namesorted.bam",
-        annotation="resources/transcripts_annotation.mane_strand_length.tsv",
+        annotation="resources/transcripts_annotation.main_transcript_strand_length.tsv",
     output:
-        mane_select_reads_closest_to_3_prime=temp(
-            "results/mapped_3prime_mane/{sample}-{unit}.mane_select_closest_to_3_prime.bam"
+        main_transcript_reads_closest_to_3_prime=temp(
+            "results/mapped_3prime_main_transcript/{sample}-{unit}.main_transcript_closest_to_3_prime.bam"
         ),
     log:
         "logs/mapped_3prime_bam/{sample}-{unit}.mapped.pos.log",
     conda:
         "../envs/pysam.yaml"
     script:
-        "../scripts/get-only-mane-select-reads-closest-to-3-prime.py"
+        "../scripts/get-only-main-transcript-reads-closest-to-3-prime.py"
 
 
-rule get_mane_fastq:
+rule get_main_transcript_fastq:
     input:
-        bam="results/mapped_3prime_mane/{sample}-{unit}.mane_select_closest_to_3_prime.bam",
+        bam="results/mapped_3prime_main_transcript/{sample}-{unit}.main_transcript_closest_to_3_prime.bam",
     output:
-        fastq="results/mane_3prime_reads/{sample}-{unit}.fastq",
+        fastq="results/main_transcript_3prime_reads/{sample}-{unit}.fastq",
     log:
-        "logs/mane_3prime_reads/{sample}-{unit}.log",
+        "logs/main_transcript_3prime_reads/{sample}-{unit}.log",
     conda:
         "../envs/samtools.yaml"
     shell:
@@ -60,7 +60,7 @@ rule get_mane_fastq:
 
 rule kallisto_3prime_index:
     input:
-        fasta="resources/transcriptome.cdna.without_poly_a.mane.fasta",
+        fasta="resources/transcriptome.cdna.without_poly_a.main_transcript.fasta",
     output:
         index="results/kallisto_3prime/transcripts.3prime.idx",
     log:

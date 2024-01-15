@@ -11,15 +11,15 @@ rule cds_polyA_T_removal:
         "../scripts/remove_poly_tails.py"
 
 
-rule get_mane_transcripts_fasta:
+rule get_main_transcripts_fasta:
     input:
         fasta="resources/transcriptome.cdna.without_poly_a.fasta",
-        mane_select_transcripts="resources/transcripts_annotation.mane_strand_length.tsv",
+        main_transcripts_per_gene="resources/transcripts_annotation.main_transcript_strand_length.tsv",
     output:
-        "resources/transcriptome.cdna.without_poly_a.mane.fasta",
+        "resources/transcriptome.cdna.without_poly_a.main_transcript.fasta",
     log:
         "logs/get_canonical_transcripts/get_canonical_transcripts.log",
     conda:
         "../envs/biopython.yaml"
     script:
-        "../scripts/get_mane_select_transcripts_fasta.py"
+        "../scripts/get_main_transcripts_per_gene_fasta.py"

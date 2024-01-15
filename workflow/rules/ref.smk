@@ -35,7 +35,7 @@ rule get_transcript_info:
         multiext(
             "resources/transcripts_annotation",
             ".results.rds",
-            ".mane_strand_length.tsv",
+            ".main_transcript_strand_length.tsv",
         ),
     params:
         species=get_bioc_species_name(),

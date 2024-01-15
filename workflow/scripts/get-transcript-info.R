@@ -96,12 +96,16 @@ three_prime_attributes <- c(
   "strand"
 )
 
-if (three_prime_activated & !("transcript_mane_select" %in% available_attributes)) {
+if (three_prime_activated & 
+  !("transcript_mane_select" %in% available_attributes) &
+  !("transcript_is_canonical" %in% available_attributes)
+  ) {
   cli_abort(
     str_c(
       "Three prime mode for Lexogen QuantSeq analysis is activated, which ",
-      "needs the transcript_mane_select attribute from biomart. However, ",
-      "this attribute is not available for the species '",
+      "needs the transcript_mane_select or the transcript_is_canonical ",
+      "attribute from biomart. However, these attributes ",
+      "are not available for the species '",
       snakemake@params[["species"]],
       "' in the ensembl release version: ",
       snakemake@params[["version"]]
@@ -168,9 +172,6 @@ other_annotations <- all_annotations |>
   # for non-3-prime kallisto-sleuth input
   filter(!str_detect(chromosome_name, "patch|PATCH")) |>
   select(-c(chromosome_name, sleuth_attributes)) |>
-  select(
-    -any_of("transcript_is_canonical")
-  ) |>
   rename(transcript = ensembl_transcript_id_version) |>
   mutate(
     strand = case_match(
@@ -182,15 +183,26 @@ other_annotations <- all_annotations |>
 
 if ("transcript_mane_select" %in% colnames(other_annotations)) {
   other_annotations <- other_annotations |>
+    select(
+      -any_of("transcript_is_canonical")
+    ) |>
     mutate(
       # we don't need the NCBI IDs that match the MANE transcripts, only an
       # indicator whether a transcript is in MANE select
-      transcript_mane_select = if_else(transcript_mane_select != "", 1, 0, NA)
+      main_transcript_per_gene = if_else(transcript_mane_select != "", 1, 0, NA)
+    ) |>
+    select(
+      -any_of("transcript_mane_select")
     )
 } else {
   other_annotations <- other_annotations |>
+    mutate(
     # ensure consistent column presence in the output file
-    add_column(transcript_mane_select = NA)
+      main_transcript_per_gene = if_else(transcript_is_canonical, 1, 0, NA)
+    ) |>
+    select(
+      -any_of("transcript_is_canonical")
+    )
 }
 
 write_tsv(

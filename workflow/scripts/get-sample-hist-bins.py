@@ -29,7 +29,7 @@ sample_name = snakemake.params["samples"]
 trans_length_data = pd.read_csv(
     snakemake.input["transcripts_annotation"],
     sep="\t",
-).drop(columns = ["transcript_mane_select"])
+).drop(columns=["main_transcript_per_gene"])
 
 # Aligned text file reading
 align_bam_txt = pd.read_csv(
@@ -134,7 +134,9 @@ if read_min["transcript"].str.contains(transcript_ids).any():
 elif transcript_ids == "all":
     # Values added to corresponding bins
     Freq_rev, bins_rev = np.histogram(
-        read_min["start"], bins=read_length, range=[0, max(read_min["transcript_length"])]
+        read_min["start"],
+        bins=read_length,
+        range=[0, max(read_min["transcript_length"])],
     )
     Freq_rev_trim, bins_rev_trim = np.histogram(
         read_min["start"], bins=read_length, range=[0, 20000]

@@ -169,7 +169,7 @@ enrichment_env = render_enrichment_env()
 
 def kallisto_quant_input(wildcards):
     if is_3prime_experiment:
-        return "results/mane_3prime_reads/{sample}-{unit}.fastq"
+        return "results/main_transcript_3prime_reads/{sample}-{unit}.fastq"
     elif not is_single_end(wildcards.sample, wildcards.unit):
         return expand(
             "results/trimmed/{{sample}}-{{unit}}.{group}.fastq.gz", group=[1, 2]

@@ -17,13 +17,12 @@ def print_read_closest_to_3_prime(read_set: set[pysam.AlignedSegment]) -> None:
         if read.is_mapped:
             transcript = transcript_annotations.loc[
                 transcript_annotations["transcript"] == read.reference_name,
-                [
-                    "transcript_length",
-                    "transcript_mane_select"
-                ]
+                ["transcript_length", "main_transcript_per_gene"],
             ].reset_index()
             if len(transcript) == 0:
-                sys.stderr.write(f"Warning: Transcript '{read.reference_name}' not found in downloaded annotations. Skipping read '{read.query_name}' that maps to it.")
+                sys.stderr.write(
+                    f"Warning: Transcript '{read.reference_name}' not found in downloaded annotations. Skipping read '{read.query_name}' that maps to it."
+                )
                 continue
             # use read start distance, as reference skips increase that distance
             # and also indicate a suboptimal alignment
@@ -32,11 +31,17 @@ def print_read_closest_to_3_prime(read_set: set[pysam.AlignedSegment]) -> None:
                 min_dist = distance
                 min_dist_read = read
                 min_dist_transcript = transcript
-    if min_dist != -1 and min_dist_transcript.at[0, "transcript_mane_select"] == 1:
+    if min_dist != -1 and min_dist_transcript.at[0, "main_transcript_per_gene"] == 1:
         records_out.write(min_dist_read)
 
 
-with pysam.AlignmentFile(snakemake.input["bam"], "rb") as records_in, pysam.AlignmentFile(snakemake.output["mane_select_reads_closest_to_3_prime"], "wb", template=records_in) as records_out:
+with pysam.AlignmentFile(
+    snakemake.input["bam"], "rb"
+) as records_in, pysam.AlignmentFile(
+    snakemake.output["main_transcript_reads_closest_to_3_prime"],
+    "wb",
+    template=records_in,
+) as records_out:
     record_iterator = records_in.fetch(until_eof=True)
     current_read = next(record_iterator)
     current_queryname_set = set([current_read])
