@@ -247,8 +247,6 @@ views:
           display-mode: normal
         gene_desc:
           display-mode: normal
-        canonical:
-          display-mode: normal
         num_aggregated_transcripts:
           display-mode: normal
         sum_mean_obs_counts:
