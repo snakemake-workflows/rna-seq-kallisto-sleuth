@@ -26,6 +26,7 @@ mean_var_plot <- plot_mean_var(sleuth_object,
 ggsave(snakemake@output[["mean_var_plot"]], mean_var_plot)
 
 write_results <- function(so, mode, output, output_all) {
+    print(str_c("Running write_results function in mode: ", mode))
     so$pval_aggregate <- FALSE
     if(mode == "aggregate") {
       # workaround the following bug-request:
@@ -188,9 +189,11 @@ write_results <- function(so, mode, output, output_all) {
     save.image(file = "sleuth-diffexp.dump.RData")
 
     # saving qq-plots
+    print(str_c("Saving qq-plots"))
     marrange_qq <- marrangeGrob(grobs=qq_list, nrow=1, ncol=1, top = NULL)
     ggsave(snakemake@output[["qq_plots"]], plot = marrange_qq, width = 14)
 
+    print(str_c("Writing RDS file to: ", output_all))
     write_rds(all, path = output_all, compress = "none")
     # add sample expressions
     all <- all %>% left_join(as_tibble(sleuth_to_matrix(so, "obs_norm", "est_counts"), rownames="target_id"))
