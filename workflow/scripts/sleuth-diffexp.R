@@ -174,7 +174,6 @@ write_results <- function(so, mode, output, output_all) {
     } else if (mode == "custom") {
       # load custom ID list
       id_version_pattern <- "\\.\\d+$"
-      save.image(file = "sleuth-diffexp.dump.RData")
       print(str_c("Loading representative transcripts file: ", snakemake@params[["representative_transcripts"]]))
       ids <- read_tsv(snakemake@params[["representative_transcripts"]], col_names = "ID")$ID
       ids <- str_replace(ids, id_version_pattern, "")
