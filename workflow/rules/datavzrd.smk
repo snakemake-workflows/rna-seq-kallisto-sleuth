@@ -68,7 +68,7 @@ rule spia_datavzrd:
         "logs/datavzrd-report/spia-{model}/spia-{model}.log",
     wrapper:
         # "v2.6.0/utils/datavzrd"
-        "v3.3.5/utils/datavzrd"
+        "v3.3.5-1-gd73914d/utils/datavzrd"
 
 
 rule diffexp_datavzrd:
@@ -93,7 +93,8 @@ rule diffexp_datavzrd:
     log:
         "logs/datavzrd-report/diffexp.{model}/diffexp.{model}.log",
     wrapper:
-        "v3.3.5/utils/datavzrd"
+        # "v2.6.0/utils/datavzrd"
+        "v3.3.5-1-gd73914d/utils/datavzrd"
 
 
 rule go_enrichment_datavzrd:
@@ -120,4 +121,5 @@ rule go_enrichment_datavzrd:
     log:
         "logs/datavzrd-report/go_enrichment-{model}/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     wrapper:
-        "v3.3.5/utils/datavzrd"
+        # "v2.6.0/utils/datavzrd"
+        "v3.3.5-1-gd73914d/utils/datavzrd"
