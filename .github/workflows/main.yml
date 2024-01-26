@@ -77,7 +77,7 @@ jobs:
       with:
         directory: .test
         snakefile: workflow/Snakefile
-        args: "--use-conda --show-failed-logs --cores 1 --conda-cleanup-pkgs cache --all-temp"
+        args: "--use-conda --show-failed-logs --cores all --conda-cleanup-pkgs cache --all-temp"
   
   run-three-prime-rna-workflow:
     runs-on: ubuntu-latest
@@ -94,7 +94,7 @@ jobs:
       with:
         directory: .test/three_prime
         snakefile: .test/three_prime/workflow/Snakefile
-        args: "--use-conda --show-failed-logs --cores 1 --conda-cleanup-pkgs cache --all-temp"
+        args: "--use-conda --show-failed-logs --cores all --conda-cleanup-pkgs cache --all-temp"
     # Disable report testing for now since we mark all output files as temporary above.
     # TODO: add some kind of test mode to report generation which does not really try to include
     # results.
