@@ -5,14 +5,17 @@ min_version("7.17.0")
 
 configfile: "config/config.yaml"
 
+
 # declare main workflow as a module
 module rna_seq_kallisto_sleuth:
-    snakefile: 
+    snakefile:
         "../../../workflow/Snakefile"
     config:
         config
 
+
 use rule * from rna_seq_kallisto_sleuth
+
 
 rule download_quant_seq_testing_data:
     output:
@@ -21,6 +24,7 @@ rule download_quant_seq_testing_data:
         "logs/download_quant_seq_testing_data.log",
     shell:
         "wget https://zenodo.org/records/10572746/files/quant_seq_test_data.tar.gz 2>{log} "
+
 
 rule extract_quant_seq_testing_data:
     input:
