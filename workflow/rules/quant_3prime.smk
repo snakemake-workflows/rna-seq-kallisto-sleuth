@@ -35,19 +35,38 @@ rule get_only_main_transcript_reads_closest_to_3_prime:
         annotation="resources/transcripts_annotation.main_transcript_strand_length.tsv",
     output:
         main_transcript_reads_closest_to_3_prime=temp(
-            "results/mapped_3prime_main_transcript/{sample}-{unit}.main_transcript_closest_to_3_prime.bam"
+            "results/mapped_3prime_main_transcript/{sample}-{unit}.main_transcript_closest_to_3_prime.sam"
         ),
     log:
         "logs/mapped_3prime_bam/{sample}-{unit}.mapped.pos.log",
     conda:
-        "../envs/pysam.yaml"
-    script:
-        "../scripts/get-only-main-transcript-reads-closest-to-3-prime.py"
+        "../envs/samtools.yaml"
+    shell:
+        "( "
+        " samtools view -H {input.bam} >{output}; "
+        " samtools view --exclude-flags unmap {input.bam} | "
+        "   awk ' "
+        "     BEGIN {{ dist = -1; canon = 0; }} "
+        '     FNR==NR {{ t[$2,"c"] = $1; t[$2,"l"] = $3; next }} '
+        "     {{ "
+        "       if ($1 != read_id) {{ "
+        "         if (canon == 1) {{ print read }}; "
+        "         dist = -1; canon = 0; "
+        "       }}; "
+        '       read_id = $1; new_dist = t[$3,"l"] - $4; '
+        "       if ( new_dist >= -1 && (dist == -1 || dist > new_dist)) {{ "
+        '         dist = new_dist; canon = t[$3,"c"]; read = $0 '
+        "       }} "
+        "     }} "
+        "     END {{ if (canon == 1) {{ print read }} }} "
+        "     ' "
+        "     {input.annotation} - >>{output}"
+        ") 2>{log}"
 
 
 rule get_main_transcript_fastq:
     input:
-        bam="results/mapped_3prime_main_transcript/{sample}-{unit}.main_transcript_closest_to_3_prime.bam",
+        sam="results/mapped_3prime_main_transcript/{sample}-{unit}.main_transcript_closest_to_3_prime.sam",
     output:
         fastq="results/main_transcript_3prime_reads/{sample}-{unit}.fastq",
     log:
@@ -55,7 +74,7 @@ rule get_main_transcript_fastq:
     conda:
         "../envs/samtools.yaml"
     shell:
-        "samtools bam2fq {input.bam} > {output.fastq}  2> {log}"
+        "samtools fastq {input.sam} > {output.fastq}  2> {log}"
 
 
 rule kallisto_3prime_index:
