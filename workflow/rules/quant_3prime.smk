@@ -34,7 +34,7 @@ rule get_only_main_transcript_reads_closest_to_3_prime:
         bam="results/mapped_mem/{sample}-{unit}.namesorted.bam",
         annotation="resources/transcripts_annotation.main_transcript_strand_length.tsv",
     output:
-        main_transcript_reads_closest_to_3_prime=temp(
+        sam=temp(
             "results/mapped_3prime_main_transcript/{sample}-{unit}.main_transcript_closest_to_3_prime.sam"
         ),
     log:
@@ -43,24 +43,24 @@ rule get_only_main_transcript_reads_closest_to_3_prime:
         "../envs/samtools.yaml"
     shell:
         "( "
-        " samtools view -H {input.bam} >{output}; "
+        " samtools view -H {input.bam} >{output.sam}; "
         " samtools view --exclude-flags unmap {input.bam} | "
         "   awk ' "
         "     BEGIN {{ dist = -1; canon = 0; }} "
         '     FNR==NR {{ t[$2,"c"] = $1; t[$2,"l"] = $3; next }} '
         "     {{ "
         "       if ($1 != read_id) {{ "
-        "         if (canon == 1) {{ print read }}; "
+        "         if (canon == 1) {{ print read; }}; "
         "         dist = -1; canon = 0; "
         "       }}; "
         '       read_id = $1; new_dist = t[$3,"l"] - $4; '
         "       if ( new_dist >= -1 && (dist == -1 || dist > new_dist)) {{ "
-        '         dist = new_dist; canon = t[$3,"c"]; read = $0 '
+        '         dist = new_dist; canon = t[$3,"c"]; read = $0; '
         "       }} "
         "     }} "
-        "     END {{ if (canon == 1) {{ print read }} }} "
+        "     END {{ if (canon == 1) {{ print read; }} }} "
         "     ' "
-        "     {input.annotation} - >>{output}"
+        "     {input.annotation} - >>{output.sam} "
         ") 2>{log}"
 
 
