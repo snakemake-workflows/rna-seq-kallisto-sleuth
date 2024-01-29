@@ -4,6 +4,8 @@ sink(log, type="message")
 
 library("fgsea")
 library(snakemake@params[["bioc_species_pkg"]], character.only = TRUE)
+# avoid this error: https://github.com/ctlab/fgsea/issues/98
+library("data.table")
 
 # provides library("tidyverse") and functions load_bioconductor_package() and
 # get_prefix_col(), the latter requires snakemake@output[["samples"]] and
@@ -61,13 +63,11 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
     unnested <- fgsea_res %>%
                     unnest(leadingEdge) %>%
                     add_column(
-                        leading_edge_symbol = NA,
                         leading_edge_ens_gene = NA,
                         leading_edge_entrez_id = NA
                     ) %>%
                     dplyr::relocate(
                         c(
-                          leading_edge_symbol,
                           leading_edge_ens_gene,
                           leading_edge_entrez_id,
                           leadingEdge
@@ -84,21 +84,18 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
     annotated <- fgsea_res %>%
                     unnest(leadingEdge) %>%
                     mutate(
-                        leading_edge_symbol = str_to_title(leadingEdge),
-                        leading_edge_entrez_id = mapIds(leading_edge_symbol, x=get(snakemake@params[["bioc_species_pkg"]]), keytype="SYMBOL", column="ENTREZID"),
-                        leading_edge_ens_gene = mapIds(leading_edge_symbol, x=get(snakemake@params[["bioc_species_pkg"]]), keytype="SYMBOL", column="ENSEMBL")
+                        leading_edge_entrez_id = mapIds(leadingEdge, x=get(snakemake@params[["bioc_species_pkg"]]), keytype="SYMBOL", column="ENTREZID"),
+                        leading_edge_ens_gene = mapIds(leadingEdge, x=get(snakemake@params[["bioc_species_pkg"]]), keytype="SYMBOL", column="ENSEMBL")
                         ) %>%
                     group_by(pathway) %>%
                     summarise(
                         leadingEdge = str_c(leadingEdge, collapse = ','),
-                        leading_edge_symbol = str_c(leading_edge_symbol, collapse = ','),
                         leading_edge_entrez_id = str_c(leading_edge_entrez_id, collapse = ','),
                         leading_edge_ens_gene = str_c(leading_edge_ens_gene, collapse = ',')
                     ) %>%
                     inner_join(fgsea_res %>% dplyr::select(-leadingEdge), by = "pathway") %>%
                     dplyr::relocate(
                         c(
-                          leading_edge_symbol,
                           leading_edge_ens_gene,
                           leading_edge_entrez_id,
                           leadingEdge
@@ -133,7 +130,7 @@ tg <- plotGseaTable(
         )
 ggsave(filename = snakemake@output[["plot"]], plot = tg, width = 15, height = height, limitsize=FALSE)
 
-collapsed_pathways <- collapsePathways(fgsea_res %>% arrange(pval) %>% filter(padj <= snakemake@params[["gene_set_fdr"]]), gene_sets, ranked_genes)
+collapsed_pathways <- collapsePathways(fgsea_res %>% arrange(pval) %>% filter(padj <= snakemake@params[["gene_set_fdr"]]) %>% data.table(), gene_sets, ranked_genes)
 main_pathways <- fgsea_res %>% filter(pathway %in% collapsed_pathways$mainPathways) %>% arrange(-NES) %>% pull(pathway)
 selected_gene_sets <- gene_sets[main_pathways]
 height = .7 * (length(selected_gene_sets) + 2)

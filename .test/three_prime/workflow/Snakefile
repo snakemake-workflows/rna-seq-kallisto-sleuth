@@ -1,0 +1,44 @@
+from snakemake.utils import min_version
+
+min_version("7.17.0")
+
+
+configfile: "config/config.yaml"
+
+
+# declare main workflow as a module
+module rna_seq_kallisto_sleuth:
+    snakefile:
+        "../../../workflow/Snakefile"
+    config:
+        config
+
+
+use rule * from rna_seq_kallisto_sleuth
+
+
+rule download_quant_seq_testing_data:
+    output:
+        "quant_seq_test_data.tar.gz",
+    log:
+        "logs/download_quant_seq_testing_data.log",
+    shell:
+        "wget https://zenodo.org/records/10572746/files/quant_seq_test_data.tar.gz 2>{log} "
+
+
+rule extract_quant_seq_testing_data:
+    input:
+        "quant_seq_test_data.tar.gz",
+    output:
+        "quant_seq_test_data/README.md",
+        "quant_seq_test_data/SRR8309099.fastq.gz",
+        "quant_seq_test_data/SRR8309095.fastq.gz",
+        "quant_seq_test_data/SRR8309096.fastq.gz",
+        "quant_seq_test_data/samples.tsv",
+        "quant_seq_test_data/SRR8309097.fastq.gz",
+        "quant_seq_test_data/SRR8309094.fastq.gz",
+        "quant_seq_test_data/SRR8309098.fastq.gz",
+    log:
+        "logs/extract_quant_seq_testing_data.log",
+    shell:
+        "tar xzfv {input} 2>{log}"

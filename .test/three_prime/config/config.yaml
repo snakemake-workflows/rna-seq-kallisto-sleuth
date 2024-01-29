@@ -18,7 +18,7 @@ resources:
     # ensembl species name
     species: homo_sapiens
     # ensembl release version
-    release: "104"
+    release: "111"
     # genome build
     build: GRCh38
     # pfam release to use for annotation of domains in differential splicing analysis
@@ -45,12 +45,12 @@ diffexp:
   # model for sleuth differential expression analysis
   models:
     model_X:
-      full: ~condition + batch_effect
-      reduced: ~batch_effect
+      full: ~condition
+      reduced: ~1
       # Binary valued covariate that shall be used for fold change/effect size
       # based downstream analyses.
       primary_variable: condition
-      base_level: untreated
+      base_level: Control
   # significance level to use for volcano, ma- and qq-plots
   sig-level:
     volcano-plot: 0.05
@@ -82,7 +82,7 @@ enrichment:
     fdr_genes: 0.05
     fdr_go_terms: 0.05
   fgsea:
-    gene_sets_file: "../ngs-test-data/ref/dummy.gmt"
+    gene_sets_file: "config/gene_sets.gmt"
     # tool is only run if set to `true`
     activate: true
     # if activated, you need to provide a GMT file with gene sets of interest

@@ -32,7 +32,7 @@ while (class(mart)[[1]] != "Mart") {
       # change or make configurable if you want more or
       # less rounds of tries of all the mirrors
       if (rounds >= 3) {
-        stop(
+        cli_abort(
           str_c(
             "Have tried all 4 available Ensembl biomaRt mirrors ",
             rounds,
