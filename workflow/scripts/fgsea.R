@@ -61,13 +61,11 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
     unnested <- fgsea_res %>%
                     unnest(leadingEdge) %>%
                     add_column(
-                        leading_edge_symbol = NA,
                         leading_edge_ens_gene = NA,
                         leading_edge_entrez_id = NA
                     ) %>%
                     dplyr::relocate(
                         c(
-                          leading_edge_symbol,
                           leading_edge_ens_gene,
                           leading_edge_entrez_id,
                           leadingEdge
@@ -84,21 +82,18 @@ if ( (fgsea_res %>% count() %>% pull(n)) == 0 ) {
     annotated <- fgsea_res %>%
                     unnest(leadingEdge) %>%
                     mutate(
-                        leading_edge_symbol = str_to_title(leadingEdge),
-                        leading_edge_entrez_id = mapIds(leading_edge_symbol, x=get(snakemake@params[["bioc_species_pkg"]]), keytype="SYMBOL", column="ENTREZID"),
-                        leading_edge_ens_gene = mapIds(leading_edge_symbol, x=get(snakemake@params[["bioc_species_pkg"]]), keytype="SYMBOL", column="ENSEMBL")
+                        leading_edge_entrez_id = mapIds(leadingEdge, x=get(snakemake@params[["bioc_species_pkg"]]), keytype="SYMBOL", column="ENTREZID"),
+                        leading_edge_ens_gene = mapIds(leadingEdge, x=get(snakemake@params[["bioc_species_pkg"]]), keytype="SYMBOL", column="ENSEMBL")
                         ) %>%
                     group_by(pathway) %>%
                     summarise(
                         leadingEdge = str_c(leadingEdge, collapse = ','),
-                        leading_edge_symbol = str_c(leading_edge_symbol, collapse = ','),
                         leading_edge_entrez_id = str_c(leading_edge_entrez_id, collapse = ','),
                         leading_edge_ens_gene = str_c(leading_edge_ens_gene, collapse = ',')
                     ) %>%
                     inner_join(fgsea_res %>% dplyr::select(-leadingEdge), by = "pathway") %>%
                     dplyr::relocate(
                         c(
-                          leading_edge_symbol,
                           leading_edge_ens_gene,
                           leading_edge_entrez_id,
                           leadingEdge
