@@ -4,6 +4,8 @@ sink(log, type="message")
 
 library("fgsea")
 library(snakemake@params[["bioc_species_pkg"]], character.only = TRUE)
+# avoid this error: https://github.com/ctlab/fgsea/issues/98
+library("data.table")
 
 # provides library("tidyverse") and functions load_bioconductor_package() and
 # get_prefix_col(), the latter requires snakemake@output[["samples"]] and
@@ -128,7 +130,7 @@ tg <- plotGseaTable(
         )
 ggsave(filename = snakemake@output[["plot"]], plot = tg, width = 15, height = height, limitsize=FALSE)
 
-collapsed_pathways <- collapsePathways(fgsea_res %>% arrange(pval) %>% filter(padj <= snakemake@params[["gene_set_fdr"]]), gene_sets, ranked_genes)
+collapsed_pathways <- collapsePathways(fgsea_res %>% arrange(pval) %>% filter(padj <= snakemake@params[["gene_set_fdr"]]) %>% data.table(), gene_sets, ranked_genes)
 main_pathways <- fgsea_res %>% filter(pathway %in% collapsed_pathways$mainPathways) %>% arrange(-NES) %>% pull(pathway)
 selected_gene_sets <- gene_sets[main_pathways]
 height = .7 * (length(selected_gene_sets) + 2)
