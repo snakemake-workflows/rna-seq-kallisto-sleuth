@@ -53,7 +53,7 @@ rule get_only_main_transcript_reads_closest_to_3_prime:
         "       }} "
         "     }} "
         "     FNR==NR {{ "
-	'       t[$(f["transcript"]),"main"] = $(f["main_transcript_per_gene"]); '
+        '       t[$(f["transcript"]),"main"] = $(f["main_transcript_per_gene"]); '
         '       t[$(f["transcript"]),"len"] = $(f["transcript_length"]); '
         "       next "
         "     }} "
