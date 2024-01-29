@@ -46,21 +46,32 @@ rule get_only_main_transcript_reads_closest_to_3_prime:
         " samtools view -H {input.bam} >{output.sam}; "
         " samtools view --exclude-flags unmap {input.bam} | "
         "   awk ' "
-        "     BEGIN {{ dist = -1; canon = 0; }} "
-        '     FNR==NR {{ t[$2,"c"] = $1; t[$2,"l"] = $3; next }} '
-        "     {{ "
-        "       if ($1 != read_id) {{ "
-        "         if (canon == 1) {{ print read; }}; "
-        "         dist = -1; canon = 0; "
-        "       }}; "
-        '       read_id = $1; new_dist = t[$3,"l"] - $4; '
-        "       if ( new_dist >= -1 && (dist == -1 || dist > new_dist)) {{ "
-        '         dist = new_dist; canon = t[$3,"c"]; read = $0; '
+        "     BEGIN {{ dist = -1; main = 0; }} "
+        "     NR==1 {{ "
+        "       for (i=1; i<=NF; i++) {{ "
+        "         f[$i] = i "
         "       }} "
         "     }} "
-        "     END {{ if (canon == 1) {{ print read; }} }} "
+        "     FNR==NR {{ "
+	'       t[$(f["transcript"]),"main"] = $(f["main_transcript_per_gene"]); '
+        '       t[$(f["transcript"]),"len"] = $(f["transcript_length"]); '
+        "       next "
+        "     }} "
+        "     {{ "
+        "       if ($1 != read_id) {{ "
+        "         if (main == 1) {{ print read; }}; "
+        "         dist = -1; main = 0; "
+        "       }}; "
+        '       read_id = $1; new_dist = t[$3,"len"] - $4; '
+        "       if ( new_dist >= -1 && (dist == -1 || dist > new_dist)) {{ "
+        '         dist = new_dist; main = t[$3,"main"]; read = $0; '
+        "       }} "
+        "     }} "
+        "     END {{ "
+        "       if (main == 1) {{ print read; }} "
+        "     }} "
         "     ' "
-        "     {input.annotation} - >>{output.sam} "
+        "     {input.annotation} - >> {output.sam} "
         ") 2>{log}"
 
 
