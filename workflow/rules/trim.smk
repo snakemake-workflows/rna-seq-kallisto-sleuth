@@ -10,7 +10,7 @@ rule cutadapt_pe:
         adapters=config["params"]["cutadapt-pe"]["adapters"],
         extra=config["params"]["cutadapt-pe"]["extra"],
     log:
-        "results/logs/cutadapt/{sample}-{unit}.log",
+        "logs/cutadapt/{sample}-{unit}.log",
     wrapper:
         "v2.6.0/bio/cutadapt/pe"
 
