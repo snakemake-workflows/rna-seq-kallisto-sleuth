@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.3](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.5.2...v2.5.3) (2024-01-30)
+
+
+### Bug Fixes
+
+* canonical transcript mapped read extraction ([#77](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/77)) ([52b56b0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/52b56b022729dac745724cf60266e88f55359cb3))
+
 ## [2.5.2](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.5.1...v2.5.2) (2023-09-14)
 
 
