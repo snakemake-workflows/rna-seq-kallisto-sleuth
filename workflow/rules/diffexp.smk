@@ -30,7 +30,7 @@ rule sleuth_init:
     input:
         kallisto=kallisto_output,
         samples="results/sleuth/{model}.samples.tsv",
-        transcript_info="resources/transcript-info.rds",
+        transcript_info="resources/transcripts_annotation.results.rds",
     output:
         sleuth_object="results/sleuth/{model,[^.]+}.rds",
         designmatrix="results/sleuth/{model}.designmatrix.rds",

@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.5.3](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.5.2...v2.5.3) (2024-01-30)
+
+
+### Bug Fixes
+
+* canonical transcript mapped read extraction ([#77](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/77)) ([52b56b0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/52b56b022729dac745724cf60266e88f55359cb3))
+* the above pull request also accumulated a number of other bug fixes and updates:
+  * QuantSeq data now also works with standard canonical transcripts, when MANE transcripts are not available for a species
+  * some environment and wrapper updates and fixes, e.g. biomart, pysam, sleuth, datavzrd
+  * some overall cleanup of the QuantSeq parts of the workflow
+  * proper QuantSeq testing data, [generated with a dedicated workflow](https://github.com/dlaehnemann/create-quant-seq-testing-dataset) and [hosted on Zenodo](https://zenodo.org/doi/10.5281/zenodo.10572745), which enables a quick and useful testing for the respective parts of the workflow
+
+## [2.5.2](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.5.1...v2.5.2) (2023-09-14)
+
+
+### Bug Fixes
+
+* simpler three prime QuantSeq cutadapt setup ([#78](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/78)) ([ecc9ab7](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/ecc9ab712b94e175a2c9e7c79b365faa98a3df44))
+* update samtools.yaml to latest `1.17` and update github actions ([#75](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/75)) ([0fe7948](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/0fe79485566aad4fd9856ef62ee92ab81c6e4974))
+
+
+### Performance Improvements
+
+* bump datavzrd wrapper to 2.6.0 and general bug fixes ([#80](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/80)) ([657c465](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/657c4656d6ef45e044c0a534522e3d57d225b3e5))
+
 ## [2.5.1](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.5.0...v2.5.1) (2023-06-14)
 
 

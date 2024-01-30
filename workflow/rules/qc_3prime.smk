@@ -1,8 +1,20 @@
+rule get_aligned_pos:
+    input:
+        bam_file="results/kallisto_cdna/{sample}-{unit}",
+    output:
+        aligned_files=temp("results/QC/{sample}-{unit}.aligned.txt"),
+    log:
+        "logs/QC/{sample}-{unit}.aligned.log",
+    conda:
+        "../envs/samtools.yaml"
+    shell:
+        "samtools view {input.bam_file}/pseudoalignments.bam | cut -f1,3,4,10,11  > {output} 2> {log}"
+
+
 rule get_selected_transcripts_aligned_read_bins:
     input:
         aligned_file="results/QC/{sample}-{unit}.aligned.txt",
-        samtools_sort="results/kallisto-bam-sorted/{sample}-{unit}-pseudoalignments.sorted.bam",
-        samtools_index="results/kallisto-bam-sorted/{sample}-{unit}-pseudoalignments.sorted.bam.bai",
+        transcripts_annotation="resources/transcripts_annotation.main_transcript_strand_length.tsv",
         read_length="results/stats/max-read-length.json",
     output:
         fwrd_allsamp_hist_fil=temp(
@@ -15,7 +27,7 @@ rule get_selected_transcripts_aligned_read_bins:
         each_transcript="{ind_transcripts}",
         samples="{sample}-{unit}",
     log:
-        "results/logs/QC/{sample}-{unit}.{ind_transcripts}.aligned-read-bins.log",
+        "logs/QC/{sample}-{unit}.{ind_transcripts}.aligned-read-bins.log",
     conda:
         "../envs/QC.yaml"
     script:
@@ -67,7 +79,7 @@ if is_3prime_experiment and config["experiment"]["3-prime-rna-seq"]["plot-qc"] !
         params:
             each_transcript="{ind_transcripts}",
         log:
-            "results/logs/QC/3prime-QC-plot.{ind_transcripts}.log",
+            "logs/QC/3prime-QC-plot.{ind_transcripts}.log",
         conda:
             "../envs/QC.yaml"
         script:
@@ -108,7 +120,7 @@ else:
         params:
             each_transcript="{ind_transcripts}",
         log:
-            "results/logs/QC/3prime-QC-plot.{ind_transcripts}.log",
+            "logs/QC/3prime-QC-plot.{ind_transcripts}.log",
         conda:
             "../envs/QC.yaml"
         script:

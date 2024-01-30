@@ -95,7 +95,7 @@ views:
         chromosome_name:
           optional: true
           display-mode: hidden
-        transcript_mane_select:
+        main_transcript_per_gene:
           optional: true
           display-mode: hidden
         ensembl_transcript_id_version:
@@ -246,8 +246,6 @@ views:
         ext_gene:
           display-mode: normal
         gene_desc:
-          display-mode: normal
-        canonical:
           display-mode: normal
         num_aggregated_transcripts:
           display-mode: normal
