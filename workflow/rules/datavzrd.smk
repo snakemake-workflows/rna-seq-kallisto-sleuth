@@ -2,12 +2,12 @@ rule render_datavzrd_config_spia:
     input:
         template=workflow.source_path("../resources/datavzrd/spia-template.yaml"),
         spia_table="results/tables/pathways/{model}.pathways.tsv",
-        spia_table_activated="results/tables/pathways/{model}.activated-pathways.tsv",
-        spia_table_inhibited="results/tables/pathways/{model}.inhibited-pathways.tsv",
     output:
         "results/datavzrd/spia/{model}.yaml",
     log:
         "logs/yte/render-datavzrd-config-spia/{model}.log",
+    params:
+        pathway_db=config["enrichment"]["spia"]["pathway_database"],
     template_engine:
         "yte"
 
@@ -53,8 +53,6 @@ rule spia_datavzrd:
         config="results/datavzrd/spia/{model}.yaml",
         # files required for rendering the given configs
         spia_table="results/tables/pathways/{model}.pathways.tsv",
-        spia_table_activated="results/tables/pathways/{model}.activated-pathways.tsv",
-        spia_table_inhibited="results/tables/pathways/{model}.inhibited-pathways.tsv",
     output:
         report(
             directory("results/datavzrd-reports/spia-{model}"),
@@ -67,8 +65,7 @@ rule spia_datavzrd:
     log:
         "logs/datavzrd-report/spia-{model}/spia-{model}.log",
     wrapper:
-        # "v2.6.0/utils/datavzrd"
-        "v3.3.5-1-gd73914d/utils/datavzrd"
+        "v3.3.6/utils/datavzrd"
 
 
 rule diffexp_datavzrd:
@@ -93,8 +90,7 @@ rule diffexp_datavzrd:
     log:
         "logs/datavzrd-report/diffexp.{model}/diffexp.{model}.log",
     wrapper:
-        # "v2.6.0/utils/datavzrd"
-        "v3.3.5-1-gd73914d/utils/datavzrd"
+        "v3.3.6/utils/datavzrd"
 
 
 rule go_enrichment_datavzrd:
@@ -121,5 +117,4 @@ rule go_enrichment_datavzrd:
     log:
         "logs/datavzrd-report/go_enrichment-{model}/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     wrapper:
-        # "v2.6.0/utils/datavzrd"
-        "v3.3.5-1-gd73914d/utils/datavzrd"
+        "v3.3.6/utils/datavzrd"
