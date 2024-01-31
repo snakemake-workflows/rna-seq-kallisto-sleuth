@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.4](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.5.3...v2.5.4) (2024-01-31)
+
+
+### Performance Improvements
+
+* improve spia script and report ([#83](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/83)) ([4b3cc16](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/4b3cc16ca468ff4b05de16e906306723f6f32d09))
+
 ## [2.5.3](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.5.2...v2.5.3) (2024-01-30)
 
 
