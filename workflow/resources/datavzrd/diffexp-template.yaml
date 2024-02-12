@@ -87,8 +87,9 @@ views:
                 - "white"
                 - "#6baed6"
               domain:
-                - -1
                 - 0
+                - 1e-18
+                - 1e-10
                 - 1
             # bars:
             #   scale: linear
