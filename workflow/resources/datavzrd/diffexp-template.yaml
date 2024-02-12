@@ -84,13 +84,13 @@ views:
               scale: linear
               range:
                 - "#e6550d"
-                - "white"
+                # - "white"
                 - "#6baed6"
-              domain:
-                - 0
-                - 1e-18
-                - 1e-10
-                - 1
+              # domain:
+              #   - 0
+              #   - 1e-18
+              #   - 1e-10
+              #   - 1
             # bars:
             #   scale: linear
             #   domain:
