@@ -56,23 +56,23 @@ views:
           display-mode: normal
         canonical:
           display-mode: normal
-          plot:
-            heatmap:
-              scale: ordinal
-              domain:
-                - TRUE
-                - FALSE
-              range:
-                - "#aec7e8"
-                - white
-              custom-content: |
-                function(value, row) {
-                    if(value == "TRUE") {
-                        return "yes"
-                    } else {
-                        return ""
-                    }
-                }
+          # plot:
+          #   heatmap:
+          #     scale: ordinal
+          #     domain:
+          #       - TRUE
+          #       - FALSE
+          #     range:
+          #       - "#aec7e8"
+          #       - white
+          #     custom-content: |
+          #       function(value, row) {
+          #           if(value == "TRUE") {
+          #               return "yes"
+          #           } else {
+          #               return ""
+          #           }
+          #       }
         target_id:
           display-mode: normal
           link-to-url: 
