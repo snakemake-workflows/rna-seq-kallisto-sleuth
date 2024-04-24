@@ -76,16 +76,39 @@ views:
         term:
           display-mode: normal 
         ratio_in_study:
-          display-mode: normal
+          # display-mode: normal
+          display-mode: detail
+          custom-plot:
+            data: |
+              function(value, row) {
+                var parts = value.match(/\((\d+), (\d+)\)/);
+                if (parts) {
+                  var x = parseInt(parts[1]);
+                  var y = parseInt(parts[2]);
+                  return [{"category": "n_genes_diff_exp", "amount": x}, {"category": "n_genes_diff_exp_study", "amount": y}];
+                } else {
+                  return "";
+                }
+              }
+            spec-path: ?input.vega_circle
         ratio_in_pop:
           display-mode: normal
         p_uncorrected:
+          label: p-val
           plot:
-            bars:
+            # bars:
+            #   scale: linear
+            #   domain:
+            #     - 0.0
+            #     - 1.0
+            heatmap:
               scale: linear
+              range:
+                - "#0b620b"
+                - "#f3e03b"
               domain:
                 - 0.0
-                - 1.0
+                - 1.0            
         depth:
           plot:
             heatmap:
@@ -95,6 +118,7 @@ views:
             heatmap:
               scale: linear
         p_fdr_bh:
+          label: p-val_adjusted
           plot:
             bars:
               scale: linear
@@ -102,4 +126,23 @@ views:
                 - 0.0
                 - 1.0
         study_items:
-          display-mode: normal                        
+          display-mode: detail 
+          custom-plot:
+            data: |
+              function customFunction(value, row) {
+                if (value && value.trim() !== "") {
+                    var geneValues = value.split(', ');
+                    var data = [];
+                    geneValues.forEach(function(geneValue) {
+                      var parts = geneValue.split(':');
+                      var gene = parts[0];
+                      var val = parseFloat(parts[1]);
+                      data.push({"gene": gene, "value": val});
+                  });
+                  console.log(data);
+                  return data;
+                } else {
+                    return "";
+                }
+              }  
+            spec-path: ?input.vega_waterfall

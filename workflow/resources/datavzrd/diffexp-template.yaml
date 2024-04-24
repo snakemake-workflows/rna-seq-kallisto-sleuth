@@ -47,6 +47,34 @@ views:
       In addition, a signed version of the pi-value score (as proposed by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`) is shown. The sign reflects the sign of the effect (i.e. positive for upregulation, negative for downregulation).
     page-size: 25
     render-table:
+      add-columns:
+        test_lower_se:
+          value: |
+            function calculateLowerSE(row) {
+              var columns = Object.keys(row);
+              var matchingCols = columns.filter(col => col.startsWith('b_') && col.endsWith('_se') && !col.endsWith('part2_se'));
+              if (matchingCols.length > 0) {
+                var col1 = row[matchingCols[0].slice(0, -3)]; 
+                var col2 = row[matchingCols[0]];
+                var result = col1 - col2;
+                return parseFloat(result).toFixed(2);
+              }
+              return [];
+            }
+        test_upper_se:
+          value: |
+            function calculateUpperSE(row) {
+              var columns = Object.keys(row);
+              var matchingCols = columns.filter(col => col.startsWith('b_') && col.endsWith('_se') && !col.endsWith('part2_se'));
+              if (matchingCols.length > 0) {
+                var col1 = row[matchingCols[0].slice(0, -3)]; 
+                var col2 = row[matchingCols[0]];
+                var result = col1 + col2;
+                return parseFloat(result).toFixed(2);
+              }
+              return [];
+            }
+
       columns:
         ens_gene:
           display-mode: hidden       
@@ -80,11 +108,19 @@ views:
               url: "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={target_id}"
         pval:
           plot:
-            bars:
+            heatmap:
               scale: linear
+              range:
+                - "#0b620b"
+                - "#f3e03b"
               domain:
                 - 0.0
                 - 1.0
+            # bars:
+            #   scale: linear
+            #   domain:
+            #     - 0.0
+            #     - 1.0
         qval:
           plot:
             bars:
@@ -121,7 +157,9 @@ views:
           display-mode: hidden
         regex('qval_.+'):
           display-mode: hidden
-        regex('b_.*'):
+        regex('b_.*_se'):
+          display-mode: hidden
+        regex('b_.*(?<!_se)'):
           display-mode: normal
           plot:
             heatmap:
@@ -216,7 +254,7 @@ views:
           display-mode: hidden
         regex('qval_.+'):
           display-mode: hidden
-        regex('b_.*'):
+        regex('b_.*(?<!_se(?!part2))'):
           display-mode: normal
           plot:
             heatmap:

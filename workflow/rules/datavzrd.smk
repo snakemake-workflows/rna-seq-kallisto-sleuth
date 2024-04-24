@@ -35,6 +35,8 @@ rule render_datavzrd_config_go_enrichment:
         template=workflow.source_path(
             "../resources/datavzrd/go-enrichment-template.yaml"
         ),
+        vega_circle="../../../../homes/aprinz/rna-seq-kallisto-sleuth/workflow/resources/custom_vega_plots/circle_diagram_genes.json",
+        vega_waterfall="../../../../homes/aprinz/rna-seq-kallisto-sleuth/workflow/resources/custom_vega_plots/waterfall_plot_study_items.json",
         enrichment="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
         significant_terms="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.sig_terms.tsv",
         genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
