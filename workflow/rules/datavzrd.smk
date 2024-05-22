@@ -12,24 +12,6 @@ rule render_datavzrd_config_spia:
         "yte"
 
 
-rule render_datavzrd_config_diffexp:
-    input:
-        template=workflow.source_path("../resources/datavzrd/diffexp-template.yaml"),
-        logcount_matrix="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
-        transcripts="results/tables/diffexp/{model}.transcripts.diffexp.tsv",
-        genes_aggregated="results/tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
-        genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
-        volcano_plots="results/plots/interactive/volcano/{model}.vl.json",
-    output:
-        "results/datavzrd/diffexp/{model}.yaml",
-    params:
-        samples=get_model_samples,
-    log:
-        "logs/yte/render-datavzrd-config-diffexp/{model}.log",
-    template_engine:
-        "yte"
-
-
 rule render_datavzrd_config_go_enrichment:
     input:
         template=workflow.source_path(
@@ -70,7 +52,12 @@ rule spia_datavzrd:
 
 rule diffexp_datavzrd:
     input:
-        config="results/datavzrd/diffexp/{model}.yaml",
+        # the config file may be a yte template, with access to input, params and wildcards
+        # analogous to Snakemake's generic template support:
+        # https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#template-rendering-integration
+        # For template processing, __use_yte__: true has to be stated in the config file
+        config=workflow.source_path("../resources/datavzrd/diffexp-template.yaml"),
+        # optional files required for rendering the given config
         logcount_matrix="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
         transcripts="results/tables/diffexp/{model}.transcripts.diffexp.tsv",
         genes_aggregated="results/tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
@@ -84,11 +71,15 @@ rule diffexp_datavzrd:
             category="Differential expression analysis",
             patterns=["index.html"],
             labels={"model": "{model}"},
+            # see https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html
+            # for additional options like caption, categories and labels
         ),
-    params:
-        model=get_model,
     log:
         "logs/datavzrd-report/diffexp.{model}/diffexp.{model}.log",
+    params:
+        samples=get_model_samples,
+        model=get_model,
+        extra="",
     wrapper:
         "v3.10.2/utils/datavzrd"
 
