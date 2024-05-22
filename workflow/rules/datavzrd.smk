@@ -71,14 +71,12 @@ rule diffexp_datavzrd:
             category="Differential expression analysis",
             patterns=["index.html"],
             labels={"model": "{model}"},
-            # see https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html
-            # for additional options like caption, categories and labels
         ),
     log:
         "logs/datavzrd-report/diffexp.{model}/diffexp.{model}.log",
     params:
-        samples=get_model_samples,
         model=get_model,
+        samples=get_model_samples,
         extra="",
     wrapper:
         "v3.10.2/utils/datavzrd"
