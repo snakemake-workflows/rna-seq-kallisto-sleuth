@@ -93,6 +93,9 @@ enrichment:
     # the species specified by resources -> ref -> species above
     pathway_database: "panther"
 
+report:
+  offer_excel: true
+
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
   FDR: 0.01
