@@ -77,6 +77,7 @@ rule diffexp_datavzrd:
     params:
         model=get_model,
         samples=get_model_samples,
+        offer_excel=config.get("report", "false").get("offer_excel", "false"),
         extra="",
     wrapper:
         "v3.10.2/utils/datavzrd"
