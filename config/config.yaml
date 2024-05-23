@@ -117,6 +117,10 @@ plot_vars:
   # significance level used for plot_vars() plots
   sig_level: 0.1
 
+report:
+  # turn on to get excel files for download in the snakemake report
+  offer_excel: false
+
 params:
   #For reads that are produced by 3’-end sequencing, the --single-overhang option does not discard
   #reads where the expected fragment size goes beyond the transcript start
