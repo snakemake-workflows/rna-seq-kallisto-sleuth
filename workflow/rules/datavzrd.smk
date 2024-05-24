@@ -1,7 +1,21 @@
+rule sort_spia:
+    input:
+        spia_table="results/tables/pathways/{model}.pathways.tsv",
+    output:
+        spia_table_sorted="results/tables/pathways/{model}.pathways_sorted.tsv",
+    conda:
+        "../envs/pandas.yaml"
+    log:
+        "logs/yte/sort_spia/{model}.log",
+    script:
+        "../scripts/sort_spia.py"
+
+
 rule render_datavzrd_config_spia:
     input:
         template=workflow.source_path("../resources/datavzrd/spia-template.yaml"),
-        spia_table="results/tables/pathways/{model}.pathways.tsv",
+        vega_circle="../../../../homes/aprinz/rna-seq-kallisto-sleuth/workflow/resources/custom_vega_plots/circle_diagram_de_genes.json",
+        spia_table="results/tables/pathways/{model}.pathways_sorted.tsv",
     output:
         "results/datavzrd/spia/{model}.yaml",
     log:
@@ -94,7 +108,7 @@ rule spia_datavzrd:
     log:
         "logs/datavzrd-report/spia-{model}/spia-{model}.log",
     wrapper:
-        "v3.5.2/utils/datavzrd"
+        "v3.10.2-3-gbeb9d22/utils/datavzrd"
 
 
 rule diffexp_datavzrd:
@@ -119,7 +133,7 @@ rule diffexp_datavzrd:
     log:
         "logs/datavzrd-report/diffexp.{model}/diffexp.{model}.log",
     wrapper:
-        "v3.5.2/utils/datavzrd"
+        "v3.10.2-3-gbeb9d22/utils/datavzrd"
 
 
 rule go_enrichment_datavzrd:
@@ -146,4 +160,4 @@ rule go_enrichment_datavzrd:
     log:
         "logs/datavzrd-report/go_enrichment-{model}/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     wrapper:
-        "v3.5.2/utils/datavzrd"
+        "v3.10.2-3-gbeb9d22/utils/datavzrd"

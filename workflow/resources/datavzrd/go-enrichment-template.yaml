@@ -62,22 +62,82 @@ views:
   go_enrichment:
     dataset: go_enrichment
     desc: |
-        Gene ontology (GO) term enrichment analysis performed by goatools, using the sleuth model. The table contains the following columns. "GO" is the GO ID, "term" is the term associated with the GO, "class" is the corresponding class to which the GO term belongs (biological process/cellular component/molecular function), "p_uncorrected" is the p-value obtained, "p_fdr_bh" is the p value obtained from false discovery, "ratio_in_study" is the ratio of differentially expressed genes in the current study, "ratio_in_pop" is the ratio of total genes present in the current analysis, "depth" is the total number of GO terms associated with the current ID, "study_count" is the number of differentially expressed genes in that particular GO term, "study_items" is the name of each differentially expressed genes. Each gene contains its corresponding "b" value with is the fold change seperated by ":". "Gene ratio" gives the ratio of gene corresponding to each term.  
+      <div">
+        <p>
+          Gene ontology (GO) term enrichment analysis performed by goatools, using the sleuth model. 
+          The table contains the following columns:
+        </p>
+        <div>
+          <table border="1" cellpadding="5" cellspacing="0">
+              <tr>
+                  <td><strong>Column Name</strong></th>
+                  <td><strong>Description</strong></th>
+              </tr>
+              <tr>
+                  <td>term</td>
+                  <td>Term associated with the GO</td>
+              </tr>
+              <tr>
+                  <td>class</td>
+                  <td>GO term class</td>
+              </tr>
+              <tr>
+                  <td>ratio_differential</td>
+                  <td>Ratio of differentially expressed genes in the GO term</td>
+              </tr>
+              <tr>
+                  <td>ratio_size</td>
+                  <td> Ratio of GO term size in relation to total number of measured genes</td>
+              </tr>
+              <tr>
+                  <td>study_items</td>
+                  <td>Ratio of genes corresponding to each term (Click on the "+" to see it)</td>
+              </tr>
+          </table>
+        </div>
+      </div>
+
     page-size: 25
     render-table:
+      # add-columns:
+      #   test_term:
+      #     value: |
+      #       function getTerm(row) {
+      #         return row.term;
+      #       }
+      #     link-to-url:
+      #       geneontology:
+      #         url: "http://amigo.geneontology.org/amigo/term/{GO}"
+      # add-columns:
+      #   birth_season:
+      #     value: |
+      #       function getSeasonEmoji(row) {
+      #           var month = row.birth_mo;
+      #           const seasons = ["❄️", "🌸", "☀️", "🍁"];
+      #           return (month < 1 || month > 12) ? "Invalid month" : seasons[Math.floor((month % 12) / 3)];
+      #       }
+
+
       columns:
         GO:
-          display-mode: normal
+          display-mode: hidden
           link-to-url: 
             geneontology: 
               url: http://amigo.geneontology.org/amigo/term/{GO}
         class:
           display-mode: normal 
+          plot:
+            heatmap:
+              scale: ordinal
+              color-scheme: tableau20
         term:
-          display-mode: normal 
+            link-to-url:
+              geneontology:
+                url: "http://amigo.geneontology.org/amigo/term/{GO}"
         ratio_in_study:
           # display-mode: normal
-          display-mode: detail
+          label: ratio_differential
+          display-mode: normal
           custom-plot:
             data: |
               function(value, row) {
@@ -85,47 +145,66 @@ views:
                 if (parts) {
                   var x = parseInt(parts[1]);
                   var y = parseInt(parts[2]);
-                  return [{"category": "n_genes_diff_exp", "amount": x}, {"category": "n_genes_diff_exp_study", "amount": y}];
+                  return [{"category": "n_genes_diff_exp", "amount": x, "percentage": x/y}, {"category": "n_genes_diff_exp_study", "amount": y, "percentage": x/y}];
                 } else {
                   return "";
                 }
               }
             spec-path: ?input.vega_circle
-            vega-controls: true
+            vega-controls: false
         ratio_in_pop:
+          label: ratio_size
+          # display-mode: normal
           display-mode: normal
+          custom-plot:
+            data: |
+              function(value, row) {
+                var parts = value.match(/\((\d+), (\d+)\)/);
+                if (parts) {
+                  var x = parseInt(parts[1]);
+                  var y = parseInt(parts[2]);
+                  return [{"category": "n_genes_diff_exp", "amount": x, "percentage": x/y}, {"category": "n_genes_diff_exp_study", "amount": y, "percentage": x/y}];
+                } else {
+                  return "";
+                }
+              }
+            spec-path: ?input.vega_circle
+            vega-controls: false
         p_uncorrected:
-          label: p-val
+          label: p-value
           plot:
-            # bars:
-            #   scale: linear
-            #   domain:
-            #     - 0.0
-            #     - 1.0
             heatmap:
               scale: linear
               range:
-                - "#0b620b"
-                - "#f3e03b"
+                - "#2ca02c"
+                - "#bcbd22"
               domain:
                 - 0.0
                 - 1.0            
         depth:
+          display-mode: hidden
           plot:
             heatmap:
               scale: linear
         study_count:
+          display-mode: hidden
+
           plot:
             heatmap:
               scale: linear
         p_fdr_bh:
-          label: p-val_adjusted
+          label: FDR
           plot:
-            bars:
+            heatmap:
               scale: linear
+              range:
+                - "#2ca02c"
+                - "#bcbd22"
               domain:
                 - 0.0
-                - 1.0
+                - 1.0   
+        study_items: 
+          display-mode: hidden
         study_items_sig_terms:
           label: study_items
           display-mode: detail 
@@ -133,20 +212,17 @@ views:
             data: |
               function customFunction(value, row) {
                 if (value && value.trim() !== "") {
-                    console.log("Whole cell: ", value);
                     var geneValues = value.split(', ');
                     var data = [];
-                    console.log("Array: ", geneValues);
-
+                    console.log("Values", value)
                     geneValues.forEach(function(geneValue) {
                       var parts = geneValue.split(':');
-                      console.log("Parts:", parts);
                       var gene = parts[0];
                       var val = parseFloat(parts[1]);
-                      console.log("Value:", val);
+                      console.log("Gene", gene, "value", val)
+
                       data.push({"gene": gene, "value": val});
                   });
-                  console.log("Data", data);
                   return data;
                 } else {
                     return "";

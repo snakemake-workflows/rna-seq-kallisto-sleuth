@@ -111,8 +111,8 @@ views:
             heatmap:
               scale: linear
               range:
-                - "#0b620b"
-                - "#f3e03b"
+                - "#2ca02c"
+                - "#bcbd22"
               domain:
                 - 0.0
                 - 1.0
