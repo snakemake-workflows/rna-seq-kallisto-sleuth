@@ -14,7 +14,7 @@ rule sort_spia:
 rule render_datavzrd_config_spia:
     input:
         template=workflow.source_path("../resources/datavzrd/spia-template.yaml"),
-        vega_circle="../../../../homes/aprinz/rna-seq-kallisto-sleuth/workflow/resources/custom_vega_plots/circle_diagram_de_genes.json",
+        vega_circle="workflow/resources/custom_vega_plots/circle_diagram_de_genes.json",
         spia_table="results/tables/pathways/{model}.pathways_sorted.tsv",
     output:
         "results/datavzrd/spia/{model}.yaml",
@@ -76,8 +76,8 @@ rule render_datavzrd_config_go_enrichment:
         template=workflow.source_path(
             "../resources/datavzrd/go-enrichment-template.yaml"
         ),
-        vega_circle="../../../../homes/aprinz/rna-seq-kallisto-sleuth/workflow/resources/custom_vega_plots/circle_diagram_genes.json",
-        vega_waterfall="../../../../homes/aprinz/rna-seq-kallisto-sleuth/workflow/resources/custom_vega_plots/waterfall_plot_study_items.json",
+        vega_circle="workflow/resources/custom_vega_plots/circle_diagram_genes.json",
+        vega_waterfall="workflow/resources/custom_vega_plots/waterfall_plot_study_items.json",
         enrichment="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr{go_term_fdr}.tsv",
         significant_terms="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.sig_terms.tsv",
         genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
