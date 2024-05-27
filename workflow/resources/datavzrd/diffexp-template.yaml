@@ -4,7 +4,7 @@ name: ?f"Differential expression analysis for model {wildcards.model}"
 datasets:
   genes_representative:
     path: ?input.genes_representative
-    offer-excel: ?params.offer_excel
+    offer-excel: ?params.offer_excel in ["true", "True"]
     links:
       link to transcripts:
         column: ens_gene
@@ -21,19 +21,18 @@ datasets:
     separator: "\t"
   transcripts:
     path: ?input.transcripts
-    offer-excel: ?params.offer_excel
+    offer-excel: ?params.offer_excel in ["true", "True"]
     links:
       link to genes representative:
         column: ens_gene
         table-row: genes_representative/ens_gene
     separator: "\t"  
   genes_aggregated:
-    path: ?input.genes_aggregated
-    offer-excel: ?params.offer_excel
+    offer-excel: ?params.offer_excel in ["true", "True"]
     separator: "\t"
   logcount_matrix:
     path: ?input.logcount_matrix
-    offer-excel: ?params.offer_excel
+    offer-excel: ?params.offer_excel in ["true", "True"]
     links:  
       link to transcripts:
         column: transcript
