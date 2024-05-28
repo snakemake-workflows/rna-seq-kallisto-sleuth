@@ -28,6 +28,7 @@ datasets:
         table-row: genes_representative/ens_gene
     separator: "\t"  
   genes_aggregated:
+    path: ?input.genes_aggregated
     offer-excel: ?params.offer_excel in ["true", "True"]
     separator: "\t"
   logcount_matrix:
