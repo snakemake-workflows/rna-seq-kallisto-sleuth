@@ -46,7 +46,7 @@ rule sleuth_init:
         "sleuth-init"
     threads: 6
     resources:
-        mem_mb=lambda wc, threads: threads * 4000
+        mem_mb=lambda wc, threads: threads * 4000,
     script:
         "../scripts/sleuth-init.R"
 
