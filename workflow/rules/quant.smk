@@ -1,8 +1,10 @@
 rule kallisto_index:
     input:
-        fasta="resources/transcriptome.cdna.without_poly_a.fasta"
-        if is_3prime_experiment
-        else "resources/transcriptome.cdna.fasta",
+        fasta=(
+            "resources/transcriptome.cdna.without_poly_a.fasta"
+            if is_3prime_experiment
+            else "resources/transcriptome.cdna.fasta"
+        ),
     output:
         index="results/kallisto_cdna/transcripts.cdna.idx",
     log:
