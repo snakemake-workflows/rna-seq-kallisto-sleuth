@@ -1,4 +1,4 @@
-sample	unit	fragment_len_mean	fragment_len_sd	fq1	fq2
+sample	unit	fragment_len_mean	fragment_len_sd	fq1	fq2 bam_single  bam_paired
 A	1			raw/a.chr21.1.fq	raw/a.chr21.2.fq
 B	1			raw/b.chr21.1.fq	raw/b.chr21.2.fq
 B	2	300	14	raw/b.chr21.1.fq	
