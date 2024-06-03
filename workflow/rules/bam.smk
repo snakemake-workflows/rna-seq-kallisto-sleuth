@@ -1,6 +1,10 @@
 rule bam_paired_to_fastq:
     input:
-        lookup(query="sample == '{sample}' & unit == '{unit}'", within=units, cols="bam_paired")
+        lookup(
+            query="sample == '{sample}' & unit == '{unit}'",
+            within=units,
+            cols="bam_paired",
+        ),
     output:
         "results/{sample}-{unit}.1.fq.gz",
         "results/{sample}-{unit}.1.fq.gz",
@@ -15,7 +19,11 @@ rule bam_paired_to_fastq:
 
 rule bam_single_to_fastq:
     input:
-        lookup(query="sample == '{sample}' & unit == '{unit}'", within=units, cols="bam_single")
+        lookup(
+            query="sample == '{sample}' & unit == '{unit}'",
+            within=units,
+            cols="bam_single",
+        ),
     output:
         "results/{sample}-{unit}.fq.gz",
     log:
