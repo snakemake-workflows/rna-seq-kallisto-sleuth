@@ -13,7 +13,7 @@ rule bam_paired_to_fastq:
         "v3.10.2/bio/samtools/fastq/separate"
 
 
-rule samtools_fastq_interleaved:
+rule bam_single_to_fastq:
     input:
         "{bam_file}.bam",
     output:
