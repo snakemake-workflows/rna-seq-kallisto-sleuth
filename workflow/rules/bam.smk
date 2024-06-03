@@ -1,11 +1,11 @@
 rule bam_paired_to_fastq:
     input:
-        "{bam_file}.bam",
+        lookup(query="sample == '{sample}' & unit == '{unit}'", within=units, cols="bam_paired")
     output:
-        "{bam_file}.1.fq",
-        "{bam_file}.2.fq",
+        "results/{sample}-{unit}.1.fq.gz",
+        "results/{sample}-{unit}.1.fq.gz",
     log:
-        "{bam_file}.separate.log",
+        "logs/{sample}-{unit}.separate.log",
     params:
         fastq="-n",
     threads: 3
@@ -15,13 +15,11 @@ rule bam_paired_to_fastq:
 
 rule bam_single_to_fastq:
     input:
-        "{bam_file}.bam",
+        lookup(query="sample == '{sample}' & unit == '{unit}'", within=units, cols="bam_single")
     output:
-        "{bam_file}.fq",
+        "results/{sample}-{unit}.fq.gz",
     log:
-        "{bam_file}.interleaved.log",
-    params:
-        " ",
+        "logs/{sample}-{unit}.interleaved.log",
     threads: 3
     wrapper:
         "v3.10.2/bio/samtools/fastq/interleaved"
