@@ -1,4 +1,4 @@
-rule separate_bam_paired:
+rule bam_paired_to_fastq:
     input:
         "{bam_file}.bam",
     output:
