@@ -6,10 +6,10 @@ rule bam_paired_to_fastq:
             cols="bam_paired",
         ),
     output:
-        "results/{sample}-{unit}.1.fq.gz",
-        "results/{sample}-{unit}.1.fq.gz",
+        "results/fastq/{sample}-{unit}.1.fq.gz",
+        "results/fastq/{sample}-{unit}.2.fq.gz",
     log:
-        "logs/{sample}-{unit}.separate.log",
+        "logs/fastq/{sample}-{unit}.separate.log",
     params:
         fastq="-n",
     threads: 3
@@ -25,9 +25,9 @@ rule bam_single_to_fastq:
             cols="bam_single",
         ),
     output:
-        "results/{sample}-{unit}.fq.gz",
+        "results/fastq/{sample}-{unit}.fq.gz",
     log:
-        "logs/{sample}-{unit}.interleaved.log",
+        "logs/fastq/{sample}-{unit}.interleaved.log",
     threads: 3
     wrapper:
         "v3.10.2/bio/samtools/fastq/interleaved"

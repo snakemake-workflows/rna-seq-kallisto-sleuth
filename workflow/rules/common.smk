@@ -100,10 +100,10 @@ def is_single_end(sample, unit):
 def get_fastqs(wildcards):
     """Get raw FASTQ files from unit sheet."""
     if not pd.isnull(units.loc[(wildcards.sample, wildcards.unit), "bam_single"]):
-        return f"results/{wildcards.sample}-{wildcards.unit}.fq.gz"
+        return f"results/fastq/{wildcards.sample}-{wildcards.unit}.fq.gz"
     elif not pd.isnull(units.loc[(wildcards.sample, wildcards.unit), "bam_paired"]):
-        fqfrombam1 = f"results/{wildcards.sample}-{wildcards.unit}.1.fq.gz"
-        fqfrombam2 = f"results/{wildcards.sample}-{wildcards.unit}.2.fq.gz"
+        fqfrombam1 = f"results/fastq/{wildcards.sample}-{wildcards.unit}.1.fq.gz"
+        fqfrombam2 = f"results/fastq/{wildcards.sample}-{wildcards.unit}.2.fq.gz"
         return [fqfrombam1, fqfrombam2]
     elif is_single_end(wildcards.sample, wildcards.unit):
         return units.loc[(wildcards.sample, wildcards.unit), "fq1"]
