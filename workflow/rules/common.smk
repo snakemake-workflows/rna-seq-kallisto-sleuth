@@ -80,10 +80,6 @@ def check_config():
 check_config()
 
 
-def is_activated(config_element):
-    return config_element["activate"] in {"true", "True"}
-
-
 def get_model(wildcards):
     if wildcards.model == "all":
         return {"full": None}
@@ -353,7 +349,7 @@ def all_input(wildcards):
         )
     )
 
-    if is_activated(config["diffsplice"]):
+    if config["diffsplice"]["activated"]:
         # diffsplice analysis
         wanted_input.extend(
             expand(
