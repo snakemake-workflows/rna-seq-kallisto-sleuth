@@ -92,9 +92,9 @@ def get_model(wildcards):
 
 def is_single_end(sample, unit):
     """Determine whether unit is single-end."""
-    bam2_not_present = pd.isnull(units.loc[(sample, unit), "bam_paired"])
+    bam_paired_not_present = pd.isnull(units.loc[(sample, unit), "bam_paired"])
     fq2_not_present = pd.isnull(units.loc[(sample, unit), "fq2"])
-    return fq2_not_present and bam2_not_present
+    return fq2_not_present and bam_paired_not_present
 
 
 def get_fastqs(wildcards):
