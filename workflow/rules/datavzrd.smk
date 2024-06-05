@@ -55,9 +55,7 @@ rule diffexp_datavzrd:
 
 rule go_enrichment_datavzrd:
     input:
-        config=workflow.source_path(
-            "../resources/datavzrd/go-enrichment-template.yaml"
-        ),
+        config=workflow.source_path("../resources/datavzrd/go-enrichment-template.yaml"),
         significant_terms="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.sig_terms.tsv",
         enrichment="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
     output:
