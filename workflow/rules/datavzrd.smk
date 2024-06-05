@@ -1,38 +1,6 @@
-rule render_datavzrd_config_spia:
-    input:
-        template=workflow.source_path("../resources/datavzrd/spia-template.yaml"),
-        spia_table="results/tables/pathways/{model}.pathways.tsv",
-    output:
-        "results/datavzrd/spia/{model}.yaml",
-    log:
-        "logs/yte/render-datavzrd-config-spia/{model}.log",
-    params:
-        pathway_db=config["enrichment"]["spia"]["pathway_database"],
-    template_engine:
-        "yte"
-
-
-rule render_datavzrd_config_go_enrichment:
-    input:
-        template=workflow.source_path(
-            "../resources/datavzrd/go-enrichment-template.yaml"
-        ),
-        enrichment="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
-        significant_terms="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.sig_terms.tsv",
-        genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
-    output:
-        "results/datavzrd/go_terms/{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.yaml",
-    params:
-        samples=get_model_samples,
-    log:
-        "logs/yte/render-datavzrd-config-go_terms/{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
-    template_engine:
-        "yte"
-
-
 rule spia_datavzrd:
     input:
-        config="results/datavzrd/spia/{model}.yaml",
+        config=workflow.source_path("../resources/datavzrd/spia-template.yaml"),
         # files required for rendering the given configs
         spia_table="results/tables/pathways/{model}.pathways.tsv",
     output:
@@ -46,6 +14,8 @@ rule spia_datavzrd:
         ),
     log:
         "logs/datavzrd-report/spia-{model}/spia-{model}.log",
+    params:
+        pathway_db=config["enrichment"]["spia"]["pathway_database"],
     wrapper:
         "v3.11.0/utils/datavzrd"
 
@@ -85,9 +55,11 @@ rule diffexp_datavzrd:
 
 rule go_enrichment_datavzrd:
     input:
-        config="results/datavzrd/go_terms/{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.yaml",
+        config=workflow.source_path(
+            "../resources/datavzrd/go-enrichment-template.yaml"
+        ),
+        significant_terms="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.sig_terms.tsv",
         enrichment="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
-        sig_go="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.sig_terms.tsv",
     output:
         report(
             directory(
@@ -106,5 +78,7 @@ rule go_enrichment_datavzrd:
         ),
     log:
         "logs/datavzrd-report/go_enrichment-{model}/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
+    params:
+        samples=get_model_samples,
     wrapper:
         "v3.11.0/utils/datavzrd"
