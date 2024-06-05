@@ -349,7 +349,7 @@ def all_input(wildcards):
         )
     )
 
-    if config["diffsplice"]["activated"]:
+    if config["diffsplice"]["activate"]:
         # diffsplice analysis
         wanted_input.extend(
             expand(
