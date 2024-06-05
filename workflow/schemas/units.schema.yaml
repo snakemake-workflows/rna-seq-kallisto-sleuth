@@ -10,11 +10,16 @@ properties:
     description: unit id
   fq1:
     type: string
-    description: path to FASTQ file
+    description: path to FASTQ file (leave empty in case usage of bam_single or bam_paired)
   fq2:
     type: string
-    description: path to second FASTQ file (leave empty in case of single-end)
+    description: path to second FASTQ file (leave empty in case of single-end or usage of bam_single or bam_paired)
+  bam_single:
+    type: string
+    description: path to single bam file (leave empty in case of usage of fastq files)
+  bam_paired:
+    type: string
+    description: path to paired bam file (leave empty in case of usage of fastq files)
 required:
   - sample
   - unit
-  - fq1
