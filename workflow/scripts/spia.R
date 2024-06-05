@@ -107,6 +107,10 @@ if (nrow(sig_genes) == 0) {
       arrange(
         desc(`total perturbation accumulation`)
       )
+    final_res <- final_res %>%
+      mutate(gene_ratio = str_c("(", `number of DE genes per pathway`, ", ", `number of genes on the pathway`, ")")) %>%
+      arrange(`Combined FDR`)
+
     write_tsv(final_res, snakemake@output[["table"]])
   } else {
     # the best hack for an empty tibble from a column specification I could find

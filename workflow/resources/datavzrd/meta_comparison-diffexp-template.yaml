@@ -1,0 +1,55 @@
+name: ?f"Meta comparison for {wildcards.meta_comp}"
+datasets:
+  comparison_table:
+    path: ?input.table
+    offer-excel: true
+    separator: "\t"
+default-view: comparison_plot
+views:
+  comparison_table:
+    dataset: comparison_table
+    desc: |
+      Table for values of meta comparison
+    page-size: 25
+    render-table:
+      columns:
+        ext_gene:
+          display-mode: normal       
+        min q-value:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              color-scheme: greens
+        effect mgl (beta score):
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -8
+                - 0
+                - 8
+        effect t3 (beta score):
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -8
+                - 0
+                - 8
+  comparison_plot:
+    desc: |
+      The axes represent the log2-fold changes (beta-scores) for the two models, with each point representing a gene. Points on the diagonal indicate no difference between the comparisons, while deviations from the diagonal suggest differences in gene expression between the treatments.
+    dataset: comparison_table
+    render-plot:
+      spec-path: ?input.plot

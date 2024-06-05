@@ -80,6 +80,18 @@ def check_config():
 check_config()
 
 
+def get_meta_compare_labels(method=""):
+    def _get_labels(wildcards):
+        return {
+            "comparison": method
+            + lookup(
+                dpath=f"meta_comparisons/{wildcards.meta_comp}/label", within=config
+            )
+        }
+
+    return _get_labels
+
+
 def is_activated(config_element):
     return config_element["activate"] in {"true", "True"}
 

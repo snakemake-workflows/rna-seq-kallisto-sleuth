@@ -1,0 +1,75 @@
+name: ?f"Meta comparison for {wildcards.meta_comp}"
+datasets:
+  comparison_table:
+    path: ?input.table
+    offer-excel: true
+    separator: "\t"
+default-view: comparison_plot
+views:
+  comparison_table:
+    dataset: comparison_table
+    desc: |
+        Table for values of meta comparison
+    page-size: 25
+    render-table:
+      columns:
+        GO:
+          display-mode: normal 
+        term:
+          display-mode: normal       
+        min p_fdr_bh:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              color-scheme: greens
+        positive effect mgl:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "white"
+                - "#e6550d"
+              domain:
+                - 0
+                - 300
+        positive effect t3:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "white"
+                - "#e6550d"
+              domain:
+                - 0
+                - 300
+        negative effect mgl:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "white"
+                - "#984ea3"
+              domain:
+                - 0
+                - -300
+        negative effect t3:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "white"
+                - "#984ea3"
+              domain:
+                - 0
+                - -300
+  comparison_plot:
+    desc: |
+      The left side shows the summed positive beta-scores within a GO-term and the right side shows the summed negative beta-scores, with each point representing a GO-term. This illustrates whether a GO-term is enriched positively, negatively, or in both directions.
+    dataset: comparison_table
+    render-plot:
+      spec-path: ?input.plot

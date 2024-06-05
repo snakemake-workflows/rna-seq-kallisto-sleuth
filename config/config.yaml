@@ -104,6 +104,18 @@ enrichment:
     # the species specified by resources -> ref -> species above
     pathway_database: "reactome"
 
+meta_comparisons:
+  etoh_wt_mgl_vs_t3:
+    items:
+      - label: mgl
+        model: etoh_mgl_in_wt_vs_etho_in_wt_liver
+      - label: t3
+        model: etoh_t3_in_wt_vs_etoh_in_wt_liver
+    desc: |
+      Comparison between MGL and T3 effect in wildtype.
+    label: MGL effect vs T3 effect in WT
+
+
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
   FDR: 0.01
