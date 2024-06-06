@@ -15,7 +15,11 @@ rule spia_datavzrd:
     log:
         "logs/datavzrd-report/spia-{model}/spia-{model}.log",
     params:
-        offer_excel=config.get("report", {}).get("offer_excel", "false"),
+        offer_excel=lookup(
+            within=config,
+            dpath="report/offer_excel",
+            default="false"
+        ),
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
     wrapper:
         "v3.11.0/utils/datavzrd"
@@ -48,7 +52,11 @@ rule diffexp_datavzrd:
     params:
         extra="",
         model=get_model,
-        offer_excel=config.get("report", {}).get("offer_excel", "false"),
+        offer_excel=lookup(
+            within=config,
+            dpath="report/offer_excel",
+            default="false"
+        ),
         samples=get_model_samples,
     wrapper:
         "v3.11.0/utils/datavzrd"
@@ -78,7 +86,11 @@ rule go_enrichment_datavzrd:
     log:
         "logs/datavzrd-report/go_enrichment-{model}/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     params:
-        offer_excel=config.get("report", {}).get("offer_excel", "false"),
+        offer_excel=lookup(
+            within=config,
+            dpath="report/offer_excel",
+            default="false"
+        ),
         samples=get_model_samples,
     wrapper:
         "v3.11.0/utils/datavzrd"
