@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.5.5...v2.6.0) (2024-06-05)
+
+
+### Features
+
+* Allow bam input files ([#94](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/94)) ([4a1f983](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/4a1f98320ab1b5f099941f3cd62acef7f861d631))
+
 ## [2.5.4](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.5.3...v2.5.4) (2024-01-31)
 
 
