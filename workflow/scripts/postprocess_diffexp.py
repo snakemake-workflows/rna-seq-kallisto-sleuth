@@ -7,8 +7,9 @@ def process_columns(df):
         'b_') and not col.endswith('_se')]
 
     for col in matching_columns:
-        df[f"{col}_se_lower"] = df[col] - df[f"{col}_se"]
-        df[f"{col}_se_upper"] = df[col] + df[f"{col}_se"]
+        df[f"{col}_lower"] = df[col] - df[f"{col}_se"]
+        df[f"{col}_upper"] = df[col] + df[f"{col}_se"]
+
     return df, matching_columns
 
 
