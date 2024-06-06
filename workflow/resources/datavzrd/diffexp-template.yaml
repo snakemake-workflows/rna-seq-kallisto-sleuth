@@ -124,7 +124,7 @@ views:
           display-mode: hidden
         regex('qval_.+'):
           display-mode: hidden
-        regex('b_.*'):
+        regex('^b_(?!.*_se$)'):
           display-mode: normal
           plot:
             heatmap:
@@ -137,6 +137,8 @@ views:
                 - -1
                 - 0
                 - 1
+        regex('^b_.*_se$'):
+          display-mode: hidden
         regex('signed_pi_value_.+'):
           display-mode: hidden
         ?for sample in params.samples:

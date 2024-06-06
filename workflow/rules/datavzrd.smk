@@ -77,8 +77,6 @@ rule render_datavzrd_config_go_enrichment:
             "../resources/custom_vega_plots/waterfall_plot_study_items.json"
         ),
         enrichment="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}.tsv",
-        significant_terms="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.sig_terms.tsv",
-        genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
     output:
         "results/datavzrd/go_terms/{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.yaml",
     params:
@@ -116,7 +114,7 @@ rule diffexp_datavzrd:
         logcount_matrix="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
         transcripts="results/tables/diffexp/{model}.transcripts.diffexp.tsv",
         genes_aggregated="results/tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
-        genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
+        genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp_postprocessed.tsv",
         volcano_plots="results/plots/interactive/volcano/{model}.vl.json",
     output:
         report(
@@ -139,8 +137,7 @@ rule diffexp_datavzrd:
 rule go_enrichment_datavzrd:
     input:
         config="results/datavzrd/go_terms/{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.yaml",
-        enrichment="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
-        sig_go="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.sig_terms.tsv",
+        enrichment="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}.tsv",
     output:
         report(
             directory(

@@ -7,16 +7,14 @@ def process_columns(df):
         'b_') and not col.endswith('_se')]
 
     for col in matching_columns:
-        df[f"{col}_lower_se"] = df[col] - df[f"{col}_se"]
-        df[f"{col}_upper_se"] = df[col] + df[f"{col}_se"]
-        df.drop(columns=[f"{col}_se"], inplace=True)
-
+        df[f"{col}_se_lower"] = df[col] - df[f"{col}_se"]
+        df[f"{col}_se_upper"] = df[col] + df[f"{col}_se"]
     return df, matching_columns
 
 
 def sort_columns(df, matching_columns):
     b_column_order = [f"{prefix}{suffix}" for prefix in matching_columns for suffix in [
-        '_lower_se', '', '_upper_se']]
+        '_lower', '', '_upper', '_se']]
     other_columns = [col for col in df.columns if not col.startswith('b_')]
     return df[other_columns + b_column_order]
 
@@ -24,7 +22,7 @@ def sort_columns(df, matching_columns):
 def sort_rows(df, first_b_val):
     """Sort by b_vals if b_val < 0 sort by lower interval limit else by upper limit"""
     df['sort_value'] = df.apply(lambda row: abs(
-        row[f"{first_b_val}_lower_se"]) if row[first_b_val] < 0 else abs(row[f"{first_b_val}_upper_se"]), axis=1)
+        row[f"{first_b_val}_lower"]) if row[first_b_val] < 0 else abs(row[f"{first_b_val}_upper"]), axis=1)
     df = df.sort_values(by='sort_value')
     df.drop(columns=["sort_value"], inplace=True)
     return df
