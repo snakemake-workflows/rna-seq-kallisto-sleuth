@@ -6,4 +6,3 @@ dependencies:
   - bioconductor-isoformswitchanalyzer =2.2.0
   - bioconductor-rhdf5 =2.46.1
   - r-tidyverse =2.0
-  - r-base =4.2
