@@ -38,7 +38,8 @@ columns <- c(
   "Combined FDR",
   "Combined Bonferroni p-values",
   "Status",
-  "pathway id"
+  "pathway id",
+  "gene_ratio"
 )
 
 if (nrow(sig_genes) == 0) {
