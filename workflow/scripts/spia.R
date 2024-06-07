@@ -100,17 +100,13 @@ if (nrow(sig_genes) == 0) {
         "Combined FDR" = "pGFdr",
         "Combined Bonferroni p-values" = "pGFWER"
       ) |>
-      dplyr::select(
-        all_of(
-            columns
-        )
+      mutate(
+        gene_ratio = str_c("(", `number of DE genes per pathway`, ", ", `number of genes on the pathway`, ")")
       ) |>
-      arrange(
-        desc(`total perturbation accumulation`)
-      )
-    final_res <- final_res %>%
-      mutate(gene_ratio = str_c("(", `number of DE genes per pathway`, ", ", `number of genes on the pathway`, ")")) %>%
+      dplyr::select(all_of(columns)
+      ) |>
       arrange(`Combined FDR`)
+     
 
     write_tsv(final_res, snakemake@output[["table"]])
   } else {
