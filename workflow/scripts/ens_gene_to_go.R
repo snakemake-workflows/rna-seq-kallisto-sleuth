@@ -5,7 +5,7 @@ sink(log, type = "message")
 library(snakemake@params[["bioc_species_pkg"]], character.only = TRUE)
 
 # provides `tidyverse` and load_bioconductor_package()
-source(snakemake@params[["common_src"]])
+source(snakemake@input[["common_src"]])
 
 ens_gene_to_go <-
     AnnotationDbi::select(get(snakemake@params[["bioc_species_pkg"]]),

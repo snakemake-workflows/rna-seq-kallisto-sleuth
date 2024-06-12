@@ -112,6 +112,8 @@ rule calculate_cpat_logit_model:
 
 
 rule get_spia_db:
+    input:
+        common_src=workflow.source_path("../scripts/common.R"),
     output:
         "resources/spia-db.rds",
     log:
@@ -120,7 +122,6 @@ rule get_spia_db:
         bioc_species_pkg=bioc_species_pkg,
         species=get_bioc_species_name(),
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
-        common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
         enrichment_env
     retries: 3
