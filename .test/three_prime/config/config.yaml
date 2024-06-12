@@ -63,7 +63,7 @@ diffexp:
     genelist: "resources/gene_list.tsv"
 
 diffsplice:
-  activate: true
+  activate: false
   # codingCutoff parameter of isoformSwitchAnalyzer, see
   # https://rdrr.io/bioc/IsoformSwitchAnalyzeR/man/analyzeCPAT.html
   coding_cutoff: 0.725
