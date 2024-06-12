@@ -18,7 +18,7 @@ resources:
     # ensembl species name
     species: homo_sapiens
     # ensembl release version
-    release: "104"
+    release: "112"
     # genome build
     build: GRCh38
     # pfam release to use for annotation of domains in differential splicing analysis
