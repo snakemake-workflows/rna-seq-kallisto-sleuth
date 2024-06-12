@@ -11,6 +11,7 @@ rule get_transcriptome:
     wildcard_constraints:
         type="cdna|cds|ncrna",
     cache: "omit-software"
+    localrule: True
     wrapper:
         "v1.7.1/bio/reference/ensembl-sequence"
 
@@ -26,6 +27,7 @@ rule get_annotation:
     log:
         "logs/get-annotation.log",
     cache: "omit-software"
+    localrule: True
     wrapper:
         "0.80.1/bio/reference/ensembl-annotation"
 
@@ -57,6 +59,8 @@ rule get_pfam:
         release=config["resources"]["ref"]["pfam"],
     log:
         "logs/get_pfam.{ext}.log",
+    localrule: True
+    cache: True
     shell:
         "(curl -L ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/"
         "Pfam{params.release}/Pfam-A.{wildcards.ext}.gz | "
