@@ -23,10 +23,6 @@ rule spia_datavzrd:
 
 rule diffexp_datavzrd:
     input:
-        # the config file may be a yte template, with access to input, params and wildcards
-        # analogous to Snakemake's generic template support:
-        # https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#template-rendering-integration
-        # For template processing, __use_yte__: true has to be stated in the config file
         config=workflow.source_path("../resources/datavzrd/diffexp-template.yaml"),
         # optional files required for rendering the given config
         logcount_matrix="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
