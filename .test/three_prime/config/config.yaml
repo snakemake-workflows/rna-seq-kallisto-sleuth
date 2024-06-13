@@ -18,7 +18,7 @@ resources:
     # ensembl species name
     species: homo_sapiens
     # ensembl release version
-    release: "111"
+    release: "112"
     # genome build
     build: GRCh38
     # pfam release to use for annotation of domains in differential splicing analysis
@@ -63,7 +63,7 @@ diffexp:
     genelist: "resources/gene_list.tsv"
 
 diffsplice:
-  activate: true
+  activate: false
   # codingCutoff parameter of isoformSwitchAnalyzer, see
   # https://rdrr.io/bioc/IsoformSwitchAnalyzeR/man/analyzeCPAT.html
   coding_cutoff: 0.725
