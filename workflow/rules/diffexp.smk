@@ -45,6 +45,9 @@ rule sleuth_init:
     group:
         "sleuth-init"
     threads: 6
+    resources:
+        # based on: https://github.com/pachterlab/sleuth/issues/139#issuecomment-331157007
+        mem_mb=lambda wc, threads: threads * 8000,
     script:
         "../scripts/sleuth-init.R"
 

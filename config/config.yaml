@@ -18,7 +18,7 @@ resources:
     # ensembl species name
     species: homo_sapiens
     # ensembl release version
-    release: "104"
+    release: "112"
     # genome build
     build: GRCh38
     # pfam release to use for annotation of domains in differential splicing analysis
@@ -71,7 +71,7 @@ diffexp:
     genelist: "resources/gene_list.tsv"
 
 diffsplice:
-  activate: true
+  activate: false
   # codingCutoff parameter of isoformSwitchAnalyzer, see
   # https://rdrr.io/bioc/IsoformSwitchAnalyzeR/man/analyzeCPAT.html
   coding_cutoff: 0.725
@@ -116,6 +116,12 @@ bootstrap_plots:
 plot_vars:
   # significance level used for plot_vars() plots
   sig_level: 0.1
+
+report:
+  # make this `true`, to get excel files for download in the snakemake
+  # report, BUT: this can drastically increase the runtime of datavzrd report
+  # generation, especially on larger cohorts
+  offer_excel: false
 
 params:
   #For reads that are produced by 3’-end sequencing, the --single-overhang option does not discard

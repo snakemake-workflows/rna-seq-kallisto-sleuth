@@ -1,4 +1,4 @@
-sample	unit	fragment_len_mean	fragment_len_sd	fq1	fq2
+sample	unit	fragment_len_mean	fragment_len_sd	fq1	fq2	bam_single	bam_paired
 SRR8309096	u1	430	43	quant_seq_test_data/SRR8309096.fastq.gz	
 SRR8309094	u1	430	43	quant_seq_test_data/SRR8309094.fastq.gz	
 SRR8309095	u1	430	43	quant_seq_test_data/SRR8309095.fastq.gz	

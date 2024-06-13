@@ -1,8 +1,10 @@
+__use_yte__: true
+
 name: ?f"spia pathway impact analysis for model {wildcards.model}"
 datasets:
   spia_table:
     path: ?input.spia_table
-    offer-excel: true
+    offer-excel: ?params.offer_excel
     separator: "\t"
 default-view: spia_table
 views:
