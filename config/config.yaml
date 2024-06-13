@@ -118,7 +118,7 @@ plot_vars:
   sig_level: 0.1
 
 report:
-  # make this 'true' or 'True', to get excel files for download in the snakemake
+  # make this `true`, to get excel files for download in the snakemake
   # report, BUT: this can drastically increase the runtime of datavzrd report
   # generation, especially on larger cohorts
   offer_excel: false

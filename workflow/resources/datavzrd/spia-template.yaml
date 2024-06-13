@@ -4,7 +4,7 @@ name: ?f"spia pathway impact analysis for model {wildcards.model}"
 datasets:
   spia_table:
     path: ?input.spia_table
-    offer-excel: ?params.offer_excel in ["true", "True"]
+    offer-excel: ?params.offer_excel
     separator: "\t"
 default-view: spia_table
 views:

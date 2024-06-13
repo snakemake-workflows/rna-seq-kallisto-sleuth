@@ -57,6 +57,12 @@ properties:
         required:
           - gene_ontology
 
+  report:
+    type: object
+    properties:
+      offer_excel:
+        type: boolean
+
   pca:
     type: object
     properties:
@@ -105,6 +111,8 @@ properties:
   diffsplice:
     type: object
     properties:
+      activate:
+        type: boolean
       coding_cutoff:
         type: number
       remove_noncoding_orfs:

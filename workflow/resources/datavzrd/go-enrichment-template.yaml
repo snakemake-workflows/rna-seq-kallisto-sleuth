@@ -4,11 +4,11 @@ name: ?f"Gene ontology (GO) term enrichment analysis performed by goatools {wild
 datasets:
   significant_terms:
     path: ?input.significant_terms
-    offer-excel: ?params.offer_excel in ["true", "True"]
+    offer-excel: ?params.offer_excel
     separator: "\t"
   go_enrichment:
     path: ?input.enrichment
-    offer-excel: ?params.offer_excel in ["true", "True"]
+    offer-excel: ?params.offer_excel
     separator: "\t"
 default-view: significant_terms
 views:
