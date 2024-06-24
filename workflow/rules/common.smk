@@ -92,10 +92,6 @@ def get_meta_compare_labels(method=""):
     return _get_labels
 
 
-def is_activated(config_element):
-    return config_element["activate"] in {"true", "True"}
-
-
 def get_model(wildcards):
     if wildcards.model == "all":
         return {"full": None}
@@ -104,13 +100,20 @@ def get_model(wildcards):
 
 def is_single_end(sample, unit):
     """Determine whether unit is single-end."""
+    bam_paired_not_present = pd.isnull(units.loc[(sample, unit), "bam_paired"])
     fq2_not_present = pd.isnull(units.loc[(sample, unit), "fq2"])
-    return fq2_not_present
+    return fq2_not_present and bam_paired_not_present
 
 
 def get_fastqs(wildcards):
     """Get raw FASTQ files from unit sheet."""
-    if is_single_end(wildcards.sample, wildcards.unit):
+    if not pd.isnull(units.loc[(wildcards.sample, wildcards.unit), "bam_single"]):
+        return f"results/fastq/{wildcards.sample}-{wildcards.unit}.fq.gz"
+    elif not pd.isnull(units.loc[(wildcards.sample, wildcards.unit), "bam_paired"]):
+        fqfrombam1 = f"results/fastq/{wildcards.sample}-{wildcards.unit}.1.fq.gz"
+        fqfrombam2 = f"results/fastq/{wildcards.sample}-{wildcards.unit}.2.fq.gz"
+        return [fqfrombam1, fqfrombam2]
+    elif is_single_end(wildcards.sample, wildcards.unit):
         return units.loc[(wildcards.sample, wildcards.unit), "fq1"]
     else:
         u = units.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
@@ -365,7 +368,7 @@ def all_input(wildcards):
         )
     )
 
-    if is_activated(config["diffsplice"]):
+    if config["diffsplice"]["activate"]:
         # diffsplice analysis
         wanted_input.extend(
             expand(

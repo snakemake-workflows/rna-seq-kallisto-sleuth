@@ -10,6 +10,7 @@ rule spia:
         samples="results/sleuth/{model}.samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
         spia_db="resources/spia-db.rds",
+        common_src=workflow.source_path("../scripts/common.R"),
     output:
         table="results/tables/pathways/{model}.pathways.tsv",
         plots="results/plots/pathways/{model}.spia-perturbation-plots.pdf",
@@ -17,7 +18,6 @@ rule spia:
         bioc_species_pkg=bioc_species_pkg,
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
-        common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
         enrichment_env
     log:
@@ -35,6 +35,7 @@ rule fgsea:
         samples="results/sleuth/{model}.samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
         gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"],
+        common_src=workflow.source_path("../scripts/common.R"),
     output:
         enrichment=report(
             "results/tables/fgsea/{model}.all-gene-sets.tsv",
@@ -72,7 +73,6 @@ rule fgsea:
         gene_set_fdr=config["enrichment"]["fgsea"]["fdr_gene_set"],
         eps=config["enrichment"]["fgsea"]["eps"],
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
-        common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
         enrichment_env
     log:
@@ -88,6 +88,7 @@ rule fgsea_plot_gene_sets:
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
         gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"],
         sig_gene_sets="results/tables/fgsea/{model}.sig-gene-sets.tsv",
+        common_src=workflow.source_path("../scripts/common.R"),
     output:
         report(
             directory("results/plots/fgsea/{model}"),
@@ -99,7 +100,6 @@ rule fgsea_plot_gene_sets:
     params:
         model=get_model,
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
-        common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
         enrichment_env
     log:
@@ -112,11 +112,12 @@ rule fgsea_plot_gene_sets:
 
 
 rule ens_gene_to_go:
+    input:
+        common_src=workflow.source_path("../scripts/common.R"),
     output:
         "resources/ontology/ens_gene_to_go.tsv",
     params:
         bioc_species_pkg=bioc_species_pkg,
-        common_src=str(workflow.source_path("../scripts/common.R")),
     conda:
         enrichment_env
     log:

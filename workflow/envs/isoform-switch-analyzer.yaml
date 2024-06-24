@@ -3,7 +3,6 @@ channels:
   - bioconda
   - nodefaults
 dependencies:
-  - bioconductor-isoformswitchanalyzer =1.14
-  - bioconductor-rhdf5 =2.36
-  - r-tidyverse =1.3
-  - r-base =4.1
+  - bioconductor-isoformswitchanalyzer =2.2.0
+  - bioconductor-rhdf5 =2.46.1
+  - r-tidyverse =2.0

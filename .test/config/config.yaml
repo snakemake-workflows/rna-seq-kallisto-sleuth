@@ -61,7 +61,7 @@ diffexp:
     genelist: "resources/gene_list.tsv"
 
 diffsplice:
-  activate: true
+  activate: false
   # codingCutoff parameter of isoformSwitchAnalyzer, see
   # https://rdrr.io/bioc/IsoformSwitchAnalyzeR/man/analyzeCPAT.html
   coding_cutoff: 0.725
@@ -93,6 +93,12 @@ enrichment:
     # the species specified by resources -> ref -> species above
     pathway_database: "panther"
 
+report:
+  # make this `true`, to get excel files for download in the snakemake
+  # report, BUT: this can drastically increase the runtime of datavzrd report
+  # generation, especially on larger cohorts
+  offer_excel: true
+
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
   FDR: 0.01
@@ -107,7 +113,15 @@ plot_vars:
   sig_level: 0.1
 
 params:
-  kallisto: "-b 100"
+  # for kallisto parameters, see the kallisto manual:
+  # https://pachterlab.github.io/kallisto/manual
+  # reasoning behind parameters:
+  # * `-b 100`: Doing 100 bootstrap samples was used by the tool authors
+  #   [when originally introducing the feature](https://github.com/pachterlab/kallisto/issues/11#issuecomment-74346385).
+  #   If you want to decrease this for larger datasets, there paper and
+  #   [a reply on GitHub suggest a value of `-b 30`](https://github.com/pachterlab/kallisto/issues/353#issuecomment-1215742328).
+  kallisto: "-b 30"
+
   # these cutadapt parameters need to contain the required flag(s) for
   # the type of adapter(s) to trim, i.e.:
   # * https://cutadapt.readthedocs.io/en/stable/guide.html#adapter-types
@@ -115,22 +129,22 @@ params:
   #   * `-g` for 5' adapter in the forward reads
   #   * `-b` for adapters anywhere in the forward reads
   # also, separate capitalised letter flags are required for adapters in
-  # the reverse reads of paired end sequencing:
-  # * https://cutadapt.readthedocs.io/en/stable/guide.html#trimming-paired-end-reads
-  cutadapt-se:
-    adapters: "-a AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC"
-    extra: "-q 20"
+  # the reverse reads of paired end sequencing
+  # 
   # reasoning behind parameters:
-  #   For reads that are produced by 3’-end sequencing, depending on the protocol, it might be recommended to remove some leading bases (e.g. see https://www.nature.com/articles/s41598-019-55434-x#Sec10)
-  #   * `--minimum-length 33`:
-  #     * kallisto needs non-empty reads in current versions (fixed for future releases:
-  #       https://github.com/pachterlab/kallisto/commit/64fe837ca86f3664496483bcd2787c9376584fed)
-  #     * kallisto default k-mer length is 31 and 33 should give at least 3 k-mers for a read
-  #   * `-e 0.005`: the default cutadapt maximum error rate of `0.2` is far too high, for Illumina
-  #     data the error rate is more in the range of `0.005` and setting it accordingly should avoid
-  #     false positive adapter matches
-  #   * `--minimum-overlap 7`: the cutadapt default minimum overlap of `5` did trimming on the level
-  #     of expected adapter matches by chance
+  # * https://cutadapt.readthedocs.io/en/stable/guide.html#trimming-paired-end-reads
+  # * `--minimum-length 33`:
+  #   * kallisto needs non-empty reads in current versions (fixed for future releases:
+  #     https://github.com/pachterlab/kallisto/commit/64fe837ca86f3664496483bcd2787c9376584fed)
+  #   * kallisto default k-mer length is 31 and 33 should give at least 3 k-mers for a read
+  # * `-e 0.005`: the default cutadapt maximum error rate of `0.2` is far too high, for Illumina
+  #   data the error rate is more in the range of `0.005` and setting it accordingly should avoid
+  #   false positive adapter matches
+  # * `--minimum-overlap 7`: the cutadapt default minimum overlap of `5` did trimming on the level
+  #   of expected adapter matches by chance
+  cutadapt-se:
+    adapters: "-a ACGGATCGATCGATCGATCGAT -g GGATCGATCGATCGATCGAT "
+    extra: "--minimum-length 33 -e 0.005 --overlap 7"
   cutadapt-pe: 
     adapters: "-a ACGGATCGATCGATCGATCGAT -g GGATCGATCGATCGATCGAT -A ACGGATCGATCGATCGATCGAT -G GGATCGATCGATCGATCGAT"
     extra: "--minimum-length 33 -e 0.005 --overlap 7"

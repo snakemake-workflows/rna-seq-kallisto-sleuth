@@ -8,7 +8,7 @@ library(snakemake@params[["bioc_species_pkg"]], character.only = TRUE)
 
 # provides library("tidyverse") and get_prefix_col(), where the latter requires
 # snakemake@input[["samples"]] and snakemake@params[["covariate"]]
-source(snakemake@params[["common_src"]])
+source(snakemake@input[["common_src"]])
 
 pw_db <- snakemake@params[["pathway_db"]]
 db <- readRDS(snakemake@input[["spia_db"]])

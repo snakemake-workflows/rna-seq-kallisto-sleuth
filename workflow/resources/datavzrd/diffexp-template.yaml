@@ -1,8 +1,10 @@
+__use_yte__: true
+
 name: ?f"Differential expression analysis for model {wildcards.model}"
 datasets:
   genes_representative:
     path: ?input.genes_representative
-    offer-excel: true
+    offer-excel: ?params.offer_excel
     links:
       link to transcripts:
         column: ens_gene
@@ -19,7 +21,7 @@ datasets:
     separator: "\t"
   transcripts:
     path: ?input.transcripts
-    offer-excel: true
+    offer-excel: ?params.offer_excel
     links:
       link to genes representative:
         column: ens_gene
@@ -27,11 +29,11 @@ datasets:
     separator: "\t"  
   genes_aggregated:
     path: ?input.genes_aggregated
-    offer-excel: true
+    offer-excel: ?params.offer_excel
     separator: "\t"
   logcount_matrix:
     path: ?input.logcount_matrix
-    offer-excel: true
+    offer-excel: ?params.offer_excel
     links:  
       link to transcripts:
         column: transcript
