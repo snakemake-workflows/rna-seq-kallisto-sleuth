@@ -30,4 +30,4 @@ rule bam_single_to_fastq:
         "logs/fastq/{sample}-{unit}.interleaved.log",
     threads: 3
     wrapper:
-        "v3.10.2/bio/samtools/fastq/interleaved"
+        "v3.12.2/bio/samtools/fastq/interleaved"
