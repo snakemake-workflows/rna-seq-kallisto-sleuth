@@ -117,7 +117,6 @@ rule go_enrichment_datavzrd:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
         samples=get_model_samples,
     wrapper:
-
         "v3.12.2/utils/datavzrd"
 
 
