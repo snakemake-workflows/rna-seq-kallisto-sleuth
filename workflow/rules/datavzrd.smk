@@ -136,7 +136,7 @@ rule meta_compare_datavzrd:
             category="Comparisons",
             subcategory="{meta_comp}",
             patterns=["index.html"],
-            labels=get_meta_compare_labels(method=f"{method}: "),
+            labels=lambda wildcards: get_meta_compare_labels(method=f"{wildcards.method.capitalize()}: "),
         ),
     log:
         "logs/datavzrd-report/meta_comp_{method}.{meta_comp}.log",
