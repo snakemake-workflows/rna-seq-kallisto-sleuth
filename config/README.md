@@ -50,7 +50,16 @@ For binary comparisons (your variable of interest has two factor levels), they r
 To know which variable of interest to use for the effect size calculation, you need to provide its column name as the `primary_variable:`.
 And for sleuth to know what level of that variable of interest to use as the base level, specify the respective entry as the `base_level:`.
 
-### Lexogen 3' QuantSeq data analysis
+### preprocessing `params`
+
+For **adapter trimming**, `cutadapt` is used, with some defaults for standard Illumina data given in the `config.yaml`.
+For more details see the comments in the `config.yaml` or the [`cutadapt` documentation](https://cutadapt.readthedocs.io).
+For parameter suggestions for Lexogen 3' QuantSeq data, see the section below.
+
+For **transcript quantification**, `kallisto` is used.
+For details regarding its command line arguments, see the [`kallisto` documentation](https://pachterlab.github.io/kallisto/manual).
+
+#### Lexogen 3' QuantSeq data analysis
 
 For Lexogen 3' QuantSeq data analysis, please set `experiment: 3-prime-rna-seq: activate: true` in the `config/config.yaml` file.
 For more information information on Lexogen QuantSeq 3' sequencing, see: https://www.lexogen.com/quantseq-3mrna-sequencing/
@@ -69,4 +78,3 @@ Changes to the recommendations are motivated as follows:
 * `-a "r1adapter=A{18}AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=3;max_error_rate=0.100000"`: We remove A{18}, as this is handled by `--poly-a`. We increase `min_overlap` to 7 and set the `max_error_rate` to the Illumina error rate of about 0.005, both to avoid spurious adapter matches being removed.
 * `-g "r1adapter=AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=20"`: This is not needed any more, as `-a` option will lead to complete removal of read sequence if adapter is found at the start of the read, see: https://cutadapt.readthedocs.io/en/stable/guide.html#rightmost
 * `--discard-trimmed`: We omit this, as the `-a` with the adapter sequence will lead to complete read sequence removal if adapter is found at start, and the `--minimum-length` will then discard such empty reads.
-
