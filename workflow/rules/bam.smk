@@ -14,7 +14,7 @@ rule bam_paired_to_fastq:
         fastq="-n",
     threads: 3
     wrapper:
-        "v3.10.2/bio/samtools/fastq/separate"
+        "v3.12.2/bio/samtools/fastq/separate"
 
 
 rule bam_single_to_fastq:
