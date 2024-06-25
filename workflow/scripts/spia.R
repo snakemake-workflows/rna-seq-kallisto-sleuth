@@ -45,8 +45,6 @@ if (nrow(sig_genes) == 0) {
   # the best hack for an empty tibble from a column specification I could find
   res <- read_csv("\n", col_names = columns)
   write_tsv(res, snakemake@output[["table"]])
-  write_tsv(res, snakemake@output[["table_activated"]])
-  write_tsv(res, snakemake@output[["table_inhibited"]])
 } else {
   # get logFC equivalent (the sum of beta scores of covariates of interest)
 
