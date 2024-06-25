@@ -45,6 +45,11 @@ if (nrow(sig_genes) == 0) {
   # the best hack for an empty tibble from a column specification I could find
   res <- read_csv("\n", col_names = columns)
   write_tsv(res, snakemake@output[["table"]])
+  # Create empty plot
+  pdf(snakemake@output[["plots"]])
+  plot.new()
+  text(0.5, 0.5, "No significant genes found", cex = 1.5)
+  dev.off()
 } else {
   # get logFC equivalent (the sum of beta scores of covariates of interest)
 
