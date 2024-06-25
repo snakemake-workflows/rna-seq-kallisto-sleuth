@@ -1,18 +1,8 @@
-if is_3prime_experiment:
-    kallisto_output = expand(
-        "results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples()
-    )
-else:
-    kallisto_output = expand(
-        "results/kallisto_cdna/{unit.sample}-{unit.unit}", unit=units.itertuples()
-    )
-
-
 rule compose_sample_sheet:
     input:
         report(config["samples"], caption="../report/samples.rst"),
         config["units"],
-        kallisto_output=kallisto_output,
+        kallisto_output=get_kallisto_output(),
     output:
         "results/sleuth/{model}.samples.tsv",
     log:
@@ -28,7 +18,7 @@ rule compose_sample_sheet:
 
 rule sleuth_init:
     input:
-        kallisto=kallisto_output,
+        kallisto=get_kallisto_output(),
         samples="results/sleuth/{model}.samples.tsv",
         transcript_info="resources/transcripts_annotation.results.rds",
     output:
