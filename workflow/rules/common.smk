@@ -63,6 +63,17 @@ if is_3prime_experiment:
         )
 
 
+def get_kallisto_output():
+  if is_3prime_experiment:
+      return expand(
+          "results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples()
+      )
+  else:
+      return expand(
+          "results/kallisto_cdna/{unit.sample}-{unit.unit}", unit=units.itertuples()
+      )
+
+
 def check_config():
     representative_transcripts_keywords = ["canonical", "mostsignificant"]
     representative_transcripts = config["resources"]["ref"][
