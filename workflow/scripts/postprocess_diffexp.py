@@ -20,17 +20,27 @@ def sort_columns(df, matching_columns):
     return df[other_columns + b_column_order]
 
 
-def sort_rows(df, first_b_val):
-    """Sort by b_vals if b_val < 0 sort by lower interval limit else by upper limit"""
-    df['sort_value'] = df.apply(lambda row: abs(
-        row[f"{first_b_val}_lower"]) if row[first_b_val] < 0 else abs(row[f"{first_b_val}_upper"]), axis=1)
-    df = df.sort_values(by='sort_value')
-    df.drop(columns=["sort_value"], inplace=True)
+def sort_rows(df, primary_variable):
+    """Sort DataFrame by the absolute value of signed_p_value of primary variable in ascending order."""
+    df = df.reindex(
+        df['signed_pi_value_' + primary_variable + '+'].abs().sort_values().index)
     return df
 
 
-df = pd.read_csv(snakemake.input["genes_representative"], sep='\t')
+# def sort_rows(df, first_b_val):
+#     """Sort by b_vals if b_val < 0 sort by lower interval limit else by upper limit"""
+#     df['sort_value'] = df.apply(lambda row: abs(
+#         row[f"{first_b_val}_lower"]) if row[first_b_val] < 0 else abs(row[f"{first_b_val}_upper"]), axis=1)
+#     df = df.sort_values(by='sort_value')
+#     df.drop(columns=["sort_value"], inplace=True)
+#     return df
+
+
+df = pd.read_csv(snakemake.input[0], sep='\t')
 df, matching_columns = process_columns(df)
 df = sort_columns(df, matching_columns)
-df = sort_rows(df, matching_columns[0])
+# df = sort_rows(df, matching_columns[0])
+df = sort_rows(df, snakemake.params['model']['primary_variable'])
+df = df.dropna(subset=matching_columns, how='all')
+
 df.to_csv(snakemake.output[0], sep='\t', index=False)

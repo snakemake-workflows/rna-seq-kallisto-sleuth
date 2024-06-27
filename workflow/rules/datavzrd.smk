@@ -21,10 +21,45 @@ rule postprocess_diffexp:
         "results/tables/diffexp/{model}.genes-representative.diffexp_postprocessed.tsv",
     conda:
         "../envs/pandas.yaml"
+    params:
+        model=get_model,
     log:
         "logs/yte/postprocess_diffexp/{model}.log",
     script:
         "../scripts/postprocess_diffexp.py"
+
+
+# Postprocessing Differential Expression Data
+rule postprocess_transcripts:
+    input:
+        "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
+    output:
+        "results/tables/diffexp/{model}.transcripts.diffexp_postprocessed.tsv",
+    conda:
+        "../envs/pandas.yaml"
+    params:
+        model=get_model,
+    log:
+        "logs/yte/postprocess_diffexp/{model}.log",
+    script:
+        "../scripts/postprocess_diffexp.py"
+
+
+# Postprocessing Differential Expression Data
+rule postprocess_logcount_matrix:
+    input:
+        logcount="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
+        genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp_postprocessed.tsv",
+    output:
+        "results/tables/logcount-matrix/{model}.logcount-matrix_postprocessed.tsv",
+    conda:
+        "../envs/pandas.yaml"
+    params:
+        model=get_model,
+    log:
+        "logs/yte/postprocess_logcount/{model}.log",
+    script:
+        "../scripts/postprocess_logcount.py"
 
 
 # Generating SPIA Datavzrd Report
@@ -59,8 +94,8 @@ rule diffexp_datavzrd:
     input:
         config=workflow.source_path("../resources/datavzrd/diffexp-template.yaml"),
         # optional files required for rendering the given config
-        logcount_matrix="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
-        transcripts="results/tables/diffexp/{model}.transcripts.diffexp.tsv",
+        logcount_matrix="results/tables/logcount-matrix/{model}.logcount-matrix_postprocessed.tsv",
+        transcripts="results/tables/diffexp/{model}.transcripts.diffexp_postprocessed.tsv",
         genes_aggregated="results/tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
         genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp_postprocessed.tsv",
         volcano_plots="results/plots/interactive/volcano/{model}.vl.json",
@@ -138,7 +173,7 @@ rule meta_compare_datavzrd:
             patterns=["index.html"],
             labels=lambda wildcards: get_meta_compare_labels(
                 method=f"{wildcards.method.capitalize()}: "
-            ),
+            )(wildcards),
         ),
     log:
         "logs/datavzrd-report/meta_comp_{method}.{meta_comp}.log",
