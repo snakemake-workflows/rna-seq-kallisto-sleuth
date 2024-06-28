@@ -38,7 +38,8 @@ columns <- c(
   "Combined FDR",
   "Combined Bonferroni p-values",
   "Status",
-  "pathway id"
+  "pathway id",
+  "gene_ratio"
 )
 
 if (nrow(sig_genes) == 0) {
@@ -102,14 +103,14 @@ if (nrow(sig_genes) == 0) {
         "Combined FDR" = "pGFdr",
         "Combined Bonferroni p-values" = "pGFWER"
       ) |>
-      dplyr::select(
-        all_of(
-            columns
-        )
+      mutate(
+        gene_ratio = str_c("(", `number of DE genes per pathway`, ", ", `number of genes on the pathway`, ")")
       ) |>
-      arrange(
-        desc(`total perturbation accumulation`)
-      )
+      dplyr::select(all_of(columns)
+      ) |>
+      arrange(`Combined FDR`)
+     
+
     write_tsv(final_res, snakemake@output[["table"]])
   } else {
     # the best hack for an empty tibble from a column specification I could find

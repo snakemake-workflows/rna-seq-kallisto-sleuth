@@ -1,0 +1,72 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 35,
+    "height": 35,
+    "data": {
+        "values": []
+    },
+    "transform": [
+        {
+            "calculate": "datum.category === 'ratio_differential' ? 'differential' : 'random'",
+            "as": "tooltip_text"
+        }
+    ],
+    "mark": {
+        "type": "bar",
+        "tooltip": {
+            "content": "data"
+        }
+    },
+    "encoding": {
+        "y": {
+            "field": "category",
+            "type": "nominal",
+            "axis": null,
+            "sort": [
+                "ratio_differential",
+                "ratio_size"
+            ]
+        },
+        "x": {
+            "field": "amount",
+            "type": "quantitative",
+            "axis": null
+        },
+        "tooltip": {
+            "field": "tooltip_text",
+            "type": "nominal"
+        }
+    },
+    "layer": [
+        {
+            "mark": {
+                "type": "bar",
+                "tooltip": true
+            }
+        },
+        {
+            "mark": {
+                "type": "text",
+                "align": "left",
+                "dx": 2,
+                "dy": -2,
+                "color": "black",
+                "fontSize": 10
+            },
+            "encoding": {
+                "text": {
+                    "field": "amount",
+                    "type": "quantitative",
+                    "format": ".3f"
+                }
+            }
+        }
+    ],
+    "config": {
+        "style": {
+            "cell": {
+                "stroke": "transparent"
+            }
+        }
+    }
+}

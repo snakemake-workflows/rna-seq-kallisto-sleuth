@@ -1,0 +1,99 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 35,
+    "height": 35,
+    "data": {
+        "values": []
+    },
+    "layer": [
+        {
+            "mark": "arc",
+            "encoding": {
+                "theta": {
+                    "field": "amount",
+                    "type": "quantitative"
+                },
+                "color": {
+                    "field": "category",
+                    "type": "nominal",
+                    "scale": {
+                        "domain": [
+                            "DE_genes",
+                            "genes"
+                        ],
+                        "range": [
+                            "#f2e34c",
+                            "#31a354"
+                        ]
+                    },
+                    "legend": null
+                },
+                "tooltip": [
+                    {
+                        "field": "category",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "amount",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        },
+        {
+            "mark": {
+                "type": "text",
+                "baseline": "middle",
+                "align": "center",
+                "dx": 2,
+                "fontSize": 9,
+                "color": "white"
+            },
+            "encoding": {
+                "text": {
+                    "field": "percentage",
+                    "type": "quantitative",
+                    "format": "0.2%"
+                }
+            }
+        },
+        {
+            "transform": [
+                {
+                    "pivot": "category",
+                    "value": "amount",
+                    "groupby": [
+                        "percentage"
+                    ]
+                }
+            ],
+            "mark": "rule",
+            "encoding": {
+                "tooltip": [
+                    {
+                        "field": "genes",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "DE_genes",
+                        "type": "quantitative"
+                    }
+                ]
+            },
+            "params": [
+                {
+                    "name": "hover",
+                    "select": {
+                        "type": "point",
+                        "fields": [
+                            "percentage"
+                        ],
+                        "nearest": true,
+                        "on": "mouseover",
+                        "clear": "mouseout"
+                    }
+                }
+            ]
+        }
+    ]
+}

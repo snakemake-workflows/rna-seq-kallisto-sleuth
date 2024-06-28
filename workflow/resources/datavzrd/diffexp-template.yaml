@@ -82,18 +82,28 @@ views:
               url: "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={target_id}"
         pval:
           plot:
-            bars:
+            heatmap:
               scale: linear
+              range:
+                - "#a1d99b"
+                - "white"
+                - "#fdae6b"
               domain:
-                - 0.0
-                - 1.0
+                - 0
+                - 0.05
+                - 0.25
         qval:
           plot:
-            bars:
+            heatmap:
               scale: linear
+              range:
+                - "#a1d99b"
+                - "white"
+                - "#fdae6b"
               domain:
-                - 0.0
-                - 1.0
+                - 0
+                - 0.05
+                - 0.25
         chromosome_name:
           optional: true
           display-mode: hidden
@@ -123,7 +133,7 @@ views:
           display-mode: hidden
         regex('qval_.+'):
           display-mode: hidden
-        regex('b_.*'):
+        regex('^b_(?!.*_se$)'):
           display-mode: normal
           plot:
             heatmap:
@@ -136,6 +146,8 @@ views:
                 - -1
                 - 0
                 - 1
+        regex('^b_.*_se$'):
+          display-mode: hidden
         regex('signed_pi_value_.+'):
           display-mode: hidden
         ?for sample in params.samples:
@@ -218,7 +230,7 @@ views:
           display-mode: hidden
         regex('qval_.+'):
           display-mode: hidden
-        regex('b_.*'):
+        regex('b_.*(?<!_se(?!part2))'):
           display-mode: normal
           plot:
             heatmap:

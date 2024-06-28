@@ -1,0 +1,29 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "description": "Study items barplot",
+    "data": {
+        "values": []
+    },
+    "mark": "bar",
+    "encoding": {
+        "x": {
+            "field": "gene",
+            "type": "nominal",
+            "sort": "-y",
+            "axis": {
+                "title": "Genes"
+            }
+        },
+        "y": {
+            "field": "value",
+            "type": "quantitative",
+            "axis": {
+                "title": "Beta-value"
+            }
+        },
+        "tooltip": {
+            "field": "gene",
+            "type": "nominal"
+        }
+    }
+}
