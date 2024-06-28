@@ -2,7 +2,7 @@ import pandas as pd
 
 
 def process_columns(df):
-    """ompute confidence interval for every column starting with b_"""
+    """compute confidence interval for every column starting with b_"""
     matching_columns = [col for col in df.columns if col.startswith(
         'b_') and not col.endswith('_se')]
 
