@@ -70,7 +70,7 @@ rule spia_datavzrd:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
     wrapper:
-        "v3.13.2/utils/datavzrd"
+        "v3.13.4/utils/datavzrd"
 
 
 # Generating Differential Expression Datavzrd Report
@@ -100,7 +100,7 @@ rule diffexp_datavzrd:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
         samples=get_model_samples,
     wrapper:
-        "v3.13.2/utils/datavzrd"
+        "v3.13.4/utils/datavzrd"
 
 
 # Generating GO Enrichment Datavzrd Report
@@ -136,7 +136,7 @@ rule go_enrichment_datavzrd:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
         samples=get_model_samples,
     wrapper:
-        "v3.13.2/utils/datavzrd"
+        "v3.13.4/utils/datavzrd"
 
 
 # Generating Meta Comparison Datavzrd Reports
@@ -162,4 +162,4 @@ rule meta_compare_datavzrd:
     log:
         "logs/datavzrd-report/meta_comp_{method}.{meta_comp}.log",
     wrapper:
-        "v3.13.2/utils/datavzrd"
+        "v3.13.4/utils/datavzrd"
