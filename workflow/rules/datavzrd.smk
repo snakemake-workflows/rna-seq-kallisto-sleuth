@@ -14,6 +14,7 @@ rule postprocess_go_enrichment:
 
 
 # Postprocessing Differential Expression Data
+# Does not work for level = genes-aggregated since it does not contain beta values.
 rule postprocess_diffexp:
     input:
         genes_representative="results/tables/diffexp/{model}.{level}.diffexp.tsv",
@@ -80,7 +81,7 @@ rule diffexp_datavzrd:
         # optional files required for rendering the given config
         logcount_matrix="results/tables/logcount-matrix/{model}.logcount-matrix_postprocessed.tsv",
         transcripts="results/tables/diffexp/{model}.transcripts.diffexp_postprocessed.tsv",
-        genes_aggregated="results/tables/diffexp/{model}.genes-aggregated.diffexp_postprocessed.tsv",
+        genes_aggregated="results/tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
         genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp_postprocessed.tsv",
         volcano_plots="results/plots/interactive/volcano/{model}.vl.json",
     output:
