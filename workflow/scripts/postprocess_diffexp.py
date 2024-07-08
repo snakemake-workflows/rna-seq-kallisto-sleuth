@@ -20,28 +20,28 @@ def sort_columns(df, matching_columns):
     return df[other_columns + b_column_order]
 
 
-def sort_rows(df, primary_variable):
+def sort_rows(df):
     """Sort DataFrame by the absolute value of signed_p_value of primary variable in ascending order."""
-    print(df.columns)
-    df = df.reindex(
-        df['signed_pi_value_' + primary_variable + '+'].abs().sort_values(ascending=False).index)
-    return df
+    signed_pi_start = 'signed_pi_value_' + \
+        snakemake.params['model']['primary_variable']
+    columns_with_prefix = [
+        col for col in df.columns if col.startswith(signed_pi_start)]
 
+    if len(columns_with_prefix) != 1:
+        raise ValueError(
+            f"Expected exactly one column starting with '{signed_pi_start}', found {len(columns_with_prefix)}")
 
-# def sort_rows(df, first_b_val):
-#     """Sort by b_vals if b_val < 0 sort by lower interval limit else by upper limit"""
-#     df['sort_value'] = df.apply(lambda row: abs(
-#         row[f"{first_b_val}_lower"]) if row[first_b_val] < 0 else abs(row[f"{first_b_val}_upper"]), axis=1)
-#     df = df.sort_values(by='sort_value')
-#     df.drop(columns=["sort_value"], inplace=True)
-#     return df
+    signed_pi_col = columns_with_prefix[0]
+
+    df_sorted = df.reindex(
+        df[signed_pi_col].abs().sort_values(ascending=False).index)
+    return df_sorted
 
 
 df = pd.read_csv(snakemake.input[0], sep='\t')
 df, matching_columns = process_columns(df)
 df = sort_columns(df, matching_columns)
-# df = sort_rows(df, matching_columns[0])
-df = sort_rows(df, snakemake.params['model']['primary_variable'])
+df = sort_rows(df)
 df = df.dropna(subset=matching_columns, how='all')
 
 df.to_csv(snakemake.output[0], sep='\t', index=False)
