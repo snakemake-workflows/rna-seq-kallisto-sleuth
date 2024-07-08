@@ -14,33 +14,18 @@ rule postprocess_go_enrichment:
 
 
 # Postprocessing Differential Expression Data
+# Does not work for level = genes-aggregated since it does not contain beta values.
 rule postprocess_diffexp:
     input:
-        genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
+        genes_representative="results/tables/diffexp/{model}.{level}.diffexp.tsv",
     output:
-        "results/tables/diffexp/{model}.genes-representative.diffexp_postprocessed.tsv",
+        "results/tables/diffexp/{model}.{level}.diffexp_postprocessed.tsv",
     conda:
         "../envs/pandas.yaml"
     params:
         model=get_model,
     log:
-        "logs/yte/postprocess_diffexp/{model}.log",
-    script:
-        "../scripts/postprocess_diffexp.py"
-
-
-# Postprocessing Differential Expression Data
-rule postprocess_transcripts:
-    input:
-        "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
-    output:
-        "results/tables/diffexp/{model}.transcripts.diffexp_postprocessed.tsv",
-    conda:
-        "../envs/pandas.yaml"
-    params:
-        model=get_model,
-    log:
-        "logs/yte/postprocess_diffexp/{model}.log",
+        "logs/yte/postprocess_diffexp/{model}/{level}.log",
     script:
         "../scripts/postprocess_diffexp.py"
 
@@ -49,7 +34,7 @@ rule postprocess_transcripts:
 rule postprocess_logcount_matrix:
     input:
         logcount="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
-        genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp_postprocessed.tsv",
+        diffexp="results/tables/diffexp/{model}.transcripts.diffexp_postprocessed.tsv",
     output:
         "results/tables/logcount-matrix/{model}.logcount-matrix_postprocessed.tsv",
     conda:
@@ -86,7 +71,7 @@ rule spia_datavzrd:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
     wrapper:
-        "v3.13.2/utils/datavzrd"
+        "v3.13.4/utils/datavzrd"
 
 
 # Generating Differential Expression Datavzrd Report
@@ -116,7 +101,7 @@ rule diffexp_datavzrd:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
         samples=get_model_samples,
     wrapper:
-        "v3.13.2/utils/datavzrd"
+        "v3.13.4/utils/datavzrd"
 
 
 # Generating GO Enrichment Datavzrd Report
@@ -152,7 +137,7 @@ rule go_enrichment_datavzrd:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
         samples=get_model_samples,
     wrapper:
-        "v3.13.2/utils/datavzrd"
+        "v3.13.4/utils/datavzrd"
 
 
 # Generating Meta Comparison Datavzrd Reports
@@ -178,4 +163,4 @@ rule meta_compare_datavzrd:
     log:
         "logs/datavzrd-report/meta_comp_{method}.{meta_comp}.log",
     wrapper:
-        "v3.13.2/utils/datavzrd"
+        "v3.13.4/utils/datavzrd"
