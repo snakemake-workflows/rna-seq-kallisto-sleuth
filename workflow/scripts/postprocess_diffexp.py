@@ -22,6 +22,7 @@ def sort_columns(df, matching_columns):
 
 def sort_rows(df, primary_variable):
     """Sort DataFrame by the absolute value of signed_p_value of primary variable in ascending order."""
+    print(df)
     df = df.reindex(
         df['signed_pi_value_' + primary_variable + '+'].abs().sort_values().index)
     return df
