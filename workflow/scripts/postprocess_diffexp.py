@@ -43,5 +43,4 @@ df, matching_columns = process_columns(df)
 df = sort_columns(df, matching_columns)
 df = sort_rows(df)
 df = df.dropna(subset=matching_columns, how='all')
-
 df.to_csv(snakemake.output[0], sep='\t', index=False)

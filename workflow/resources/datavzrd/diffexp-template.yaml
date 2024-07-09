@@ -22,11 +22,11 @@ datasets:
   transcripts:
     path: ?input.transcripts
     offer-excel: ?params.offer_excel
+    separator: "\t"
     links:
-      link to genes representative:
-        column: ens_gene
-        table-row: genes_representative/ens_gene
-    separator: "\t"  
+      link to log-count matrix:
+        column: target_id
+        table-row : logcount_matrix/transcript
   genes_aggregated:
     path: ?input.genes_aggregated
     offer-excel: ?params.offer_excel
