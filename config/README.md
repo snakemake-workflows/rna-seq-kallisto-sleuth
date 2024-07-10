@@ -78,3 +78,6 @@ Changes to the recommendations are motivated as follows:
 * `-a "r1adapter=A{18}AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=3;max_error_rate=0.100000"`: We remove A{18}, as this is handled by `--poly-a`. We increase `min_overlap` to 7 and set the `max_error_rate` to the Illumina error rate of about 0.005, both to avoid spurious adapter matches being removed.
 * `-g "r1adapter=AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=20"`: This is not needed any more, as `-a` option will lead to complete removal of read sequence if adapter is found at the start of the read, see: https://cutadapt.readthedocs.io/en/stable/guide.html#rightmost
 * `--discard-trimmed`: We omit this, as the `-a` with the adapter sequence will lead to complete read sequence removal if adapter is found at start, and the `--minimum-length` will then discard such empty reads.
+
+#### meta comparisons
+Meta comparisons allow for comparing two full models against each other. Each comparison is defined under `meta_comparisons:` with a unique name. For each comparison, you specify two models to compare within the `items:` section. A model is defined with a `label:` used for axis labeling in plots, and the corresponding `model:` name, which must match a `full:` model defined within the main sleuth configuration.
