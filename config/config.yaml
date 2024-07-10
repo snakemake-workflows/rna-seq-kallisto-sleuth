@@ -113,8 +113,9 @@ enrichment:
 meta_comparisons:
   # comparison is only run if set to `true`
   activate: false
-  # Define any name for comparison
+  # Define here the coparisons under interest
   comparisons:
+    # Define any name for comparison
     model_X_vs_model_Y:
       items:
         # Define the two underlying models for the comparison. The models must be defined in the diffexp/models in the config
