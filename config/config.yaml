@@ -51,15 +51,20 @@ diffexp:
   # model for sleuth differential expression analysis
   models:
     model_X:
-      full: ~condition + batch_effect
-      reduced: ~batch_effect
+      full: ~condition_X + batch_effect_X
+      reduced: ~batch_effect_X
       # Covariate / sample sheet column that shall be used for fold
       # change/effect size based downstream analyses.
-      primary_variable: condition
+      primary_variable: condition_X
       # base level of the primary variable (this should be one of the entries
       # in the primary_variable sample sheet column and will be considered as
       # denominator in the fold change/effect size estimation).
-      base_level: untreated
+      base_level: untreated_X
+    model_Y:
+      full: ~condition_Y + batch_effect_Y
+      reduced: ~batch_effect_Y
+      primary_variable: condition_Y
+      base_level: untreated_Y
   # significance level to use for volcano, ma- and qq-plots
   sig-level:
     volcano-plot: 0.05
@@ -104,6 +109,21 @@ enrichment:
     # pathway database to use in SPIA, needs to be available for
     # the species specified by resources -> ref -> species above
     pathway_database: "reactome"
+
+meta_comparisons:
+  # comparison is only run if set to `true`
+  activate: false
+  # Define any name for comparison
+  model_X_vs_model_Y:
+    items:
+      # Define the two underlying models for the comparison. The models must be defined in the diffexp/models in the config
+      - label: X # Arbitrary label
+        model: model_X # Must match a diffexp model from config
+      - label: Y # Arbitrary label
+        model: model_Y # Must match a diffexp model from config
+    desc: |
+      Comparison between model_X and model_Y effect.
+    label: model_X vs. model_Y effect
 
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated

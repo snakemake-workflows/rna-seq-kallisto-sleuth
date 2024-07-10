@@ -1,0 +1,16 @@
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - polars =0.20.28
+  - pyreadr =0.5
+  - altair =5.2
+  - pyarrow =16.1
+  - vegafusion =1.6
+  - vegafusion-python-embed =1.6
+  - vl-convert-python =1.2
+  - jupyter_core =5.7
+  - ipykernel =6.29
+  - nbconvert =7.14
+  - notebook =7.0
+  - jupyterlab_code_formatter =1.4

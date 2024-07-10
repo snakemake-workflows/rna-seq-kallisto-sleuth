@@ -396,4 +396,17 @@ def all_input(wildcards):
                 ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"],
             )
         )
+
+    # meta comparisons
+    if config["meta_comparisons"]["activate"]:
+        wanted_input.extend(
+            directory(
+                expand(
+                    "results/datavzrd-reports/{report_type}_meta_comparison_{meta_comp}",
+                    report_type=["go_terms", "diffexp", "pathways"],
+                    meta_comp=lookup(dpath="meta_comparisons", within=config),
+                )
+            ),
+        )
+
     return wanted_input
