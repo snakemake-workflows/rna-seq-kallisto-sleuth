@@ -404,7 +404,9 @@ def all_input(wildcards):
                 expand(
                     "results/datavzrd-reports/{report_type}_meta_comparison_{meta_comp}",
                     report_type=["go_terms", "diffexp", "pathways"],
-                    meta_comp=lookup(dpath="meta_comparisons", within=config),
+                    meta_comp=lookup(
+                        dpath="meta_comparisons/comparisons", within=config
+                    ),
                 )
             ),
         )

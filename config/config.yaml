@@ -114,16 +114,17 @@ meta_comparisons:
   # comparison is only run if set to `true`
   activate: false
   # Define any name for comparison
-  model_X_vs_model_Y:
-    items:
-      # Define the two underlying models for the comparison. The models must be defined in the diffexp/models in the config
-      - label: X # Arbitrary label
-        model: model_X # Must match a diffexp model from config
-      - label: Y # Arbitrary label
-        model: model_Y # Must match a diffexp model from config
-    desc: |
-      Comparison between model_X and model_Y effect.
-    label: model_X vs. model_Y effect
+  comparisons:
+    model_X_vs_model_Y:
+      items:
+        # Define the two underlying models for the comparison. The models must be defined in the diffexp/models in the config
+        - label: X # Arbitrary label
+          model: model_X # Must match a diffexp model from config
+        - label: Y # Arbitrary label
+          model: model_Y # Must match a diffexp model from config
+      desc: |
+        Comparison between model_X and model_Y effect.
+      label: model_X vs. model_Y effect
 
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
