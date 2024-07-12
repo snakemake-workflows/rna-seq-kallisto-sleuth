@@ -33,8 +33,8 @@ def sort_rows(df):
 
     signed_pi_col = columns_with_prefix[0]
 
-    df_sorted = df.reindex(
-        df[signed_pi_col].abs().sort_values(ascending=False).index)
+    df_sorted = df.sort_values(
+        by=signed_pi_col, key=lambda x: x.abs(), ascending=False)
     return df_sorted
 
 
