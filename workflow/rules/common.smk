@@ -88,7 +88,7 @@ def get_model(wildcards):
 
 def is_single_end(sample, unit):
     """Determine whether unit is single-end."""
-    if 'bam_paired' in units.columns:
+    if "bam_paired" in units.columns:
         bam_paired_not_present = pd.isnull(units.loc[(sample, unit), "bam_paired"])
     else:
         bam_paired_not_present = True
@@ -99,9 +99,13 @@ def is_single_end(sample, unit):
 
 def get_fastqs(wildcards):
     """Get raw FASTQ files from unit sheet."""
-    if 'bam_single' in units.columns and not pd.isnull(units.loc[(wildcards.sample, wildcards.unit), "bam_single"]):
+    if "bam_single" in units.columns and not pd.isnull(
+        units.loc[(wildcards.sample, wildcards.unit), "bam_single"]
+    ):
         return f"results/fastq/{wildcards.sample}-{wildcards.unit}.fq.gz"
-    elif 'bam_paired' in units.columns and not pd.isnull(units.loc[(wildcards.sample, wildcards.unit), "bam_paired"]):
+    elif "bam_paired" in units.columns and not pd.isnull(
+        units.loc[(wildcards.sample, wildcards.unit), "bam_paired"]
+    ):
         fqfrombam1 = f"results/fastq/{wildcards.sample}-{wildcards.unit}.1.fq.gz"
         fqfrombam2 = f"results/fastq/{wildcards.sample}-{wildcards.unit}.2.fq.gz"
         return [fqfrombam1, fqfrombam2]
