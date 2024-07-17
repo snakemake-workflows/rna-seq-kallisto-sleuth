@@ -92,7 +92,6 @@ def is_single_end(sample, unit):
         bam_paired_not_present = pd.isnull(units.loc[(sample, unit), "bam_paired"])
     else:
         bam_paired_not_present = True
-    bam_paired_not_present = pd.isnull(units.loc[(sample, unit), "bam_paired"])
     fq2_not_present = pd.isnull(units.loc[(sample, unit), "fq2"])
     return fq2_not_present and bam_paired_not_present
 
