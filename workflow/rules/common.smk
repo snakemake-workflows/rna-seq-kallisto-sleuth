@@ -105,9 +105,11 @@ def get_fastqs(wildcards):
     elif "bam_paired" in units.columns and not pd.isnull(
         units.loc[(wildcards.sample, wildcards.unit), "bam_paired"]
     ):
-        fqfrombam1 = f"results/fastq/{wildcards.sample}-{wildcards.unit}.1.fq.gz"
-        fqfrombam2 = f"results/fastq/{wildcards.sample}-{wildcards.unit}.2.fq.gz"
-        return [fqfrombam1, fqfrombam2]
+        return expand("results/fastq/{sample}-{unit}.{read}.fq.gz",
+            sample = wildcards.sample,
+            unit = wildcards.unit,
+            read = ["1", "2"],
+        )
     elif is_single_end(wildcards.sample, wildcards.unit):
         return units.loc[(wildcards.sample, wildcards.unit), "fq1"]
     else:
