@@ -4,6 +4,7 @@ rule bam_paired_to_fastq:
             query="sample == '{sample}' & unit == '{unit}'",
             within=units,
             cols="bam_paired",
+            default=None,
         ),
     output:
         "results/fastq/{sample}-{unit}.1.fq.gz",
@@ -23,6 +24,7 @@ rule bam_single_to_fastq:
             query="sample == '{sample}' & unit == '{unit}'",
             within=units,
             cols="bam_single",
+            default=None,
         ),
     output:
         "results/fastq/{sample}-{unit}.fq.gz",
