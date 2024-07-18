@@ -18,7 +18,7 @@ rule spia_datavzrd:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
     wrapper:
-        "v3.13.2/utils/datavzrd"
+        "v3.13.8/utils/datavzrd"
 
 
 rule diffexp_datavzrd:
@@ -47,7 +47,7 @@ rule diffexp_datavzrd:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
         samples=get_model_samples,
     wrapper:
-        "v3.13.2/utils/datavzrd"
+        "v3.13.8/utils/datavzrd"
 
 
 rule go_enrichment_datavzrd:
@@ -77,4 +77,4 @@ rule go_enrichment_datavzrd:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
         samples=get_model_samples,
     wrapper:
-        "v3.13.2/utils/datavzrd"
+        "v3.13.8/utils/datavzrd"
