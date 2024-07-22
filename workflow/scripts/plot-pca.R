@@ -1,8 +1,8 @@
+source("workflow/scripts/pca.R")
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")
 
-library("sleuth")
 library("ggpubr")
 
 #principal components
@@ -10,10 +10,12 @@ pc <- 4
 
 # plot pca
 so <- sleuth_load(snakemake@input[[1]])
-pc12 <- plot_pca(so, color_by = snakemake@wildcards[["covariate"]], units = "est_counts", text_labels = TRUE)
-pc34 <- plot_pca(so, pc_x = 3, pc_y = 4, color_by = snakemake@wildcards[["covariate"]], units = "est_counts", text_labels = TRUE)
 
-ggarrange(pc12, pc34, ncol = 2, common.legend = TRUE)
+# Delete NA values
+covariate_column = snakemake@wildcards[["covariate"]]
+so$sample_to_covariates <- subset(so$sample_to_covariates, !is.na(so$sample_to_covariates[[covariate_column]]))
+
+plot_pca(so, color_by = covariate_column)
 ggsave(snakemake@output[["pca"]], width=14)
 
 # plot pc variance
@@ -28,7 +30,7 @@ for(i in 1:pc) {
                                                                    pc_input = i,
                                                                    pc_count = 10, 
                                                                    units = "est_counts") +
-    ggtitle(paste0(snakemake@wildcards[["covariate"]], ": plot loadings for principal component ", i)) +
+    ggtitle(paste0(covariate_column, ": plot loadings for principal component ", i)) +
     theme(plot.title = element_text(size = 14, face = "bold", hjust = 0.5))
 }
 plots_loading <- ggarrange(plotlist = pc_loading_plots, ncol = 1, nrow = 1, common.legend = TRUE)
