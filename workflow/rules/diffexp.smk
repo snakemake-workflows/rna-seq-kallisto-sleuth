@@ -208,6 +208,8 @@ rule plot_pca:
         ),
     conda:
         "../envs/sleuth.yaml"
+    params:
+        exclude_nas=config["pca_exclude_NAs"],
     log:
         "logs/plots/pca/{covariate}.plot_pca.log",
     script:

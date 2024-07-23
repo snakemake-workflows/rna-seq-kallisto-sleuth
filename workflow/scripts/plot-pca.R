@@ -1,4 +1,4 @@
-source("snakemake@input[["pca_src"]]")
+source(snakemake@input[["pca_src"]])
 
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
@@ -9,12 +9,14 @@ library("ggpubr")
 #principal components
 pc <- 4
 
-# plot pca
+# Load data
 so <- sleuth_load(snakemake@input[["rds"]])
+covariate_column = snakemake@wildcards[["covariate"]]
 
 # Delete NA values
-covariate_column = snakemake@wildcards[["covariate"]]
-so$sample_to_covariates <- subset(so$sample_to_covariates, !is.na(so$sample_to_covariates[[covariate_column]]))
+if (snakemake@params[["exclude_nas"]]) {
+  so$sample_to_covariates <- subset(so$sample_to_covariates, !is.na(so$sample_to_covariates[[covariate_column]]))
+}
 
 plot_pca(so, color_by = covariate_column)
 ggsave(snakemake@output[["pca"]], width=14)
