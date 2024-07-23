@@ -12,6 +12,8 @@ views:
     dataset: comparison_table
     desc: |
         Table for values of meta comparison. The table is sorted in descending order based on the absolute value of the maximum difference between the positive effects and the negative effects.
+        Dealing with the plots: You can drag the plot to centre interesting areas. You can zoom into the plot using the mouse wheel. When you click on a gene, it is also highlighted in the other plot. If the ‘Shift’ key is held down, several genes can be selected at the same time.
+
     page-size: 25
     render-table:
       columns:
