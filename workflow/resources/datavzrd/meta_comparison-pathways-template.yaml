@@ -12,7 +12,6 @@ views:
     dataset: comparison_table
     desc: |
       Table for values of meta comparison. The table is sorted in descending order by the absolute value of the difference of the effects.
-      Dealing with the plots: You can drag the plot to centre interesting areas. You can zoom into the plot using the mouse wheel. When you click on a gene, it is also highlighted in the other plot. If the ‘Shift’ key is held down, several genes can be selected at the same time.
     page-size: 25
     render-table:
       columns:
@@ -68,6 +67,7 @@ views:
   comparison_plot:
     desc: |
        The effect is shown as the "total net accumulated perturbation," indicating the extent to which a pathway is activated (positive) or inhibited (negative) by the differential genes, with each point representing a pathway. Points on the diagonal indicate no difference between the two comparisons, highlighting potential differences when they deviate from this line.
+       Dealing with the plots: You can drag the plot to centre interesting areas. You can zoom into the plot using the mouse wheel. When you click on a gene, it is also highlighted in the other plot. If the ‘Shift’ key is held down, several genes can be selected at the same time.
     dataset: comparison_table
     render-plot:
       spec-path: ?input.plot
