@@ -1,4 +1,5 @@
-source("workflow/scripts/pca.R")
+source("snakemake@input[["pca_src"]]")
+
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")
@@ -9,7 +10,7 @@ library("ggpubr")
 pc <- 4
 
 # plot pca
-so <- sleuth_load(snakemake@input[[1]])
+so <- sleuth_load(snakemake@input[["rds"]])
 
 # Delete NA values
 covariate_column = snakemake@wildcards[["covariate"]]

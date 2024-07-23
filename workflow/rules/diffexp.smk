@@ -185,7 +185,8 @@ rule plot_bootstrap:
 
 rule plot_pca:
     input:
-        "results/sleuth/all.rds",
+        rds="results/sleuth/all.rds",
+        pca_src=workflow.source_path("../scripts/pca.R"),
     output:
         pca=report(
             "results/plots/pca/{covariate}.pca.pdf",
