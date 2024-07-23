@@ -10,7 +10,7 @@ else:
 
 rule compose_sample_sheet:
     input:
-        report(config["samples"], caption="../report/samples.rst", category="Samples"),
+        config["samples"],
         config["units"],
         kallisto_output=kallisto_output,
     output:

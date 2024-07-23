@@ -180,3 +180,25 @@ rule meta_compare_datavzrd:
         "logs/datavzrd-report/meta_comp_{method}.{meta_comp}.log",
     wrapper:
         "v3.13.8/utils/datavzrd"
+
+
+# Generating Meta Comparison Datavzrd Reports
+rule inputs_datavzrd:
+    input:
+        config=lambda wildcards: workflow.source_path(
+            f"../resources/datavzrd/inputs-template.yaml"
+        ),
+        sample=config["samples"],
+        units=config["units"],
+    output:
+        report(
+            directory("results/datavzrd-reports/inputs"),
+            htmlindex="index.html",
+            caption="../report/inputs.rst",
+            category="Inputs",
+            patterns=["index.html"],
+        ),
+    log:
+        "logs/datavzrd-report/inputs_datavzrd.log",
+    wrapper:
+        "v3.13.8/utils/datavzrd"
