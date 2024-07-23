@@ -1,4 +1,5 @@
 __use_yte__: true
+max-in-memory-rows: 15000
 
 name: ?f"Differential expression analysis for model {wildcards.model}"
 datasets:
@@ -46,7 +47,7 @@ views:
     desc: |
       Differentially expressed genes using the model computed with sleuth by taking only a manually configured representative transcript for each gene.
       The columns `b_*` and `b_*_se` display the effect size β and the corresponding standard error for every covariate in the model. They are analog to log2 fold changes. Note that non-binary covariates are binarized by sleuth, leading to multiple columns `b_*1`, `b_*2`, etc.
-      In addition, a signed version of the pi-value score (as proposed by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`) is shown. The sign reflects the sign of the effect (i.e. positive for upregulation, negative for downregulation).
+      The table is sorted in descending order by the absolute values of the signed versions of the pi-value score (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`). The sign reflects the sign of the effect (i.e. positive for upregulation, negative for downregulation).
     page-size: 25
     render-table:
       columns:
@@ -148,8 +149,6 @@ views:
                 - 1
         regex('^b_.*_se$'):
           display-mode: hidden
-        regex('signed_pi_value_.+'):
-          display-mode: hidden
         ?for sample in params.samples:
           ?sample:
             display-mode: hidden
@@ -162,7 +161,7 @@ views:
   transcripts:
     dataset: transcripts
     desc: |
-      Differentially expressed transcripts using the model and computed with sleuth. The columns `b_*` and `b_*_se` display the effect size β and the corresponding standard error for every covariate in the model. They are analog to log2 fold changes. Note that non-binary covariates are binarized by sleuth, leading to multiple columns `b_*1`, `b_*2`, etc. In addition, a signed version of the pi-value score (as proposed by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`) is shown. The sign reflects the sign of the effect (i.e. positive for upregulation, negative for downregulation).
+      Differentially expressed transcripts using the model and computed with sleuth. The columns `b_*` and `b_*_se` display the effect size β and the corresponding standard error for every covariate in the model. They are analog to log2 fold changes. Note that non-binary covariates are binarized by sleuth, leading to multiple columns `b_*1`, `b_*2`, etc. The table is sorted in descending order by the absolute values of the signed versions of the pi-value score (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`). The sign reflects the sign of the effect (i.e. positive for upregulation, negative for downregulation).
     page-size: 25
     render-table:
       columns:
@@ -243,15 +242,13 @@ views:
                 - -1
                 - 0
                 - 1
-        regex('signed_pi_value_.+'):
-          display-mode: hidden
         ?for sample in params.samples:
           ?sample:
             display-mode: hidden
   genes_aggregated:
     dataset: genes_aggregated
     desc: |
-      Differentially expressed genes computed with sleuth. The columns `b_*` and `b_*_se` display the effect size `:math:\beta` and the corresponding standard error for every covariate in the model. They are analog to log2 fold changes. Note that non-binary covariates are binarized by sleuth, leading  to multiple columns `b_*1`, `b_*2`, etc. In addition, a signed version of the pi-value score (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`) is shown. The sign reflects the sign of the effect (i.e. positive for   upregulation, negative for downregulation).
+      Differentially expressed genes computed with sleuth. The columns `b_*` and `b_*_se` display the effect size `:math:\beta` and the corresponding standard error for every covariate in the model. They are analog to log2 fold changes. Note that non-binary covariates are binarized by sleuth, leading  to multiple columns `b_*1`, `b_*2`, etc. The table is sorted in descending order by the absolute values of the signed versions of the pi-value score (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`). The sign reflects the sign of the effect (i.e. positive for   upregulation, negative for downregulation).
     page-size: 25
     render-table:
       columns:

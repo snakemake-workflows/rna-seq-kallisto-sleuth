@@ -30,7 +30,7 @@ rule postprocess_diffexp:
         "../scripts/postprocess_diffexp.py"
 
 
-# Postprocessing Differential Expression Data
+# Postprocessing Logcount Data
 rule postprocess_logcount_matrix:
     input:
         logcount="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
@@ -45,6 +45,22 @@ rule postprocess_logcount_matrix:
         "logs/yte/postprocess_logcount/{model}.log",
     script:
         "../scripts/postprocess_logcount.py"
+
+
+# Postprocessing Spia Data
+rule postprocess_spia:
+    input:
+        spia="results/tables/pathways/{model}.pathways.tsv",
+    output:
+        "results/tables/pathways/{model}.pathways_postprocessed.tsv",
+    conda:
+        "../envs/pandas.yaml"
+    params:
+        model=get_model,
+    log:
+        "logs/yte/postprocess_spia/{model}.log",
+    script:
+        "../scripts/postprocess_spia.py"
 
 
 # Generating SPIA Datavzrd Report

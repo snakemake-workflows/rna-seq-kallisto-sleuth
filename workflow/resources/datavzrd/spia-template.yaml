@@ -11,7 +11,7 @@ views:
   spia_table:
     dataset: spia_table
     desc: |
-      The SPIA pathway impact analysis results are summarized in a table with the following columns. The "Name" column lists the name of the pathway under investigation. The "total perturbation accumulation" column quantifies the overall perturbation or disruption occurring within each pathway. The "Status" column reflects the activity or response of the pathway. The "gene_ratio" column presents the ratio of genes present in the pathway compared to the total number of genes in the analyzed genome. Lastly, the "pathway id" column provides a unique identification number for each pathway. This analysis aids in understanding the impact and activity of various pathways in the context of the studied biological system.
+      The SPIA pathway impact analysis results are summarized in a table with the following columns. The "Name" column lists the name of the pathway under investigation. The "total perturbation accumulation" column quantifies the overall perturbation or disruption occurring within each pathway. The "Status" column reflects the activity or response of the pathway. The "gene_ratio" column presents the ratio of genes present in the pathway compared to the total number of genes in the analyzed genome. Lastly, the "pathway id" column provides a unique identification number for each pathway. This analysis aids in understanding the impact and activity of various pathways in the context of the studied biological system. The table is sorted in ascending order based on the "total perturbation accumulation" column. 
     page-size: 25
     render-table:
       columns:

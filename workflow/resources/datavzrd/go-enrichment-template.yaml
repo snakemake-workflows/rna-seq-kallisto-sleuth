@@ -12,7 +12,7 @@ views:
     dataset: go_enrichment
     desc: |
       Gene ontology (GO) term enrichment analysis was performed using the sleuth model with goatools. 
-      The resulting table includes several columns with key information. The "term" column lists the specific GO term, while the "class" column indicates the classification of the GO term. The "ratio_differential" column shows the ratio of differentially expressed genes within each GO term. The "ratio_size" column provides the ratio of the GO term size relative to the total number of measured genes. Lastly, the "study_items" column details the ratio of genes corresponding to each term, with the option to click on a "+" to see more specific information. This analysis helps to identify and understand the biological significance of gene expression changes.
+      The resulting table includes several columns with key information and is sorted by the 'p_uncorrected' column in ascending order. The "term" column lists the specific GO term, while the "class" column indicates the classification of the GO term. The "ratio_differential" column shows the ratio of differentially expressed genes within each GO term. The "ratio_size" column provides the ratio of the GO term size relative to the total number of measured genes. Lastly, the "study_items" column details the ratio of genes corresponding to each term, with the option to click on a "+" to see more specific information. This analysis helps to identify and understand the biological significance of gene expression changes.
     page-size: 25
     render-table:
       columns:

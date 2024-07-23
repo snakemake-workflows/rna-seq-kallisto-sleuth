@@ -11,7 +11,7 @@ views:
   comparison_table:
     dataset: comparison_table
     desc: |
-      Table for values of meta comparison
+      Table for values of meta comparison. The table is sorted in descending order by the absolute value of the difference of the effects.
     page-size: 25
     render-table:
       columns:
