@@ -18,9 +18,12 @@ views:
     render-table:
       columns:
         GO:
-          display-mode: normal 
+          display-mode: normal
+          link-to-url: 
+            geneontology:
+              url: http://amigo.geneontology.org/amigo/term/{GO}
         term:
-          display-mode: normal       
+          display-mode: normal
         min p_fdr_bh:
           plot:
             heatmap:

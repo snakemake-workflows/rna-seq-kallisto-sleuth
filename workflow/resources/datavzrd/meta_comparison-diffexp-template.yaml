@@ -16,7 +16,12 @@ views:
     render-table:
       columns:
         ext_gene:
-          display-mode: normal       
+          display-mode: normal
+        target_id:
+          display-mode: normal
+          link-to-url: 
+            Ensembl:
+              url: "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={target_id}"
         min q-value:
           plot:
             heatmap:
