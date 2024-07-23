@@ -85,7 +85,7 @@ def get_meta_compare_labels(method=""):
         return {
             "comparison": method
             + lookup(
-                dpath=f"meta_comparisons/{wildcards.meta_comp}/label", within=config
+                dpath=f"meta_comparisons/comparisons/{wildcards.meta_comp}/label", within=config
             )
         }
 
