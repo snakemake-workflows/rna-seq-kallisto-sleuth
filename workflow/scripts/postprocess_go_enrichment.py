@@ -20,13 +20,22 @@ def sort_group(group):
 df_enr = pd.read_csv(snakemake.input["enrichment"], sep='\t')
 df_sig = pd.read_csv(snakemake.input["significant_terms"], sep='\t')
 
-# Merge the two dataframes on the 'GO' column to keep only common GO terms
-df_merged = df_sig.join(df_enr.set_index('GO'), on='GO', rsuffix='_enr')
-# Add study items from significant terms to the merged dataset
-df_merged['study_items_sig_terms'] = df_merged['study_items']
+# TODO Would be better with merge but does not work right now
+# # Merge the two dataframes on the 'GO' column to keep only common GO terms
+# df_merged = df_sig.join(df_enr.set_index('GO'), on='GO', rsuffix='_enr')
+# # Add study items from significant terms to the merged dataset
+# df_merged['study_items_sig_terms'] = df_merged['study_items']
+# Only keep data if GO term exists in both tables
+common_ids = df_sig[df_sig['GO'].isin(df_enr['GO'])]['GO']
+df_enr_filtered = df_enr[df_enr['GO'].isin(common_ids)]
+df_sig_filtered = df_sig[df_sig['GO'].isin(common_ids)]
+
+# Add study items from significant terms to dataset
+df_enr_filtered['study_items_sig_terms'] = df_enr_filtered['GO'].map(
+    df_sig_filtered.set_index('GO')['study_items'])
 
 # Sort and calculate enrichment ratios
-df_merged_sorted = df_merged.groupby(
+df_merged_sorted = df_enr_filtered.groupby(
     'class', group_keys=False).apply(sort_group)
 
 if not df_merged_sorted.empty:
