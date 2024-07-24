@@ -16,12 +16,12 @@ views:
     render-table:
       columns:
         GO:
+          display-mode: hidden
+        term:
           display-mode: normal
           link-to-url: 
             geneontology:
               url: http://amigo.geneontology.org/amigo/term/{GO}
-        term:
-          display-mode: normal
         min p_fdr_bh:
           plot:
             heatmap:
@@ -34,6 +34,16 @@ views:
                 - 0
                 - 0.05
                 - 0.25
+        difference:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "white"
+                - "#fdae6b"
+              domain:
+                - 0
+                - 300
         positive effect mgl:
           display-mode: normal
           plot:

@@ -17,11 +17,11 @@ views:
       columns:
         ext_gene:
           display-mode: normal
-        target_id:
-          display-mode: normal
           link-to-url: 
             Ensembl:
-              url: "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={target_id}"
+              url: "https://www.ensembl.org/Mus_musculus/Transcript/Summary?t={target_id}"
+        target_id:
+          display-mode: hidden
         min q-value:
           plot:
             heatmap:
@@ -34,6 +34,16 @@ views:
                 - 0
                 - 0.05
                 - 0.25
+        difference:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "white"
+                - "#fdae6b"
+              domain:
+                - 0
+                - 300
         effect mgl (beta score):
           display-mode: normal
           plot:
