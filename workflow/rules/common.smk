@@ -85,7 +85,8 @@ def get_meta_compare_labels(method=""):
         return {
             "comparison": method
             + lookup(
-                dpath=f"meta_comparisons/comparisons/{wildcards.meta_comp}/label", within=config
+                dpath=f"meta_comparisons/comparisons/{wildcards.meta_comp}/label",
+                within=config,
             )
         }
 
@@ -220,6 +221,14 @@ def all_input(wildcards):
     """
 
     wanted_input = []
+
+    # Input files
+    paths = [
+        "results/datavzrd-reports/inputs/samples",
+        "results/datavzrd-reports/inputs/units",
+    ]
+    for path in paths:
+        wanted_input.extend(directory(expand(path)))
 
     # request goatools if 'activated' in config.yaml
     if config["enrichment"]["goatools"]["activate"]:
@@ -410,5 +419,4 @@ def all_input(wildcards):
                 )
             ),
         )
-
     return wanted_input

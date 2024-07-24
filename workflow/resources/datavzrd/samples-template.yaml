@@ -1,0 +1,32 @@
+__use_yte__: true
+
+name: ?f"Inputs used to start the pipeline"
+datasets:
+  samples:
+    path: ?input.samples
+    offer-excel: ?params.offer_excel
+    separator: "\t"
+default-view: samples
+views:
+  samples:
+    dataset: samples
+    desc: |
+      samples.tsv given as input
+    page-size: 25
+    render-table:
+      columns:
+        treatment:
+          plot:
+            heatmap:
+              scale: ordinal
+              color-scheme: tableau20
+        cohort:
+          plot:
+            heatmap:
+              scale: ordinal
+              color-scheme: tableau20
+        genotype:
+          plot:
+            heatmap:
+              scale: ordinal
+              color-scheme: tableau20

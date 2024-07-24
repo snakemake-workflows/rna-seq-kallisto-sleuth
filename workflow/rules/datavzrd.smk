@@ -71,7 +71,7 @@ rule spia_datavzrd:
         vega_circle=workflow.source_path(
             "../resources/custom_vega_plots/circle_diagram_de_genes.json"
         ),
-        spia_table="results/tables/pathways/{model}.pathways.tsv",
+        spia_table="results/tables/pathways/{model}.pathways_postprocessed.tsv",
     output:
         report(
             directory("results/datavzrd-reports/spia-{model}"),
@@ -176,29 +176,60 @@ rule meta_compare_datavzrd:
                 method=f"{wildcards.method.capitalize()}: "
             )(wildcards),
         ),
+    params:
+        pathway_db=config["enrichment"]["spia"]["pathway_database"],
     log:
         "logs/datavzrd-report/meta_comp_{method}.{meta_comp}.log",
     wrapper:
         "v3.13.8/utils/datavzrd"
 
 
-# Generating Meta Comparison Datavzrd Reports
-rule inputs_datavzrd:
+# Generating Input Datavzrd Reports
+rule samples_datavzrd:
     input:
         config=lambda wildcards: workflow.source_path(
-            f"../resources/datavzrd/inputs-template.yaml"
+            f"../resources/datavzrd/samples-template.yaml"
         ),
-        sample=config["samples"],
+        samples=config["samples"],
+    output:
+        report(
+            directory("results/datavzrd-reports/inputs/samples"),
+            htmlindex="index.html",
+            caption="../report/samples.rst",
+            category="Inputs",
+            patterns=["index.html"],
+            labels={
+                "input": "samples.tsv",
+            },
+        ),
+    params:
+        offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
+    log:
+        "logs/datavzrd-report/samples_datavzrd.log",
+    wrapper:
+        "v3.13.8/utils/datavzrd"
+
+
+rule units_datavzrd:
+    input:
+        config=lambda wildcards: workflow.source_path(
+            f"../resources/datavzrd/units-template.yaml"
+        ),
         units=config["units"],
     output:
         report(
-            directory("results/datavzrd-reports/inputs"),
+            directory("results/datavzrd-reports/inputs/units"),
             htmlindex="index.html",
-            caption="../report/inputs.rst",
+            caption="../report/units.rst",
             category="Inputs",
             patterns=["index.html"],
+            labels={
+                "input": "units.tsv",
+            },
         ),
+    params:
+        offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
     log:
-        "logs/datavzrd-report/inputs_datavzrd.log",
+        "logs/datavzrd-report/units_datavzrd.log",
     wrapper:
         "v3.13.8/utils/datavzrd"
