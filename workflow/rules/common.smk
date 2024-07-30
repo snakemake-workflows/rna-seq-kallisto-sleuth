@@ -85,6 +85,12 @@ def get_model(wildcards):
         return {"full": None}
     return config["diffexp"]["models"][wildcards.model]
 
+def column_missing_or_empty(column_name, dataframe, sample, unit):
+    if column_name in dataframe.columns:
+        return pd.isnull(dataframe.loc[(sample, unit), column_name])
+    else:
+        return True
+
 
 def is_single_end(sample, unit):
     """Determine whether unit is single-end."""
