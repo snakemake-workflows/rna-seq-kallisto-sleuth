@@ -85,6 +85,7 @@ def get_model(wildcards):
         return {"full": None}
     return config["diffexp"]["models"][wildcards.model]
 
+
 def column_missing_or_empty(column_name, dataframe, sample, unit):
     if column_name in dataframe.columns:
         return pd.isnull(dataframe.loc[(sample, unit), column_name])
@@ -94,7 +95,9 @@ def column_missing_or_empty(column_name, dataframe, sample, unit):
 
 def is_single_end(sample, unit):
     """Determine whether unit is single-end."""
-    return column_missing_or_empty("fq2", units, sample, unit) and column_missing_or_empty("bam_paired", units, sample, unit)
+    return column_missing_or_empty(
+        "fq2", units, sample, unit
+    ) and column_missing_or_empty("bam_paired", units, sample, unit)
 
 
 def get_fastqs(wildcards):
