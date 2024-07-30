@@ -98,9 +98,7 @@ def is_single_end(sample, unit):
 
 def get_fastqs(wildcards):
     """Get raw FASTQ files from unit sheet."""
-    if "bam_single" in units.columns and not pd.isnull(
-        units.loc[(wildcards.sample, wildcards.unit), "bam_single"]
-    ):
+    if column_missing_or_empty("bam_single", units, wildcards.sample, wildcards.unit):
         return f"results/fastq/{wildcards.sample}-{wildcards.unit}.fq.gz"
     elif "bam_paired" in units.columns and not pd.isnull(
         units.loc[(wildcards.sample, wildcards.unit), "bam_paired"]
