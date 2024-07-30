@@ -100,9 +100,7 @@ def get_fastqs(wildcards):
     """Get raw FASTQ files from unit sheet."""
     if column_missing_or_empty("bam_single", units, wildcards.sample, wildcards.unit):
         return f"results/fastq/{wildcards.sample}-{wildcards.unit}.fq.gz"
-    elif "bam_paired" in units.columns and not pd.isnull(
-        units.loc[(wildcards.sample, wildcards.unit), "bam_paired"]
-    ):
+    elif column_missing_or_empty("bam_paired", units, wildcards.sample, wildcards.unit):
         return expand(
             "results/fastq/{sample}-{unit}.{read}.fq.gz",
             sample=wildcards.sample,
