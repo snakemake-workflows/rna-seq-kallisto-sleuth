@@ -102,9 +102,13 @@ def is_single_end(sample, unit):
 
 def get_fastqs(wildcards):
     """Get raw FASTQ files from unit sheet."""
-    if not column_missing_or_empty("bam_single", units, wildcards.sample, wildcards.unit):
+    if not column_missing_or_empty(
+        "bam_single", units, wildcards.sample, wildcards.unit
+    ):
         return f"results/fastq/{wildcards.sample}-{wildcards.unit}.fq.gz"
-    elif not column_missing_or_empty("bam_paired", units, wildcards.sample, wildcards.unit):
+    elif not column_missing_or_empty(
+        "bam_paired", units, wildcards.sample, wildcards.unit
+    ):
         return expand(
             "results/fastq/{sample}-{unit}.{read}.fq.gz",
             sample=wildcards.sample,
