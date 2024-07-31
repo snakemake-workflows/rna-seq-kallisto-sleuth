@@ -72,6 +72,9 @@ rule spia_datavzrd:
             "../resources/custom_vega_plots/circle_diagram_de_genes.json"
         ),
         spia_table="results/tables/pathways/{model}.pathways_postprocessed.tsv",
+        vega_waterfall=workflow.source_path(
+            "../resources/custom_vega_plots/waterfall_plot_study_items.json"
+        ),
     output:
         report(
             directory("results/datavzrd-reports/spia-{model}"),

@@ -79,3 +79,26 @@ views:
               color-scheme: accent
         pathway id:
           display-mode: detail
+        study_items_sig_terms:
+          label: study_items
+          display-mode: detail 
+          custom-plot:
+            data: |
+              function customFunction(value, row) {
+                if (value && value.trim() !== "") {
+                    var geneValues = value.split(', ');
+                    var data = [];
+                    geneValues.forEach(function(geneValue) {
+                      var parts = geneValue.split(':');
+                      var gene = parts[0];
+                      var val = parseFloat(parts[1]);
+
+                      data.push({"gene": gene, "value": val});
+                  });
+                  return data;
+                } else {
+                    return "";
+                }
+              }  
+            spec-path: ?input.vega_waterfall
+            vega-controls: true

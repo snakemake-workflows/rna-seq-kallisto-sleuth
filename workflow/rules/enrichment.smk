@@ -17,6 +17,7 @@ rule spia:
     params:
         bioc_species_pkg=bioc_species_pkg,
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
+        orgDb=config["enrichment"]["spia"]["orgDb"],
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
     conda:
         enrichment_env
