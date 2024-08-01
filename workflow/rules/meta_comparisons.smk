@@ -1,4 +1,4 @@
-rule meta_compare_diffex:
+rule meta_compare_diffexp:
     input:
         expand(
             "results/sleuth/diffexp/{model}.genes-representative.diffexp.rds",
