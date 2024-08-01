@@ -35,7 +35,6 @@ if not df_merged_sorted.is_empty():
             pl.col("ratio_in_pop").map_elements(calculate_enrichment).alias("enrichment_pop")
         ]).map_elements(lambda row: f"({row['enrichment_study']}, {row['enrichment_pop']})").alias("enrichment")
     )
-    print(df_merged_sorted.head(3))
 else:
     df_merged_sorted = df_merged_sorted.with_columns(
         enrichment = pl.lit(None)

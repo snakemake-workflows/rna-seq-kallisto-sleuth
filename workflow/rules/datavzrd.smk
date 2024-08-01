@@ -6,7 +6,7 @@ rule postprocess_go_enrichment:
     output:
         "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}.tsv",
     conda:
-        "../envs/pandas.yaml"
+        "../envs/polars.yaml"
     log:
         "logs/yte/postprocess_go_enrichment/{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     script:
