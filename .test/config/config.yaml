@@ -128,6 +128,9 @@ bootstrap_plots:
   # for now, this will plot the sleuth-normalised kallisto count estimations with kallisto
   # for all the transcripts of the respective genes
 
+# If include_na is set to true, samples with NA values in the specified covariate column will be removed;
+pca_exclude_NAs: false
+
 plot_vars:
   # significance level used for plot_vars() plots
   sig_level: 0.1
