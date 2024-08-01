@@ -1,0 +1,4 @@
+channels:
+  - conda-forge
+dependencies:
+  - polars =1.2.1
