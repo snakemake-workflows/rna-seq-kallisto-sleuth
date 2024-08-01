@@ -95,6 +95,8 @@ enrichment:
     # pathway database to use in SPIA, needs to be available for
     # the species specified by resources -> ref -> species above
     pathway_database: "panther"
+    # OrgDB Genome wide annotation package (https://www.bioconductor.org/packages/release/BiocViews.html#___OrgDb) for the species under consideration. Only required if you want to have a gene analysis for your pathways. Else NA
+    orgDb: org.Hs.eg.db
 
 meta_comparisons:
   # comparison is only run if set to `true`
