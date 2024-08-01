@@ -101,19 +101,15 @@ enrichment:
 meta_comparisons:
   # comparison is only run if set to `true`
   activate: false
-  # Define here the coparisons under interest
+  # Define here the comparisons under interest
   comparisons:
-    # Define any name for comparison
+    # Define any name for comparison. You can add as many comparisions as you want
     model_X_vs_model_Y:
       items:
         # Define the two underlying models for the comparison. The models must be defined in the diffexp/models in the config
-        - label: X # Arbitrary label
-          model: model_X # Must match a diffexp model from config
-        - label: Y # Arbitrary label
-          model: model_Y # Must match a diffexp model from config
-      desc: |
-        Comparison between model_X and model_Y effect.
-      label: model_X vs. model_Y effect
+        # items must be of form <arbitrary label>: <existing diffexp model from config> 
+        - X: model_X
+        - Y: model_Y
 
 report:
   # make this `true`, to get excel files for download in the snakemake
