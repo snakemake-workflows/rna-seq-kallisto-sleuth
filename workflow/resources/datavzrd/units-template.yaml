@@ -13,23 +13,3 @@ views:
     desc: |
       units.tsv given as input
     page-size: 25
-    render-table:
-      columns:
-        unit:
-          display-mode: normal 
-          plot:
-            heatmap:
-              scale: ordinal
-              color-scheme: blues
-        fragment_len_mean:
-          display-mode: normal 
-          plot:
-            heatmap:
-              scale: ordinal
-              color-scheme: greens
-        fragment_len_sd:
-          display-mode: normal 
-          plot:
-            heatmap:
-              scale: ordinal
-              color-scheme: reds

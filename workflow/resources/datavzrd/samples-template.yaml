@@ -13,20 +13,3 @@ views:
     desc: |
       samples.tsv given as input
     page-size: 25
-    render-table:
-      columns:
-        treatment:
-          plot:
-            heatmap:
-              scale: ordinal
-              color-scheme: tableau20
-        cohort:
-          plot:
-            heatmap:
-              scale: ordinal
-              color-scheme: tableau20
-        genotype:
-          plot:
-            heatmap:
-              scale: ordinal
-              color-scheme: tableau20
