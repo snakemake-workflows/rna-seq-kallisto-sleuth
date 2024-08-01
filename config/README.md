@@ -82,4 +82,7 @@ Changes to the recommendations are motivated as follows:
 * `--discard-trimmed`: We omit this, as the `-a` with the adapter sequence will lead to complete read sequence removal if adapter is found at start, and the `--minimum-length` will then discard such empty reads.
 
 #### meta comparisons
-Meta comparisons allow for comparing two full models against each other. Each comparison is defined under `meta_comparisons:` with a unique name. For each comparison, you specify two models to compare within the `items:` section. A model is defined with a `label:` used for axis labeling in plots, and the corresponding `model:` name, which must match a `full:` model defined within the main sleuth configuration.
+Meta comparisons for {{ snakemake.wildcards.meta_comp }} allow for comparing two full models against each other.
+The axes represent the log2-fold changes (beta-scores) for the two models, with each point representing a gene. 
+Points on the diagonal indicate no difference between the comparisons, while deviations from the diagonal suggest differences in gene expression between the treatments.
+For more details see the comments in the `config.yaml`
