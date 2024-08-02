@@ -95,7 +95,8 @@ enrichment:
     # pathway database to use in SPIA, needs to be available for
     # the species specified by resources -> ref -> species above
     pathway_database: "panther"
-    # OrgDB Genome wide annotation package (https://www.bioconductor.org/packages/release/BiocViews.html#___OrgDb) for the species under consideration. Only required if you want to have a gene analysis for your pathways. Else NA
+    # OrgDB Genome wide annotation package (https://www.bioconductor.org/packages/release/BiocViews.html#___OrgDb) for the species under consideration. 
+    # Only required if you want to have a gene analysis for your pathways, else set to NA
     orgDb: org.Hs.eg.db
 
 meta_comparisons:
@@ -126,7 +127,7 @@ bootstrap_plots:
   # for now, this will plot the sleuth-normalised kallisto count estimations with kallisto
   # for all the transcripts of the respective genes
 
-# If include_na is set to true, samples with NA values in the specified covariate column will be removed;
+# If set to true, samples with NA values in the specified covariate column will be removed for PCA computation;
 pca_exclude_NAs: false
 
 plot_vars:
