@@ -5,18 +5,20 @@ experiment:
   # If set to `true`, this option allows the workflow to analyse 3-prime RNA seq data obtained from Quantseq protocol by Lexogen.
   # For more information https://www.lexogen.com/quantseq-3mrna-sequencing/
   3-prime-rna-seq:
-    activate: false
+    activate: true
+    # this allows to plot QC of aligned read postion for specific transcripts (or 'all' transcripts)
     # Specify vendor of the used protocol. Currently, only lexogene is supported.
     vendor: lexogen
-    # this allows to plot QC of aligned read postion for specific transcripts (or 'all' transcripts)
     plot-qc: all
+
+
 
 resources:
   ref:
     # ensembl species name
     species: homo_sapiens
     # ensembl release version
-    release: "104"
+    release: "112"
     # genome build
     build: GRCh38
     # pfam release to use for annotation of domains in differential splicing analysis
@@ -43,15 +45,15 @@ diffexp:
   # model for sleuth differential expression analysis
   models:
     model_X:
-      full: ~condition + batch_effect
-      reduced: ~batch_effect
+      full: ~condition
+      reduced: ~1
       # Covariate / sample sheet column that shall be used for fold
       # change/effect size based downstream analyses.
       primary_variable: condition
       # base level of the primary variable (this should be one of the entries
       # in the primary_variable sample sheet column and will be considered as
       # denominator in the fold change/effect size estimation).
-      base_level: untreated
+      base_level: Control
   # significance level to use for volcano, ma- and qq-plots
   sig-level:
     volcano-plot: 0.05
@@ -60,7 +62,7 @@ diffexp:
   # Optional (comment in to use): provide a list of genes that shall be shown in a heatmap
   # and for which bootstrap plots (see below) shall be created.  
   genes_of_interest:
-    activate: true
+    activate: false
     genelist: "resources/gene_list.tsv"
 
 diffsplice:
@@ -83,7 +85,7 @@ enrichment:
     fdr_genes: 0.05
     fdr_go_terms: 0.05
   fgsea:
-    gene_sets_file: "ngs-test-data/ref/dummy.gmt"
+    gene_sets_file: "config/gene_sets.gmt"
     # tool is only run if set to `true`
     activate: true
     # if activated, you need to provide a GMT file with gene sets of interest
@@ -110,12 +112,6 @@ meta_comparisons:
         # items must be of form <arbitrary label>: <existing diffexp model from config> 
         - X: model_X
         - Y: model_Y
-
-report:
-  # make this `true`, to get excel files for download in the snakemake
-  # report, BUT: this can drastically increase the runtime of datavzrd report
-  # generation, especially on larger cohorts
-  offer_excel: true
 
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
@@ -164,8 +160,11 @@ params:
   # * `--minimum-overlap 7`: the cutadapt default minimum overlap of `5` did trimming on the level
   #   of expected adapter matches by chance
   cutadapt-se:
-    adapters: "-a ACGGATCGATCGATCGATCGAT -g GGATCGATCGATCGATCGAT "
-    extra: "--minimum-length 33 -e 0.005 --overlap 7"
+    # This setup is for Lexogen QuantSeq FWD data, based on (but simplfied):
+    # https://faqs.lexogen.com/faq/what-is-the-adapter-sequence-i-need-to-use-for-t-1
+    # For more details, see the Lexogen 3' QuantSeq section in the `config/README.md` file.
+    adapters: "-a 'r1adapter=AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=7;max_error_rate=0.005'"
+    extra: "--minimum-length 33 --nextseq-trim=20 --poly-a"
   cutadapt-pe: 
-    adapters: "-a ACGGATCGATCGATCGATCGAT -g GGATCGATCGATCGATCGAT -A ACGGATCGATCGATCGATCGAT -G GGATCGATCGATCGATCGAT"
-    extra: "--minimum-length 33 -e 0.005 --overlap 7"
+    adapters: ""
+    extra: ""
