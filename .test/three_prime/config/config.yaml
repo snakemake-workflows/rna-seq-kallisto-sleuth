@@ -112,6 +112,8 @@ meta_comparisons:
         # items must be of form <arbitrary label>: <existing diffexp model from config> 
         - X: model_X
         - Y: model_Y
+      # Define label for datavzrd report
+      label: model X vs. model Y
 
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated

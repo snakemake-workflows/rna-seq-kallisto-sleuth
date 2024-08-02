@@ -110,6 +110,8 @@ meta_comparisons:
         # items must be of form <arbitrary label>: <existing diffexp model from config> 
         - X: model_X
         - Y: model_Y
+      # Define label for datavzrd report
+      label: model X vs. model Y
 
 report:
   # make this `true`, to get excel files for download in the snakemake
