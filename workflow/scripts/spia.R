@@ -44,7 +44,7 @@ columns <- c(
   "Status",
   "pathway id",
   "gene_ratio",
-  "study_items_sig_terms"
+  "study_items"
 )
 
 if (nrow(sig_genes) == 0) {
@@ -140,10 +140,10 @@ if (nrow(sig_genes) == 0) {
     # Create new column with genes in pathway together with their beta_vals
     if (!is.na(orgDb)) {
       res <- res %>%
-          mutate(study_items_sig_terms = extract_genes_from_pathway_v(lapply(res$Name, function(name) db[[name]])))
+          mutate(study_items = extract_genes_from_pathway_v(lapply(res$Name, function(name) db[[name]])))
     }
     else {
-      res[, 'study_items_sig_terms'] = NA
+      res[, 'study_items'] = NA
 
     }
 

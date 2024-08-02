@@ -79,8 +79,7 @@ views:
               color-scheme: accent
         pathway id:
           display-mode: detail
-        study_items_sig_terms:
-          label: study_items
+        study_items:
           display-mode: detail 
           custom-plot:
             data: |

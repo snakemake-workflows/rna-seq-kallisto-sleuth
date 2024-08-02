@@ -85,9 +85,6 @@ views:
                 - 0.0
                 - 1.0   
         study_items: 
-          display-mode: hidden
-        study_items_sig_terms:
-          label: study_items
           display-mode: detail 
           custom-plot:
             data: |
