@@ -12,7 +12,8 @@ views:
     dataset: go_enrichment
     desc: |
       Gene ontology (GO) term enrichment analysis was performed with goatools on differentially expressed genes as determined by the sleuth model.
-      The resulting table includes several columns with key information and is sorted by the 'p_uncorrected' column in ascending order. The "term" column lists the specific GO term, while the "class" column indicates the classification of the GO term. The "ratio_differential" column shows the ratio of differentially expressed genes within each GO term. The "ratio_size" column provides the ratio of the GO term size relative to the total number of measured genes. Lastly, the "study_items" column details the ratio of genes corresponding to each term, with the option to click on a "+" to see more specific information. This analysis helps to identify and understand the biological significance of gene expression changes.
+      The resulting table includes several columns with key information and is sorted according to the 'p-value' column in ascending order. The "term" column lists the specific GO term, while the "class" column indicates the classification of the GO term (biological process/cellular component/molecular function). The column "FDR" is the p-value obtained from false discovery. The "enrichment" column compares the ratio of differentially expressed genes in the current study to the ratio of total genes present in the current analysis. Lastly, the "study_items" shows the name of each differentially expressed gene together with its corresponding "b" value which is the fold change seperated.
+      This analysis helps to identify and understand the biological significance of gene expression changes.
     page-size: 25
     render-table:
       columns:
@@ -36,7 +37,6 @@ views:
         ratio_in_pop:
           display-mode: hidden
         enrichment:
-          label: enrichment
           display-mode: normal
           custom-plot:
             data: |
