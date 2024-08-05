@@ -69,7 +69,7 @@ rule spia_datavzrd:
         config=workflow.source_path("../resources/datavzrd/spia-template.yaml"),
         # files required for rendering the given configs
         vega_circle=workflow.source_path(
-            "../resources/custom_vega_plots/circle_diagram_de_genes.json"
+            "../resources/custom_vega_plots/circle_diagram_genes.json"
         ),
         spia_table="results/tables/pathways/{model}.pathways_postprocessed.tsv",
         vega_waterfall=workflow.source_path(
@@ -202,7 +202,7 @@ rule samples_datavzrd:
             category="Inputs",
             patterns=["index.html"],
             labels={
-                "input": "samples.tsv",
+                "input": "samples",
             },
         ),
     params:
@@ -227,7 +227,7 @@ rule units_datavzrd:
             category="Inputs",
             patterns=["index.html"],
             labels={
-                "input": "units.tsv",
+                "input": "units",
             },
         ),
     params:

@@ -44,7 +44,7 @@ views:
                 }
               }
             spec-path: ?input.vega_circle
-            vega-controls: false
+            vega-controls: true
         p-value for at least NDE genes:
           display-mode: detail
         total perturbation accumulation:
