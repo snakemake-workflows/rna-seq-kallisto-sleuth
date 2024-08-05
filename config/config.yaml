@@ -6,7 +6,7 @@ experiment:
   # For more information https://www.lexogen.com/quantseq-3mrna-sequencing/
   3-prime-rna-seq:
     activate: false
-    # Specify vendor of the used protocol. Currently, only lexogene is supported.
+    # Specify vendor of the used protocol. Currently, only lexogen is supported.
     vendor: lexogen
     # this allows to plot QC of aligned read postion for specific transcripts (or 'all' transcripts)
     plot-qc: all
