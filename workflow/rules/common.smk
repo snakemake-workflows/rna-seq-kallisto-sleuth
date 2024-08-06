@@ -80,17 +80,14 @@ def check_config():
 check_config()
 
 
-def get_meta_compare_labels(method=""):
-    def _get_labels(wildcards):
-        return {
-            "comparison": method
-            + lookup(
-                dpath=f"meta_comparisons/comparisons/{wildcards.meta_comp}/label",
-                within=config,
-            )
-        }
-
-    return _get_labels
+def get_meta_compare_labels():
+    return {
+        "comparison": "diffexp"
+        + lookup(
+            dpath=f"meta_comparisons/comparisons/{wildcards.meta_comp}/label",
+            within=config,
+        )
+    }
 
 
 def get_model(wildcards):
@@ -167,20 +164,20 @@ def get_bioc_species_pkg():
     return "org.{species}.eg.db".format(species=species_letters)
 
 
-def render_enrichment_env():
-    species_pkg = f"bioconductor-{get_bioc_species_pkg()}"
-    with open(workflow.source_path("../envs/enrichment.yaml")) as f:
-        env = yaml.load(f, Loader=yaml.SafeLoader)
-    env["dependencies"].append(species_pkg)
-    env_path = Path("resources/envs/enrichment.yaml")
-    env_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(env_path, "w") as f:
-        yaml.dump(env, f)
-    return env_path.absolute()
+# def render_enrichment_env():
+#     species_pkg = f"bioconductor-{get_bioc_species_pkg()}"
+#     with open(workflow.source_path("../envs/enrichment.yaml")) as f:
+#         env = yaml.load(f, Loader=yaml.SafeLoader)
+#     env["dependencies"].append(species_pkg)
+#     env_path = Path("resources/envs/enrichment.yaml")
+#     env_path.parent.mkdir(parents=True, exist_ok=True)
+#     with open(env_path, "w") as f:
+#         yaml.dump(env, f)
+#     return env_path.absolute()
 
 
 bioc_species_pkg = get_bioc_species_pkg()
-enrichment_env = render_enrichment_env()
+# enrichment_env = render_enrichment_env()
 
 
 def kallisto_quant_input(wildcards):
@@ -229,51 +226,6 @@ def all_input(wildcards):
     ]
     for path in paths:
         wanted_input.extend(directory(expand(path)))
-
-    # request goatools if 'activated' in config.yaml
-    if config["enrichment"]["goatools"]["activate"]:
-        wanted_input.extend(
-            expand(
-                [
-                    "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
-                    "results/plots/go_terms/{model}.go_term_enrichment_{go_ns}.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.pdf",
-                    "results/datavzrd-reports/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}",
-                ],
-                model=config["diffexp"]["models"],
-                go_ns=["BP", "CC", "MF"],
-                gene_fdr=str(config["enrichment"]["goatools"]["fdr_genes"]).replace(
-                    ".", "-"
-                ),
-                go_term_fdr=str(
-                    config["enrichment"]["goatools"]["fdr_go_terms"]
-                ).replace(".", "-"),
-            )
-        )
-
-    # request fgsea if 'activated' in config.yaml
-    if config["enrichment"]["fgsea"]["activate"]:
-        wanted_input.extend(
-            expand(
-                [
-                    "results/tables/fgsea/{model}.all-gene-sets.tsv",
-                    "results/tables/fgsea/{model}.sig-gene-sets.tsv",
-                    "results/plots/fgsea/{model}.table-plot.pdf",
-                    "results/plots/fgsea/{model}",
-                ],
-                model=config["diffexp"]["models"],
-            )
-        )
-    # request spia if 'activated' in config.yaml
-    if config["enrichment"]["spia"]["activate"]:
-        wanted_input.extend(
-            expand(
-                [
-                    "results/tables/pathways/{model}.pathways.tsv",
-                    "results/datavzrd-reports/spia-{model}/",
-                ],
-                model=config["diffexp"]["models"],
-            )
-        )
 
     # workflow output that is always wanted
     # general sleuth output
@@ -411,8 +363,7 @@ def all_input(wildcards):
         wanted_input.extend(
             directory(
                 expand(
-                    "results/datavzrd-reports/{report_type}_meta_comparison_{meta_comp}",
-                    report_type=["go_terms", "diffexp", "pathways"],
+                    "results/datavzrd-reports/diffexp_meta_comparison_{meta_comp}",
                     meta_comp=lookup(
                         dpath="meta_comparisons/comparisons", within=config
                     ),

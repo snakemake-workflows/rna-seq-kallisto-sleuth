@@ -113,22 +113,3 @@ rule calculate_cpat_logit_model:
     shell:
         "make_logitModel.py --hex={input.hexamers} --cgene={input.cds} "
         "--ngene={input.ncrna} -o {params.prefix} 2> {log}"
-
-
-rule get_spia_db:
-    input:
-        common_src=workflow.source_path("../scripts/common.R"),
-    output:
-        "resources/spia-db.rds",
-    log:
-        "logs/spia-db.log",
-    params:
-        bioc_species_pkg=bioc_species_pkg,
-        species=get_bioc_species_name(),
-        pathway_db=config["enrichment"]["spia"]["pathway_database"],
-    conda:
-        enrichment_env
-    retries: 3
-    cache: True
-    script:
-        "../scripts/get-spia-db.R"

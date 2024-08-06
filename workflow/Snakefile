@@ -23,12 +23,32 @@ include: "rules/quant.smk"
 include: "rules/quant_3prime.smk"
 include: "rules/diffexp.smk"
 include: "rules/diffsplice.smk"
-include: "rules/enrichment.smk"
 include: "rules/datavzrd.smk"
 include: "rules/bam.smk"
 include: "rules/meta_comparisons.smk"
 
 
-rule all:
+# declare https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth as a module
+module enrichment:
+    snakefile:
+        # github(
+        #     "snakemake-workflows/rna-seq-kallisto-sleuth",
+        #     path="workflow/Snakefile",
+        #     # tag="v2.5.4",
+        #     branch="locotact_p18",
+        # )
+        # "/homes/johannes/scms/rna-seq-kallisto-sleuth/workflow/Snakefile"
+        "/home/adrian/Documents/Promotion/locotact_stuff/enrichment/workflow/Snakefile"
+    config:
+        config
+
+
+# use all rules from https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth
+use rule * from enrichment
+
+
+rule modified_all:
+    default_target: True
     input:
+        rules.all.input,
         all_input,
