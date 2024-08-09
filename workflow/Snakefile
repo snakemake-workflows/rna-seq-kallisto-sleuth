@@ -3,7 +3,7 @@ from snakemake.utils import min_version
 min_version("8.13.0")
 
 
-configfile: "config/config.yaml"
+configfile: "local/config_private.yaml"
 
 
 report: "report/workflow.rst"
@@ -28,22 +28,21 @@ include: "rules/bam.smk"
 include: "rules/meta_comparisons.smk"
 
 
-# declare https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth as a module
+# declare https://github.com/Addimator/enrichment as a module
 module enrichment:
     snakefile:
-        # github(
-        #     "snakemake-workflows/rna-seq-kallisto-sleuth",
-        #     path="workflow/Snakefile",
-        #     # tag="v2.5.4",
-        #     branch="locotact_p18",
-        # )
-        # "/homes/johannes/scms/rna-seq-kallisto-sleuth/workflow/Snakefile"
-        "/home/adrian/Documents/Promotion/locotact_stuff/enrichment/workflow/Snakefile"
+        github(
+            "Addimator/enrichment",
+            path="workflow/Snakefile",
+            # tag="v2.5.4",
+            branch="main",
+        )
+        # "/home/adrian/Documents/Promotion/locotact_stuff/enrichment/workflow/Snakefile"
     config:
         config
 
 
-# use all rules from https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth
+# use all rules from https://github.com/Addimator/enrichment
 use rule * from enrichment
 
 

@@ -2,6 +2,7 @@
 !config/config.yaml
 !config/samples.tsv
 !config/units.tsv
+local/*
 !LICENSE
 !README.md
 resources
