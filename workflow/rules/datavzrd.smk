@@ -177,7 +177,7 @@ rule inputs_datavzrd:
         config=lambda wc: workflow.source_path(
             f"../resources/datavzrd/{wc.input}-template.yaml"
         ),
-        table=lambda wc: workflow.source_path(config[wc.input]),
+        table=lambda wc: config[wc.input],
     output:
         report(
             directory("results/datavzrd-reports/inputs/{input}"),
