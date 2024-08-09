@@ -33,6 +33,8 @@ resources:
     gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
 
 pca:
+  # If set to true, samples with NA values in the specified covariate column will be removed for PCA computation;
+  pca_exclude_NAs: false
   labels:
     # columns of sample sheet to use for PCA
     - condition
@@ -101,9 +103,6 @@ enrichment:
     # pathway database to use in SPIA, needs to be available for
     # the species specified by resources -> ref -> species above
     pathway_database: "panther"
-    # OrgDB Genome wide annotation package (https://www.bioconductor.org/packages/release/BiocViews.html#___OrgDb) for the species under consideration. 
-    # Only required if you want to have a gene analysis for your pathways. Else NA
-    orgDb: org.Hs.eg.db
 
 meta_comparisons:
   # comparison is only run if set to `true`
@@ -115,8 +114,8 @@ meta_comparisons:
       items:
         # Define the two underlying models for the comparison. The models must be defined in the diffexp/models in the config
         # items must be of form <arbitrary label>: <existing diffexp model from config> 
-        - X: model_X
-        - Y: model_Y
+        X: model_X
+        Y: model_Y
       # Define label for datavzrd report
       label: model X vs. model Y
 
@@ -124,7 +123,7 @@ report:
   # make this `true`, to get excel files for download in the snakemake
   # report, BUT: this can drastically increase the runtime of datavzrd report
   # generation, especially on larger cohorts
-  offer_excel: true
+  offer_excel: false
 
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
@@ -134,9 +133,6 @@ bootstrap_plots:
   color_by: condition
   # for now, this will plot the sleuth-normalised kallisto count estimations with kallisto
   # for all the transcripts of the respective genes
-
-# If set to true, samples with NA values in the specified covariate column will be removed for PCA computation;
-pca_exclude_NAs: false
 
 plot_vars:
   # significance level used for plot_vars() plots

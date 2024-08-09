@@ -13,9 +13,8 @@ source(snakemake@input[["common_src"]])
 pw_db <- snakemake@params[["pathway_db"]]
 db <- readRDS(snakemake@input[["spia_db"]])
 
-orgDb_name <- snakemake@params[["orgDb"]]
+orgDb_name <- snakemake@params[["bioc_species_pkg"]]
 orgDb <- if (orgDb_name == "NA") NA else get(orgDb_name)
-print(typeof(orgDb))
 
 options(Ncpus = snakemake@threads)
 
@@ -44,7 +43,8 @@ columns <- c(
   "Status",
   "pathway id",
   "gene_ratio",
-  "study_items"
+  "study_items",
+  "signed_pi_value"
 )
 
 if (nrow(sig_genes) == 0) {
@@ -94,58 +94,55 @@ if (nrow(sig_genes) == 0) {
         `pathway id` = value
       )
 
-    extract_genes_from_pathway <- function(pathway) {
-      # Extract genes from protEdges and mixedEdges
-      genes_protEdges <- unique(c(pathway@protEdges$src, pathway@protEdges$dest))
-      genes_mixedEdges <- unique(c(pathway@mixedEdges$src[pathway@mixedEdges$src_type == "ENSEMBL"], 
-                                  pathway@mixedEdges$dest[pathway@mixedEdges$dest_type == "ENSEMBL"]))
-      
-      # Combine all gene IDs
-      all_genes <- unique(c(genes_protEdges, genes_mixedEdges))
-      
-      # Map ENSMUSB values to gene names
-      external_gene_names <- mapIds(orgDb, 
-                                    keys = all_genes, 
-                                    column = "SYMBOL", 
-                                    keytype = "ENSEMBL",
-                                    multiVals = "first")
-      
-      # Check if external_gene_names is empty or NULL
-      if (is.null(external_gene_names) || length(external_gene_names) == 0) {
-          return("")
-      }
-
-      # Filter diffexp for relevant gene names
-      filtered_diffexp <- diffexp %>%
-          filter(ext_gene %in% unname(external_gene_names)) %>%
-          select(ext_gene, beta_val = !!beta_col) %>%
-          drop_na()
-      
-      # Check if filtered_diffexp is empty
-      if (nrow(filtered_diffexp) == 0) {
-          return("")
-      }
-
-      # Create result string
-      result_string <- filtered_diffexp %>%
-          mutate(pair = paste(ext_gene, beta_val, sep = ":")) %>%
-          pull(pair) %>%
-          paste(collapse = ", ")
-      
-      return(result_string)
-    }
-
-    extract_genes_from_pathway_v <- Vectorize(extract_genes_from_pathway)
-
     # Create new column with genes in pathway together with their beta_vals
     if (!is.na(orgDb)) {
       res <- res %>%
-          mutate(study_items = extract_genes_from_pathway_v(lapply(res$Name, function(name) db[[name]])))
-    }
-    else {
-      res[, 'study_items'] = NA
+          mutate(study_items = map(res$Name, function(name) {
+            pathway <- db[[name]]
+            
+            # Extract genes from protEdges and mixedEdges
+            genes_protEdges <- unique(c(pathway@protEdges$src, pathway@protEdges$dest))
+            genes_mixedEdges <- unique(c(pathway@mixedEdges$src[pathway@mixedEdges$src_type == "ENSEMBL"], 
+                                        pathway@mixedEdges$dest[pathway@mixedEdges$dest_type == "ENSEMBL"]))
+            
+            # Combine all gene IDs
+            all_genes <- unique(c(genes_protEdges, genes_mixedEdges))
+            
+            # Map ENSMUSB values to gene names
+            external_gene_names <- mapIds(orgDb, 
+                                          keys = all_genes, 
+                                          column = "SYMBOL", 
+                                          keytype = "ENSEMBL",
+                                          multiVals = "first")
+            
+            # Check if external_gene_names is empty or NULL
+            if (is.null(external_gene_names) || length(external_gene_names) == 0) {
+                return(character(0))
+            }
 
+            # Filter diffexp for relevant gene names
+            filtered_diffexp <- diffexp %>%
+                filter(ext_gene %in% unname(external_gene_names)) %>%
+                select(ext_gene, beta_val = !!beta_col) %>%
+                drop_na()
+            
+            # Check if filtered_diffexp is empty
+            if (nrow(filtered_diffexp) == 0) {
+                return(character(0))
+            }
+
+            # Create result vector
+            result_vector <- filtered_diffexp %>%
+                mutate(pair = paste(ext_gene, beta_val, sep = ":")) %>%
+                pull(pair)
+            
+            return(result_vector)
+          }) %>%
+          map_chr(~ paste(.x, collapse = ", ")))
+    } else {
+      res[, 'study_items'] = NA
     }
+
 
     final_res <- as_tibble(res) |>
       left_join(
@@ -165,9 +162,11 @@ if (nrow(sig_genes) == 0) {
       mutate(
         gene_ratio = str_c("(", `number of DE genes per pathway`, ", ", `number of genes on the pathway`, ")")
       ) |>
+      mutate( 
+        signed_pi_value := -log10(`Combined FDR`) * `total perturbation accumulation` ) |>
       dplyr::select(all_of(columns)
       ) |>
-      arrange(`Combined FDR`)
+      arrange(desc(abs(`signed_pi_value`)))
      
     write_tsv(final_res, snakemake@output[["table"]])
   } else {

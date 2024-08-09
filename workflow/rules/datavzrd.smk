@@ -47,22 +47,6 @@ rule postprocess_logcount_matrix:
         "../scripts/postprocess_logcount.py"
 
 
-# Postprocessing Spia Data
-rule postprocess_spia:
-    input:
-        spia="results/tables/pathways/{model}.pathways.tsv",
-    output:
-        "results/tables/pathways/{model}.pathways_postprocessed.tsv",
-    conda:
-        "../envs/pandas.yaml"
-    params:
-        model=get_model,
-    log:
-        "logs/yte/postprocess_spia/{model}.log",
-    script:
-        "../scripts/postprocess_spia.py"
-
-
 # Generating SPIA Datavzrd Report
 rule spia_datavzrd:
     input:
@@ -71,7 +55,7 @@ rule spia_datavzrd:
         vega_circle=workflow.source_path(
             "../resources/custom_vega_plots/circle_diagram_genes.json"
         ),
-        spia_table="results/tables/pathways/{model}.pathways_postprocessed.tsv",
+        spia_table="results/tables/pathways/{model}.pathways.tsv",
         vega_waterfall=workflow.source_path(
             "../resources/custom_vega_plots/waterfall_plot_study_items.json"
         ),
@@ -188,51 +172,26 @@ rule meta_compare_datavzrd:
 
 
 # Generating Input Datavzrd Reports
-rule samples_datavzrd:
+rule inputs_datavzrd:
     input:
-        config=lambda wildcards: workflow.source_path(
-            f"../resources/datavzrd/samples-template.yaml"
+        config=lambda wc: workflow.source_path(
+            f"../resources/datavzrd/{wc.input}-template.yaml"
         ),
-        samples=config["samples"],
+        table=lambda wc: workflow.source_path(config[wc.input]),
     output:
         report(
-            directory("results/datavzrd-reports/inputs/samples"),
+            directory("results/datavzrd-reports/inputs/{input}"),
             htmlindex="index.html",
-            caption="../report/samples.rst",
+            caption="../report/{input}.rst",
             category="Inputs",
             patterns=["index.html"],
             labels={
-                "input": "samples",
+                "input": "{input}",
             },
         ),
     params:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
     log:
-        "logs/datavzrd-report/samples_datavzrd.log",
-    wrapper:
-        "v3.13.8/utils/datavzrd"
-
-
-rule units_datavzrd:
-    input:
-        config=lambda wildcards: workflow.source_path(
-            f"../resources/datavzrd/units-template.yaml"
-        ),
-        units=config["units"],
-    output:
-        report(
-            directory("results/datavzrd-reports/inputs/units"),
-            htmlindex="index.html",
-            caption="../report/units.rst",
-            category="Inputs",
-            patterns=["index.html"],
-            labels={
-                "input": "units",
-            },
-        ),
-    params:
-        offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
-    log:
-        "logs/datavzrd-report/units_datavzrd.log",
+        "logs/datavzrd-report/{input}_datavzrd.log",
     wrapper:
         "v3.13.8/utils/datavzrd"

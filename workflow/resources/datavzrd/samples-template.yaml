@@ -3,7 +3,7 @@ __use_yte__: true
 name: ?f"Inputs used to start the pipeline"
 datasets:
   samples:
-    path: ?input.samples
+    path: ?input.table
     offer-excel: ?params.offer_excel
     separator: "\t"
 default-view: samples

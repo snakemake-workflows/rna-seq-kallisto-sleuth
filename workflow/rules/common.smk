@@ -223,13 +223,14 @@ def all_input(wildcards):
     wanted_input = []
 
     # Input files
-    paths = [
-        "results/datavzrd-reports/inputs/samples",
-        "results/datavzrd-reports/inputs/units",
-    ]
-    for path in paths:
-        wanted_input.extend(directory(expand(path)))
-
+    wanted_input.extend(
+        directory(
+            expand(
+                "results/datavzrd-reports/inputs/{sheet}",
+                sheet={"samples", "units"},
+            )
+        )
+    )
     # request goatools if 'activated' in config.yaml
     if config["enrichment"]["goatools"]["activate"]:
         wanted_input.extend(
