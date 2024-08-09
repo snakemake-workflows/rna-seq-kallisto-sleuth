@@ -3,7 +3,7 @@ from snakemake.utils import min_version
 min_version("8.13.0")
 
 
-configfile: "local/config.yaml"
+configfile: "config/config.yaml"
 
 
 report: "report/workflow.rst"
