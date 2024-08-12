@@ -183,7 +183,6 @@ rule inputs_datavzrd:
         report(
             directory("results/datavzrd-reports/inputs/{input}"),
             htmlindex="index.html",
-            # caption="../report/{input}.rst",
             category="Inputs",
             patterns=["index.html"],
             labels={
