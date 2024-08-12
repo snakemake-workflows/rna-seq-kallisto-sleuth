@@ -165,6 +165,7 @@ rule meta_compare_datavzrd:
         ),
     params:
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
+        species=config["resources"]["ref"]["species"],
     log:
         "logs/datavzrd-report/meta_comp_{method}.{meta_comp}.log",
     wrapper:

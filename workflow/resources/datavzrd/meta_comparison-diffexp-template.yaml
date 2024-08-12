@@ -19,7 +19,7 @@ views:
           display-mode: normal
           link-to-url: 
             Ensembl:
-              url: ?f"https://www.ensembl.org/{str.capitalize(config["resources"]["ref"]["species"])}/Transcript/Summary?t={{target_id}}"
+              url: f"https://www.ensembl.org/{str.capitalize(?params.species)}/Transcript/Summary?t={{target_id}}"
         target_id:
           display-mode: hidden
         min q-value:
