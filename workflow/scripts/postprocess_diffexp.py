@@ -22,8 +22,7 @@ def sort_columns(df, matching_columns):
 
 def sort_rows(df):
     """Sort DataFrame by the absolute value of signed_p_value of primary variable in ascending order."""
-    signed_pi_start = 'signed_pi_value_' + \
-        snakemake.params['model']['primary_variable']
+    signed_pi_start = f"signed_pi_value_{snakemake.params['model']['primary_variable']}"
     columns_with_prefix = [
         col for col in df.columns if col.startswith(signed_pi_start)]
 
