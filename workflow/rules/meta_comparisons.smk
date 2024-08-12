@@ -19,8 +19,8 @@ rule meta_compare_diffexp:
         ),
     conda:
         "../envs/pystats.yaml"
-    notebook:
-        "../scripts/compare_diffexp.py.ipynb"
+    script:
+        "../scripts/compare_diffexp.py"
 
 
 rule meta_compare_enrichment:
@@ -32,7 +32,7 @@ rule meta_compare_enrichment:
                 within=config,
             ),
             gene_fdr=str(config["enrichment"]["goatools"]["fdr_genes"]).replace(
-            ".", "-"
+                ".", "-"
             ),
             go_term_fdr=str(config["enrichment"]["goatools"]["fdr_go_terms"]).replace(
                 ".", "-"
@@ -50,8 +50,8 @@ rule meta_compare_enrichment:
         ),
     conda:
         "../envs/pystats.yaml"
-    notebook:
-        "../scripts/compare_enrichment.py.ipynb"
+    script:
+        "../scripts/compare_enrichment.py"
 
 
 rule meta_compare_pathways:
@@ -75,5 +75,5 @@ rule meta_compare_pathways:
         ),
     conda:
         "../envs/pystats.yaml"
-    notebook:
-        "../scripts/compare_pathways.py.ipynb"
+    script:
+        "../scripts/compare_pathways.py"
