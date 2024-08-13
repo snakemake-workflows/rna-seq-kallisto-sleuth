@@ -13,7 +13,7 @@ source(snakemake@input[["common_src"]])
 pw_db <- snakemake@params[["pathway_db"]]
 db <- readRDS(snakemake@input[["spia_db"]])
 
-orgDb_name <- snakemake@params[["bioc_species_pkg"]]
+org_db_name <- snakemake@params[["bioc_species_pkg"]]
 orgDb <- if (orgDb_name == "NA") NA else get(orgDb_name)
 
 options(Ncpus = snakemake@threads)

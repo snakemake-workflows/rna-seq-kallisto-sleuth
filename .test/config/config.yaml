@@ -34,7 +34,7 @@ resources:
 
 pca:
   # If set to true, samples with NA values in the specified covariate column will be removed for PCA computation;
-  pca_exclude_NAs: false
+  exclude_nas: false
   labels:
     # columns of sample sheet to use for PCA
     - condition
@@ -123,7 +123,7 @@ report:
   # make this `true`, to get excel files for download in the snakemake
   # report, BUT: this can drastically increase the runtime of datavzrd report
   # generation, especially on larger cohorts
-  offer_excel: false
+  offer_excel: true
 
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
