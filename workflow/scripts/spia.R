@@ -14,7 +14,6 @@ pw_db <- snakemake@params[["pathway_db"]]
 db <- readRDS(snakemake@input[["spia_db"]])
 
 org_db_name <- snakemake@params[["bioc_species_pkg"]]
-orgDb <- if (orgDb_name == "NA") NA else get(orgDb_name)
 
 options(Ncpus = snakemake@threads)
 
@@ -95,7 +94,7 @@ if (nrow(sig_genes) == 0) {
       )
 
     # Create new column with genes in pathway together with their beta_vals
-    if (!is.na(orgDb)) {
+    if(org_db_name != "NA") {
       res <- res %>%
           mutate(study_items = map(res$Name, function(name) {
             pathway <- db[[name]]
@@ -109,7 +108,7 @@ if (nrow(sig_genes) == 0) {
             all_genes <- unique(c(genes_protEdges, genes_mixedEdges))
             
             # Map ENSMUSB values to gene names
-            external_gene_names <- mapIds(orgDb, 
+            external_gene_names <- mapIds(get(org_db_name), 
                                           keys = all_genes, 
                                           column = "SYMBOL", 
                                           keytype = "ENSEMBL",
