@@ -11,8 +11,6 @@ experiment:
     # this allows to plot QC of aligned read postion for specific transcripts (or 'all' transcripts)
     plot-qc: all
 
-
-
 resources:
   ref:
     # ensembl species name
@@ -35,6 +33,8 @@ resources:
     gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
 
 pca:
+  # If set to true, samples with NA values in the specified covariate column will be removed for PCA computation;
+  exclude_nas: false
   labels:
     # columns of sample sheet to use for PCA
     - condition
@@ -104,6 +104,27 @@ enrichment:
     # pathway database to use in SPIA, needs to be available for
     # the species specified by resources -> ref -> species above
     pathway_database: "reactome"
+
+meta_comparisons:
+  # comparison is only run if set to `true`
+  activate: false
+  # Define here the comparisons under interest
+  comparisons:
+    # Define any name for comparison. You can add as many comparisions as you want
+    model_X_vs_model_Y:
+      items:
+        # Define the two underlying models for the comparison. The models must be defined in the diffexp/models in the config
+        # items must be of form <arbitrary label for plot-axis>: <existing diffexp model from config> 
+        X: model_X
+        Y: model_Y
+      # Define label for datavzrd report
+      label: model X vs. model Y
+
+report:
+  # make this `true`, to get excel files for download in the snakemake
+  # report, BUT: this can drastically increase the runtime of datavzrd report
+  # generation, especially on larger cohorts
+  offer_excel: false
 
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated

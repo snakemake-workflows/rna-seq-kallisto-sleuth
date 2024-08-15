@@ -1,0 +1,79 @@
+__use_yte__: true
+
+name: ?f"Meta comparison for {wildcards.meta_comp}"
+datasets:
+  comparison_table:
+    path: ?input.table
+    offer-excel: true
+    separator: "\t"
+default-view: comparison_plot
+views:
+  comparison_table:
+    dataset: comparison_table
+    desc: |
+      Table for values of meta comparison. The table is sorted in descending order by the absolute value of the difference of the effects.
+    page-size: 25
+    render-table:
+      columns:
+        Name:
+          display-mode: normal
+          link-to-url: 
+            pathway:
+                url: "http://reactome.org/PathwayBrowser/#/{pathway id}"
+        min fdr:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#a1d99b"
+                - "white"
+                - "#fdae6b"
+              domain:
+                - 0
+                - 0.05
+                - 0.25
+        pathway id:
+          display-mode: hidden
+        difference:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "white"
+                - "#fdae6b"
+              domain:
+                - 0
+                - 300
+        effect mgl:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -300
+                - 0
+                - 300
+        effect t3:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -300
+                - 0
+                - 300
+  comparison_plot:
+    desc: |
+       The effect is shown as the "total net accumulated perturbation," indicating the extent to which a pathway is activated (positive) or inhibited (negative) by the differential genes, with each point representing a pathway. Points on the diagonal indicate no difference between the two comparisons, highlighting potential differences when they deviate from this line.
+       Dealing with the plots: You can drag the plot to centre interesting areas. You can zoom into the plot using the mouse wheel. When you click on a gene, it is also highlighted in the other plot. If the ‘Shift’ key is held down, several genes can be selected at the same time.
+    dataset: comparison_table
+    render-plot:
+      spec-path: ?input.plot

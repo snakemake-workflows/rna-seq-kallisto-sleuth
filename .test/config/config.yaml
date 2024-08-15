@@ -16,17 +16,25 @@ resources:
     # ensembl species name
     species: homo_sapiens
     # ensembl release version
-    release: "104"
+    release: "112"
     # genome build
     build: GRCh38
     # pfam release to use for annotation of domains in differential splicing analysis
     pfam: "33.0"
+    # Choose strategy for selecting representative transcripts for each gene.
+    # Possible values:
+    #   - canonical (use the canonical transcript from ensembl, only works for human at the moment)
+    #   - mostsignificant (use the most significant transcript)
+    #   - path/to/any/file.txt (a path to a file with ensembl transcript IDs to use;
+    #     the user has to ensure that there is only one ID per gene given)
     representative_transcripts: canonical
   ontology:
     # gene ontology to download, used e.g. in goatools
     gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
 
 pca:
+  # If set to true, samples with NA values in the specified covariate column will be removed for PCA computation;
+  exclude_nas: false
   labels:
     # columns of sample sheet to use for PCA
     - condition
@@ -95,6 +103,21 @@ enrichment:
     # pathway database to use in SPIA, needs to be available for
     # the species specified by resources -> ref -> species above
     pathway_database: "panther"
+
+meta_comparisons:
+  # comparison is only run if set to `true`
+  activate: false
+  # Define here the comparisons under interest
+  comparisons:
+    # Define any name for comparison. You can add as many comparisions as you want
+    model_X_vs_model_Y:
+      items:
+        # Define the two underlying models for the comparison. The models must be defined in the diffexp/models in the config
+        # items must be of form <arbitrary label>: <existing diffexp model from config> 
+        X: model_X
+        Y: model_Y
+      # Define label for datavzrd report
+      label: model X vs. model Y
 
 report:
   # make this `true`, to get excel files for download in the snakemake

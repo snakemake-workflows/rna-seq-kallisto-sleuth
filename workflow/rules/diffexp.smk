@@ -10,7 +10,7 @@ else:
 
 rule compose_sample_sheet:
     input:
-        report(config["samples"], caption="../report/samples.rst"),
+        config["samples"],
         config["units"],
         kallisto_output=kallisto_output,
     output:
@@ -185,7 +185,7 @@ rule plot_bootstrap:
 
 rule plot_pca:
     input:
-        "results/sleuth/all.rds",
+        rds="results/sleuth/all.rds",
     output:
         pca=report(
             "results/plots/pca/{covariate}.pca.pdf",
@@ -207,6 +207,8 @@ rule plot_pca:
         ),
     conda:
         "../envs/sleuth.yaml"
+    params:
+        exclude_nas=config["pca"].get("exclude_nas", False),
     log:
         "logs/plots/pca/{covariate}.plot_pca.log",
     script:

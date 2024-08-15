@@ -1,0 +1,97 @@
+__use_yte__: true
+
+name: ?f"Meta comparison for {wildcards.meta_comp}"
+datasets:
+  comparison_table:
+    path: ?input.table
+    offer-excel: true
+    separator: "\t"
+default-view: comparison_plot
+views:
+  comparison_table:
+    dataset: comparison_table
+    desc: |
+        Table for values of meta comparison. The table is sorted in descending order based on the absolute value of the maximum difference between the positive effects and the negative effects.
+    page-size: 25
+    render-table:
+      columns:
+        GO:
+          display-mode: hidden
+        term:
+          display-mode: normal
+          link-to-url: 
+            geneontology:
+              url: http://amigo.geneontology.org/amigo/term/{GO}
+        min p_fdr_bh:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#a1d99b"
+                - "white"
+                - "#fdae6b"
+              domain:
+                - 0
+                - 0.05
+                - 0.25
+        difference:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "white"
+                - "#fdae6b"
+              domain:
+                - 0
+                - 300
+        positive effect mgl:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "white"
+                - "#e6550d"
+              domain:
+                - 0
+                - 300
+        positive effect t3:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "white"
+                - "#e6550d"
+              domain:
+                - 0
+                - 300
+        negative effect mgl:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "white"
+                - "#984ea3"
+              domain:
+                - 0
+                - -300
+        negative effect t3:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "white"
+                - "#984ea3"
+              domain:
+                - 0
+                - -300
+  comparison_plot:
+    desc: |
+      The left side shows the summed positive beta-scores within a GO-term and the right side shows the summed negative beta-scores, with each point representing a GO-term. This illustrates whether a GO-term is enriched positively, negatively, or in both directions.
+      Dealing with the plots: You can drag the plot to centre interesting areas. You can zoom into the plot using the mouse wheel. When you click on a gene, it is also highlighted in the other plot. If the ‘Shift’ key is held down, several genes can be selected at the same time.
+    dataset: comparison_table
+    render-plot:
+      spec-path: ?input.plot

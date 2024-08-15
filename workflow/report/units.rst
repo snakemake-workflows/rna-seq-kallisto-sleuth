@@ -1,0 +1,2 @@
+Unit sheet containing all considered units, which can be multiple units for a single sample (for example, when the same biological sample was sequenced across multiple lanes and demultiplexed into separate lane-specific fastq files). 
+The annotations in this file determine how the workflow internally handles units.

@@ -26,6 +26,7 @@ include: "rules/diffsplice.smk"
 include: "rules/enrichment.smk"
 include: "rules/datavzrd.smk"
 include: "rules/bam.smk"
+include: "rules/meta_comparisons.smk"
 
 
 rule all:

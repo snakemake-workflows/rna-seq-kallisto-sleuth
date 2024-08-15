@@ -80,6 +80,19 @@ def check_config():
 check_config()
 
 
+def get_meta_compare_labels(method=""):
+    def _get_labels(wildcards):
+        return {
+            "comparison": method
+            + lookup(
+                dpath=f"meta_comparisons/comparisons/{wildcards.meta_comp}/label",
+                within=config,
+            )
+        }
+
+    return _get_labels
+
+
 def get_model(wildcards):
     if wildcards.model == "all":
         return {"full": None}
@@ -223,6 +236,15 @@ def all_input(wildcards):
 
     wanted_input = []
 
+    # Input files
+    wanted_input.extend(
+        directory(
+            expand(
+                "results/datavzrd-reports/inputs/{sheet}",
+                sheet={"samples", "units"},
+            )
+        )
+    )
     # request goatools if 'activated' in config.yaml
     if config["enrichment"]["goatools"]["activate"]:
         wanted_input.extend(
@@ -397,5 +419,19 @@ def all_input(wildcards):
                 "results/plots/QC/3prime-ind-QC-plot.{ind_transcripts}.html",
                 ind_transcripts=config["experiment"]["3-prime-rna-seq"]["plot-qc"],
             )
+        )
+
+    # meta comparisons
+    if config["meta_comparisons"]["activate"]:
+        wanted_input.extend(
+            directory(
+                expand(
+                    "results/datavzrd-reports/{report_type}_meta_comparison_{meta_comp}",
+                    report_type=["go_terms", "diffexp", "pathways"],
+                    meta_comp=lookup(
+                        dpath="meta_comparisons/comparisons", within=config
+                    ),
+                )
+            ),
         )
     return wanted_input
