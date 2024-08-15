@@ -99,21 +99,35 @@ def get_model(wildcards):
     return config["diffexp"]["models"][wildcards.model]
 
 
+def column_missing_or_empty(column_name, dataframe, sample, unit):
+    if column_name in dataframe.columns:
+        return pd.isnull(dataframe.loc[(sample, unit), column_name])
+    else:
+        return True
+
+
 def is_single_end(sample, unit):
     """Determine whether unit is single-end."""
-    bam_paired_not_present = pd.isnull(units.loc[(sample, unit), "bam_paired"])
-    fq2_not_present = pd.isnull(units.loc[(sample, unit), "fq2"])
-    return fq2_not_present and bam_paired_not_present
+    return column_missing_or_empty(
+        "fq2", units, sample, unit
+    ) and column_missing_or_empty("bam_paired", units, sample, unit)
 
 
 def get_fastqs(wildcards):
     """Get raw FASTQ files from unit sheet."""
-    if not pd.isnull(units.loc[(wildcards.sample, wildcards.unit), "bam_single"]):
+    if not column_missing_or_empty(
+        "bam_single", units, wildcards.sample, wildcards.unit
+    ):
         return f"results/fastq/{wildcards.sample}-{wildcards.unit}.fq.gz"
-    elif not pd.isnull(units.loc[(wildcards.sample, wildcards.unit), "bam_paired"]):
-        fqfrombam1 = f"results/fastq/{wildcards.sample}-{wildcards.unit}.1.fq.gz"
-        fqfrombam2 = f"results/fastq/{wildcards.sample}-{wildcards.unit}.2.fq.gz"
-        return [fqfrombam1, fqfrombam2]
+    elif not column_missing_or_empty(
+        "bam_paired", units, wildcards.sample, wildcards.unit
+    ):
+        return expand(
+            "results/fastq/{sample}-{unit}.{read}.fq.gz",
+            sample=wildcards.sample,
+            unit=wildcards.unit,
+            read=["1", "2"],
+        )
     elif is_single_end(wildcards.sample, wildcards.unit):
         return units.loc[(wildcards.sample, wildcards.unit), "fq1"]
     else:
