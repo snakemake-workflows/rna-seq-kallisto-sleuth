@@ -14,10 +14,10 @@ def process_columns(df):
 
 
 def sort_columns(df, matching_columns):
-    b_column_order = [f"{prefix}{suffix}" for prefix in matching_columns for suffix in [
-        '_lower', '', '_upper', '_se']]
-    other_columns = [col for col in df.columns if not col.startswith('b_')]
-    return df[other_columns + b_column_order]
+    b_column_order = [f"{prefix}{suffix}" for prefix in matching_columns for suffix in ['_lower', '', '_upper', '_se']]
+    signed_pi_columns = [col for col in df.columns if col.startswith('signed_pi_value')]
+    other_columns = [col for col in df.columns if not col.startswith('b_') and not col.startswith('signed_pi_value')]
+    return df[other_columns + b_column_order + signed_pi_columns]
 
 
 def sort_rows(df):
