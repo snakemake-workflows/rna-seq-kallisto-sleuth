@@ -103,7 +103,9 @@ rule diffexp_datavzrd:
         model=get_model,
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
         samples=get_model_samples,
-        primary_variable=lambda wildcards: config["diffexp"]["models"][wildcards.model]["primary_variable"],
+        primary_variable=lambda wildcards: config["diffexp"]["models"][
+            wildcards.model
+        ]["primary_variable"],
     wrapper:
         "v3.13.8/utils/datavzrd"
 
