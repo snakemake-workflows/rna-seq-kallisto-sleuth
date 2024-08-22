@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.7.1](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.7.0...v2.7.1) (2024-08-22)
+
+
+### Bug Fixes
+
+* Move signed_pi_value_* columns into detail mode that dont include the primary variable ([#110](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/110)) ([a159b4c](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/a159b4cf239488bd284ed67f383f11f36e30f056))
+* Move signed_pi_value_* columns to the end and move non primary variable columns to detail mode ([#106](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/106)) ([8b2e3fe](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/8b2e3fe78a560783babb850697642de41d134b1e))
+* Remove IHW outputs from report ([#107](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/107)) ([aa891fa](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/aa891faf4d372b2821fd67b62908bb516bff3eba))
+* Update datavzrd wrapper version ([#109](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/109)) ([1fe8c2c](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/1fe8c2cf6734e179ce4f0da5501eb55e4de53128))
+
 ## [2.7.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.6.0...v2.7.0) (2024-08-15)
 
 
