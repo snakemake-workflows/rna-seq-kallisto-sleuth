@@ -14,7 +14,7 @@ rule meta_compare_diffexp:
         notebook="logs/meta_compare_diffexp/{meta_comp}.ipynb",
     params:
         labels=lookup(
-            dpath="meta_comparisons/comparisons/{meta_comp}/items/*",
+            dpath="meta_comparisons/comparisons/{meta_comp}/items",
             within=config,
         ),
     conda:
@@ -45,7 +45,7 @@ rule meta_compare_enrichment:
         notebook="logs/meta_compare_enrichment/{meta_comp}.ipynb",
     params:
         labels=lookup(
-            dpath="meta_comparisons/comparisons/{meta_comp}/items/*",
+            dpath="meta_comparisons/comparisons/{meta_comp}/items",
             within=config,
         ),
     conda:
@@ -70,7 +70,7 @@ rule meta_compare_pathways:
         notebook="logs/meta_compare_pathways/{meta_comp}.ipynb",
     params:
         labels=lookup(
-            dpath="meta_comparisons/comparisons/{meta_comp}/items/*",
+            dpath="meta_comparisons/comparisons/{meta_comp}/items",
             within=config,
         ),
     conda:
