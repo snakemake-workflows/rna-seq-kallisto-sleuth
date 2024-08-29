@@ -1,0 +1,79 @@
+__use_yte__: true
+
+name: ?f"Meta comparison for {wildcards.meta_comp}"
+datasets:
+  comparison_table:
+    path: ?input.table
+    offer-excel: true
+    separator: "\t"
+default-view: comparison_plot
+views:
+  comparison_table:
+    dataset: comparison_table
+    desc: |
+      Table for values of meta comparison. The table is sorted in descending order by the absolute value of the difference of the effects.
+    page-size: 25
+    render-table:
+      columns:
+        ext_gene:
+          display-mode: normal
+          link-to-url: 
+            Ensembl:
+              url: f"https://www.ensembl.org/{str.capitalize(?params.species)}/Transcript/Summary?t={{target_id}}"
+        target_id:
+          display-mode: hidden
+        min q-value:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#a1d99b"
+                - "white"
+                - "#fdae6b"
+              domain:
+                - 0
+                - 0.05
+                - 0.25
+        difference:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "white"
+                - "#fdae6b"
+              domain:
+                - 0
+                - 300
+        effect mgl (beta score):
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -8
+                - 0
+                - 8
+        effect t3 (beta score):
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -8
+                - 0
+                - 8
+  comparison_plot:
+    desc: |
+      The axes represent the log2-fold changes (beta-scores) for the two models, with each point representing a gene. Points on the diagonal indicate no difference between the comparisons, while deviations from the diagonal suggest differences in gene expression fold changes between the treatments.
+      Dealing with the plots: You can drag the plot to centre interesting areas. You can zoom into the plot using the mouse wheel. When you click on a gene, it is also highlighted in the other plot. If the ‘Shift’ key is held down, several genes can be selected at the same time.
+    dataset: comparison_table
+    render-plot:
+      spec-path: ?input.plot

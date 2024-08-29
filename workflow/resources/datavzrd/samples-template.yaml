@@ -1,0 +1,15 @@
+__use_yte__: true
+
+name: ?f"Sample annotations used in modelling differential expression and in plots"
+datasets:
+  samples:
+    path: ?input.table
+    offer-excel: ?params.offer_excel
+    separator: "\t"
+default-view: samples
+views:
+  samples:
+    dataset: samples
+    desc: |
+      samples.tsv given as input
+    page-size: 25

@@ -10,7 +10,7 @@ else:
 
 rule compose_sample_sheet:
     input:
-        report(config["samples"], caption="../report/samples.rst"),
+        config["samples"],
         config["units"],
         kallisto_output=kallisto_output,
     output:
@@ -114,42 +114,12 @@ rule ihw_fdr_control:
     input:
         "results/tables/diffexp/{model}.{level}.diffexp.tsv",
     output:
-        results=report(
-            "results/tables/ihw/{model}.{level}.ihw-results.tsv",
-            caption="../report/ihw-results.rst",
-            category="IHW",
-            labels={"model": "{model}", "level": "{level}", "plot": "ihw-results"},
-        ),
-        dispersion=report(
-            "results/plots/ihw/{level}/{model}.{level}.plot-dispersion.pdf",
-            caption="../report/plot-dispersion-ihw.rst",
-            category="IHW",
-            labels={"model": "{model}", "level": "{level}", "plot": "dispersion"},
-        ),
-        histograms=report(
-            "results/plots/ihw/{level}/{model}.{level}.plot-histograms.pdf",
-            caption="../report/plot-histograms-ihw.rst",
-            category="IHW",
-            labels={"model": "{model}", "level": "{level}", "plot": "histograms"},
-        ),
-        trends=report(
-            "results/plots/ihw/{level}/{model}.{level}.plot-trends.pdf",
-            caption="../report/plot-trends-ihw.rst",
-            category="IHW",
-            labels={"model": "{model}", "level": "{level}", "plot": "trends"},
-        ),
-        decision=report(
-            "results/plots/ihw/{level}/{model}.{level}.plot-decision.pdf",
-            caption="../report/plot-decision-ihw.rst",
-            category="IHW",
-            labels={"model": "{model}", "level": "{level}", "plot": "decision"},
-        ),
-        adj_pvals=report(
-            "results/plots/ihw/{level}/{model}.{level}.plot-adj-pvals.pdf",
-            caption="../report/plot-adj-pvals-ihw.rst",
-            category="IHW",
-            labels={"model": "{model}", "level": "{level}", "plot": "adj-pvals"},
-        ),
+        results="results/tables/ihw/{model}.{level}.ihw-results.tsv",
+        dispersion="results/plots/ihw/{level}/{model}.{level}.plot-dispersion.pdf",
+        histograms="results/plots/ihw/{level}/{model}.{level}.plot-histograms.pdf",
+        trends="results/plots/ihw/{level}/{model}.{level}.plot-trends.pdf",
+        decision="results/plots/ihw/{level}/{model}.{level}.plot-decision.pdf",
+        adj_pvals="results/plots/ihw/{level}/{model}.{level}.plot-adj-pvals.pdf",
     conda:
         "../envs/ihw.yaml"
     log:
@@ -185,7 +155,7 @@ rule plot_bootstrap:
 
 rule plot_pca:
     input:
-        "results/sleuth/all.rds",
+        rds="results/sleuth/all.rds",
     output:
         pca=report(
             "results/plots/pca/{covariate}.pca.pdf",
@@ -207,6 +177,8 @@ rule plot_pca:
         ),
     conda:
         "../envs/sleuth.yaml"
+    params:
+        exclude_nas=config["pca"].get("exclude_nas", False),
     log:
         "logs/plots/pca/{covariate}.plot_pca.log",
     script:

@@ -1,5 +1,37 @@
 # Changelog
 
+## [2.7.1](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.7.0...v2.7.1) (2024-08-22)
+
+
+### Bug Fixes
+
+* Move signed_pi_value_* columns into detail mode that dont include the primary variable ([#110](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/110)) ([a159b4c](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/a159b4cf239488bd284ed67f383f11f36e30f056))
+* Move signed_pi_value_* columns to the end and move non primary variable columns to detail mode ([#106](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/106)) ([8b2e3fe](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/8b2e3fe78a560783babb850697642de41d134b1e))
+* Remove IHW outputs from report ([#107](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/107)) ([aa891fa](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/aa891faf4d372b2821fd67b62908bb516bff3eba))
+* Update datavzrd wrapper version ([#109](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/109)) ([1fe8c2c](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/1fe8c2cf6734e179ce4f0da5501eb55e4de53128))
+
+## [2.7.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.6.0...v2.7.0) (2024-08-15)
+
+
+### Features
+
+* Improve datavzrd tables ([#93](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/93)) ([93512b8](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/93512b8c7ae8b2fbc1bba608168dd0309ee5e0b1))
+
+
+### Bug Fixes
+
+* Fix missing output in spia.R when no significant genes are found ([#103](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/103)) ([bc0d017](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/bc0d017a1cc67118142711a2fc4fb0bb31218fe2))
+* Handle missing bam columns in units.tsv ([#105](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/105)) ([bae88d0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/bae88d06b2bb2ef606175fb231acebe9491d05cc))
+* Remove non-existent outputs in spia rule ([#102](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/102)) ([0fbb930](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/0fbb93065ef16f593dfbd0eb6332eb18b9237e60))
+* update to latest datavzrd ([417ec3b](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/417ec3b26a69d1549f7dfbc9b1c9f0b4d99209b7))
+
+
+### Performance Improvements
+
+* datavzrd wrapper `v3.12.1`, offer-excel configurable, free disk space for CI, dynamic sleuth_init mem_mb, pure download rules as localrules ([#92](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/92)) ([70850fb](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/70850fb7f573e1868dc9400a0af8d8ffe86435e6))
+* Update datavzrd wrapper ([#98](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/98)) ([e5eb0e0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/e5eb0e041a220901c7a7fcba60d8a963749319b9))
+* Update samtools fast separate wrapper ([#100](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/100)) ([65d8f41](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/65d8f4132c3606bf620b8bdc1ffd2785d6f7c17e))
+
 ## [2.6.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.5.5...v2.6.0) (2024-06-05)
 
 

@@ -13,6 +13,8 @@ source(snakemake@input[["common_src"]])
 pw_db <- snakemake@params[["pathway_db"]]
 db <- readRDS(snakemake@input[["spia_db"]])
 
+org_db_name <- snakemake@params[["bioc_species_pkg"]]
+
 options(Ncpus = snakemake@threads)
 
 diffexp <- read_tsv(snakemake@input[["diffexp"]]) |>
@@ -38,7 +40,10 @@ columns <- c(
   "Combined FDR",
   "Combined Bonferroni p-values",
   "Status",
-  "pathway id"
+  "pathway id",
+  "gene_ratio",
+  "study_items",
+  "signed_pi_value"
 )
 
 if (nrow(sig_genes) == 0) {
@@ -87,6 +92,57 @@ if (nrow(sig_genes) == 0) {
       rename(
         `pathway id` = value
       )
+
+    # Create new column with genes in pathway together with their beta_vals
+    if(org_db_name != "NA") {
+      res <- res %>%
+          mutate(study_items = map(res$Name, function(name) {
+            pathway <- db[[name]]
+            
+            # Extract genes from protEdges and mixedEdges
+            genes_protEdges <- unique(c(pathway@protEdges$src, pathway@protEdges$dest))
+            genes_mixedEdges <- unique(c(pathway@mixedEdges$src[pathway@mixedEdges$src_type == "ENSEMBL"], 
+                                        pathway@mixedEdges$dest[pathway@mixedEdges$dest_type == "ENSEMBL"]))
+            
+            # Combine all gene IDs
+            all_genes <- unique(c(genes_protEdges, genes_mixedEdges))
+            
+            # Map ENSMUSB values to gene names
+            external_gene_names <- mapIds(get(org_db_name), 
+                                          keys = all_genes, 
+                                          column = "SYMBOL", 
+                                          keytype = "ENSEMBL",
+                                          multiVals = "first")
+            
+            # Check if external_gene_names is empty or NULL
+            if (is.null(external_gene_names) || length(external_gene_names) == 0) {
+                return(character(0))
+            }
+
+            # Filter diffexp for relevant gene names
+            filtered_diffexp <- diffexp %>%
+                filter(ext_gene %in% unname(external_gene_names)) %>%
+                select(ext_gene, beta_val = !!beta_col) %>%
+                drop_na()
+            
+            # Check if filtered_diffexp is empty
+            if (nrow(filtered_diffexp) == 0) {
+                return(character(0))
+            }
+
+            # Create result vector
+            result_vector <- filtered_diffexp %>%
+                mutate(pair = paste(ext_gene, beta_val, sep = ":")) %>%
+                pull(pair)
+            
+            return(result_vector)
+          }) %>%
+          map_chr(~ paste(.x, collapse = ", ")))
+    } else {
+      res[, 'study_items'] = NA
+    }
+
+
     final_res <- as_tibble(res) |>
       left_join(
         pathway_ids_tibble,
@@ -102,14 +158,15 @@ if (nrow(sig_genes) == 0) {
         "Combined FDR" = "pGFdr",
         "Combined Bonferroni p-values" = "pGFWER"
       ) |>
-      dplyr::select(
-        all_of(
-            columns
-        )
+      mutate(
+        gene_ratio = str_c("(", `number of DE genes per pathway`, ", ", `number of genes on the pathway`, ")")
       ) |>
-      arrange(
-        desc(`total perturbation accumulation`)
-      )
+      mutate( 
+        signed_pi_value := -log10(`Combined FDR`) * `total perturbation accumulation` ) |>
+      dplyr::select(all_of(columns)
+      ) |>
+      arrange(desc(abs(`signed_pi_value`)))
+     
     write_tsv(final_res, snakemake@output[["table"]])
   } else {
     # the best hack for an empty tibble from a column specification I could find

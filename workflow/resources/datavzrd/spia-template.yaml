@@ -11,7 +11,8 @@ views:
   spia_table:
     dataset: spia_table
     desc: |
-      ?f"spia pathway impact analysis for model {wildcards.model}"
+      The SPIA pathway impact analysis results are summarized in a table with the following columns. The "Name" column lists the name of the pathway under investigation. The "total perturbation accumulation" column quantifies the overall perturbation or disruption occurring within each pathway. The "Status" column reflects the activity or response of the pathway. The "gene_ratio" column presents the number of differentially expressed genes present in the pathway compared to the total number of genes in the pathway. The "pathway id" column provides a unique identification number for each pathway. 
+      This analysis aids in understanding the impact and activity of various pathways in the context of the studied biological system. The table is sorted in descending order by the absolute values of the signed versions of the pi-value score of the total pertubation accumulation (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`). The sign reflects the sign of the effect (i.e. positive for upregulation, negative for downregulation). The column "study_items" (click on the "+") shows the name of each differentially expressed gene together with its corresponding fold change. 
     page-size: 25
     render-table:
       columns:
@@ -27,19 +28,24 @@ views:
               ?else: # not sure what a good fallback would be here
                 url: "http://reactome.org/PathwayBrowser/#/{pathway id}"
         number of genes on the pathway:
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "#F7F7F7"
-                - "#B2182B"
+          display-mode: hidden
         number of DE genes per pathway:
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "#F7F7F7"
-                - "#B2182B"
+          display-mode: hidden
+        gene_ratio:
+          custom-plot:
+            data: |
+              function(value, row) {
+                var parts = value.match(/\((\d+), (\d+)\)/);
+                if (parts) {
+                  var x = parseInt(parts[1]);
+                  var y = parseInt(parts[2]);
+                  return [{"category": "DE_genes", "amount": x, "percentage": x/y}, {"category": "genes", "amount": y, "percentage": x/y}];
+                } else {
+                  return "";
+                }
+              }
+            spec-path: ?input.vega_circle
+            vega-controls: true
         p-value for at least NDE genes:
           display-mode: detail
         total perturbation accumulation:
@@ -57,8 +63,14 @@ views:
           display-mode: detail
         Combined FDR:
           plot:
-            bars:
+            heatmap:
               scale: linear
+              range:
+                - "#2ca02c"
+                - "#bcbd22"
+              domain:
+                - 0.0
+                - 1.0  
         Combined Bonferroni p-values:
           display-mode: detail     
         Status:
@@ -68,3 +80,25 @@ views:
               color-scheme: accent
         pathway id:
           display-mode: detail
+        study_items:
+          display-mode: detail 
+          custom-plot:
+            data: |
+              function customFunction(value, row) {
+                if (value && value.trim() !== "") {
+                    var geneValues = value.split(', ');
+                    var data = [];
+                    geneValues.forEach(function(geneValue) {
+                      var parts = geneValue.split(':');
+                      var gene = parts[0];
+                      var val = parseFloat(parts[1]);
+
+                      data.push({"gene": gene, "value": val});
+                  });
+                  return data;
+                } else {
+                    return "";
+                }
+              }  
+            spec-path: ?input.vega_waterfall
+            vega-controls: true

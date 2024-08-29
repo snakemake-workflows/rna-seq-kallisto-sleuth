@@ -80,3 +80,9 @@ Changes to the recommendations are motivated as follows:
 * `-a "r1adapter=A{18}AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=3;max_error_rate=0.100000"`: We remove A{18}, as this is handled by `--poly-a`. We increase `min_overlap` to 7 and set the `max_error_rate` to the Illumina error rate of about 0.005, both to avoid spurious adapter matches being removed.
 * `-g "r1adapter=AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=20"`: This is not needed any more, as `-a` option will lead to complete removal of read sequence if adapter is found at the start of the read, see: https://cutadapt.readthedocs.io/en/stable/guide.html#rightmost
 * `--discard-trimmed`: We omit this, as the `-a` with the adapter sequence will lead to complete read sequence removal if adapter is found at start, and the `--minimum-length` will then discard such empty reads.
+
+### meta comparisons
+Meta comparisons allow for comparing two full models against each other.
+The axes represent the log2-fold changes (beta-scores) for the two models, with each point representing a gene. 
+Points on the diagonal indicate no difference between the comparisons, while deviations from the diagonal suggest differences in gene expression between the treatments.
+For more details see the comments in the `config.yaml`.

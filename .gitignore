@@ -4,6 +4,7 @@
 !config/units.tsv
 !LICENSE
 !README.md
+local/*
 resources
 resources/*
 results
