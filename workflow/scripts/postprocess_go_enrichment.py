@@ -62,13 +62,10 @@ else:
 
 # The effect size is the sum of absolute values of the study items
 df = df_merged.with_columns(
-    [pl.col("study_items").map_elements(extract_study_items).alias("parsed_terms")]
-)
-df = df.with_columns(
     [
-        pl.col("parsed_terms")
-        .map_elements(lambda x: calculate_sums(x))
-        .alias("effect"),
+        pl.col("study_items")
+        .map_elements(lambda x: calculate_sums(extract_study_items(x)))
+        .alias("effect")
     ]
 )
 
@@ -78,7 +75,6 @@ df = df.with_columns(
 )
 
 df_sorted = df.sort(pl.col("signed_pi_value").abs(), descending=True)
-
 
 # Save the result to a file
 df_sorted.write_csv(snakemake.output[0], separator="\t")
