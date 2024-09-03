@@ -11,7 +11,8 @@ views:
   comparison_table:
     dataset: comparison_table
     desc: |
-        Table for values of meta comparison. The table is sorted in descending order based on the absolute value of the maximum difference between the positive effects and the negative effects.
+      Table for values of meta comparison. 
+      The table is sorted in descending order by the absolute values of the signed versions of the pi-value score of the primary variable of model under consideration (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`). The sign reflects the sign of the effect (i.e. positive for upregulation, negative for downregulation).      
     page-size: 25
     render-table:
       columns:
@@ -22,7 +23,7 @@ views:
           link-to-url: 
             geneontology:
               url: http://amigo.geneontology.org/amigo/term/{GO}
-        min p_fdr_bh:
+        min_p_fdr_bh:
           plot:
             heatmap:
               scale: linear

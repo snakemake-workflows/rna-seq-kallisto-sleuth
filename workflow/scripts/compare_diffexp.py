@@ -25,14 +25,16 @@ combined = (
     prepare(diffexp_x)
     .join(prepare(diffexp_y), on=["target_id", "ext_gene"], suffix="_y")
     .with_columns(
-        pl.min_horizontal("qval", "qval_y").alias("qval_min"),
+        pl.min_horizontal("qval", "qval_y").alias("min q-value"),
+    )
+    .with_columns(
+        pl.min_horizontal("pval", "pval_y").alias("pval_min"),
     )
     .filter(pl.col("qval_min") <= 0.05)
     .rename(
         {
             "beta": effect_x,
             "beta_y": effect_y,
-            "qval_min": "min q-value",
         }
     )
     .collect()
@@ -44,9 +46,20 @@ max_value = effects.max().max_horizontal()[0]
 combined = combined.with_columns(
     abs(pl.col(effect_x) - pl.col(effect_y)).alias("difference")
 )
-combined_sorted = combined.sort("difference", descending=True)
+combined = combined.with_columns(
+    (-pl.col("pval_min").log(base=10) * pl.col("difference")).alias("signed_pi_value")
+)
+combined_sorted = combined.sort(pl.col("signed_pi_value").abs(), descending=True)
 combined_pd = combined_sorted.select(
-    pl.col("ext_gene", "target_id", "min q-value", effect_x, effect_y, "difference")
+    pl.col(
+        "ext_gene",
+        "target_id",
+        "min q-value",
+        effect_x,
+        effect_y,
+        "difference",
+        "signed_pi_value",
+    )
 ).to_pandas()
 combined_pd.to_csv(snakemake.output[0], sep="\t", index=False)
 

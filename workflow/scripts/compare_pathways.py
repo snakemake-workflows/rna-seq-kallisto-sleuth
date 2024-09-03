@@ -22,6 +22,7 @@ def prepare(df):
                 "Combined FDR",
                 "total perturbation accumulation",
                 "pathway id",
+                "signed_pi_value",
             )
         ]
     )
@@ -33,6 +34,9 @@ prepared_diffexp_y = prepare(diffexp_y)
 combined = (
     prepared_diffexp_x.join(prepared_diffexp_y, on=["Name"], suffix="_y")
     .with_columns(pl.min_horizontal("Combined FDR", "Combined FDR_y").alias("fdr_min"))
+    .with_columns(
+        pl.min_horizontal("signed_pi_value", "signed_pi_value_y").alias("min_pi_value")
+    )
     .filter(pl.col("fdr_min") <= 0.05)
     .rename(
         {
@@ -50,9 +54,18 @@ max_value = effects.max().max_horizontal()[0]
 combined = combined.with_columns(
     abs(pl.col(effect_x) - pl.col(effect_y)).alias("difference")
 )
-combined_sorted = combined.sort("difference", descending=True)
+print(combined.columns)
+combined_sorted = combined.sort(pl.col("min_pi_value").abs(), descending=True)
 combined_pd = combined_sorted.select(
-    pl.col("Name", "min fdr", effect_x, effect_y, "difference", "pathway id")
+    pl.col(
+        "Name",
+        "min fdr",
+        effect_x,
+        effect_y,
+        "difference",
+        "pathway id",
+        "min_pi_value",
+    )
 ).to_pandas()
 combined_pd.to_csv(snakemake.output[0], sep="\t", index=False)
 

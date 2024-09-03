@@ -69,7 +69,7 @@ combined = (
             "cumulative_b_scores_positive_y": effect_y_pos,
             "cumulative_b_scores_negative": effect_x_neg,
             "cumulative_b_scores_negative_y": effect_y_neg,
-            "p_fdr_bh_min": "min p_fdr_bh",
+            "p_fdr_bh_min": "min_p_fdr_bh",
         }
     )
     .collect()
@@ -81,46 +81,50 @@ combined = (
 # alt.data_transformers.enable("vegafusion")
 xlabel = f"effect {label_x}"
 ylabel = f"effect {label_y}"
-df_filtered = combined.filter(
+combined = combined.filter(
     (pl.col(effect_x_pos) != 0)
     & (pl.col(effect_y_pos) != 0)
     & (pl.col(effect_x_neg) != 0)
     & (pl.col(effect_y_neg) != 0)
 )
-df_filtered = df_filtered.with_columns(
+combined = combined.with_columns(
     pl.max_horizontal(
         abs(pl.col(effect_x_pos) - pl.col(effect_y_pos)),
         abs(pl.col(effect_x_neg) - pl.col(effect_y_neg)),
     ).alias("difference")
 )
-combined_sorted = df_filtered.sort("difference", descending=True)
+combined = combined.with_columns(
+    (-pl.col("min_p_fdr_bh").log(base=10) * pl.col("difference")).alias(
+        "signed_pi_value"
+    )
+)
+combined_sorted = combined.sort(pl.col("signed_pi_value").abs(), descending=True)
 combined_pd = combined_sorted.select(
     pl.col(
         "GO",
         "term",
-        "min p_fdr_bh",
+        "min_p_fdr_bh",
         effect_x_pos,
         effect_y_pos,
         effect_x_neg,
         effect_y_neg,
         "difference",
+        "signed_pi_value",
     )
-).to_pandas()
-
-combined_pd.to_csv(snakemake.output[0], sep="\t", index=False)
+)
+combined_pd.to_pandas().to_csv(snakemake.output[0], sep="\t", index=False)
 
 point_selector = alt.selection_point(fields=["term"], empty=False)
 
 
 def plot(df, effect_x, effect_y, title, xlabel, ylabel):
     # Filter out rows where either effect_x or effect_y is zero because of logarithmic scale
-    df = df_filtered.select(
-        pl.col("GO", "term", "min p_fdr_bh", effect_x, effect_y)
-    ).to_pandas()
+    df = df.select(pl.col("GO", "term", "min_p_fdr_bh", effect_x, effect_y))
 
-    effects = df_filtered.select(pl.col(effect_x), pl.col(effect_y))
+    effects = df.select(pl.col(effect_x), pl.col(effect_y))
     min_value = effects.min().min_horizontal()[0]
     max_value = effects.max().max_horizontal()[0]
+    df = df.to_pandas()
 
     alt.data_transformers.disable_max_rows()
 
@@ -140,7 +144,7 @@ def plot(df, effect_x, effect_y, title, xlabel, ylabel):
                 scale=alt.Scale(type="symlog", nice=False),
                 axis=alt.Axis(grid=True),
             ),
-            alt.Color("min p_fdr_bh", scale=alt.Scale(scheme="viridis")),
+            alt.Color("min_p_fdr_bh", scale=alt.Scale(scheme="viridis")),
             opacity=alt.value(0.5),
         )
     )
