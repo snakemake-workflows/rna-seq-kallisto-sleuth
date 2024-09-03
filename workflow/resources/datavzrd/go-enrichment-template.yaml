@@ -12,8 +12,8 @@ views:
     dataset: go_enrichment
     desc: |
       Gene ontology (GO) term enrichment analysis was performed with goatools on differentially expressed genes as determined by the sleuth model.
-      The table is sorted in descending order by the absolute values of the signed versions of the pi-value score of the primary variable of model under consideration (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`). The sign reflects the sign of the effect (i.e. positive for upregulation, negative for downregulation). 
       The "term" column lists the specific GO term, while the "class" column indicates the classification of the GO term (biological process/cellular component/molecular function). The column "FDR" is the p-value obtained from false discovery. The "enrichment" column compares the ratio of differentially expressed genes in the current study to the ratio of total genes present in the current analysis. The "study_items" shows the name of each differentially expressed gene together with its corresponding "b" value which is the fold change seperated. Lastly, the "effect" column shows the sum of the absolute values of fold changes in the study items.
+      The table is sorted in descending order by the absolute values of the signed versions of the pi-value score of the primary variable of model under consideration (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`). The sign reflects the sign of the effect (i.e. positive for upregulation, negative for downregulation). 
       This analysis helps to identify and understand the biological significance of gene expression changes.
     page-size: 25
     render-table:
@@ -52,7 +52,7 @@ views:
                 }
               }
             spec-path: ?input.vega_bars
-            vega-controls: true
+            vega-controls: false
         p_uncorrected:
           label: p-value
           plot:
@@ -84,7 +84,33 @@ views:
                 - "#bcbd22"
               domain:
                 - 0.0
-                - 1.0   
+                - 1.0
+        effect:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -300
+                - 0
+                - 300        
+        signed_pi_value:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -300
+                - 0
+                - 300
         study_items: 
           display-mode: detail 
           custom-plot:

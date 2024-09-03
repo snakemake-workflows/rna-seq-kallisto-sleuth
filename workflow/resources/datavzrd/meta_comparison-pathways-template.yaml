@@ -37,6 +37,18 @@ views:
           display-mode: hidden
         min_pi_value:
           label: signed_pi_value
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -300
+                - 0
+                - 300
         difference:
           plot:
             heatmap:

@@ -25,7 +25,7 @@ combined = (
     prepare(diffexp_x)
     .join(prepare(diffexp_y), on=["target_id", "ext_gene"], suffix="_y")
     .with_columns(
-        pl.min_horizontal("qval", "qval_y").alias("min q-value"),
+        pl.min_horizontal("qval", "qval_y").alias("qval_min"),
     )
     .with_columns(
         pl.min_horizontal("pval", "pval_y").alias("pval_min"),
@@ -54,7 +54,7 @@ combined_pd = combined_sorted.select(
     pl.col(
         "ext_gene",
         "target_id",
-        "min q-value",
+        "qval_min",
         effect_x,
         effect_y,
         "difference",
@@ -77,7 +77,7 @@ points = (
     .encode(
         alt.X(effect_x),
         alt.Y(effect_y),
-        alt.Color("min q-value", scale=alt.Scale(scheme="viridis")),
+        alt.Color("qval_min", scale=alt.Scale(scheme="viridis")),
         opacity=alt.value(0.5),
     )
 )

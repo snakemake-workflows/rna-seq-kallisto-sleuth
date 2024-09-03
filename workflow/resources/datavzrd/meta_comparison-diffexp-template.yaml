@@ -23,7 +23,7 @@ views:
               url: f"https://www.ensembl.org/{str.capitalize(?params.species)}/Transcript/Summary?t={{target_id}}"
         target_id:
           display-mode: hidden
-        min q-value:
+        qval_min:
           plot:
             heatmap:
               scale: linear
@@ -44,7 +44,7 @@ views:
                 - "#fdae6b"
               domain:
                 - 0
-                - 300
+                - 30
         effect mgl (beta score):
           display-mode: normal
           plot:
@@ -71,6 +71,19 @@ views:
                 - -8
                 - 0
                 - 8
+        signed_pi_value:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -300
+                - 0
+                - 300
   comparison_plot:
     desc: |
       The axes represent the log2-fold changes (beta-scores) for the two models, with each point representing a gene. Points on the diagonal indicate no difference between the comparisons, while deviations from the diagonal suggest differences in gene expression fold changes between the treatments.

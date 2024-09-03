@@ -54,7 +54,6 @@ max_value = effects.max().max_horizontal()[0]
 combined = combined.with_columns(
     abs(pl.col(effect_x) - pl.col(effect_y)).alias("difference")
 )
-print(combined.columns)
 combined_sorted = combined.sort(pl.col("min_pi_value").abs(), descending=True)
 combined_pd = combined_sorted.select(
     pl.col(

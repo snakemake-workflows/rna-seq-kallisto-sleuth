@@ -41,6 +41,7 @@ df_merged = df_merged.with_columns(pl.col("study_items_df2").alias("study_items"
 
 
 if not df_merged.is_empty():
+    # Compute enrichment
     df_merged = df_merged.with_columns(
         pl.struct(
             [
@@ -57,24 +58,28 @@ if not df_merged.is_empty():
         )
         .alias("enrichment")
     )
+
+    # Compute effect (the effect size is the sum of absolute values of the study items)
+    df = df_merged.with_columns(
+        [
+            pl.col("study_items")
+            .map_elements(lambda x: calculate_sums(extract_study_items(x)))
+            .alias("effect")
+        ]
+    )
+
+    df = df.with_columns(
+        (-pl.col("p_fdr_bh").log(base=10) * pl.col("effect")).alias("signed_pi_value")
+    )
+
+    df = df.sort(pl.col("signed_pi_value").abs(), descending=True)
+
 else:
-    df_merged = df_merged.with_columns(enrichment=pl.lit(None))
+    # Create new empty columns
+    cols = ["effect", "enrichment", "signed_pi_value"]
+    new_cols = [pl.lit(None).alias(col) for col in cols]
+    df = df_merged.with_columns(new_cols)
 
-# The effect size is the sum of absolute values of the study items
-df = df_merged.with_columns(
-    [
-        pl.col("study_items")
-        .map_elements(lambda x: calculate_sums(extract_study_items(x)))
-        .alias("effect")
-    ]
-)
-
-
-df = df.with_columns(
-    (-pl.col("p_fdr_bh").log(base=10) * pl.col("effect")).alias("signed_pi_value")
-)
-
-df_sorted = df.sort(pl.col("signed_pi_value").abs(), descending=True)
 
 # Save the result to a file
-df_sorted.write_csv(snakemake.output[0], separator="\t")
+df.write_csv(snakemake.output[0], separator="\t")

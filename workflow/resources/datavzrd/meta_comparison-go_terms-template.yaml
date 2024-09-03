@@ -89,6 +89,19 @@ views:
               domain:
                 - 0
                 - -300
+        signed_pi_value:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -300
+                - 0
+                - 300
   comparison_plot:
     desc: |
       The left side shows the summed positive beta-scores within a GO-term and the right side shows the summed negative beta-scores, with each point representing a GO-term. This illustrates whether a GO-term is enriched positively, negatively, or in both directions.

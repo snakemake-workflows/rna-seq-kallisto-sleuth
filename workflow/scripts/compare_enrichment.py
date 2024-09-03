@@ -61,15 +61,14 @@ prepared_diffexp_x = prepare(diffexp_x)
 prepared_diffexp_y = prepare(diffexp_y)
 combined = (
     prepared_diffexp_x.join(prepared_diffexp_y, on=["GO", "term"], suffix="_y")
-    .with_columns(pl.min_horizontal("p_fdr_bh", "p_fdr_bh_y").alias("p_fdr_bh_min"))
-    .filter(pl.col("p_fdr_bh_min") <= 0.05)
+    .with_columns(pl.min_horizontal("p_fdr_bh", "p_fdr_bh_y").alias("min_p_fdr_bh"))
+    .filter(pl.col("min_p_fdr_bh") <= 0.05)
     .rename(
         {
             "cumulative_b_scores_positive": effect_x_pos,
             "cumulative_b_scores_positive_y": effect_y_pos,
             "cumulative_b_scores_negative": effect_x_neg,
             "cumulative_b_scores_negative_y": effect_y_neg,
-            "p_fdr_bh_min": "min_p_fdr_bh",
         }
     )
     .collect()
