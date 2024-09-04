@@ -5,8 +5,8 @@ import altair as alt
 
 diffexp_x = pl.from_pandas(pyreadr.read_r(snakemake.input[0])[None]).lazy()
 diffexp_y = pl.from_pandas(pyreadr.read_r(snakemake.input[1])[None]).lazy()
-label_x = list(snakemake.params.labels[0].keys())[0]
-label_y = list(snakemake.params.labels[1].keys())[0]
+label_x = list(snakemake.params.labels.keys())[0]
+label_y = list(snakemake.params.labels.keys())[1]
 
 effect_x = f"effect {label_x} (beta score)"
 effect_y = f"effect {label_y} (beta score)"
