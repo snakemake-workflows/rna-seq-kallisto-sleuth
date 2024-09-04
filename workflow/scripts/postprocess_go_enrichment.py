@@ -69,14 +69,14 @@ if not df_merged.is_empty():
     )
 
     df = df.with_columns(
-        (-pl.col("p_fdr_bh").log(base=10) * pl.col("effect")).alias("signed_pi_value")
+        (-pl.col("p_fdr_bh").log(base=10) * pl.col("effect")).alias("pi_value")
     )
 
-    df = df.sort(pl.col("signed_pi_value").abs(), descending=True)
+    df = df.sort(pl.col("pi_value").abs(), descending=True)
 
 else:
     # Create new empty columns
-    cols = ["effect", "enrichment", "signed_pi_value"]
+    cols = ["effect", "enrichment", "pi_value"]
     new_cols = [pl.lit(None).alias(col) for col in cols]
     df = df_merged.with_columns(new_cols)
 

@@ -7,6 +7,7 @@ diffexp_y = pl.read_csv(snakemake.input[1], separator="\t").lazy()
 label_x = list(snakemake.params.labels[0].keys())[0]
 label_y = list(snakemake.params.labels[1].keys())[0]
 
+
 effect_x_pos = f"positive effect {label_x}"
 effect_y_pos = f"positive effect {label_y}"
 effect_x_neg = f"negative effect {label_x}"
@@ -35,98 +36,40 @@ def calculate_sums(parsed_terms):
 
 def prepare(df):
     # Select necessary columns
-    df = df.select(
-        [cs.by_name("GO", "term", "p_uncorrected", "p_fdr_bh", "study_items")]
-    )
-
-    # map_elements functions to columns using with_columns
-    df = df.with_columns(
-        [pl.col("study_items").map_elements(extract_study_items).alias("parsed_terms")]
-    )
-    df = df.with_columns(
-        [
-            pl.col("parsed_terms")
-            .map_elements(lambda x: calculate_sums(x)[0])
-            .alias("cumulative_b_scores_positive"),
-            pl.col("parsed_terms")
-            .map_elements(lambda x: calculate_sums(x)[1])
-            .alias("cumulative_b_scores_negative"),
-        ]
+    df = (
+        df.select(
+            [cs.by_name("GO", "term", "p_uncorrected", "p_fdr_bh", "study_items")]
+        )
+        .with_columns(
+            [
+                pl.col("study_items")
+                .map_elements(extract_study_items, return_dtype=pl.List(pl.Struct([pl.Field("gene", pl.Utf8), pl.Field("value", pl.Float64)])))
+                .alias("parsed_terms")
+            ]
+        )
+        .with_columns(
+            [
+                pl.col("parsed_terms")
+                .map_elements(lambda x: calculate_sums(x)[0], return_dtype=pl.Float64)
+                .alias("cumulative_b_scores_positive"),
+                pl.col("parsed_terms")
+                .map_elements(lambda x: calculate_sums(x)[1], return_dtype=pl.Float64)
+                .alias("cumulative_b_scores_negative"),
+            ]
+        )
     )
 
     return df
 
 
-prepared_diffexp_x = prepare(diffexp_x)
-prepared_diffexp_y = prepare(diffexp_y)
-combined = (
-    prepared_diffexp_x.join(prepared_diffexp_y, on=["GO", "term"], suffix="_y")
-    .with_columns(pl.min_horizontal("p_fdr_bh", "p_fdr_bh_y").alias("min_p_fdr_bh"))
-    .filter(pl.col("min_p_fdr_bh") <= 0.05)
-    .rename(
-        {
-            "cumulative_b_scores_positive": effect_x_pos,
-            "cumulative_b_scores_positive_y": effect_y_pos,
-            "cumulative_b_scores_negative": effect_x_neg,
-            "cumulative_b_scores_negative_y": effect_y_neg,
-        }
-    )
-    .collect()
-)
-
-
-# we cannot use vegafusion here because it makes the point selection impossible since
-# it prunes the required ext_gene column
-# alt.data_transformers.enable("vegafusion")
-xlabel = f"effect {label_x}"
-ylabel = f"effect {label_y}"
-combined = combined.filter(
-    (pl.col(effect_x_pos) != 0)
-    & (pl.col(effect_y_pos) != 0)
-    & (pl.col(effect_x_neg) != 0)
-    & (pl.col(effect_y_neg) != 0)
-)
-combined = combined.with_columns(
-    pl.max_horizontal(
-        abs(pl.col(effect_x_pos) - pl.col(effect_y_pos)),
-        abs(pl.col(effect_x_neg) - pl.col(effect_y_neg)),
-    ).alias("difference")
-)
-combined = combined.with_columns(
-    (-pl.col("min_p_fdr_bh").log(base=10) * pl.col("difference")).alias(
-        "signed_pi_value"
-    )
-)
-combined_sorted = combined.sort(pl.col("signed_pi_value").abs(), descending=True)
-combined_pd = combined_sorted.select(
-    pl.col(
-        "GO",
-        "term",
-        "min_p_fdr_bh",
-        effect_x_pos,
-        effect_y_pos,
-        effect_x_neg,
-        effect_y_neg,
-        "difference",
-        "signed_pi_value",
-    )
-)
-combined_pd.to_pandas().to_csv(snakemake.output[0], sep="\t", index=False)
-
-point_selector = alt.selection_point(fields=["term"], empty=False)
-
-
 def plot(df, effect_x, effect_y, title, xlabel, ylabel):
     # Filter out rows where either effect_x or effect_y is zero because of logarithmic scale
-    df = df.select(pl.col("GO", "term", "min_p_fdr_bh", effect_x, effect_y))
-
-    effects = df.select(pl.col(effect_x), pl.col(effect_y))
-    min_value = effects.min().min_horizontal()[0]
-    max_value = effects.max().max_horizontal()[0]
-    df = df.to_pandas()
+    df = df.select(pl.col("GO", "term", "min_p_fdr_bh", effect_x, effect_y)).to_pandas()
+    min_value = min(df[effect_x].min(), df[effect_y].min())
+    max_value = max(df[effect_x].max(), df[effect_y].max())
+    point_selector = alt.selection_single(fields=["term"], empty="all")
 
     alt.data_transformers.disable_max_rows()
-
     points = (
         alt.Chart(df)
         .mark_circle(size=15, tooltip={"content": "data"})
@@ -204,12 +147,103 @@ def plot(df, effect_x, effect_y, title, xlabel, ylabel):
     return chart
 
 
+prepared_diffexp_x = prepare(diffexp_x)
+prepared_diffexp_y = prepare(diffexp_y)
+combined = (
+    prepared_diffexp_x.join(prepared_diffexp_y, on=["GO", "term"], suffix="_y")
+    .rename(
+        {
+            "cumulative_b_scores_positive": effect_x_pos,
+            "cumulative_b_scores_positive_y": effect_y_pos,
+            "cumulative_b_scores_negative": effect_x_neg,
+            "cumulative_b_scores_negative_y": effect_y_neg,
+        }
+    )
+    .with_columns(
+        pl.col(effect_x_pos).cast(pl.Float64),
+        pl.col(effect_y_pos).cast(pl.Float64),
+        pl.col(effect_x_neg).cast(pl.Float64),
+        pl.col(effect_y_neg).cast(pl.Float64),
+        pl.col("p_fdr_bh").cast(pl.Float64),
+        pl.col("p_fdr_bh_y").cast(pl.Float64),
+    )
+    .with_columns(pl.min_horizontal("p_fdr_bh", "p_fdr_bh_y").alias("min_p_fdr_bh"))
+    .filter(pl.col("min_p_fdr_bh") <= 0.05)
+    .filter(
+        (pl.col(effect_x_pos) != 0)
+        & (pl.col(effect_y_pos) != 0)
+        & (pl.col(effect_x_neg) != 0)
+        & (pl.col(effect_y_neg) != 0)
+    )
+    .collect()
+)
+
+
+# we cannot use vegafusion here because it makes the point selection impossible since
+# it prunes the required ext_gene column
+# alt.data_transformers.enable("vegafusion")
+
+
+if not combined.is_empty():
+    print(combined)
+    print(type(combined))
+    combined = combined.with_columns(
+            pl.max_horizontal(
+                abs(pl.col(effect_x_pos) - pl.col(effect_y_pos)),
+                abs(pl.col(effect_x_neg) - pl.col(effect_y_neg)),
+            )
+            .alias("difference")
+        ).with_columns(
+            (-pl.col("min_p_fdr_bh").log(base=10) * pl.col("difference")).alias(
+                "pi_value"
+            )
+        ).sort(pl.col("pi_value").abs(), descending=True)
+    
+    print(combined)
+    
+else:
+    combined = combined.with_columns(
+        [
+            pl.lit(None).alias("difference"),
+            pl.lit(None).alias("pi_value")
+        ]
+    )
+
+
+
+combined_pd = combined.select(
+    pl.col(
+        "GO",
+        "term",
+        "min_p_fdr_bh",
+        effect_x_pos,
+        effect_y_pos,
+        effect_x_neg,
+        effect_y_neg,
+        "difference",
+        "pi_value"
+    )
+)
+
+combined_pd.to_pandas().to_csv(snakemake.output[0], sep="\t", index=False)
+
+
 # Update the plot function calls to include the logarithmic scale and filter out zero values
 positive_chart = plot(
-    combined_pd, effect_x_pos, effect_y_pos, "Positive effect", xlabel, ylabel
+    combined_pd,
+    effect_x_pos,
+    effect_y_pos,
+    "Positive effect",
+    f"effect {label_x}",
+    f"effect {label_y}",
 )
 negative_chart = plot(
-    combined_pd, effect_x_neg, effect_y_neg, "Negative effect", xlabel, ylabel
+    combined_pd,
+    effect_x_neg,
+    effect_y_neg,
+    "Negative effect",
+    f"effect {label_x}",
+    f"effect {label_y}",
 )
 
 final_chart = alt.hconcat(positive_chart, negative_chart).resolve_scale(color="shared")

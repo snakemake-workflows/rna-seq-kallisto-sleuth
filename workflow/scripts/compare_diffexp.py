@@ -47,9 +47,9 @@ combined = combined.with_columns(
     abs(pl.col(effect_x) - pl.col(effect_y)).alias("difference")
 )
 combined = combined.with_columns(
-    (-pl.col("pval_min").log(base=10) * pl.col("difference")).alias("signed_pi_value")
+    (-pl.col("pval_min").log(base=10) * pl.col("difference")).alias("pi_value")
 )
-combined_sorted = combined.sort(pl.col("signed_pi_value").abs(), descending=True)
+combined_sorted = combined.sort(pl.col("pi_value").abs(), descending=True)
 combined_pd = combined_sorted.select(
     pl.col(
         "ext_gene",
@@ -58,7 +58,7 @@ combined_pd = combined_sorted.select(
         effect_x,
         effect_y,
         "difference",
-        "signed_pi_value",
+        "pi_value",
     )
 ).to_pandas()
 combined_pd.to_csv(snakemake.output[0], sep="\t", index=False)
