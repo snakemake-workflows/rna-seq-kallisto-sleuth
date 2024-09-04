@@ -45,7 +45,7 @@ views:
               domain:
                 - 0
                 - 300
-        positive effect mgl:
+        regex('positive\s+effect\s+\w+'):
           display-mode: normal
           plot:
             heatmap:
@@ -56,18 +56,7 @@ views:
               domain:
                 - 0
                 - 300
-        positive effect t3:
-          display-mode: normal
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "white"
-                - "#e6550d"
-              domain:
-                - 0
-                - 300
-        negative effect mgl:
+        regex('negative\s+effect\s+\w+'):
           display-mode: normal
           plot:
             heatmap:
@@ -78,18 +67,7 @@ views:
               domain:
                 - 0
                 - -300
-        negative effect t3:
-          display-mode: normal
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "white"
-                - "#984ea3"
-              domain:
-                - 0
-                - -300
-        signed_pi_value:
+        pi_value:
           display-mode: normal
           plot:
             heatmap:

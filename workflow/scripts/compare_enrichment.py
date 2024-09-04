@@ -43,7 +43,14 @@ def prepare(df):
         .with_columns(
             [
                 pl.col("study_items")
-                .map_elements(extract_study_items, return_dtype=pl.List(pl.Struct([pl.Field("gene", pl.Utf8), pl.Field("value", pl.Float64)])))
+                .map_elements(
+                    extract_study_items,
+                    return_dtype=pl.List(
+                        pl.Struct(
+                            [pl.Field("gene", pl.Utf8), pl.Field("value", pl.Float64)]
+                        )
+                    ),
+                )
                 .alias("parsed_terms")
             ]
         )
@@ -185,30 +192,24 @@ combined = (
 
 
 if not combined.is_empty():
-    print(combined)
-    print(type(combined))
-    combined = combined.with_columns(
+    combined = (
+        combined.with_columns(
             pl.max_horizontal(
                 abs(pl.col(effect_x_pos) - pl.col(effect_y_pos)),
                 abs(pl.col(effect_x_neg) - pl.col(effect_y_neg)),
-            )
-            .alias("difference")
-        ).with_columns(
+            ).alias("difference")
+        )
+        .with_columns(
             (-pl.col("min_p_fdr_bh").log(base=10) * pl.col("difference")).alias(
                 "pi_value"
             )
-        ).sort(pl.col("pi_value").abs(), descending=True)
-    
-    print(combined)
-    
+        )
+        .sort(pl.col("pi_value").abs(), descending=True)
+    )
 else:
     combined = combined.with_columns(
-        [
-            pl.lit(None).alias("difference"),
-            pl.lit(None).alias("pi_value")
-        ]
+        [pl.lit(None).alias("difference"), pl.lit(None).alias("pi_value")]
     )
-
 
 
 combined_pd = combined.select(
@@ -221,7 +222,7 @@ combined_pd = combined.select(
         effect_x_neg,
         effect_y_neg,
         "difference",
-        "pi_value"
+        "pi_value",
     )
 )
 

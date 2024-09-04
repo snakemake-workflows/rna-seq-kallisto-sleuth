@@ -45,7 +45,7 @@ views:
               domain:
                 - 0
                 - 30
-        effect mgl (beta score):
+        regex('effect\s+\w+\s+\(beta\s+score\)'):
           display-mode: normal
           plot:
             heatmap:
@@ -58,20 +58,7 @@ views:
                 - -8
                 - 0
                 - 8
-        effect t3 (beta score):
-          display-mode: normal
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "#e6550d"
-                - "white"
-                - "#6baed6"
-              domain:
-                - -8
-                - 0
-                - 8
-        signed_pi_value:
+        pi_value:
           display-mode: normal
           plot:
             heatmap:
