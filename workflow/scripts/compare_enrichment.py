@@ -74,8 +74,6 @@ def plot(df, effect_x, effect_y, title, xlabel, ylabel):
     min_value = min(df[effect_x].min(), df[effect_y].min())
     max_value = max(df[effect_x].max(), df[effect_y].max())
     point_selector = alt.selection_single(fields=["term"], empty="all")
-    print(df)
-    print(df.dtypes)
 
     alt.data_transformers.disable_max_rows()
     points = (
