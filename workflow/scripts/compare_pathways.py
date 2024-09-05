@@ -73,17 +73,16 @@ combined_pd = combined.select(
         "pathway id",
         "pi_value",
     )
-)
-combined_pd.to_pandas().to_csv(snakemake.output[0], sep="\t", index=False)
+).to_pandas()
+combined_pd.to_csv(snakemake.output[0], sep="\t", index=False)
 
-df = combined_pd.select(pl.col("min fdr", effect_x, effect_y)).to_pandas()
-min_value = min(df[effect_x].min(), df[effect_y].min())
-max_value = max(df[effect_x].max(), df[effect_y].max())
-point_selector = alt.selection_single(fields=["term"], empty="all")
+min_value = min(combined_pd[effect_x].min(), combined_pd[effect_y].min())
+max_value = max(combined_pd[effect_x].max(), combined_pd[effect_y].max())
+point_selector = alt.selection_single(fields=["Name"], empty="all")
 
 alt.data_transformers.disable_max_rows()
 points = (
-    alt.Chart(df)
+    alt.Chart(combined_pd)
     .mark_circle(size=15, tooltip={"content": "data"})
     .encode(
         alt.X(
@@ -117,41 +116,42 @@ line = (
     )
 )
 
-text_background = (
-    alt.Chart(df)
-    .mark_text(
-        align="left",
-        baseline="middle",
-        dx=5,
-        dy=-5,
-        fill="white",
-        stroke="white",
-        strokeWidth=5,
-    )
-    .encode(
-        x=effect_x,
-        y=effect_y,
-        text=alt.condition(point_selector, "term", alt.value("")),
-    )
-)
+# text_background = (
+#     alt.Chart(combined_pd)
+#     .mark_text(
+#         align="left",
+#         baseline="middle",
+#         dx=5,
+#         dy=-5,
+#         fill="white",
+#         stroke="white",
+#         strokeWidth=5,
+#     )
+#     .encode(
+#         x=effect_x,
+#         y=effect_y,
+#         text=alt.condition(point_selector, "Name", alt.value("")),
+#     )
+# )
 
-text = (
-    alt.Chart(df)
-    .mark_text(
-        align="left",
-        baseline="middle",
-        dx=5,
-        dy=-5,
-    )
-    .encode(
-        x=effect_x,
-        y=effect_y,
-        text=alt.condition(point_selector, "term", alt.value("")),
-    )
-)
+# text = (
+#     alt.Chart(combined_pd)
+#     .mark_text(
+#         align="left",
+#         baseline="middle",
+#         dx=5,
+#         dy=-5,
+#     )
+#     .encode(
+#         x=effect_x,
+#         y=effect_y,
+#         text=alt.condition(point_selector, "Name", alt.value("")),
+#     )
+# )
 
 chart = (
-    alt.layer(line, points, text_background, text)
+    # alt.layer(line, points, text_background, text)
+    alt.layer(line, points)
     .add_params(point_selector)
     .interactive()
 )

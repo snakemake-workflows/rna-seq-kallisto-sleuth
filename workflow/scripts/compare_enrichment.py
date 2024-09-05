@@ -71,7 +71,6 @@ def prepare(df):
 
 def plot(df, effect_x, effect_y, title, xlabel, ylabel):
     # Filter out rows where either effect_x or effect_y is zero because of logarithmic scale
-    df = df.select(pl.col("GO", "term", "min_p_fdr_bh", effect_x, effect_y)).to_pandas()
     min_value = min(df[effect_x].min(), df[effect_y].min())
     max_value = max(df[effect_x].max(), df[effect_y].max())
     point_selector = alt.selection_single(fields=["term"], empty="all")
@@ -112,41 +111,42 @@ def plot(df, effect_x, effect_y, title, xlabel, ylabel):
         )
     )
 
-    text_background = (
-        alt.Chart(df)
-        .mark_text(
-            align="left",
-            baseline="middle",
-            dx=5,
-            dy=-5,
-            fill="white",
-            stroke="white",
-            strokeWidth=5,
-        )
-        .encode(
-            x=effect_x,
-            y=effect_y,
-            text=alt.condition(point_selector, "term", alt.value("")),
-        )
-    )
+    # text_background = (
+    #     alt.Chart(df)
+    #     .mark_text(
+    #         align="left",
+    #         baseline="middle",
+    #         dx=5,
+    #         dy=-5,
+    #         fill="white",
+    #         stroke="white",
+    #         strokeWidth=5,
+    #     )
+    #     .encode(
+    #         x=effect_x,
+    #         y=effect_y,
+    #         text=alt.condition(point_selector, "term", alt.value("")),
+    #     )
+    # )
 
-    text = (
-        alt.Chart(df)
-        .mark_text(
-            align="left",
-            baseline="middle",
-            dx=5,
-            dy=-5,
-        )
-        .encode(
-            x=effect_x,
-            y=effect_y,
-            text=alt.condition(point_selector, "term", alt.value("")),
-        )
-    )
+    # text = (
+    #     alt.Chart(df)
+    #     .mark_text(
+    #         align="left",
+    #         baseline="middle",
+    #         dx=5,
+    #         dy=-5,
+    #     )
+    #     .encode(
+    #         x=effect_x,
+    #         y=effect_y,
+    #         text=alt.condition(point_selector, "term", alt.value("")),
+    #     )
+    # )
 
     chart = (
-        alt.layer(line, points, text_background, text)
+        # alt.layer(line, points, text_background, text)
+        alt.layer(line, points)
         .add_params(point_selector)
         .properties(title=title)
         .interactive()
@@ -224,9 +224,9 @@ combined_pd = combined.select(
         "difference",
         "pi_value",
     )
-)
+).to_pandas()
 
-combined_pd.to_pandas().to_csv(snakemake.output[0], sep="\t", index=False)
+combined_pd.to_csv(snakemake.output[0], sep="\t", index=False)
 
 
 # Update the plot function calls to include the logarithmic scale and filter out zero values
