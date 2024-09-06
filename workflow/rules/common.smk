@@ -435,3 +435,5 @@ def all_input(wildcards):
             ),
         )
     return wanted_input
+
+print(all_input())
