@@ -246,6 +246,7 @@ def all_input(wildcards):
         )
     )
     # request goatools if 'activated' in config.yaml
+    print(wanted_input)
     if config["enrichment"]["goatools"]["activate"]:
         wanted_input.extend(
             expand(
@@ -264,6 +265,9 @@ def all_input(wildcards):
                 ).replace(".", "-"),
             )
         )
+
+    print("New wanted input")
+    print(wanted_input)
 
     # request fgsea if 'activated' in config.yaml
     if config["enrichment"]["fgsea"]["activate"]:
