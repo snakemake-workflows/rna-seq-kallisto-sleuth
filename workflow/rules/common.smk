@@ -246,14 +246,13 @@ def all_input(wildcards):
         )
     )
     # request goatools if 'activated' in config.yaml
-    print(wanted_input)
     if config["enrichment"]["goatools"]["activate"]:
         wanted_input.extend(
             expand(
                 [
                     "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.tsv",
                     "results/plots/go_terms/{model}.go_term_enrichment_{go_ns}.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.pdf",
-                    "results/datavzrd-reports/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}",
+                    "results/datavzrd-reports/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}",
                 ],
                 model=config["diffexp"]["models"],
                 go_ns=["BP", "CC", "MF"],
@@ -265,9 +264,6 @@ def all_input(wildcards):
                 ).replace(".", "-"),
             )
         )
-
-    print("New wanted input")
-    print(wanted_input)
 
     # request fgsea if 'activated' in config.yaml
     if config["enrichment"]["fgsea"]["activate"]:
