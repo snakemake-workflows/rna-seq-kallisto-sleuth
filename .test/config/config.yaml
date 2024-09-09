@@ -62,14 +62,9 @@ diffexp:
       base_level: untreated
     model_Y:
       full: ~condition + batch_effect
-      reduced: ~condition
-      # Covariate / sample sheet column that shall be used for fold
-      # change/effect size based downstream analyses.
-      primary_variable: batch_effect
-      # base level of the primary variable (this should be one of the entries
-      # in the primary_variable sample sheet column and will be considered as
-      # denominator in the fold change/effect size estimation).
-      base_level: batch1
+      reduced: ~batch_effect
+      primary_variable: condition
+      base_level: untreated
   # significance level to use for volcano, ma- and qq-plots
   sig-level:
     volcano-plot: 0.05
