@@ -106,12 +106,14 @@ points = (
     )
 )
 
-min_value = min(df[effect_x].min(), df[effect_y].min())
-max_value = max(df[effect_x].max(), df[effect_y].max())
+min_value = combined.select(pl.min(effect_x, effect_y)).min_horizontal()[0]
+max_value = combined.select(pl.max(effect_x, effect_y)).max_horizontal()[0]
+
 line = (
     alt.Chart(
         pl.DataFrame(
-            {effect_x: [min_value, max_value], effect_y: [min_value, max_value]}
+            {effect_x: [min_value, max_value], effect_y: [min_value, max_value]},
+            schema={effect_x: pl.Float64, effect_y: pl.Float64},
         )
     )
     .mark_line(color="lightgrey")
