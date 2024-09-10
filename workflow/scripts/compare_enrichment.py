@@ -69,11 +69,11 @@ def prepare(df):
 
 
 def plot(df, effect_x, effect_y, title, xlabel, ylabel):
+    xlabel = (f"effect {xlabel}",)
+    ylabel = (f"effect {ylabel}",)
+
     # Filter out rows where either effect_x or effect_y is zero because of logarithmic scale
     df = df.select(pl.col("GO", "term", "min_p_fdr_bh", effect_x, effect_y)).to_pandas()
-    min_value = min(df[effect_x].min(), df[effect_y].min())
-    max_value = max(df[effect_x].max(), df[effect_y].max())
-    point_selector = alt.selection_single(fields=["term"], empty="all")
 
     alt.data_transformers.disable_max_rows()
     points = (
@@ -97,6 +97,8 @@ def plot(df, effect_x, effect_y, title, xlabel, ylabel):
         )
     )
 
+    min_value = min(df[effect_x].min(), df[effect_y].min())
+    max_value = max(df[effect_x].max(), df[effect_y].max())
     line = (
         alt.Chart(
             pl.DataFrame(
@@ -111,6 +113,7 @@ def plot(df, effect_x, effect_y, title, xlabel, ylabel):
         )
     )
 
+    point_selector = alt.selection_single(fields=["term"], empty="all")
     text_background = (
         alt.Chart(df)
         .mark_text(
@@ -165,13 +168,17 @@ combined = (
             "cumulative_b_scores_negative_y": effect_y_neg,
         }
     )
-    .with_columns(
-        pl.col(effect_x_pos).cast(pl.Float64),
-        pl.col(effect_y_pos).cast(pl.Float64),
-        pl.col(effect_x_neg).cast(pl.Float64),
-        pl.col(effect_y_neg).cast(pl.Float64),
-        pl.col("p_fdr_bh").cast(pl.Float64),
-        pl.col("p_fdr_bh_y").cast(pl.Float64),
+    .cast(
+        {
+            cs.by_name(
+                effect_x_pos,
+                effect_y_pos,
+                effect_x_neg,
+                effect_y_neg,
+                "p_fdr_bh",
+                "p_fdr_bh_y",
+            ): pl.Float64
+        }
     )
     .with_columns(pl.min_horizontal("p_fdr_bh", "p_fdr_bh_y").alias("min_p_fdr_bh"))
     .filter(pl.col("min_p_fdr_bh") <= 0.05)
@@ -211,8 +218,8 @@ else:
     )
 
 
-combined_pd = combined.select(
-    pl.col(
+combined = combined.select(
+    [
         "GO",
         "term",
         "min_p_fdr_bh",
@@ -222,28 +229,18 @@ combined_pd = combined.select(
         effect_y_neg,
         "difference",
         "pi_value",
-    )
+    ]
 )
 
-combined_pd.to_pandas().to_csv(snakemake.output[0], sep="\t", index=False)
+combined.write_csv(snakemake.output[0], separator="\t")
 
 
 # Update the plot function calls to include the logarithmic scale and filter out zero values
 positive_chart = plot(
-    combined_pd,
-    effect_x_pos,
-    effect_y_pos,
-    "Positive effect",
-    f"effect {label_x}",
-    f"effect {label_y}",
+    combined, effect_x_pos, effect_y_pos, "Positive effect", label_x, label_y
 )
 negative_chart = plot(
-    combined_pd,
-    effect_x_neg,
-    effect_y_neg,
-    "Negative effect",
-    f"effect {label_x}",
-    f"effect {label_y}",
+    combined, effect_x_neg, effect_y_neg, "Negative effect", label_x, label_y
 )
 
 final_chart = alt.hconcat(positive_chart, negative_chart).resolve_scale(color="shared")

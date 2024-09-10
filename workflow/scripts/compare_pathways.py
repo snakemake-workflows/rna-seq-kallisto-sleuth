@@ -33,11 +33,15 @@ prepared_diffexp_x = prepare(diffexp_x)
 prepared_diffexp_y = prepare(diffexp_y)
 combined = (
     prepared_diffexp_x.join(prepared_diffexp_y, on=["Name"], suffix="_y")
-    .with_columns(
-        pl.col("Combined FDR").cast(pl.Float64),
-        pl.col("Combined FDR_y").cast(pl.Float64),
-        pl.col("total perturbation accumulation").cast(pl.Float64),
-        pl.col("total perturbation accumulation_y").cast(pl.Float64),
+    .cast(
+        {
+            cs.by_name(
+                "Combined FDR",
+                "Combined FDR_y",
+                "total perturbation accumulation",
+                "total perturbation accumulation_y",
+            ): pl.Float64
+        }
     )
     .with_columns(pl.min_horizontal("Combined FDR", "Combined FDR_y").alias("min fdr"))
     .filter(pl.col("min fdr") <= 0.05)
@@ -64,8 +68,8 @@ else:
     combined = combined.with_columns(
         [pl.lit(None).alias("difference"), pl.lit(None).alias("pi_value")]
     )
-combined_pd = combined.select(
-    pl.col(
+combined = combined.select(
+    [
         "Name",
         "min fdr",
         effect_x,
@@ -73,13 +77,12 @@ combined_pd = combined.select(
         "difference",
         "pathway id",
         "pi_value",
-    )
+    ]
 )
-combined_pd.to_pandas().to_csv(snakemake.output[0], sep="\t", index=False)
+combined.write_csv(snakemake.output[0], separator="\t")
 
-df = combined_pd.select(pl.col("min fdr", effect_x, effect_y)).to_pandas()
-min_value = min(df[effect_x].min(), df[effect_y].min())
-max_value = max(df[effect_x].max(), df[effect_y].max())
+df = combined.select(pl.col("min fdr", effect_x, effect_y)).to_pandas()
+
 point_selector = alt.selection_single(fields=["term"], empty="all")
 
 alt.data_transformers.disable_max_rows()
@@ -104,6 +107,8 @@ points = (
     )
 )
 
+min_value = min(df[effect_x].min(), df[effect_y].min())
+max_value = max(df[effect_x].max(), df[effect_y].max())
 line = (
     alt.Chart(
         pl.DataFrame(
