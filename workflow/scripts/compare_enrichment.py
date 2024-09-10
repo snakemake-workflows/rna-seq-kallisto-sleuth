@@ -73,7 +73,7 @@ def plot(df, effect_x, effect_y, title, xlabel, ylabel):
     ylabel = (f"effect {ylabel}",)
 
     # Filter out rows where either effect_x or effect_y is zero because of logarithmic scale
-    df = df.select(pl.col("GO", "term", "min_p_fdr_bh", effect_x, effect_y)).to_pandas()
+    df = df.select(["GO", "term", "min_p_fdr_bh", effect_x, effect_y]).to_pandas()
 
     alt.data_transformers.disable_max_rows()
     points = (

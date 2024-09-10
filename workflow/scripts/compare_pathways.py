@@ -1,7 +1,6 @@
 import polars as pl
 import polars.selectors as cs
 import altair as alt
-import pandas as pd
 
 diffexp_x = pl.read_csv(snakemake.input[0], separator="\t").lazy()
 diffexp_y = pl.read_csv(snakemake.input[1], separator="\t").lazy()
@@ -81,7 +80,7 @@ combined = combined.select(
 )
 combined.write_csv(snakemake.output[0], separator="\t")
 
-df = combined.select(pl.col("min fdr", effect_x, effect_y)).to_pandas()
+df = combined.select(["min fdr", effect_x, effect_y]).to_pandas()
 
 point_selector = alt.selection_single(fields=["term"], empty="all")
 
