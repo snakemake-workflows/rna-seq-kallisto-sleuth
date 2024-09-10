@@ -124,7 +124,7 @@ rule go_enrichment_datavzrd:
     output:
         report(
             directory(
-                "results/datavzrd-reports/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}"
+                "results/datavzrd-reports/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}"
             ),
             htmlindex="index.html",
             caption="../report/go-enrichment-sig_terms.rst",

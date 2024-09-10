@@ -1,12 +1,13 @@
 import polars as pl
 import polars.selectors as cs
 import altair as alt
-
+import pandas as pd
 
 diffexp_x = pl.read_csv(snakemake.input[0], separator="\t").lazy()
 diffexp_y = pl.read_csv(snakemake.input[1], separator="\t").lazy()
-label_x = list(snakemake.params.labels[0].keys())[0]
-label_y = list(snakemake.params.labels[1].keys())[0]
+label_x = list(snakemake.params.labels.keys())[0]
+label_y = list(snakemake.params.labels.keys())[1]
+
 
 effect_x = f"effect {label_x}"
 effect_y = f"effect {label_y}"
@@ -32,58 +33,82 @@ prepared_diffexp_x = prepare(diffexp_x)
 prepared_diffexp_y = prepare(diffexp_y)
 combined = (
     prepared_diffexp_x.join(prepared_diffexp_y, on=["Name"], suffix="_y")
-    .with_columns(pl.min_horizontal("Combined FDR", "Combined FDR_y").alias("fdr_min"))
-    .filter(pl.col("fdr_min") <= 0.05)
+    .cast(
+        {
+            cs.by_name(
+                "Combined FDR",
+                "Combined FDR_y",
+                "total perturbation accumulation",
+                "total perturbation accumulation_y",
+            ): pl.Float64
+        }
+    )
+    .with_columns(pl.min_horizontal("Combined FDR", "Combined FDR_y").alias("min fdr"))
+    .filter(pl.col("min fdr") <= 0.05)
     .rename(
         {
             "total perturbation accumulation": effect_x,
             "total perturbation accumulation_y": effect_y,
-            "fdr_min": "min fdr",
         }
     )
     .collect()
 )
 
-effects = combined.select(pl.col(effect_x, effect_y))
-min_value = effects.min().min_horizontal()[0]
-max_value = effects.max().max_horizontal()[0]
-combined = combined.with_columns(
-    abs(pl.col(effect_x) - pl.col(effect_y)).alias("difference")
+if not combined.is_empty():
+    combined = (
+        combined.with_columns(
+            abs(pl.col(effect_x) - pl.col(effect_y)).alias("difference")
+        )
+        .with_columns(
+            (-pl.col("min fdr").log(base=10) * pl.col("difference")).alias("pi_value")
+        )
+        .sort(pl.col("pi_value").abs(), descending=True)
+    )
+else:
+    combined = combined.with_columns(
+        [pl.lit(None).alias("difference"), pl.lit(None).alias("pi_value")]
+    )
+combined = combined.select(
+    [
+        "Name",
+        "min fdr",
+        effect_x,
+        effect_y,
+        "difference",
+        "pathway id",
+        "pi_value",
+    ]
 )
-combined_sorted = combined.sort("difference", descending=True)
-combined_pd = combined_sorted.select(
-    pl.col("Name", "min fdr", effect_x, effect_y, "difference", "pathway id")
-).to_pandas()
-combined_pd.to_csv(snakemake.output[0], sep="\t", index=False)
+combined.write_csv(snakemake.output[0], separator="\t")
 
-# we cannot use vegafusion here because it makes the point selection impossible since
-# it prunes the required ext_gene column
-# alt.data_transformers.enable("vegafusion")
-alt.data_transformers.disable_max_rows()
+df = combined.select(pl.col("min fdr", effect_x, effect_y)).to_pandas()
 
+point_selector = alt.selection_single(fields=["term"], empty="all")
 
 alt.data_transformers.disable_max_rows()
-point_selector = alt.selection_point(fields=["Name"], empty=False)
-
 points = (
-    alt.Chart(combined_pd)
+    alt.Chart(df)
     .mark_circle(size=15, tooltip={"content": "data"})
     .encode(
         alt.X(
             effect_x,
+            title=label_x,
             scale=alt.Scale(type="symlog", nice=False),
-            axis=alt.Axis(grid=False),
+            axis=alt.Axis(grid=True),
         ),
         alt.Y(
             effect_y,
+            title=label_y,
             scale=alt.Scale(type="symlog", nice=False),
-            axis=alt.Axis(grid=False),
+            axis=alt.Axis(grid=True),
         ),
         alt.Color("min fdr", scale=alt.Scale(scheme="viridis")),
         opacity=alt.value(0.5),
     )
 )
 
+min_value = min(df[effect_x].min(), df[effect_y].min())
+max_value = max(df[effect_x].max(), df[effect_y].max())
 line = (
     alt.Chart(
         pl.DataFrame(
@@ -98,28 +123,8 @@ line = (
     )
 )
 
-x_axis = (
-    alt.Chart(pl.DataFrame({effect_x: [0, 0], effect_y: [min_value, max_value]}))
-    .mark_line(color="lightgrey")
-    .encode(
-        x=effect_x,
-        y=effect_y,
-        strokeDash=alt.value([5, 5]),
-    )
-)
-
-y_axis = (
-    alt.Chart(pl.DataFrame({effect_x: [min_value, max_value], effect_y: [0, 0]}))
-    .mark_line(color="lightgrey")
-    .encode(
-        x=effect_x,
-        y=effect_y,
-        strokeDash=alt.value([5, 5]),
-    )
-)
-
 text_background = (
-    alt.Chart(combined_pd)
+    alt.Chart(df)
     .mark_text(
         align="left",
         baseline="middle",
@@ -132,12 +137,12 @@ text_background = (
     .encode(
         x=effect_x,
         y=effect_y,
-        text=alt.condition(point_selector, "Name", alt.value("")),
+        text=alt.condition(point_selector, "term", alt.value("")),
     )
 )
 
 text = (
-    alt.Chart(combined_pd)
+    alt.Chart(df)
     .mark_text(
         align="left",
         baseline="middle",
@@ -147,21 +152,12 @@ text = (
     .encode(
         x=effect_x,
         y=effect_y,
-        text=alt.condition(point_selector, "Name", alt.value("")),
-    )
-)
-
-zero_lines = (
-    alt.Chart(pl.DataFrame({"zero": [0]}))
-    .mark_rule(color="black")
-    .encode(
-        x=alt.X("zero", axis=alt.Axis(title="")),
-        y=alt.Y("zero", axis=alt.Axis(title="")),
+        text=alt.condition(point_selector, "term", alt.value("")),
     )
 )
 
 chart = (
-    alt.layer(x_axis, y_axis, line, points, text_background, text)
+    alt.layer(line, points, text_background, text)
     .add_params(point_selector)
     .interactive()
 )

@@ -22,7 +22,7 @@ views:
           link-to-url: 
             geneontology:
               url: http://amigo.geneontology.org/amigo/term/{GO}
-        min p_fdr_bh:
+        min_p_fdr_bh:
           plot:
             heatmap:
               scale: linear
@@ -44,7 +44,7 @@ views:
               domain:
                 - 0
                 - 300
-        positive effect mgl:
+        regex('positive\s+effect\s+\w+'):
           display-mode: normal
           plot:
             heatmap:
@@ -55,29 +55,7 @@ views:
               domain:
                 - 0
                 - 300
-        positive effect t3:
-          display-mode: normal
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "white"
-                - "#e6550d"
-              domain:
-                - 0
-                - 300
-        negative effect mgl:
-          display-mode: normal
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "white"
-                - "#984ea3"
-              domain:
-                - 0
-                - -300
-        negative effect t3:
+        regex('negative\s+effect\s+\w+'):
           display-mode: normal
           plot:
             heatmap:
