@@ -5,8 +5,8 @@ import altair as alt
 
 diffexp_x = pl.from_pandas(pyreadr.read_r(snakemake.input[0])[None]).lazy()
 diffexp_y = pl.from_pandas(pyreadr.read_r(snakemake.input[1])[None]).lazy()
-label_x = list(snakemake.params.labels[0].keys())[0]
-label_y = list(snakemake.params.labels[1].keys())[0]
+label_x = list(snakemake.params.labels.keys())[0]
+label_y = list(snakemake.params.labels.keys())[1]
 
 effect_x = f"effect {label_x} (beta score)"
 effect_y = f"effect {label_y} (beta score)"
@@ -38,7 +38,7 @@ combined = (
     .collect()
 )
 
-effects = combined.select(pl.col(effect_x, effect_y))
+effects = combined.select([effect_x, effect_y])
 min_value = effects.min().min_horizontal()[0]
 max_value = effects.max().max_horizontal()[0]
 combined = combined.with_columns(
@@ -46,7 +46,7 @@ combined = combined.with_columns(
 )
 combined_sorted = combined.sort("difference", descending=True)
 combined_pd = combined_sorted.select(
-    pl.col("ext_gene", "target_id", "min q-value", effect_x, effect_y, "difference")
+    ["ext_gene", "target_id", "min q-value", effect_x, effect_y, "difference"]
 ).to_pandas()
 combined_pd.to_csv(snakemake.output[0], sep="\t", index=False)
 
