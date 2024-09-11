@@ -100,7 +100,8 @@ def plot(df, effect_x, effect_y, title, xlabel, ylabel):
     line = (
         alt.Chart(
             pl.DataFrame(
-                {effect_x: [min_value, max_value], effect_y: [min_value, max_value]}
+                {effect_x: [min_value, max_value], effect_y: [min_value, max_value]},
+                schema={effect_x: pl.Float64, effect_y: pl.Float64},
             )
         )
         .mark_line(color="lightgrey")

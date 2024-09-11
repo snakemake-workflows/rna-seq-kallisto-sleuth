@@ -106,8 +106,8 @@ points = (
     )
 )
 
-min_value = combined.select(pl.min(effect_x, effect_y)).min_horizontal()[0]
-max_value = combined.select(pl.max(effect_x, effect_y)).max_horizontal()[0]
+min_value = min(df[effect_x].min(), df[effect_y].min())
+max_value = max(df[effect_x].max(), df[effect_y].max())
 
 line = (
     alt.Chart(
