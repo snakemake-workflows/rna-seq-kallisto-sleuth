@@ -40,7 +40,6 @@ def prepare(df):
             [cs.by_name("GO", "term", "p_uncorrected", "p_fdr_bh", "study_items")]
         )
         .with_columns(
-            [
                 pl.col("study_items")
                 .map_elements(
                     extract_study_items,
@@ -51,7 +50,6 @@ def prepare(df):
                     ),
                 )
                 .alias("parsed_terms")
-            ]
         )
         .with_columns(
             [
