@@ -37,7 +37,7 @@ def prepare(df):
     # Select necessary columns
     df = (
         df.select(
-            [cs.by_name("GO", "term", "p_uncorrected", "p_fdr_bh", "study_items")]
+            cs.by_name("GO", "term", "p_uncorrected", "p_fdr_bh", "study_items")
         )
         .with_columns(
                 pl.col("study_items")
