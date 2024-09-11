@@ -3,7 +3,7 @@ from snakemake.utils import min_version
 min_version("8.13.0")
 
 
-configfile: "local/config.yaml"
+configfile: "config/config.yaml"
 
 
 report: "report/workflow.rst"
@@ -23,7 +23,7 @@ include: "rules/quant.smk"
 include: "rules/quant_3prime.smk"
 include: "rules/diffexp.smk"
 include: "rules/diffsplice.smk"
-include: "rules/enrichment.smk"
+include: "rules/spia.smk"
 include: "rules/datavzrd.smk"
 include: "rules/bam.smk"
 include: "rules/meta_comparisons.smk"

@@ -19,10 +19,6 @@ rule meta_compare_diffexp:
         ),
     conda:
         "../envs/pystats.yaml"
-<<<<<<< Updated upstream
-    notebook:
-        "../scripts/compare_diffexp.py.ipynb"
-=======
     script:
         "../scripts/compare_diffexp.py"
 
@@ -50,4 +46,3 @@ rule meta_compare_pathways:
         "../envs/pystats.yaml"
     script:
         "../scripts/compare_pathways.py"
->>>>>>> Stashed changes
