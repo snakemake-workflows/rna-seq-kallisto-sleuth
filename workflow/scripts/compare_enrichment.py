@@ -4,8 +4,8 @@ import altair as alt
 
 diffexp_x = pl.read_csv(snakemake.input[0], separator="\t").lazy()
 diffexp_y = pl.read_csv(snakemake.input[1], separator="\t").lazy()
-label_x = list(snakemake.params.labels.keys())[0]
-label_y = list(snakemake.params.labels.keys())[1]
+label_x = list(snakemake.params.labels)[0]
+label_y = list(snakemake.params.labels)[1]
 
 effect_x_pos = f"positive effect {label_x}"
 effect_y_pos = f"positive effect {label_y}"
@@ -37,10 +37,9 @@ def prepare(df):
     # Select necessary columns
     df = (
         df.select(
-            [cs.by_name("GO", "term", "p_uncorrected", "p_fdr_bh", "study_items")]
+            cs.by_name("GO", "term", "p_uncorrected", "p_fdr_bh", "study_items")
         )
         .with_columns(
-            [
                 pl.col("study_items")
                 .map_elements(
                     extract_study_items,
@@ -51,7 +50,6 @@ def prepare(df):
                     ),
                 )
                 .alias("parsed_terms")
-            ]
         )
         .with_columns(
             [
@@ -102,7 +100,8 @@ def plot(df, effect_x, effect_y, title, xlabel, ylabel):
     line = (
         alt.Chart(
             pl.DataFrame(
-                {effect_x: [min_value, max_value], effect_y: [min_value, max_value]}
+                {effect_x: [min_value, max_value], effect_y: [min_value, max_value]},
+                schema={effect_x: pl.Float64, effect_y: pl.Float64},
             )
         )
         .mark_line(color="lightgrey")
