@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.7.2](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.7.1...v2.7.2) (2024-09-11)
+
+
+### Bug Fixes
+
+* Fix meta comparison and wildcard issue ([#113](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/113)) ([3f8f126](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/3f8f1265ea035038dba2e1115f46e0ad01717079))
+* Fix meta comparison model and label path ([#111](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/111)) ([27b9cb1](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/27b9cb136eb5fa9ecf4d0843c57be791f56ab730))
+
 ## [2.7.1](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.7.0...v2.7.1) (2024-08-22)
 
 
