@@ -113,7 +113,7 @@ rule meta_compare_datavzrd:
             )(wildcards),
         ),
     wildcard_constraints:
-        method="diffexp|pathway",
+        method="diffexp|pathways",
     params:
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
         species=config["resources"]["ref"]["species"],

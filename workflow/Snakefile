@@ -3,7 +3,7 @@ from snakemake.utils import min_version
 min_version("8.13.0")
 
 
-configfile: "config/config.yaml"
+configfile: "local/config.yaml"
 
 
 report: "report/workflow.rst"
@@ -23,12 +23,32 @@ include: "rules/quant.smk"
 include: "rules/quant_3prime.smk"
 include: "rules/diffexp.smk"
 include: "rules/diffsplice.smk"
-include: "rules/spia.smk"
 include: "rules/datavzrd.smk"
 include: "rules/bam.smk"
+include: "rules/spia.smk"
 include: "rules/meta_comparisons.smk"
 
 
-rule all:
+# declare https://github.com/Addimator/enrichment as a module
+module enrichment:
+    snakefile:
+        # github(
+        #     "Addimator/enrichment",
+        #     path="workflow/Snakefile",
+        #     # tag="v2.5.4",
+        #     branch="main",
+        # )
+        "/home/adrian/Documents/Promotion/locotact_stuff/enrichment/workflow/Snakefile"
+    config:
+        config
+
+
+# use all rules from https://github.com/Addimator/enrichment
+use rule * from enrichment
+
+
+rule modified_all:
+    default_target: True
     input:
+        rules.all.input,
         all_input,
