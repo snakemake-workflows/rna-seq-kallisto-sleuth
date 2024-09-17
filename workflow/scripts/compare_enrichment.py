@@ -157,7 +157,9 @@ def plot(df, effect_x, effect_y, title, xlabel, ylabel):
 prepared_diffexp_x = prepare(diffexp_x)
 prepared_diffexp_y = prepare(diffexp_y)
 combined = (
-    prepared_diffexp_x.join(prepared_diffexp_y, on=["GO", "term"], suffix="_y")
+    prepared_diffexp_x.join(
+        prepared_diffexp_y, on=["GO", "term"], how="outer", suffix="_y"
+    )
     .rename(
         {
             "cumulative_b_scores_positive": effect_x_pos,
@@ -175,15 +177,11 @@ combined = (
         pl.col("p_fdr_bh_y").cast(pl.Float64),
     )
     .with_columns(pl.min_horizontal("p_fdr_bh", "p_fdr_bh_y").alias("min_p_fdr_bh"))
+    .fill_null(0)  # Set missing values to 0
     .filter(pl.col("min_p_fdr_bh") <= 0.05)
-    .filter(
-        (pl.col(effect_x_pos) != 0)
-        & (pl.col(effect_y_pos) != 0)
-        & (pl.col(effect_x_neg) != 0)
-        & (pl.col(effect_y_neg) != 0)
-    )
     .collect()
 )
+
 
 
 # we cannot use vegafusion here because it makes the point selection impossible since

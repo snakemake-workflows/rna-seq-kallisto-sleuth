@@ -31,7 +31,7 @@ def prepare(df):
 prepared_diffexp_x = prepare(diffexp_x)
 prepared_diffexp_y = prepare(diffexp_y)
 combined = (
-    prepared_diffexp_x.join(prepared_diffexp_y, on=["Name"], suffix="_y")
+    prepared_diffexp_x.join(prepared_diffexp_y, on=["Name"], how="outer", suffix="_y")
     .with_columns(
         pl.col("Combined FDR").cast(pl.Float64),
         pl.col("Combined FDR_y").cast(pl.Float64),
@@ -40,6 +40,7 @@ combined = (
     )
     .with_columns(pl.min_horizontal("Combined FDR", "Combined FDR_y").alias("min fdr"))
     .filter(pl.col("min fdr") <= 0.05)
+    .fill_null(0)
     .rename(
         {
             "total perturbation accumulation": effect_x,
