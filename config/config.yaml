@@ -87,24 +87,45 @@ diffsplice:
 enrichment:
   goatools:
     # tool is only run if set to `true`
-    activate: false
+    activate: true
     fdr_genes: 0.05
     fdr_go_terms: 0.05
+    pathvars:
+      input_file: "results/tables/diffexp/{model}.genes-representative.diffexp"
+      output_file: "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}"
+      plot_file: "results/plots/go_terms/{{model}}.go_term_enrichment_{ns}.gene_fdr_{{gene_fdr}}.go_term_fdr_{{go_term_fdr}}"
+      datavzrd_file: "results/datavzrd-reports/go_enrichment-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}"
+      log_file_name: "{model}_{gene_fdr}_{go_term_fdr}"
+      wildcards:
+        model: 'list(config["diffexp"]["models"])'
+        gene_fdr: "str(config['enrichment']['goatools']['fdr_genes']).replace('.', '-')"
+        go_term_fdr: "str(config['enrichment']['goatools']['fdr_go_terms']).replace('.', '-')"
+        ns: '["BP", "CC", "MF"]'
   fgsea:
-    # tool is only run if set to `true`
-    activate: false
-    # if activated, you need to provide a GMT file with gene sets of interest
     gene_sets_file: "resources/gene_sets/dummy.gmt"
+    # tool is only run if set to `true`
+    activate: true
+    # if activated, you need to provide a GMT file with gene sets of interest
     fdr_gene_set: 0.05
-    # minimum achievable p-value  (equivalent to the reciprocal of the number of permutations, see fgsea docs)
     eps: 1.0e-50
+    pathvars:
+      input_file: "results/tables/diffexp/{model}.genes-representative.diffexp"
+      output_file: "results/tables/fgsea/{model}"
+      plot_file: "results/plots/fgsea/{model}"
+      log_file_name: "{model}"
+      wildcards:
+        model: 'list(config["diffexp"]["models"])'
+  effect_col:
+    dynamic: true
+    dynamic_expression: "f\"b_\" {config[\"diffexp\"][\"models\"][w.model][\"primary_variable\"]}"
+    static_value: ""
   spia:
     # tool is only run if set to `true`
     activate: false
     # pathway database to use in SPIA, needs to be available for
     # the species specified by resources -> ref -> species above
     pathway_database: "reactome"
-
+    
 meta_comparisons:
   # comparison is only run if set to `true`
   activate: false
