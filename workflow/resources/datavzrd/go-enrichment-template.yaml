@@ -52,7 +52,7 @@ views:
                 }
               }
             spec-path: ?input.vega_bars
-            vega-controls: false
+            vega-controls: true
         p_uncorrected:
           label: p-value
           plot:

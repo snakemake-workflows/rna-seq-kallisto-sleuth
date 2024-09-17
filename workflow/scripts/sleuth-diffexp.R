@@ -117,6 +117,7 @@ write_results <- function(so, mode, output, output_all) {
 	              # e.g. useful for GSEA ranking
 	              mutate( !!signed_pi_col_name := -log10(pval) * !!sym(beta_col_name) )
       }
+
       # saving volcano plots
       marrange_volcano <- marrangeGrob(grobs=volcano_list, nrow=1, ncol=1, top = NULL)
       ggsave(snakemake@output[["volcano_plots"]], plot = marrange_volcano, width = 14)

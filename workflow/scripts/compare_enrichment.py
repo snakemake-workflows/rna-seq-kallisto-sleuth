@@ -7,7 +7,6 @@ diffexp_y = pl.read_csv(snakemake.input[1], separator="\t").lazy()
 label_x = list(snakemake.params.labels[0].keys())[0]
 label_y = list(snakemake.params.labels[1].keys())[0]
 
-
 effect_x_pos = f"positive effect {label_x}"
 effect_y_pos = f"positive effect {label_y}"
 effect_x_neg = f"negative effect {label_x}"
@@ -181,7 +180,6 @@ combined = (
     .filter(pl.col("min_p_fdr_bh") <= 0.05)
     .collect()
 )
-
 
 
 # we cannot use vegafusion here because it makes the point selection impossible since

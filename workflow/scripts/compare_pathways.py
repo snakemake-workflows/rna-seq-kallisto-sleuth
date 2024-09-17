@@ -116,6 +116,25 @@ line = (
         strokeDash=alt.value([5, 5]),
     )
 )
+x_axis = (
+    alt.Chart(pl.DataFrame({effect_x: [0, 0], effect_y: [min_value, max_value]}))
+    .mark_line(color="lightgrey")
+    .encode(
+        x=effect_x,
+        y=effect_y,
+        strokeDash=alt.value([5, 5]),
+    )
+)
+
+y_axis = (
+    alt.Chart(pl.DataFrame({effect_x: [min_value, max_value], effect_y: [0, 0]}))
+    .mark_line(color="lightgrey")
+    .encode(
+        x=effect_x,
+        y=effect_y,
+        strokeDash=alt.value([5, 5]),
+    )
+)
 
 # text_background = (
 #     alt.Chart(combined_pd)
@@ -150,11 +169,15 @@ line = (
 #     )
 # )
 
-chart = (
-    # alt.layer(line, points, text_background, text)
-    alt.layer(line, points)
-    .add_params(point_selector)
-    .interactive()
+zero_lines = (
+    alt.Chart(pl.DataFrame({"zero": [0]}))
+    .mark_rule(color="black")
+    .encode(
+        x=alt.X("zero", axis=alt.Axis(title="")),
+        y=alt.Y("zero", axis=alt.Axis(title="")),
+    )
 )
+
+chart = alt.layer(x_axis, y_axis, line, points).add_params(point_selector).interactive()
 
 chart.save(snakemake.output[1], inline=True)
