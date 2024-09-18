@@ -46,22 +46,25 @@ max_value = effects.max().max_horizontal()[0]
 combined = combined.with_columns(
     abs(pl.col(effect_x) - pl.col(effect_y)).alias("difference")
 )
-combined = combined.with_columns(
-    (-pl.col("pval_min").log(base=10) * pl.col("difference")).alias("pi_value")
-)
-combined_sorted = combined.sort(pl.col("pi_value").abs(), descending=True)
-combined_pd = combined_sorted.select(
-    pl.col(
-        "ext_gene",
-        "target_id",
-        "qval_min",
-        effect_x,
-        effect_y,
-        "difference",
-        "pi_value",
+combined = (
+    combined.with_columns(
+        (-pl.col("pval_min").log(base=10) * pl.col("difference")).alias("pi_value")
     )
-).to_pandas()
-combined_pd.to_csv(snakemake.output[0], sep="\t", index=False)
+    .sort(pl.col("pi_value").abs(), descending=True)
+    .select(
+        pl.col(
+            "ext_gene",
+            "target_id",
+            "qval_min",
+            effect_x,
+            effect_y,
+            "difference",
+            "pi_value",
+        )
+    )
+    .to_pandas()
+)
+combined.to_csv(snakemake.output[0], sep="\t", index=False)
 
 
 # we cannot use vegafusion here because it makes the point selection impossible since
@@ -72,7 +75,7 @@ alt.data_transformers.disable_max_rows()
 point_selector = alt.selection_point(fields=["ext_gene"], empty=False)
 
 points = (
-    alt.Chart(combined_pd)
+    alt.Chart(combined)
     .mark_circle(size=15, tooltip={"content": "data"})
     .encode(
         alt.X(effect_x),
@@ -97,7 +100,7 @@ line = (
 )
 
 text_background = (
-    alt.Chart(combined_pd)
+    alt.Chart(combined)
     .mark_text(
         align="left",
         baseline="middle",
@@ -115,7 +118,7 @@ text_background = (
 )
 
 text = (
-    alt.Chart(combined_pd)
+    alt.Chart(combined)
     .mark_text(
         align="left",
         baseline="middle",

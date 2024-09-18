@@ -68,91 +68,6 @@ def prepare(df):
     return df
 
 
-def plot(df, effect_x, effect_y, title, xlabel, ylabel):
-    # Filter out rows where either effect_x or effect_y is zero because of logarithmic scale
-    min_value = min(df[effect_x].min(), df[effect_y].min())
-    max_value = max(df[effect_x].max(), df[effect_y].max())
-    point_selector = alt.selection_single(fields=["term"], empty="all")
-
-    alt.data_transformers.disable_max_rows()
-    points = (
-        alt.Chart(df)
-        .mark_circle(size=15, tooltip={"content": "data"})
-        .encode(
-            alt.X(
-                effect_x,
-                title=xlabel,
-                scale=alt.Scale(type="symlog", nice=False),
-                axis=alt.Axis(grid=True),
-            ),
-            alt.Y(
-                effect_y,
-                title=ylabel,
-                scale=alt.Scale(type="symlog", nice=False),
-                axis=alt.Axis(grid=True),
-            ),
-            alt.Color("min_p_fdr_bh", scale=alt.Scale(scheme="viridis")),
-            opacity=alt.value(0.5),
-        )
-    )
-
-    line = (
-        alt.Chart(
-            pl.DataFrame(
-                {effect_x: [min_value, max_value], effect_y: [min_value, max_value]}
-            )
-        )
-        .mark_line(color="lightgrey")
-        .encode(
-            x=effect_x,
-            y=effect_y,
-            strokeDash=alt.value([5, 5]),
-        )
-    )
-
-    # text_background = (
-    #     alt.Chart(df)
-    #     .mark_text(
-    #         align="left",
-    #         baseline="middle",
-    #         dx=5,
-    #         dy=-5,
-    #         fill="white",
-    #         stroke="white",
-    #         strokeWidth=5,
-    #     )
-    #     .encode(
-    #         x=effect_x,
-    #         y=effect_y,
-    #         text=alt.condition(point_selector, "term", alt.value("")),
-    #     )
-    # )
-
-    # text = (
-    #     alt.Chart(df)
-    #     .mark_text(
-    #         align="left",
-    #         baseline="middle",
-    #         dx=5,
-    #         dy=-5,
-    #     )
-    #     .encode(
-    #         x=effect_x,
-    #         y=effect_y,
-    #         text=alt.condition(point_selector, "term", alt.value("")),
-    #     )
-    # )
-
-    chart = (
-        # alt.layer(line, points, text_background, text)
-        alt.layer(line, points)
-        .add_params(point_selector)
-        .properties(title=title)
-        .interactive()
-    )
-    return chart
-
-
 prepared_diffexp_x = prepare(diffexp_x)
 prepared_diffexp_y = prepare(diffexp_y)
 combined = (
@@ -223,6 +138,91 @@ combined_pd = combined.select(
 ).to_pandas()
 
 combined_pd.to_csv(snakemake.output[0], sep="\t", index=False)
+
+
+def plot(df, effect_x, effect_y, title, xlabel, ylabel):
+    # Filter out rows where either effect_x or effect_y is zero because of logarithmic scale
+    min_value = min(df[effect_x].min(), df[effect_y].min())
+    max_value = max(df[effect_x].max(), df[effect_y].max())
+    point_selector = alt.selection_single(fields=["term"], empty="all")
+
+    alt.data_transformers.disable_max_rows()
+    points = (
+        alt.Chart(df)
+        .mark_circle(size=15, tooltip={"content": "data"})
+        .encode(
+            alt.X(
+                effect_x,
+                title=xlabel,
+                scale=alt.Scale(type="symlog", nice=False),
+                axis=alt.Axis(grid=True),
+            ),
+            alt.Y(
+                effect_y,
+                title=ylabel,
+                scale=alt.Scale(type="symlog", nice=False),
+                axis=alt.Axis(grid=True),
+            ),
+            alt.Color("min_p_fdr_bh", scale=alt.Scale(scheme="viridis")),
+            opacity=alt.value(0.5),
+        )
+    )
+
+    line = (
+        alt.Chart(
+            pl.DataFrame(
+                {effect_x: [min_value, max_value], effect_y: [min_value, max_value]}
+            )
+        )
+        .mark_line(color="lightgrey")
+        .encode(
+            x=effect_x,
+            y=effect_y,
+            strokeDash=alt.value([5, 5]),
+        )
+    )
+
+    text_background = (
+        alt.Chart(df)
+        .mark_text(
+            align="left",
+            baseline="middle",
+            dx=5,
+            dy=-5,
+            fill="white",
+            stroke="white",
+            strokeWidth=5,
+        )
+        .encode(
+            x=effect_x,
+            y=effect_y,
+            text=alt.condition(point_selector, "term", alt.value("")),
+        )
+    )
+
+    text = (
+        alt.Chart(df)
+        .mark_text(
+            align="left",
+            baseline="middle",
+            dx=5,
+            dy=-5,
+        )
+        .encode(
+            x=effect_x,
+            y=effect_y,
+            text=alt.condition(point_selector, "term", alt.value("")),
+        )
+    )
+
+    chart = (
+        # alt.layer(line, points, text_background, text)
+        alt.layer(line, points, text_background, text)
+        .add_params(point_selector)
+        .properties(title=title)
+        .interactive()
+    )
+    return chart
 
 
 # Update the plot function calls to include the logarithmic scale and filter out zero values

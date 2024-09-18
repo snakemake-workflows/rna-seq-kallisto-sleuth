@@ -136,38 +136,38 @@ y_axis = (
     )
 )
 
-# text_background = (
-#     alt.Chart(combined_pd)
-#     .mark_text(
-#         align="left",
-#         baseline="middle",
-#         dx=5,
-#         dy=-5,
-#         fill="white",
-#         stroke="white",
-#         strokeWidth=5,
-#     )
-#     .encode(
-#         x=effect_x,
-#         y=effect_y,
-#         text=alt.condition(point_selector, "Name", alt.value("")),
-#     )
-# )
+text_background = (
+    alt.Chart(combined_pd)
+    .mark_text(
+        align="left",
+        baseline="middle",
+        dx=5,
+        dy=-5,
+        fill="white",
+        stroke="white",
+        strokeWidth=5,
+    )
+    .encode(
+        x=effect_x,
+        y=effect_y,
+        text=alt.condition(point_selector, "Name", alt.value("")),
+    )
+)
 
-# text = (
-#     alt.Chart(combined_pd)
-#     .mark_text(
-#         align="left",
-#         baseline="middle",
-#         dx=5,
-#         dy=-5,
-#     )
-#     .encode(
-#         x=effect_x,
-#         y=effect_y,
-#         text=alt.condition(point_selector, "Name", alt.value("")),
-#     )
-# )
+text = (
+    alt.Chart(combined_pd)
+    .mark_text(
+        align="left",
+        baseline="middle",
+        dx=5,
+        dy=-5,
+    )
+    .encode(
+        x=effect_x,
+        y=effect_y,
+        text=alt.condition(point_selector, "Name", alt.value("")),
+    )
+)
 
 zero_lines = (
     alt.Chart(pl.DataFrame({"zero": [0]}))
@@ -178,6 +178,10 @@ zero_lines = (
     )
 )
 
-chart = alt.layer(x_axis, y_axis, line, points).add_params(point_selector).interactive()
+chart = (
+    alt.layer(x_axis, y_axis, line, points, text_background, text)
+    .add_params(point_selector)
+    .interactive()
+)
 
 chart.save(snakemake.output[1], inline=True)
