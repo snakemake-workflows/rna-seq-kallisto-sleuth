@@ -144,7 +144,7 @@ def plot(df, effect_x, effect_y, title, xlabel, ylabel):
     # Filter out rows where either effect_x or effect_y is zero because of logarithmic scale
     min_value = min(df[effect_x].min(), df[effect_y].min())
     max_value = max(df[effect_x].max(), df[effect_y].max())
-    point_selector = alt.selection_single(fields=["term"], empty="all")
+    point_selector = alt.selection_single(fields=["term"], empty=False)
 
     alt.data_transformers.disable_max_rows()
     points = (

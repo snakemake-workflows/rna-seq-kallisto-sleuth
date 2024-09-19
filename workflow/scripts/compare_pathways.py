@@ -79,7 +79,7 @@ combined_pd.to_csv(snakemake.output[0], sep="\t", index=False)
 
 min_value = min(combined_pd[effect_x].min(), combined_pd[effect_y].min())
 max_value = max(combined_pd[effect_x].max(), combined_pd[effect_y].max())
-point_selector = alt.selection_single(fields=["Name"], empty="all")
+point_selector = alt.selection_single(fields=["Name"], empty=False)
 
 alt.data_transformers.disable_max_rows()
 points = (
