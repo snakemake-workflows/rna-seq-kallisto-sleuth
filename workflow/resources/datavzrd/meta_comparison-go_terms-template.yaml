@@ -11,7 +11,8 @@ views:
   comparison_table:
     dataset: comparison_table
     desc: |
-        Table for values of meta comparison. The table is sorted in descending order based on the absolute value of the maximum difference between the positive effects and the negative effects.
+      Table for values of meta comparison. 
+      The table is sorted in descending order by the pi-value score of the maximum difference in positive and negative total effects of fold changes influenced by the enrichment (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`).
     page-size: 25
     render-table:
       columns:
@@ -66,6 +67,19 @@ views:
               domain:
                 - 0
                 - -300
+        pi_value:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -300
+                - 0
+                - 300
   comparison_plot:
     desc: |
       The left side shows the summed positive beta-scores within a GO-term and the right side shows the summed negative beta-scores, with each point representing a GO-term. This illustrates whether a GO-term is enriched positively, negatively, or in both directions.

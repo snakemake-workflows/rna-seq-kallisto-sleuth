@@ -11,7 +11,8 @@ views:
   comparison_table:
     dataset: comparison_table
     desc: |
-      Table for values of meta comparison. The table is sorted in descending order by the absolute value of the difference of the effects.
+      Table for values of meta comparison. 
+      The table is sorted in descending order by the pi-value score of the difference in effects of the total perturbation accumulation (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`).
     page-size: 25
     render-table:
       columns:
@@ -34,6 +35,20 @@ views:
                 - 0.25
         pathway id:
           display-mode: hidden
+        pi_value:
+          label: signed_pi_value
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -300
+                - 0
+                - 300
         difference:
           plot:
             heatmap:

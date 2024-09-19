@@ -134,7 +134,7 @@ views:
           display-mode: hidden
         regex('qval_.+'):
           display-mode: hidden
-        ?f"regex('signed_pi_value_{params.primary_variable}.+')":
+        regex('signed_pi_value_.+'):
           display-mode: normal
           plot:
             heatmap:
@@ -147,33 +147,8 @@ views:
                 - -1
                 - 0
                 - 1
-        ?f"regex('signed_pi_value_(?!{params.primary_variable}).+')":
-          display-mode: detail
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "#e6550d"
-                - "white"
-                - "#6baed6"
-              domain:
-                - -1
-                - 0
-                - 1
-        ?f"regex('^b_{params.primary_variable}(?!.*_se$)')":
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "#e6550d"
-                - "white"
-                - "#6baed6"
-              domain:
-                - -1
-                - 0
-                - 1
-        ?f"regex('^b_(?!{params.primary_variable})(?!.*_se$)')":
-          display-mode: detail
+        regex('^b_(?!.*_se$)'):
+          display-mode: normal
           plot:
             heatmap:
               scale: linear

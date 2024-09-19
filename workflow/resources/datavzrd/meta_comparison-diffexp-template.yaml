@@ -11,7 +11,8 @@ views:
   comparison_table:
     dataset: comparison_table
     desc: |
-      Table for values of meta comparison. The table is sorted in descending order by the absolute value of the difference of the effects.
+      Table for values of meta comparison.       
+      The table is sorted in descending order by the pi-value score of the difference in effects of the fold change of the primary variable of the model under consideration (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`).
     page-size: 25
     render-table:
       columns:
@@ -22,7 +23,7 @@ views:
               url: f"https://www.ensembl.org/{str.capitalize(?params.species)}/Transcript/Summary?t={{target_id}}"
         target_id:
           display-mode: hidden
-        min q-value:
+        qval_min:
           plot:
             heatmap:
               scale: linear
@@ -43,7 +44,7 @@ views:
                 - "#fdae6b"
               domain:
                 - 0
-                - 300
+                - 30
         regex('effect\s+\w+\s+\(beta\s+score\)'):
           display-mode: normal
           plot:
@@ -57,6 +58,19 @@ views:
                 - -8
                 - 0
                 - 8
+        pi_value:
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "#e6550d"
+                - "white"
+                - "#6baed6"
+              domain:
+                - -300
+                - 0
+                - 300
   comparison_plot:
     desc: |
       The axes represent the log2-fold changes (beta-scores) for the two models, with each point representing a gene. Points on the diagonal indicate no difference between the comparisons, while deviations from the diagonal suggest differences in gene expression fold changes between the treatments.

@@ -7,7 +7,6 @@ diffexp_y = pl.read_csv(snakemake.input[1], separator="\t").lazy()
 label_x = list(snakemake.params.labels)[0]
 label_y = list(snakemake.params.labels)[1]
 
-
 effect_x = f"effect {label_x}"
 effect_y = f"effect {label_y}"
 
@@ -31,19 +30,16 @@ def prepare(df):
 prepared_diffexp_x = prepare(diffexp_x)
 prepared_diffexp_y = prepare(diffexp_y)
 combined = (
-    prepared_diffexp_x.join(prepared_diffexp_y, on=["Name"], suffix="_y")
-    .cast(
-        {
-            cs.by_name(
-                "Combined FDR",
-                "Combined FDR_y",
-                "total perturbation accumulation",
-                "total perturbation accumulation_y",
-            ): pl.Float64
-        }
+    prepared_diffexp_x.join(prepared_diffexp_y, on=["Name"], how="outer", suffix="_y")
+    .with_columns(
+        pl.col("Combined FDR").cast(pl.Float64),
+        pl.col("Combined FDR_y").cast(pl.Float64),
+        pl.col("total perturbation accumulation").cast(pl.Float64),
+        pl.col("total perturbation accumulation_y").cast(pl.Float64),
     )
     .with_columns(pl.min_horizontal("Combined FDR", "Combined FDR_y").alias("min fdr"))
     .filter(pl.col("min fdr") <= 0.05)
+    .fill_null(0)
     .rename(
         {
             "total perturbation accumulation": effect_x,
@@ -67,8 +63,8 @@ else:
     combined = combined.with_columns(
         [pl.lit(None).alias("difference"), pl.lit(None).alias("pi_value")]
     )
-combined = combined.select(
-    [
+combined_pd = combined.select(
+    pl.col(
         "Name",
         "min fdr",
         effect_x,
@@ -76,13 +72,13 @@ combined = combined.select(
         "difference",
         "pathway id",
         "pi_value",
-    ]
-)
-combined.write_csv(snakemake.output[0], separator="\t")
+    )
+).to_pandas()
+combined_pd.to_csv(snakemake.output[0], sep="\t", index=False)
 
-df = combined.select(["min fdr", effect_x, effect_y]).to_pandas()
-
-point_selector = alt.selection_single(fields=["term"], empty="all")
+min_value = min(combined_pd[effect_x].min(), combined_pd[effect_y].min())
+max_value = max(combined_pd[effect_x].max(), combined_pd[effect_y].max())
+point_selector = alt.selection_single(fields=["Name"], empty=False)
 
 alt.data_transformers.disable_max_rows()
 points = (
@@ -116,6 +112,25 @@ line = (
             schema={effect_x: pl.Float64, effect_y: pl.Float64},
         )
     )
+    .mark_line(color="lightgrey")
+    .encode(
+        x=effect_x,
+        y=effect_y,
+        strokeDash=alt.value([5, 5]),
+    )
+)
+x_axis = (
+    alt.Chart(pl.DataFrame({effect_x: [0, 0], effect_y: [min_value, max_value]}))
+    .mark_line(color="lightgrey")
+    .encode(
+        x=effect_x,
+        y=effect_y,
+        strokeDash=alt.value([5, 5]),
+    )
+)
+
+y_axis = (
+    alt.Chart(pl.DataFrame({effect_x: [min_value, max_value], effect_y: [0, 0]}))
     .mark_line(color="lightgrey")
     .encode(
         x=effect_x,
