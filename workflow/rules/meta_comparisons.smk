@@ -32,7 +32,7 @@ rule meta_compare_enrichment:
                 within=config,
             ),
             gene_fdr=str(config["enrichment"]["goatools"]["fdr_genes"]).replace(
-                ".", "-"
+            ".", "-"
             ),
             go_term_fdr=str(config["enrichment"]["goatools"]["fdr_go_terms"]).replace(
                 ".", "-"
