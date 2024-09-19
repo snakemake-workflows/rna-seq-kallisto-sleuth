@@ -5,8 +5,8 @@ import altair as alt
 
 diffexp_x = pl.read_csv(snakemake.input[0], separator="\t").lazy()
 diffexp_y = pl.read_csv(snakemake.input[1], separator="\t").lazy()
-label_x = list(snakemake.params.labels[0].keys())[0]
-label_y = list(snakemake.params.labels[1].keys())[0]
+label_x = list(snakemake.params.labels)[0]
+label_y = list(snakemake.params.labels)[1]
 
 effect_x = f"effect {label_x}"
 effect_y = f"effect {label_y}"
