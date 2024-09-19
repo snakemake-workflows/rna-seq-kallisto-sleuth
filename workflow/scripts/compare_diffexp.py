@@ -40,7 +40,7 @@ combined = (
     .collect()
 )
 
-effects = combined.select(pl.col(effect_x, effect_y))
+effects = combined.select([effect_x, effect_y])
 min_value = effects.min().min_horizontal()[0]
 max_value = effects.max().max_horizontal()[0]
 combined = combined.with_columns(

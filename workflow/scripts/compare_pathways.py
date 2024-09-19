@@ -2,7 +2,6 @@ import polars as pl
 import polars.selectors as cs
 import altair as alt
 
-
 diffexp_x = pl.read_csv(snakemake.input[0], separator="\t").lazy()
 diffexp_y = pl.read_csv(snakemake.input[1], separator="\t").lazy()
 label_x = list(snakemake.params.labels)[0]
@@ -83,7 +82,7 @@ point_selector = alt.selection_single(fields=["Name"], empty=False)
 
 alt.data_transformers.disable_max_rows()
 points = (
-    alt.Chart(combined_pd)
+    alt.Chart(df)
     .mark_circle(size=15, tooltip={"content": "data"})
     .encode(
         alt.X(
@@ -103,10 +102,14 @@ points = (
     )
 )
 
+min_value = min(df[effect_x].min(), df[effect_y].min())
+max_value = max(df[effect_x].max(), df[effect_y].max())
+
 line = (
     alt.Chart(
         pl.DataFrame(
-            {effect_x: [min_value, max_value], effect_y: [min_value, max_value]}
+            {effect_x: [min_value, max_value], effect_y: [min_value, max_value]},
+            schema={effect_x: pl.Float64, effect_y: pl.Float64},
         )
     )
     .mark_line(color="lightgrey")
@@ -137,7 +140,7 @@ y_axis = (
 )
 
 text_background = (
-    alt.Chart(combined_pd)
+    alt.Chart(df)
     .mark_text(
         align="left",
         baseline="middle",
@@ -150,12 +153,12 @@ text_background = (
     .encode(
         x=effect_x,
         y=effect_y,
-        text=alt.condition(point_selector, "Name", alt.value("")),
+        text=alt.condition(point_selector, "term", alt.value("")),
     )
 )
 
 text = (
-    alt.Chart(combined_pd)
+    alt.Chart(df)
     .mark_text(
         align="left",
         baseline="middle",
@@ -165,21 +168,12 @@ text = (
     .encode(
         x=effect_x,
         y=effect_y,
-        text=alt.condition(point_selector, "Name", alt.value("")),
-    )
-)
-
-zero_lines = (
-    alt.Chart(pl.DataFrame({"zero": [0]}))
-    .mark_rule(color="black")
-    .encode(
-        x=alt.X("zero", axis=alt.Axis(title="")),
-        y=alt.Y("zero", axis=alt.Axis(title="")),
+        text=alt.condition(point_selector, "term", alt.value("")),
     )
 )
 
 chart = (
-    alt.layer(x_axis, y_axis, line, points, text_background, text)
+    alt.layer(line, points, text_background, text)
     .add_params(point_selector)
     .interactive()
 )
