@@ -185,7 +185,7 @@ def plot(df, effect_x, effect_y, title, xlabel, ylabel):
         )
     )
 
-    point_selector = alt.selection_single(fields=["term"], empty="False")
+    point_selector = alt.selection_single(fields=["term"], empty=False)
     text_background = (
         alt.Chart(df)
         .mark_text(
