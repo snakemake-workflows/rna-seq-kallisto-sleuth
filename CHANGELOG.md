@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.8.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.7.2...v2.8.0) (2024-09-20)
+
+
+### Features
+
+* sort datavzrd tables ([#115](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/115)) ([1ccc3fa](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/1ccc3fa626e725fa1cbc19464c0c441f74e5edb3))
+
+
+### Bug Fixes
+
+* Move signed_pi_value columns to the end (again) ([#117](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/117)) ([ac4a73b](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/ac4a73b5a4102f96aeb18edc7df523446ef35533))
+
 ## [2.7.2](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.7.1...v2.7.2) (2024-09-11)
 
 
