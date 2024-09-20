@@ -134,7 +134,7 @@ views:
           display-mode: hidden
         regex('qval_.+'):
           display-mode: hidden
-        regex('signed_pi_value_.+'):
+        ?f"regex('signed_pi_value_{params.primary_variable}.+')":
           display-mode: normal
           plot:
             heatmap:
@@ -147,8 +147,9 @@ views:
                 - -1
                 - 0
                 - 1
-        regex('^b_(?!.*_se$)'):
-          display-mode: normal
+        ?f"regex('signed_pi_value_(?!{params.primary_variable})')":
+          display-mode: hidden # Hide all signed pi cols that are not associated to the primary variable
+        ?f"regex('^b_(?!.*_se$)')":
           plot:
             heatmap:
               scale: linear
@@ -157,9 +158,9 @@ views:
                 - "white"
                 - "#6baed6"
               domain:
-                - -1
+                - -10
                 - 0
-                - 1
+                - 10
         regex('^b_.*_se$'):
           display-mode: hidden
         ?for sample in params.samples:
@@ -242,7 +243,7 @@ views:
           display-mode: hidden
         regex('qval_.+'):
           display-mode: hidden
-        regex('signed_pi_value_.+'):
+        ?f"regex('signed_pi_value_{params.primary_variable}.+')":
           display-mode: normal
           plot:
             heatmap:
@@ -255,8 +256,9 @@ views:
                 - -1
                 - 0
                 - 1
-        regex('b_.*(?<!_se(?!part2))'):
-          display-mode: normal
+        ?f"regex('signed_pi_value_(?!{params.primary_variable})')":
+          display-mode: hidden # Hide all signed pi cols that are not associated to the primary variable
+        ?f"regex('^b_(?!.*_se$)')":
           plot:
             heatmap:
               scale: linear
@@ -265,9 +267,11 @@ views:
                 - "white"
                 - "#6baed6"
               domain:
-                - -1
+                - -10
                 - 0
-                - 1
+                - 10
+        regex('^b_.*_se$'):
+          display-mode: hidden
         ?for sample in params.samples:
           ?sample:
             display-mode: hidden

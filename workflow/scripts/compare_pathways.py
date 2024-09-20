@@ -82,7 +82,7 @@ point_selector = alt.selection_single(fields=["Name"], empty=False)
 
 alt.data_transformers.disable_max_rows()
 points = (
-    alt.Chart(df)
+    alt.Chart(combined_pd)
     .mark_circle(size=15, tooltip={"content": "data"})
     .encode(
         alt.X(
@@ -102,8 +102,8 @@ points = (
     )
 )
 
-min_value = min(df[effect_x].min(), df[effect_y].min())
-max_value = max(df[effect_x].max(), df[effect_y].max())
+min_value = min(combined_pd[effect_x].min(), combined_pd[effect_y].min())
+max_value = max(combined_pd[effect_x].max(), combined_pd[effect_y].max())
 
 line = (
     alt.Chart(
@@ -140,7 +140,7 @@ y_axis = (
 )
 
 text_background = (
-    alt.Chart(df)
+    alt.Chart(combined_pd)
     .mark_text(
         align="left",
         baseline="middle",
@@ -158,7 +158,7 @@ text_background = (
 )
 
 text = (
-    alt.Chart(df)
+    alt.Chart(combined_pd)
     .mark_text(
         align="left",
         baseline="middle",
