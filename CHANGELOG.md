@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.1](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.8.0...v2.8.1) (2024-09-20)
+
+
+### Performance Improvements
+
+* Update datavzrd wrapper version ([#118](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/118)) ([e498079](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/e49807901c2d934acef794bf93b3b277c7bbe868))
+
 ## [2.8.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.7.2...v2.8.0) (2024-09-20)
 
 
