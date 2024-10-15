@@ -38,7 +38,7 @@ module enrichment:
         #     # tag="v2.5.4",
         #     branch="main",
         # )
-        "/home/adrian/Documents/Promotion/locotact_stuff/enrichment/workflow/Snakefile"
+        "/homes/aprinz/enrichment/workflow/Snakefile"
     config:
         config
 
