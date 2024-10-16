@@ -211,18 +211,28 @@ views:
               url: "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={target_id}"
         pval:
           plot:
-            bars:
+            heatmap:
               scale: linear
+              range:
+                - "#a1d99b"
+                - "white"
+                - "#fdae6b"
               domain:
-                - 0.0
-                - 1.0
+                - 0
+                - 0.05
+                - 0.25
         qval:
           plot:
-            bars:
+            heatmap:
               scale: linear
+              range:
+                - "#a1d99b"
+                - "white"
+                - "#fdae6b"
               domain:
-                - 0.0
-                - 1.0
+                - 0
+                - 0.05
+                - 0.25
         test_stat:
           display-mode: hidden 
         rss:
