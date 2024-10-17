@@ -46,7 +46,6 @@ max_value = effects.max().max_horizontal()[0]
 combined = combined.with_columns(
     abs(pl.col(effect_x) - pl.col(effect_y)).alias("difference")
 )
-print(combined)
 combined = (
     combined.with_columns(
         (-pl.col("pval_min").log(base=10) * pl.col("difference")).alias("pi_value")
@@ -73,7 +72,6 @@ combined = (
     )
     .to_pandas()
 )
-print(combined)
 combined.to_csv(snakemake.output[0], sep="\t", index=False)
 
 
