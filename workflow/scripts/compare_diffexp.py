@@ -72,7 +72,7 @@ combined = (
         )
     )
     .to_pandas()
-)
+    )
 )
 print(combined)
 combined.to_csv(snakemake.output[0], sep="\t", index=False)
