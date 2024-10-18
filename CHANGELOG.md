@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.8.2](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.8.1...v2.8.2) (2024-10-18)
+
+
+### Bug Fixes
+
+* Convert pval and qval to heatmap ([#123](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/123)) ([478c759](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/478c75947e87aac8feb0d71d6b12e112bae58570))
+* Move NA values to end of table ([#124](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/124)) ([df807a5](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/df807a51b312fe14b6cd2e6f9f9b0d048843c859))
+* Update max in memory rows for diffexp report ([#122](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/122)) ([830e678](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/830e678fbf5a055c6d23cdb64b6b31953d7a4031))
+
+
+### Performance Improvements
+
+* Update to latest datavzrd wrapper ([#125](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/125)) ([3a4c020](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/3a4c020f9f1927cdd62c34543f48c97db7869df3))
+* Update to latest datavzrd wrapper version ([#120](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/120)) ([7b2767c](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/7b2767cc5ebcbd34aea096047712a179b60b868e))
+
 ## [2.8.1](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.8.0...v2.8.1) (2024-09-20)
 
 
