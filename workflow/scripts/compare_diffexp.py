@@ -50,7 +50,15 @@ combined = (
     combined.with_columns(
         (-pl.col("pval_min").log(base=10) * pl.col("difference")).alias("pi_value")
     )
-    .sort(pl.col("pi_value").abs(), descending=True)
+    .with_columns(
+        pl.col("pi_value").fill_nan(None),
+        pl.col("difference").fill_nan(None),
+    )
+    .sort(
+        pl.col("pi_value").abs(),
+        descending=True,
+        nulls_last=True,
+    )
     .select(
         pl.col(
             "ext_gene",
