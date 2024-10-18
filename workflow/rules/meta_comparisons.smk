@@ -11,7 +11,7 @@ rule meta_compare_diffexp:
         "results/tables/diffexp/meta_compare_{meta_comp}.tsv",
         "results/meta_comparison/diffexp/{meta_comp}.json",
     log:
-        notebook="logs/meta_compare_diffexp/{meta_comp}.ipynb",
+        "logs/meta_compare_diffexp/{meta_comp}.log",
     params:
         labels=lookup(
             dpath="meta_comparisons/comparisons/{meta_comp}/items",
@@ -42,7 +42,7 @@ rule meta_compare_enrichment:
         "results/tables/go_terms/meta_compare_{meta_comp}.tsv",
         "results/meta_comparison/go_terms/{meta_comp}.json",
     log:
-        notebook="logs/meta_compare_enrichment/{meta_comp}.ipynb",
+        "logs/meta_compare_enrichment/{meta_comp}.log",
     params:
         labels=lookup(
             dpath="meta_comparisons/comparisons/{meta_comp}/items",
@@ -67,7 +67,7 @@ rule meta_compare_pathways:
         "results/tables/pathways/meta_compare_{meta_comp}.tsv",
         "results/meta_comparison/pathways/{meta_comp}.json",
     log:
-        notebook="logs/meta_compare_pathways/{meta_comp}.ipynb",
+        "logs/meta_compare_pathways/{meta_comp}.log",
     params:
         labels=lookup(
             dpath="meta_comparisons/comparisons/{meta_comp}/items",
