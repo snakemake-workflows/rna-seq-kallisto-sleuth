@@ -15,7 +15,7 @@ resources:
   ref:
     # ensembl species name
     species: homo_sapiens
-    # ensembl release version 
+    # ensembl release version
     release: "113"
     # genome build
     build: GRCh38
