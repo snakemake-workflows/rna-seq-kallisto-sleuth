@@ -164,7 +164,7 @@ views:
         regex('^b_.*_se$'):
           display-mode: hidden
         ?for sample in params.samples:
-          ?f"{sample}":
+          ?sample:
             display-mode: hidden
   volcano-plots:
     dataset: genes_representative
@@ -283,7 +283,7 @@ views:
         regex('^b_.*_se$'):
           display-mode: hidden
         ?for sample in params.samples:
-          ?f"{sample}":
+          ?sample:
             display-mode: hidden
   genes_aggregated:
     dataset: genes_aggregated
@@ -317,7 +317,7 @@ views:
                 - 0.0
                 - 1.0
         ?for sample in params.samples:
-          ?f"{sample}":
+          ?sample:
             display-mode: hidden
   logcount_matrix:    
     dataset: logcount_matrix
@@ -331,7 +331,7 @@ views:
         gene:
           display-mode: normal
         ?for sample in params.samples:
-          ?f"{sample}":
+          ?sample:
             display-mode: normal
             plot:
               heatmap:
