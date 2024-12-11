@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.8.3](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.8.2...v2.8.3) (2024-12-11)
+
+
+### Bug Fixes
+
+* Update to latest datavzrd wrapper ([#126](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/126)) ([8b57d60](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/8b57d60b713fe3994f95afc069d59cb089371524))
+* use latest stable datavzrd, fixing a bug with numpy values in configs; increase default ensembl release version to 113 (112 currently has biomart issues) ([#130](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/130)) ([b11f100](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/b11f10061cbc38cf693ff6d919eba4e764630ac9))
+
 ## [2.8.2](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.8.1...v2.8.2) (2024-10-18)
 
 
