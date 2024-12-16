@@ -211,10 +211,16 @@ def kallisto_quant_input(wildcards):
 def kallisto_params(wildcards, input):
     extra = config["params"]["kallisto"]
     if len(input.fastq) == 1 or is_3prime_experiment:
+        unit = units.loc[(wildcards.sample, wildcards.unit)]
+        if unit.fragment_len_mean == "" or unit.fragment_len_sd == "":
+            raise ValueError(
+                f"Missing required fragment length parameters for sample '{wildcards.sample}', unit '{wildcards.unit}'. "
+                f"For 3' prime experiments or single-end reads, both 'fragment_len_mean' and 'fragment_len_sd' must be defined. "
+            )
         extra += " --single --single-overhang --pseudobam"
         extra += (
-            " --fragment-length {unit.fragment_len_mean} " "--sd {unit.fragment_len_sd}"
-        ).format(unit=units.loc[(wildcards.sample, wildcards.unit)])
+            f" --fragment-length {unit.fragment_len_mean} --sd {unit.fragment_len_sd}"
+        )
     else:
         extra += " --fusion"
     return extra
