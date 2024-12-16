@@ -214,8 +214,8 @@ def kallisto_params(wildcards, input):
         unit = units.loc[(wildcards.sample, wildcards.unit)]
         if unit.fragment_len_mean == "" or unit.fragment_len_sd == "":
             raise ValueError(
-                f"Missing required fragment length parameters for sample '{wildcards.sample}', unit '{wildcards.unit}'. "
-                f"For 3' prime experiments or single-end reads, both 'fragment_len_mean' and 'fragment_len_sd' must be defined. "
+                f"Missing required fragment length parameter columns for sample '{wildcards.sample}', unit '{wildcards.unit}' in the units sheet. "
+                f"For 3-prime experiments and single-end reads, both 'fragment_len_mean' and 'fragment_len_sd' must be defined. "
             )
         extra += " --single --single-overhang --pseudobam"
         extra += (
