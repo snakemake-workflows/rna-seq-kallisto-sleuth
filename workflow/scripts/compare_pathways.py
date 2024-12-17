@@ -5,8 +5,8 @@ import sys
 
 sys.stderr = open(snakemake.log[0], "w")
 
-diffexp_x = pl.read_csv(snakemake.input[0], separator="\t").lazy()
-diffexp_y = pl.read_csv(snakemake.input[1], separator="\t").lazy()
+diffexp_x = pl.read_csv(snakemake.input[0], separator="\t", null_values="NA").lazy()
+diffexp_y = pl.read_csv(snakemake.input[1], separator="\t", null_values="NA").lazy()
 label_x = list(snakemake.params.labels)[0]
 label_y = list(snakemake.params.labels)[1]
 
