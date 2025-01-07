@@ -1,6 +1,6 @@
 __use_yte__: true
 
-name: ?f"Inputs used to start the pipeline"
+name: ?f"Definition of input files and technical sequencing parameters"
 datasets:
   units:
     path: ?input.table

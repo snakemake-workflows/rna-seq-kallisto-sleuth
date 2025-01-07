@@ -99,21 +99,35 @@ def get_model(wildcards):
     return config["diffexp"]["models"][wildcards.model]
 
 
+def column_missing_or_empty(column_name, dataframe, sample, unit):
+    if column_name in dataframe.columns:
+        return pd.isnull(dataframe.loc[(sample, unit), column_name])
+    else:
+        return True
+
+
 def is_single_end(sample, unit):
     """Determine whether unit is single-end."""
-    bam_paired_not_present = pd.isnull(units.loc[(sample, unit), "bam_paired"])
-    fq2_not_present = pd.isnull(units.loc[(sample, unit), "fq2"])
-    return fq2_not_present and bam_paired_not_present
+    return column_missing_or_empty(
+        "fq2", units, sample, unit
+    ) and column_missing_or_empty("bam_paired", units, sample, unit)
 
 
 def get_fastqs(wildcards):
     """Get raw FASTQ files from unit sheet."""
-    if not pd.isnull(units.loc[(wildcards.sample, wildcards.unit), "bam_single"]):
+    if not column_missing_or_empty(
+        "bam_single", units, wildcards.sample, wildcards.unit
+    ):
         return f"results/fastq/{wildcards.sample}-{wildcards.unit}.fq.gz"
-    elif not pd.isnull(units.loc[(wildcards.sample, wildcards.unit), "bam_paired"]):
-        fqfrombam1 = f"results/fastq/{wildcards.sample}-{wildcards.unit}.1.fq.gz"
-        fqfrombam2 = f"results/fastq/{wildcards.sample}-{wildcards.unit}.2.fq.gz"
-        return [fqfrombam1, fqfrombam2]
+    elif not column_missing_or_empty(
+        "bam_paired", units, wildcards.sample, wildcards.unit
+    ):
+        return expand(
+            "results/fastq/{sample}-{unit}.{read}.fq.gz",
+            sample=wildcards.sample,
+            unit=wildcards.unit,
+            read=["1", "2"],
+        )
     elif is_single_end(wildcards.sample, wildcards.unit):
         return units.loc[(wildcards.sample, wildcards.unit), "fq1"]
     else:
@@ -197,10 +211,16 @@ def kallisto_quant_input(wildcards):
 def kallisto_params(wildcards, input):
     extra = config["params"]["kallisto"]
     if len(input.fastq) == 1 or is_3prime_experiment:
+        unit = units.loc[(wildcards.sample, wildcards.unit)]
+        if unit.fragment_len_mean == "" or unit.fragment_len_sd == "":
+            raise ValueError(
+                f"Missing required fragment length parameter columns for sample '{wildcards.sample}', unit '{wildcards.unit}' in the units sheet. "
+                f"For 3-prime experiments and single-end reads, both 'fragment_len_mean' and 'fragment_len_sd' must be defined. "
+            )
         extra += " --single --single-overhang --pseudobam"
         extra += (
-            " --fragment-length {unit.fragment_len_mean} " "--sd {unit.fragment_len_sd}"
-        ).format(unit=units.loc[(wildcards.sample, wildcards.unit)])
+            f" --fragment-length {unit.fragment_len_mean} --sd {unit.fragment_len_sd}"
+        )
     else:
         extra += " --fusion"
     return extra

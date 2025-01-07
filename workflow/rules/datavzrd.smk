@@ -59,7 +59,7 @@ rule spia_datavzrd:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
         pathway_db=config["enrichment"]["spia"]["pathway_database"],
     wrapper:
-        "v3.13.8/utils/datavzrd"
+        "v5.5.0/utils/datavzrd"
 
 
 # Generating Differential Expression Datavzrd Report
@@ -88,8 +88,11 @@ rule diffexp_datavzrd:
         model=get_model,
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
         samples=get_model_samples,
+        primary_variable=lambda wildcards: config["diffexp"]["models"][
+            wildcards.model
+        ]["primary_variable"],
     wrapper:
-        "v3.13.8/utils/datavzrd"
+        "v5.5.0/utils/datavzrd"
 
 
 # Generating Meta Comparison Datavzrd Reports
@@ -145,4 +148,58 @@ rule inputs_datavzrd:
     log:
         "logs/datavzrd-report/{input}_datavzrd.log",
     wrapper:
-        "v3.13.8/utils/datavzrd"
+        "v5.5.0/utils/datavzrd"
+
+
+# Generating Meta Comparison Datavzrd Reports
+rule meta_compare_datavzrd:
+    input:
+        config=lambda wildcards: workflow.source_path(
+            f"../resources/datavzrd/meta_comparison-{wildcards.method}-template.yaml"
+        ),
+        table="results/tables/{method}/meta_compare_{meta_comp}.tsv",
+        plot="results/meta_comparison/{method}/{meta_comp}.json",
+    output:
+        report(
+            directory("results/datavzrd-reports/{method}_meta_comparison_{meta_comp}"),
+            htmlindex="index.html",
+            caption="../report/meta_compare.rst",
+            category="Comparisons",
+            subcategory="{meta_comp}",
+            patterns=["index.html"],
+            labels=lambda wildcards: get_meta_compare_labels(
+                method=f"{wildcards.method.capitalize()}: "
+            )(wildcards),
+        ),
+    params:
+        pathway_db=config["enrichment"]["spia"]["pathway_database"],
+        species=config["resources"]["ref"]["species"],
+    log:
+        "logs/datavzrd-report/meta_comp_{method}.{meta_comp}.log",
+    wrapper:
+        "v5.5.0/utils/datavzrd"
+
+
+# Generating Input Datavzrd Reports
+rule inputs_datavzrd:
+    input:
+        config=lambda wc: workflow.source_path(
+            f"../resources/datavzrd/{wc.input}-template.yaml"
+        ),
+        table=lambda wc: config[wc.input],
+    output:
+        report(
+            directory("results/datavzrd-reports/inputs/{input}"),
+            htmlindex="index.html",
+            category="Inputs",
+            patterns=["index.html"],
+            labels={
+                "input": "{input}",
+            },
+        ),
+    params:
+        offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
+    log:
+        "logs/datavzrd-report/{input}_datavzrd.log",
+    wrapper:
+        "v5.5.0/utils/datavzrd"

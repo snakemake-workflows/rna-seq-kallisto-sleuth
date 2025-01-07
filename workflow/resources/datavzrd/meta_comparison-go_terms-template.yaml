@@ -11,19 +11,19 @@ views:
   comparison_table:
     dataset: comparison_table
     desc: |
-      Table for values of meta comparison.       
-      The table is sorted in descending order by the pi-value score of the difference in effects of the fold change of the primary variable of the model under consideration (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`).
+      Table for values of meta comparison. 
+      The table is sorted in descending order by the pi-value score of the maximum difference in positive and negative total effects of fold changes influenced by the enrichment (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`).
     page-size: 25
     render-table:
       columns:
-        ext_gene:
+        GO:
+          display-mode: hidden
+        term:
           display-mode: normal
           link-to-url: 
-            Ensembl:
-              url: f"https://www.ensembl.org/{str.capitalize(?params.species)}/Transcript/Summary?t={{target_id}}"
-        target_id:
-          display-mode: hidden
-        qval_min:
+            geneontology:
+              url: http://amigo.geneontology.org/amigo/term/{GO}
+        min_p_fdr_bh:
           plot:
             heatmap:
               scale: linear
@@ -44,20 +44,29 @@ views:
                 - "#fdae6b"
               domain:
                 - 0
-                - 30
-        regex('effect\s+\w+\s+\(beta\s+score\)'):
+                - 300
+        regex('positive\s+effect\s+\w+'):
           display-mode: normal
           plot:
             heatmap:
               scale: linear
               range:
-                - "#e6550d"
                 - "white"
-                - "#6baed6"
+                - "#e6550d"
               domain:
-                - -8
                 - 0
-                - 8
+                - 300
+        regex('negative\s+effect\s+\w+'):
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "white"
+                - "#984ea3"
+              domain:
+                - 0
+                - -300
         pi_value:
           display-mode: normal
           plot:
@@ -73,7 +82,7 @@ views:
                 - 300
   comparison_plot:
     desc: |
-      The axes represent the log2-fold changes (beta-scores) for the two models, with each point representing a gene. Points on the diagonal indicate no difference between the comparisons, while deviations from the diagonal suggest differences in gene expression fold changes between the treatments.
+      The left side shows the summed positive beta-scores within a GO-term and the right side shows the summed negative beta-scores, with each point representing a GO-term. This illustrates whether a GO-term is enriched positively, negatively, or in both directions.
       Dealing with the plots: You can drag the plot to centre interesting areas. You can zoom into the plot using the mouse wheel. When you click on a gene, it is also highlighted in the other plot. If the ‘Shift’ key is held down, several genes can be selected at the same time.
     dataset: comparison_table
     render-plot:

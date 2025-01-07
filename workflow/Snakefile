@@ -25,7 +25,6 @@ include: "rules/diffexp.smk"
 include: "rules/diffsplice.smk"
 include: "rules/datavzrd.smk"
 include: "rules/bam.smk"
-include: "rules/spia.smk"
 include: "rules/meta_comparisons.smk"
 
 

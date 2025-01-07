@@ -12,7 +12,7 @@ views:
     dataset: comparison_table
     desc: |
       Table for values of meta comparison. 
-      The table is sorted in descending order by the absolute values of the signed versions of the pi-value score of the primary variable of model under consideration (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`). The sign reflects the sign of the effect (i.e. positive for upregulation, negative for downregulation).
+      The table is sorted in descending order by the pi-value score of the difference in effects of the total perturbation accumulation (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`).
     page-size: 25
     render-table:
       columns:
@@ -35,19 +35,8 @@ views:
                 - 0.25
         pathway id:
           display-mode: hidden
-        min_pi_value:
+        pi_value:
           label: signed_pi_value
-        difference:
-          plot:
-            heatmap:
-              scale: linear
-              range:
-                - "white"
-                - "#fdae6b"
-              domain:
-                - 0
-                - 300
-        effect mgl:
           display-mode: normal
           plot:
             heatmap:
@@ -60,7 +49,17 @@ views:
                 - -300
                 - 0
                 - 300
-        effect t3:
+        difference:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - "white"
+                - "#fdae6b"
+              domain:
+                - 0
+                - 300
+        regex('effect\s\w+'):
           display-mode: normal
           plot:
             heatmap:

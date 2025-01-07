@@ -151,6 +151,27 @@ report:
   # generation, especially on larger cohorts
   offer_excel: false
 
+meta_comparisons:
+  # comparison is only run if set to `true`
+  activate: false
+  # Define here the comparisons under interest
+  comparisons:
+    # Define any name for comparison. You can add as many comparisions as you want
+    model_X_vs_model_Y:
+      items:
+        # Define the two underlying models for the comparison. The models must be defined in the diffexp/models in the config
+        # items must be of form <arbitrary label for plot-axis>: <existing diffexp model from config> 
+        X: model_X
+        Y: model_Y
+      # Define label for datavzrd report
+      label: model X vs. model Y
+
+report:
+  # make this `true`, to get excel files for download in the snakemake
+  # report, BUT: this can drastically increase the runtime of datavzrd report
+  # generation, especially on larger cohorts
+  offer_excel: false
+
 bootstrap_plots:
   # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
   FDR: 0.01
