@@ -295,7 +295,22 @@ def all_input(wildcards):
                 model=config["diffexp"]["models"],
             )
         )
-
+    if config["plot_best_results"]["activate"]:
+        wanted_input.extend(
+            expand(
+                [
+                    "results/plots/top_go_terms/{model}.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.go-terms.html",
+                    "results/plots/top_genes_diffexp_heatmap/{model}.diffexp-heatmap.pdf",
+                ],
+                model=config["diffexp"]["models"],
+                gene_fdr=str(config["enrichment"]["goatools"]["fdr_genes"]).replace(
+                    ".", "-"
+                ),
+                go_term_fdr=str(
+                    config["enrichment"]["goatools"]["fdr_go_terms"]
+                ).replace(".", "-"),
+            )
+        )
     # workflow output that is always wanted
     # general sleuth output
     wanted_input.extend(

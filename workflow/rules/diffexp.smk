@@ -245,6 +245,33 @@ rule plot_diffexp_heatmap:
         "../scripts/plot_diffexp_heatmap.R"
 
 
+rule plot_top_genes_heatmap:
+    input:
+        sample_file="config/samples.tsv",
+        logcountmatrix_file="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
+        diffexp_file="results/tables/diffexp/{model}.genes-representative.diffexp_postprocessed.tsv",
+    output:
+        diffexp_heatmap=report(
+            "results/plots/top_genes_diffexp_heatmap/{model}.diffexp-heatmap.pdf",
+            caption="../report/plot_top_genes_heatmap.rst",
+            category="Top performers",
+            subcategory="Gene heatmaps",
+            patterns=["index.html"],
+            labels={
+                "model": "{model}",
+            },
+        ),
+    params:
+        model=get_model,
+        number_genes=config["plot_best_results"]["number_genes"],
+    log:
+        "logs/plots/plot_top_genes_heatmap/{model}.diffexp-heatmap.log",
+    conda:
+        "../envs/heatmap.yaml"
+    script:
+        "../scripts/plot_top_genes_diffexp_heatmap.R"
+
+
 rule plot_group_density:
     input:
         "results/sleuth/all.rds",

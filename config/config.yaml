@@ -145,6 +145,14 @@ report:
   # generation, especially on larger cohorts
   offer_excel: false
 
+plot_best_results:
+  # make this `true`, to get the following additional result files:
+  #   - For each comparision a barplot with the top x GO-terms with the highest pi_value.
+  #   - For each comparision a heatmap with each sample on the x-axis and the top x genes with the highest pi_value from the differential expression analysis.
+    activate: true
+    number_go_terms: 10
+    number_genes: 20
+
 params:
   # for kallisto parameters, see the kallisto manual:
   # https://pachterlab.github.io/kallisto/manual

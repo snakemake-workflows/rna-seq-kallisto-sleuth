@@ -1,0 +1,3 @@
+Heatmap of the top genes across individual samples in the {{ snakemake.wildcards.model }} comparison.
+The x-axis represents individual samples, grouped according to their comparison category, as indicated in the top row. The y-axis shows the top genes with the most significant pi-values, reflecting a combination of large fold changes and low p-values.
+The heatmap values correspond to normalized, batch-corrected log-transformed counts.

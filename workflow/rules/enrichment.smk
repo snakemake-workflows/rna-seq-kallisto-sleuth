@@ -108,6 +108,31 @@ rule fgsea_plot_gene_sets:
         "../scripts/plot-fgsea-gene-sets.R"
 
 
+# Postprocessing GO Enrichment Data
+rule plot_top_go_terms:
+    input:
+        "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}.tsv",
+    output:
+        report(
+            "results/plots/top_go_terms/{model}.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.go-terms.html",
+            caption="../report/plot_top_go_terms.rst",
+            category="Top performers",
+            subcategory="GO term barplots",
+            patterns=["index.html"],
+            labels={
+                "model": "{model}",
+            },
+        ),
+    conda:
+        "../envs/pystats.yaml"
+    params:
+        num_go_terms=config["plot_best_results"]["number_go_terms"],
+    log:
+        "logs/yte/plot_top_go_terms/{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
+    script:
+        "../scripts/plot_top_go_terms.py"
+
+
 ## gene ontology term enrichment analysis
 
 

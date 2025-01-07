@@ -1,0 +1,1 @@
+Barplot of the Go terms with the largest pi_value for the model {{ snakemake.wildcards.model }}. The y-axis shows the terms (taken from the GO-enrichment analysis), the x-axis shows the size of the effect. The terms are sorted in descending order according to their respective pi_value.
