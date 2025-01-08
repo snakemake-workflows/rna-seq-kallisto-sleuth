@@ -119,10 +119,11 @@ enrichment:
       log_file_name: "{model}"
       wildcards:
         model: 'list(config["diffexp"]["models"])'
+  # What is the name of the column of the effect?
   effect_col:
-    dynamic: true
-    dynamic_expression: "f\"b_\" {config[\"diffexp\"][\"models\"][w.model][\"primary_variable\"]}"
-    static_value: ""
+    dynamic: true # If the name depends on wildcards set to true and give expression
+    dynamic_expression: "f\"b_{config[\"diffexp\"][\"models\"][w.model][\"primary_variable\"]}\""
+    static_value: "" # If the col name is static give the name here
   spia:
     # tool is only run if set to `true`
     activate: false
