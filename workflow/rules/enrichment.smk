@@ -108,7 +108,6 @@ rule fgsea_plot_gene_sets:
         "../scripts/plot-fgsea-gene-sets.R"
 
 
-# Postprocessing GO Enrichment Data
 rule plot_top_go_terms:
     input:
         "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}.tsv",
