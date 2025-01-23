@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.4](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.8.3...v2.8.4) (2024-12-18)
+
+
+### Bug Fixes
+
+* handle NA values correctly in meta compare pathways ([#134](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/134)) ([71778df](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/71778dfacc9f662ba64916fb9a99b6107912f05f))
+
 ## [2.8.3](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.8.2...v2.8.3) (2024-12-11)
 
 
