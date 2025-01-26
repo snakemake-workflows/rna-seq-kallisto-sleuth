@@ -157,12 +157,13 @@ rule plot_pca:
     input:
         rds="results/sleuth/all.rds",
     output:
-        pca=report(
-            "results/plots/pca/{covariate}.pca.pdf",
-            caption="../report/plot-pca.rst",
-            category="PCA",
-            labels={"covariate": "{covariate}", "plot": "pca"},
-        ),
+        pca="results/plots/pca/{covariate}.pca.tsv",
+        # pca=report(
+        #     "results/plots/pca/{covariate}.pca.pdf",
+        #     caption="../report/plot-pca.rst",
+        #     category="PCA",
+        #     labels={"covariate": "{covariate}", "plot": "pca"},
+        # ),
         pc_var=report(
             "results/plots/pc-variance/{covariate}.pc-variance-plot.pdf",
             caption="../report/plot-pc-variance.rst",

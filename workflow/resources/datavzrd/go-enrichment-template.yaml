@@ -133,3 +133,30 @@ views:
               }  
             spec-path: ?input.vega_waterfall
             vega-controls: true
+  go_terms_scatter:
+    dataset: go_enrichment
+    desc: |
+      The axes represent FDR and pi_value (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`) for the two models, with each point representing a GO term. Click on a GO term to highlight it in colour. Several GO terms can be selected at the same time by holding down the Shift key.
+    render-plot:
+      spec-path: ?input.scatter
+  # go_terms_scatter_vega:
+  #   custom-plot:
+  #     data: |
+  #       function customFunction(value, row) {
+  #         if (value && value.trim() !== "") {
+  #             var geneValues = value.split(', ');
+  #             var data = [];
+  #             geneValues.forEach(function(geneValue) {
+  #               var parts = geneValue.split(':');
+  #               var gene = parts[0];
+  #               var val = parseFloat(parts[1]);
+
+  #               data.push({"gene": gene, "value": val});
+  #           });
+  #           return data;
+  #         } else {
+  #             return "";
+  #         }
+  #       }  
+  #     spec-path: ?input.vega_waterfall
+  #     vega-controls: true

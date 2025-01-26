@@ -47,6 +47,38 @@ rule postprocess_logcount_matrix:
         "../scripts/postprocess_logcount.py"
 
 
+rule plot_enrichment_scatter:
+    input:
+        "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}.tsv",
+    output:
+        "results/plots/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}_scatter.json",
+    conda:
+        "../envs/pystats.yaml"
+    params:
+        name="term",
+        title=lambda wildcards: f"Top 50 GO-terms for model {wildcards.model}",
+        effect_x="effect",
+        effect_y="p_fdr_bh",
+    script:
+        "../scripts/enrichment_scatter.py"
+
+
+rule plot_pathway_scatter:
+    input:
+        "results/tables/pathways/{model}.pathways.tsv",
+    output:
+        "results/plots/pathways/{model}.pathways.tsv_scatter.json",
+    conda:
+        "../envs/pystats.yaml"
+    params:
+        name="Name",
+        title=lambda wildcards: f"Top 50 pathways for model {wildcards.model}",
+        effect_x="total perturbation accumulation",
+        effect_y="Combined FDR",
+    script:
+        "../scripts/enrichment_scatter.py"
+
+
 # Generating SPIA Datavzrd Report
 rule spia_datavzrd:
     input:
@@ -59,6 +91,7 @@ rule spia_datavzrd:
         vega_waterfall=workflow.source_path(
             "../resources/custom_vega_plots/waterfall_plot_study_items.json"
         ),
+        scatter="results/plots/pathways/{model}.pathways.tsv_scatter.json",
     output:
         report(
             directory("results/datavzrd-reports/spia-{model}"),
@@ -120,7 +153,11 @@ rule go_enrichment_datavzrd:
         vega_waterfall=workflow.source_path(
             "../resources/custom_vega_plots/waterfall_plot_study_items.json"
         ),
+        # vega_scatter=workflow.source_path(
+        #     "../resources/custom_vega_plots/go-enrichment-scatter.json"
+        # ),
         enrichment="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}.tsv",
+        scatter="results/plots/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}_scatter.json",
     output:
         report(
             directory(
