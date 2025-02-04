@@ -122,7 +122,7 @@ views:
   pathways_scatter:
     dataset: spia_table
     desc: |
-      The axes represent FDR and signed_pi_value (as proposed  by `Xiao et al. 2014 <https://dx.doi.org/10.1093/bioinformatics/`) for the two models, with each point representing a pathway. Click on a pathway to highlight it in colour. Several pathways can be selected at the same time by holding down the Shift key.
+      The axes represent FDR and total pertubation accumulation effect for the model, with each point representing a pathway. Click on a pathway to highlight it in colour. Several pathways can be selected at the same time by holding down the Shift key.
     render-plot:
       spec-path: ?input.scatter
 

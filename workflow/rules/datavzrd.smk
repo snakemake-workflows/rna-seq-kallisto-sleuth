@@ -56,11 +56,10 @@ rule plot_enrichment_scatter:
         "../envs/pystats.yaml"
     params:
         name="term",
-        title=lambda wildcards: f"Top 50 GO-terms for model {wildcards.model}",
         effect_x="effect",
         effect_y="p_fdr_bh",
     script:
-        "../scripts/enrichment_scatter.py"
+        "../scripts/enrichment_pathway_scatter.py"
 
 
 rule plot_pathway_scatter:
@@ -72,11 +71,10 @@ rule plot_pathway_scatter:
         "../envs/pystats.yaml"
     params:
         name="Name",
-        title=lambda wildcards: f"Top 50 pathways for model {wildcards.model}",
         effect_x="total perturbation accumulation",
         effect_y="Combined FDR",
     script:
-        "../scripts/enrichment_scatter.py"
+        "../scripts/enrichment_pathway_scatter.py"
 
 
 # Generating SPIA Datavzrd Report
