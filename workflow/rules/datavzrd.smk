@@ -151,9 +151,6 @@ rule go_enrichment_datavzrd:
         vega_waterfall=workflow.source_path(
             "../resources/custom_vega_plots/waterfall_plot_study_items.json"
         ),
-        # vega_scatter=workflow.source_path(
-        #     "../resources/custom_vega_plots/go-enrichment-scatter.json"
-        # ),
         enrichment="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}.tsv",
         scatter="results/plots/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}_scatter.json",
     output:

@@ -362,7 +362,7 @@ def all_input(wildcards):
             [
                 "results/plots/pc-variance/{covariate}.pc-variance-plot.pdf",
                 "results/plots/loadings/{covariate}.loadings-plot.pdf",
-                "results/plots/pca/{covariate}.pca.html",
+                "results/plots/pca/{covariate}.pca.pdf",
             ],
             covariate=samples.columns[samples.columns != "sample"],
         )
