@@ -4,9 +4,13 @@ import altair as alt
 
 def plot(df_plot, effect_x, effect_y, title, selector, color_scheme):
     alt.data_transformers.disable_max_rows()
+    df_plot["shape_group"] = df_plot.index % 5  # 5 verschiedene Formen
+    shapes = ["triangle-up", "triangle-down", "square", "diamond", "cross"]
+    
+    
     points = (
         alt.Chart(df_plot, title=title)
-        .mark_circle(size=60)
+        .mark_point(size=40)
         .encode(
             alt.Y(
                 effect_y,
@@ -27,6 +31,15 @@ def plot(df_plot, effect_x, effect_y, title, selector, color_scheme):
                 ),
                 alt.value("lightgray"),
             ),
+            shape=alt.condition(
+                selector,
+                alt.Shape(
+                    "shape_group:N",
+                    scale=alt.Scale(domain=[0, 1, 2, 3, 4], range=shapes),  # 5 Formen
+                    legend=None,
+                ),
+                alt.value("circle"),
+            ),
             tooltip=[f"{name}:N", f"{effect_x}:Q", f"{effect_y}:Q"],
         )
         .add_params(selector)
@@ -37,7 +50,7 @@ def plot(df_plot, effect_x, effect_y, title, selector, color_scheme):
 def plot_legend(df_plot, name, selector):
     legend = (
         alt.Chart(df_plot)
-        .mark_circle(size=60)
+        .mark_point(size=60)
         .encode(
             alt.Y(
                 f"{name}",
@@ -46,6 +59,7 @@ def plot_legend(df_plot, name, selector):
                 ),
             ),
             color=f"{name}",
+            shape=f"shape_group:N",
         )
         .transform_filter(selector)
     )
@@ -127,7 +141,7 @@ if df_negative.empty:
         )
         .configure_axis(grid=False)
         .configure_view(stroke=None)
-        .resolve_scale(color="shared")
+        .resolve_scale(color="shared", shape="shared")
     )
 else:
     positive_chart = plot(
@@ -158,7 +172,7 @@ else:
         )
         .configure_axis(grid=False)
         .configure_view(stroke=None)
-        .resolve_scale(color="shared")
+        .resolve_scale(color="shared", shape="shared")
     )
 
 chart.save(snakemake.output[0])
