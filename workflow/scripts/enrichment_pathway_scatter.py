@@ -5,7 +5,7 @@ import sys
 sys.stderr = open(snakemake.log[0], "w")
 
 
-def plot(df_plot, effect_x, effect_y, title, selector, color_scheme):
+def plot(df_plot, effect_x, effect_y, title, selector, color_scheme, name):
     alt.data_transformers.disable_max_rows()
     df_plot["shape_group"] = df_plot.index % 5  # 5 verschiedene Formen
     shapes = ["triangle-up", "triangle-down", "square", "diamond", "cross"]
@@ -55,13 +55,13 @@ def plot_legend(df_plot, name, selector):
         .mark_point(size=60)
         .encode(
             alt.Y(
-                f"{name}",
+                name,
                 axis=alt.Axis(
                     title="", ticks=False, domain=False, labelLimit=700, orient="right"
                 ),
             ),
-            color=f"{name}",
-            shape=f"shape_group:N",
+            color=name,
+            shape="shape_group:N",
         )
         .transform_filter(selector)
     )
@@ -134,7 +134,9 @@ df_negative[f"{effect_x}"] = df_negative[f"{effect_x}"].abs()
 point_selector = alt.selection_point(empty=False)
 
 if df_negative.empty:
-    scatter = plot(df_positive, effect_x, effect_y, "", point_selector, color_scheme)
+    scatter = plot(
+        df_positive, effect_x, effect_y, "", point_selector, color_scheme, name
+    )
     # Important: You need to copy the df in order to have different datasets, else vega does not bind the plot to a dataset
     legend = plot_legend(df_positive.copy(), name, point_selector)
     chart = (
@@ -153,6 +155,7 @@ else:
         "Positive effects",
         point_selector,
         color_scheme,
+        name,
     )
     legend_positive = plot_legend(df_positive, name, point_selector)
     negative_chart = plot(
@@ -162,6 +165,7 @@ else:
         "Negative effects",
         point_selector,
         color_scheme,
+        name,
     )
     legend_negative = plot_legend(df_negative, name, point_selector)
     chart = (
