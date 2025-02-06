@@ -1,5 +1,8 @@
 import pandas as pd
 import altair as alt
+import sys
+
+sys.stderr = open(snakemake.log[0], "w")
 
 
 def plot(df_plot, effect_x, effect_y, title, selector, color_scheme):

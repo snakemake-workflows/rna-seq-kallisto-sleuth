@@ -58,6 +58,8 @@ rule plot_enrichment_scatter:
         name="term",
         effect_x="effect",
         effect_y="p_fdr_bh",
+    log:
+        "logs/plot_enrichment_scatter-{model}/plot_enrichment_scatter-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     script:
         "../scripts/enrichment_pathway_scatter.py"
 
@@ -69,6 +71,8 @@ rule plot_pathway_scatter:
         "results/plots/pathways/{model}.pathways.tsv_scatter.json",
     conda:
         "../envs/pystats.yaml"
+    log:
+        "logs/plot_pathway_scatter-{model}/plot_pathway_scatter-{model}.log",
     params:
         name="Name",
         effect_x="total perturbation accumulation",
