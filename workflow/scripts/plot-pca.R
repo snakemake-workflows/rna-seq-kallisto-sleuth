@@ -55,7 +55,6 @@ if (snakemake@params[["exclude_nas"]]) {
   so$sample_to_covariates <- subset(so$sample_to_covariates, !is.na(so$sample_to_covariates[[covariate_column]]))
 }
 
-
 plot_pca(so, color_by = covariate_column)
 ggsave(snakemake@output[["pca"]], width=14)
 
