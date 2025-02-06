@@ -6,8 +6,7 @@ def plot(df_plot, effect_x, effect_y, title, selector, color_scheme):
     alt.data_transformers.disable_max_rows()
     df_plot["shape_group"] = df_plot.index % 5  # 5 verschiedene Formen
     shapes = ["triangle-up", "triangle-down", "square", "diamond", "cross"]
-    
-    
+
     points = (
         alt.Chart(df_plot, title=title)
         .mark_point(size=40)
@@ -133,7 +132,7 @@ point_selector = alt.selection_point(empty=False)
 
 if df_negative.empty:
     scatter = plot(df_positive, effect_x, effect_y, "", point_selector, color_scheme)
-    # Important: You need to copy the df in order to have different datasets, else vega does not bin the plot to a dataset
+    # Important: You need to copy the df in order to have different datasets, else vega does not bind the plot to a dataset
     legend = plot_legend(df_positive.copy(), name, point_selector)
     chart = (
         alt.hconcat(
