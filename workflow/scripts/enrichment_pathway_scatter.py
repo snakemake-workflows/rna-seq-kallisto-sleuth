@@ -148,7 +148,7 @@ if df_negative.empty:
         .resolve_scale(color="shared", shape="shared")
     )
 else:
-    positive_chart = plot(
+    positive_scatter = plot(
         df_positive,
         effect_x,
         effect_y,
@@ -158,7 +158,11 @@ else:
         name,
     )
     legend_positive = plot_legend(df_positive, name, point_selector)
-    negative_chart = plot(
+    positive_chart = alt.hconcat(
+        positive_scatter,
+        legend_positive,
+    )
+    negative_scatter = plot(
         df_negative,
         effect_x,
         effect_y,
@@ -168,13 +172,16 @@ else:
         name,
     )
     legend_negative = plot_legend(df_negative, name, point_selector)
+    negative_chart = alt.hconcat(
+        negative_scatter,
+        legend_negative,
+    )
+
     chart = (
-        alt.hconcat(
+        alt.vconcat(
             positive_chart,
-            legend_positive,
             negative_chart,
-            legend_negative,
-            padding={"left": 0, "top": 0, "right": 400, "bottom": 0},
+            padding={"left": 0, "top": 0, "right": 300, "bottom": 0},
         )
         .configure_axis(grid=False)
         .configure_view(stroke=None)
