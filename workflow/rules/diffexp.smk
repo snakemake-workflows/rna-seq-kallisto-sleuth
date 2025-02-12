@@ -176,7 +176,7 @@ rule prepare_pca:
     params:
         exclude_nas=config["pca"].get("exclude_nas", False),
     log:
-        "logs/plots/pca/{covariate}.plot_pca.log",
+        "logs/plots/pca/{covariate}.prepare_pca.log",
     script:
         "../scripts/prepare-pca.R"
 
@@ -193,6 +193,8 @@ rule plot_pca:
         ),
     conda:
         "../envs/pystats.yaml"
+    log:
+        "logs/plots/pca/{covariate}.plot_pca.log",
     params:
         color_by=lambda wildcards: wildcards.covariate,
     script:

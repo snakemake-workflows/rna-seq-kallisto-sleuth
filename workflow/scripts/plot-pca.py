@@ -2,6 +2,8 @@ import pandas as pd
 import altair as alt
 import sys
 
+sys.stderr = open(snakemake.log[0], "w")
+
 
 def plot(df, effect_x, effect_y, title):
     # Filter out rows where either effect_x or effect_y is zero because of logarithmic scale

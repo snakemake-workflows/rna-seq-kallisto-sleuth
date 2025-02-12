@@ -1,4 +1,7 @@
 import pandas as pd
+import sys
+
+sys.stderr = open(snakemake.log[0], "w")
 
 
 def process_columns(df):

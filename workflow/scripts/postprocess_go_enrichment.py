@@ -1,6 +1,9 @@
 # import pandas as pd
 from ast import literal_eval as make_tuple
 import polars as pl
+import sys
+
+sys.stderr = open(snakemake.log[0], "w")
 
 
 def calculate_enrichment(ratio_str):
