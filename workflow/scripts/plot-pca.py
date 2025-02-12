@@ -5,7 +5,6 @@ import sys
 
 def plot(df, effect_x, effect_y, title):
     # Filter out rows where either effect_x or effect_y is zero because of logarithmic scale
-    required_columns = ["sample", effect_x, effect_y]
     point_selector = alt.selection_single(fields=["term"], empty=False)
 
     alt.data_transformers.disable_max_rows()
@@ -66,7 +65,6 @@ def plot(df, effect_x, effect_y, title):
     )
 
     chart = (
-        # alt.layer(line, points, text_background, text)
         alt.layer(points, text_background, text)
         .add_params(point_selector)
         .properties(title=title)

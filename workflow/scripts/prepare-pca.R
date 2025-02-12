@@ -19,7 +19,6 @@ spread_abundance_by <- function(abund, var, which_order) {
   result[, which_order, drop = FALSE]
 }
 
-# plot_pca <- function(obj, color_by) {
 prepare_pca_df <- function(obj, color_by) {
   # Extract data
   mat <- t(spread_abundance_by(obj$obs_norm_filt, "est_counts", obj$sample_to_covariates$sample))

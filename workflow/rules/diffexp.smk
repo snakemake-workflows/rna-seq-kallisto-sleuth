@@ -194,7 +194,6 @@ rule plot_pca:
     conda:
         "../envs/pystats.yaml"
     params:
-        exclude_nas=config["pca"].get("exclude_nas", False),
         color_by=lambda wildcards: wildcards.covariate,
     script:
         "../scripts/plot-pca.py"
