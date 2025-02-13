@@ -5,13 +5,14 @@ import sys
 sys.stderr = open(snakemake.log[0], "w")
 
 
-def plot(df_plot, effect_x, effect_y, title, selector, color_scheme, name):
+def plot(df_plot, effect_x, effect_y, title, selector, color_scheme):
     alt.data_transformers.disable_max_rows()
-    df_plot["shape_group"] = df_plot.index % 5  # 5 verschiedene Formen
-    shapes = ["triangle-up", "triangle-down", "square", "diamond", "cross"]
-
     points = (
         alt.Chart(df_plot, title=title)
+        .transform_calculate(
+            order_color=f"indexof({selector.name}.Name || [], datum.Name)",
+            order_shape=f"indexof({selector.name}.Name || [], datum.Name) % 5",
+        )
         .mark_point(size=40)
         .encode(
             alt.Y(
@@ -29,15 +30,24 @@ def plot(df_plot, effect_x, effect_y, title, selector, color_scheme, name):
             color=alt.condition(
                 selector,
                 alt.Color(
-                    f"{name}:N", scale=alt.Scale(scheme=color_scheme), legend=None
+                    "order_color:N", scale=alt.Scale(range=color_scheme), legend=None
                 ),
                 alt.value("lightgray"),
             ),
             shape=alt.condition(
                 selector,
                 alt.Shape(
-                    "shape_group:N",
-                    scale=alt.Scale(domain=[0, 1, 2, 3, 4], range=shapes),  # 5 Formen
+                    "order_shape:N",
+                    scale=alt.Scale(
+                        domain=[0, 1, 2, 3, 4],
+                        range=[
+                            "triangle-up",
+                            "triangle-down",
+                            "square",
+                            "diamond",
+                            "cross",
+                        ],
+                    ),
                     legend=None,
                 ),
                 alt.value("circle"),
@@ -49,9 +59,13 @@ def plot(df_plot, effect_x, effect_y, title, selector, color_scheme, name):
     return points
 
 
-def plot_legend(df_plot, name, selector):
+def plot_legend(df_plot, name, selector, color_scheme):
     legend = (
         alt.Chart(df_plot)
+        .transform_calculate(
+            order_color=f"indexof({selector.name}.Name || [], datum.Name)",
+            order_shape=f"indexof({selector.name}.Name || [], datum.Name) % 5",
+        )
         .mark_point(size=60)
         .encode(
             alt.Y(
@@ -60,8 +74,31 @@ def plot_legend(df_plot, name, selector):
                     title="", ticks=False, domain=False, labelLimit=700, orient="right"
                 ),
             ),
-            color=name,
-            shape="shape_group:N",
+            color=alt.condition(
+                selector,
+                alt.Color(
+                    "order_color:N", scale=alt.Scale(range=color_scheme), legend=None
+                ),
+                alt.value("lightgrey"),
+            ),
+            shape=alt.condition(
+                selector,
+                alt.Shape(
+                    "order_shape:N",
+                    scale=alt.Scale(
+                        domain=[0, 1, 2, 3, 4],
+                        range=[
+                            "triangle-up",
+                            "triangle-down",
+                            "square",
+                            "diamond",
+                            "cross",
+                        ],
+                    ),
+                    legend=None,
+                ),
+                alt.value("circle"),
+            ),
         )
         .transform_filter(selector)
     )
@@ -69,56 +106,14 @@ def plot_legend(df_plot, name, selector):
 
 
 color_scheme = [
-    "#1f78b4",
-    "#33a02c",
-    "#e31a1c",
-    "#ff7f00",
-    "#6a3d9a",
-    "#b15928",
-    "#a6cee3",
-    "#b2df8a",
-    "#fb9a99",
-    "#fdbf6f",
-    "#cab2d6",
-    "#ffff33",
-    "#8dd3c7",
-    "#ffffb3",
-    "#bebada",
-    "#fb8072",
-    "#80b1d3",
-    "#fdb462",
-    "#b3de69",
-    "#fccde5",
-    "#d9d9d9",
-    "#bc80bd",
-    "#ccebc5",
-    "#ffed6f",
-    "#66c2a5",
-    "#fc8d62",
-    "#8da0cb",
-    "#e78ac3",
-    "#a6d854",
-    "#ffd92f",
-    "#e5c494",
-    "#b3b3b3",
-    "#377eb8",
-    "#4daf4a",
-    "#984ea3",
-    "#ffcc00",
-    "#d73027",
-    "#4575b4",
-    "#91cf60",
-    "#e08214",
-    "#7fc97f",
-    "#beaed4",
-    "#fdc086",
-    "#ffff99",
-    "#386cb0",
-    "#f0027f",
-    "#bf5b17",
-    "#666666",
-    "#1b9e77",
-    "#d95f02",
+    "#000000",
+    "#E69F00",
+    "#56B4E9",
+    "#009E73",
+    "#F0E442",
+    "#0072B2",
+    "#D55E00",
+    "#CC79A7",
 ]
 
 df = pd.read_csv(snakemake.input[0], sep="\t")
@@ -131,7 +126,7 @@ df_positive = df[df[f"{effect_x}"] >= 0]
 df_negative = df[df[f"{effect_x}"] < 0]
 df_negative[f"{effect_x}"] = df_negative[f"{effect_x}"].abs()
 
-point_selector = alt.selection_point(empty=False)
+point_selector = alt.selection_point(fields=["Name"], empty=False)
 
 if df_negative.empty:
     scatter = plot(
@@ -155,9 +150,8 @@ else:
         "Positive effects",
         point_selector,
         color_scheme,
-        name,
     )
-    legend_positive = plot_legend(df_positive, name, point_selector)
+    legend_positive = plot_legend(df_positive, name, point_selector, color_scheme)
     positive_chart = alt.hconcat(
         positive_scatter,
         legend_positive,
@@ -169,9 +163,8 @@ else:
         "Negative effects",
         point_selector,
         color_scheme,
-        name,
     )
-    legend_negative = plot_legend(df_negative, name, point_selector)
+    legend_negative = plot_legend(df_negative, name, point_selector, color_scheme)
     negative_chart = alt.hconcat(
         negative_scatter,
         legend_negative,
