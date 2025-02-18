@@ -130,7 +130,7 @@ point_selector = alt.selection_point(fields=["Name"], empty=False)
 
 if df_negative.empty:
     scatter = plot(
-        df_positive, effect_x, effect_y, "", point_selector, color_scheme, name
+        df_positive, effect_x, effect_y, "", point_selector, color_scheme
     )
     # Important: You need to copy the df in order to have different datasets, else vega does not bind the plot to a dataset
     legend = plot_legend(df_positive.copy(), name, point_selector)
