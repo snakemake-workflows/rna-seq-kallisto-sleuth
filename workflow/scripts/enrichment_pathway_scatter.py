@@ -133,7 +133,7 @@ if df_negative.empty:
         df_positive, effect_x, effect_y, "", point_selector, color_scheme
     )
     # Important: You need to copy the df in order to have different datasets, else vega does not bind the plot to a dataset
-    legend = plot_legend(df_positive.copy(), name, point_selector)
+    legend = plot_legend(df_positive.copy(), name, point_selector, color_scheme)
     chart = (
         alt.hconcat(
             scatter, legend, padding={"left": 0, "top": 0, "right": 400, "bottom": 0}
