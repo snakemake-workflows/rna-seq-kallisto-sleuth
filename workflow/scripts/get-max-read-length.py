@@ -1,8 +1,5 @@
 import json
 import pysam
-import sys
-
-sys.stderr = open(snakemake.log[0], "w")
 
 max_read_length = max(
     len(rec.sequence) for f in snakemake.input for rec in pysam.FastxFile(f)

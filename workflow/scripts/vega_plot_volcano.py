@@ -1,9 +1,7 @@
 from string import Template
 import pandas as pd
 from io import StringIO
-import sys
 
-sys.stderr = open(snakemake.log[0], "w")
 
 HTML = r"""
 <!DOCTYPE html>
@@ -67,6 +65,7 @@ def main(snakemake):
 
     with open(snakemake.output.json, "wt") as f:
         f.write(json)
+
 
 
 if __name__ == "__main__":
