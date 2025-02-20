@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.5](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.8.4...v2.8.5) (2025-02-20)
+
+
+### Bug Fixes
+
+* Improve error handling for missing or empty column values in dataframe with duplicate definitions ([#138](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/138)) ([7f3d590](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/7f3d59000897b5831ed56cb064789d21b95b8935))
+
 ## [2.8.4](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.8.3...v2.8.4) (2024-12-18)
 
 
