@@ -10,8 +10,9 @@ To configure this workflow, modify the following files to reflect your dataset a
 For each biological sample, add a line to the sample sheet in `config/samples.tsv`.
 The column `sample` is required and gives the sample name.
 Additional columns can specify covariates (including batch effects) and conditions.
+Please ensure that these column names can be interpreted as proper variable names.
+Especially, they **should not** start with numeric chars (`1vs2`) or special (non-letter) symbols (`+compound_x`).
 These columns can then be used in the `diffexp: models:` specification section in `config/config.yaml` (see below).
-When naming these columns make sure they can be interpreted as proper variable names i.e. **do not** start them with numeric chars `1vs2`.
 
 Missing values can be specified by empty columns or by writing `NA`.
 
