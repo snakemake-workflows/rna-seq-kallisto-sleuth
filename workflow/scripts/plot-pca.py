@@ -5,9 +5,8 @@ import sys
 sys.stderr = open(snakemake.log[0], "w")
 
 
-def plot(df, effect_x, effect_y, title):
-    # Filter out rows where either effect_x or effect_y is zero because of logarithmic scale
-    point_selector = alt.selection_single(fields=["term"], empty=False)
+def plot(df, effect_x, effect_y):
+    point_selector = alt.selection_point(fields=["sample"], empty=False)
 
     alt.data_transformers.disable_max_rows()
     points = (
@@ -17,13 +16,13 @@ def plot(df, effect_x, effect_y, title):
             alt.X(
                 effect_x,
                 title=effect_x,
-                scale=alt.Scale(nice=False),
+                scale=alt.Scale(),
                 axis=alt.Axis(grid=True),
             ),
             alt.Y(
                 effect_y,
                 title=effect_y,
-                scale=alt.Scale(nice=False),
+                scale=alt.Scale(),
                 axis=alt.Axis(grid=True),
             ),
             alt.Color(snakemake.params["color_by"], scale=alt.Scale(scheme="set1")),
@@ -32,7 +31,6 @@ def plot(df, effect_x, effect_y, title):
         )
     )
 
-    point_selector = alt.selection_single(fields=["sample"], empty=False)
     text_background = (
         alt.Chart(df)
         .mark_text(
@@ -69,7 +67,6 @@ def plot(df, effect_x, effect_y, title):
     chart = (
         alt.layer(points, text_background, text)
         .add_params(point_selector)
-        .properties(title=title)
         .interactive()
     )
     return chart
@@ -77,18 +74,8 @@ def plot(df, effect_x, effect_y, title):
 
 df = pd.read_csv(snakemake.input[0], sep="\t")
 
-positive_chart = plot(
-    df,
-    "PC1",
-    "PC2",
-    "",
-)
-negative_chart = plot(
-    df,
-    "PC3",
-    "PC4",
-    "",
-)
+pc1_pc2 = plot(df, "PC1", "PC2")
+pc3_pc4 = plot(df, "PC3", "PC4")
 
-final_chart = alt.hconcat(positive_chart, negative_chart).resolve_scale(color="shared")
+final_chart = alt.hconcat(pc1_pc2, pc3_pc4).resolve_scale(color="shared")
 final_chart.save(snakemake.output["pca"], inline=True)
