@@ -6,4 +6,3 @@ dependencies:
   - pyreadr =0.5
   - altair =5.3.0
   - pyarrow =16.1
-  - vl-convert-python=1.7.0
