@@ -122,7 +122,10 @@ views:
   pathways_scatter:
     dataset: spia_table
     desc: |
-      The axes represent FDR and total pertubation accumulation effect for the model, with each point representing a pathway. Click on a pathway to highlight it in colour. Several pathways can be selected at the same time by holding down the Shift key.
+      The y-axis represents the False Discovery Rate (FDR), while the x-axis shows the total pertubation accumulation effect of the pathway for the {wildcards.model} model. 
+      Each point corresponds to a pathway.
+      Click on a pathway to highlight it in colour. 
+      Several pathways can be selected at the same time by holding down the Shift key.
     render-plot:
       spec-path: ?input.scatter
 

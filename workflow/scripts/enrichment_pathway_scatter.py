@@ -105,6 +105,8 @@ def plot_legend(df_plot, name, selector, color_scheme):
     return legend
 
 
+# We are using the colorblind palette from: https://mikemol.github.io/technique/colorblind/2018/02/11/color-safe-palette.html.
+# Together with the different shapes we can distinguish up to 40 samples.
 color_scheme = [
     "#000000",
     "#E69F00",
@@ -116,8 +118,7 @@ color_scheme = [
     "#CC79A7",
 ]
 
-df = pd.read_csv(snakemake.input[0], sep="\t")
-df = df.head(50)
+df = pd.read_csv(snakemake.input[0], sep="\t").head(50)
 name = snakemake.params["name"]
 effect_x = snakemake.params["effect_x"]
 effect_y = snakemake.params["effect_y"]
@@ -129,9 +130,7 @@ df_negative[f"{effect_x}"] = df_negative[f"{effect_x}"].abs()
 point_selector = alt.selection_point(fields=["Name"], empty=False)
 
 if df_negative.empty:
-    scatter = plot(
-        df_positive, effect_x, effect_y, "", point_selector, color_scheme
-    )
+    scatter = plot(df_positive, effect_x, effect_y, "", point_selector, color_scheme)
     # Important: You need to copy the df in order to have different datasets, else vega does not bind the plot to a dataset
     legend = plot_legend(df_positive.copy(), name, point_selector, color_scheme)
     chart = (
