@@ -2,7 +2,7 @@ channels:
   - conda-forge
   - nodefaults
 dependencies:
-  - polars =0.20.28
+  - polars =0.20
   - pyreadr =0.5
-  - altair =5.3.0
+  - altair =5.3
   - pyarrow =16.1
