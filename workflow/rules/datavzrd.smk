@@ -55,7 +55,7 @@ rule plot_enrichment_scatter:
     conda:
         "../envs/pystats.yaml"
     params:
-        name="term",
+        identifier="term",
         effect_x="effect",
         effect_y="p_fdr_bh",
     log:
@@ -74,7 +74,7 @@ rule plot_pathway_scatter:
     log:
         "logs/plot_pathway_scatter-{model}/plot_pathway_scatter-{model}.log",
     params:
-        name="Name",
+        identifier="Name",
         effect_x="total perturbation accumulation",
         effect_y="Combined FDR",
     script:

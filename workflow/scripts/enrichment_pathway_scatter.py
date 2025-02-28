@@ -5,13 +5,13 @@ import sys
 sys.stderr = open(snakemake.log[0], "w")
 
 
-def plot(df_plot, effect_x, effect_y, title, selector, color_scheme):
+def plot(df_plot, identifier, effect_x, effect_y, title, selector, color_scheme):
     alt.data_transformers.disable_max_rows()
     points = (
         alt.Chart(df_plot, title=title)
         .transform_calculate(
-            order_color=f"indexof({selector.name}.Name || [], datum.Name)",
-            order_shape=f"indexof({selector.name}.Name || [], datum.Name) % 5",
+            order_color=f"indexof({selector.name}.{identifier} || [], datum.{identifier})",
+            order_shape=f"indexof({selector.name}.{identifier} || [], datum.{identifier}) % 5",
         )
         .mark_point(size=40)
         .encode(
@@ -52,24 +52,24 @@ def plot(df_plot, effect_x, effect_y, title, selector, color_scheme):
                 ),
                 alt.value("circle"),
             ),
-            tooltip=[f"{name}:N", f"{effect_x}:Q", f"{effect_y}:Q"],
+            tooltip=[f"{identifier}:N", f"{effect_x}:Q", f"{effect_y}:Q"],
         )
         .add_params(selector)
     )
     return points
 
 
-def plot_legend(df_plot, name, selector, color_scheme):
+def plot_legend(df_plot, identifier, selector, color_scheme):
     legend = (
         alt.Chart(df_plot)
         .transform_calculate(
-            order_color=f"indexof({selector.name}.Name || [], datum.Name)",
-            order_shape=f"indexof({selector.name}.Name || [], datum.Name) % 5",
+            order_color=f"indexof({selector.name}.{identifier} || [], datum.{identifier})",
+            order_shape=f"indexof({selector.name}.{identifier} || [], datum.{identifier}) % 5",
         )
         .mark_point(size=60)
         .encode(
             alt.Y(
-                name,
+                identifier,
                 axis=alt.Axis(
                     title="", ticks=False, domain=False, labelLimit=700, orient="right"
                 ),
@@ -119,20 +119,28 @@ color_scheme = [
 ]
 
 df = pd.read_csv(snakemake.input[0], sep="\t").head(50)
-name = snakemake.params["name"]
+identifier = snakemake.params["identifier"]
 effect_x = snakemake.params["effect_x"]
 effect_y = snakemake.params["effect_y"]
 
-df_positive = df[df[f"{effect_x}"] >= 0]
+df_positive = df[df[f"{effect_x}"] > 0]
 df_negative = df[df[f"{effect_x}"] < 0]
 df_negative[f"{effect_x}"] = df_negative[f"{effect_x}"].abs()
 
-point_selector = alt.selection_point(fields=["Name"], empty=False)
+point_selector = alt.selection_point(fields=[identifier], empty=False)
 
 if df_negative.empty:
-    scatter = plot(df_positive, effect_x, effect_y, "", point_selector, color_scheme)
     # Important: You need to copy the df in order to have different datasets, else vega does not bind the plot to a dataset
-    legend = plot_legend(df_positive.copy(), name, point_selector, color_scheme)
+    scatter = plot(
+        df_positive.copy(),
+        identifier,
+        effect_x,
+        effect_y,
+        "",
+        point_selector,
+        color_scheme,
+    )
+    legend = plot_legend(df_positive.copy(), identifier, point_selector, color_scheme)
     chart = (
         alt.hconcat(
             scatter, legend, padding={"left": 0, "top": 0, "right": 400, "bottom": 0}
@@ -144,26 +152,28 @@ if df_negative.empty:
 else:
     positive_scatter = plot(
         df_positive,
+        identifier,
         effect_x,
         effect_y,
         "Positive effects",
         point_selector,
         color_scheme,
     )
-    legend_positive = plot_legend(df_positive, name, point_selector, color_scheme)
+    legend_positive = plot_legend(df_positive, identifier, point_selector, color_scheme)
     positive_chart = alt.hconcat(
         positive_scatter,
         legend_positive,
     )
     negative_scatter = plot(
         df_negative,
+        identifier,
         effect_x,
         effect_y,
         "Negative effects",
         point_selector,
         color_scheme,
     )
-    legend_negative = plot_legend(df_negative, name, point_selector, color_scheme)
+    legend_negative = plot_legend(df_negative, identifier, point_selector, color_scheme)
     negative_chart = alt.hconcat(
         negative_scatter,
         legend_negative,
