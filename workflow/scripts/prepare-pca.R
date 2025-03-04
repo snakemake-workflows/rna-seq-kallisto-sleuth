@@ -19,7 +19,7 @@ spread_abundance_by <- function(abund, var, which_order) {
   result[, which_order, drop = FALSE]
 }
 
-plot_pca <- function(obj, color_by) {
+prepare_pca_df <- function(obj, color_by) {
   # Extract data
   mat <- t(spread_abundance_by(obj$obs_norm_filt, "est_counts", obj$sample_to_covariates$sample))
   # Remove zero variance columns
@@ -33,14 +33,7 @@ plot_pca <- function(obj, color_by) {
   pca_df <- as.data.frame(pca_res$x)
   pca_df$sample <- rownames(pca_df)
   pca_df <- merge(pca_df, obj$sample_to_covariates[, c("sample", color_by)], by = "sample")
-  # Plot PCA
-  pc12 <- ggplot(pca_df, aes(PC1, PC2, color = .data[[color_by]]))
-    theme_half_open(12) + background_grid() 
-  pc12 <- pc12 + geom_text(aes(label = sample))
-  pc34 <- ggplot(pca_df, aes(PC3, PC4, color = .data[[color_by]]))
-    theme_half_open(12) + background_grid()
-  pc34 <- pc34 + geom_text(aes(label = sample))
-  ggarrange(pc12, pc34, ncol = 2, common.legend = TRUE)
+  return(pca_df)
 }
 
 #principal components
@@ -55,8 +48,8 @@ if (snakemake@params[["exclude_nas"]]) {
   so$sample_to_covariates <- subset(so$sample_to_covariates, !is.na(so$sample_to_covariates[[covariate_column]]))
 }
 
-plot_pca(so, color_by = covariate_column)
-ggsave(snakemake@output[["pca"]], width=14)
+pca_df <- prepare_pca_df(so, color_by = covariate_column)
+write.table(pca_df, file=snakemake@output[["pca"]], quote=FALSE, sep='\t')
 
 # plot pc variance
 plot_pc_variance(so, use_filtered = TRUE, units = "est_counts", pca_number = pc)

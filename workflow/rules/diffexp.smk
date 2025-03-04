@@ -153,16 +153,12 @@ rule plot_bootstrap:
         "../scripts/plot-bootstrap.R"
 
 
-rule plot_pca:
+rule prepare_pca:
     input:
         rds="results/sleuth/all.rds",
     output:
-        pca=report(
-            "results/plots/pca/{covariate}.pca.pdf",
-            caption="../report/plot-pca.rst",
-            category="PCA",
-            labels={"covariate": "{covariate}", "plot": "pca"},
-        ),
+        # Write tsv instead of plot in order to create interactive plot with python since we did not find a good way to do it with R
+        pca="results/plots/pca/{covariate}.pca.tsv",
         pc_var=report(
             "results/plots/pc-variance/{covariate}.pc-variance-plot.pdf",
             caption="../report/plot-pc-variance.rst",
@@ -180,9 +176,29 @@ rule plot_pca:
     params:
         exclude_nas=config["pca"].get("exclude_nas", False),
     log:
-        "logs/plots/pca/{covariate}.plot_pca.log",
+        "logs/plots/pca/{covariate}.prepare_pca.log",
     script:
-        "../scripts/plot-pca.R"
+        "../scripts/prepare-pca.R"
+
+
+rule plot_pca:
+    input:
+        pca="results/plots/pca/{covariate}.pca.tsv",
+    output:
+        pca=report(
+            "results/plots/pca/{covariate}.pca.html",
+            caption="../report/plot-pca.rst",
+            category="PCA",
+            labels={"covariate": "{covariate}", "plot": "pca"},
+        ),
+    conda:
+        "../envs/pystats.yaml"
+    log:
+        "logs/plots/pca/{covariate}.plot_pca.log",
+    params:
+        color_by=lambda wildcards: wildcards.covariate,
+    script:
+        "../scripts/plot-pca.py"
 
 
 rule plot_diffexp_pval_hist:
