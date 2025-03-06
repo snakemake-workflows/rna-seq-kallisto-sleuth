@@ -61,7 +61,7 @@ rule plot_enrichment_scatter:
     log:
         "logs/plot_enrichment_scatter-{model}/plot_enrichment_scatter-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     script:
-        "../scripts/enrichment_pathway_scatter.py"
+        "../scripts/plot_enrichment_pathway_scatter.py"
 
 
 rule plot_pathway_scatter:
@@ -78,7 +78,7 @@ rule plot_pathway_scatter:
         effect_x="total perturbation accumulation",
         effect_y="Combined FDR",
     script:
-        "../scripts/enrichment_pathway_scatter.py"
+        "../scripts/plot_enrichment_pathway_scatter.py"
 
 
 # Generating SPIA Datavzrd Report
