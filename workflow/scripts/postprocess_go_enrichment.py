@@ -25,7 +25,7 @@ def extract_study_items(value):
 
 
 def calculate_sums(parsed_terms):
-    return sum(2^abs(item["value"]) for item in parsed_terms).log(base=2)
+    return sum(2**abs(item["value"]) for item in parsed_terms).log(base=2)
 
 
 # Load data
