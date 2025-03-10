@@ -27,8 +27,8 @@ samples_out <- if(!is.null(model[["full"]])) {
                     unlist()
     # remove samples with an NA value in any of the columns
     # relevant for sleuth under the current model
-    samples <- samples %>%
-	        drop_na(c(sample, path, all_of(variables)))
+    # samples <- samples %>%
+    #	        drop_na(c(sample, path, all_of(variables)))
 
     primary_variable <- model[["primary_variable"]]
     base_level <- model[["base_level"]]
@@ -46,8 +46,8 @@ samples_out <- if(!is.null(model[["full"]])) {
 write_rds(samples_out, file = snakemake@output[["designmatrix"]])
 
 # remove all columns which have only NA values
-samples <- samples %>%
-	    select_if(function(col) !all(is.na(col)))
+# samples <- samples %>%
+# 	    select_if(function(col) !all(is.na(col)))
 
 t2g <- read_rds(snakemake@input[["transcript_info"]])
 
