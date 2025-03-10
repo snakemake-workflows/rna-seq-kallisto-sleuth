@@ -16,8 +16,8 @@ def extract_study_items(value):
         data = []
         for gene_value in gene_values:
             parts = gene_value.split(":")
-            gene = parts[0]
-            val = float(parts[1])
+            gene = parts[-2]
+            val = float(parts[-1])
             data.append({"gene": gene, "value": val})
         return data
     else:
