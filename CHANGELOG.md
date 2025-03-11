@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.9.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.8.4...v2.9.0) (2025-03-11)
+
+
+### Features
+
+* Make PCA plots interactive and switch to HTML format ([#137](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/137)) ([d0e6e78](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/d0e6e785d0b2518f11efcf3d18a44a53bb578035))
+
+
+### Bug Fixes
+
+* add support for drosophila melanogaster and other non-standard species ([#142](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/142)) ([dedfdf7](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/dedfdf714c28c22d58546eb369536957768e378c))
+* Improve error handling for missing or empty column values in dataframe with duplicate definitions ([#138](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/138)) ([7f3d590](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/7f3d59000897b5831ed56cb064789d21b95b8935))
+
 ## [2.8.4](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.8.3...v2.8.4) (2024-12-18)
 
 
