@@ -139,7 +139,7 @@ views:
       The effect is determined as the average of all the absolute fold changes (all fold changes transformed to be >1) across all genes in a GO term.
       After averaging the fold changes, the result is transformed to the log2 scale for reporting (and for use in the pi values we also report).
       Each point corresponds to a GO term.
-      Click on a GO term to highlight it in colour. 
+      Click on a GO term to highlight it in colour.
       Several GO terms can be selected at the same time by holding down the Shift key."
     render-plot:
       spec-path: ?input.scatter
