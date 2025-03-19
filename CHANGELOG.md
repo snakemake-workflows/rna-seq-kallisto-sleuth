@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.10.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.9.0...v2.10.0) (2025-03-19)
+
+
+### Features
+
+* Enrichment and pathway scatter-plots ([#136](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/136)) ([29684af](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/29684af31dfe7fb6fb05ed1b0fa52a2f356c8091))
+
+
+### Bug Fixes
+
+* move summing of go-term fold changes out of log-space ([#141](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/141)) ([66bed4a](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/66bed4af4fc061a4ec6ff5aacfea0dd1a826bfa1))
+
 ## [2.9.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.8.4...v2.9.0) (2025-03-11)
 
 
