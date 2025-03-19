@@ -25,7 +25,8 @@ def extract_study_items(value):
 
 
 def calculate_sums(parsed_terms):
-    return sum(abs(item["value"]) for item in parsed_terms)
+    number_of_genes=len(parsed_terms)
+    return sum(2**abs(item["value"]) for item in parsed_terms)/number_of_genes
 
 
 # Load data
@@ -64,6 +65,7 @@ if not df_merged.is_empty():
         [
             pl.col("study_items")
             .map_elements(lambda x: calculate_sums(extract_study_items(x)))
+            .log(base=2)
             .alias("effect")
         ]
     )
