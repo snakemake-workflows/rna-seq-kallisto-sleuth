@@ -136,7 +136,7 @@ views:
   go_terms_scatter:
     dataset: go_enrichment
     desc: ?f"The y-axis represents the False Discovery Rate (FDR), while the x-axis shows the effect of the GO term for the {wildcards.model} model as determined by goatools.
-      The effect is determined as the sum of all the absolute fold changes (on a log2 scale) across all genes in a GO term.
+      The effect is determined as the average of all the absolute fold changes (all fold changes transformed to be >1) across all genes in a GO term (reported on a log2 scale).
       Each point corresponds to a GO term.
       Click on a GO term to highlight it in colour. 
       Several GO terms can be selected at the same time by holding down the Shift key."
