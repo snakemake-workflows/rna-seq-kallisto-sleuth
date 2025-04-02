@@ -27,8 +27,8 @@ samples_out <- if(!is.null(model[["full"]])) {
                     unlist()
     # remove samples with an NA value in any of the columns
     # relevant for sleuth under the current model
-    # samples <- samples %>%
-    #	        drop_na(c(sample, path, all_of(variables)))
+    samples <- samples %>%
+    	        drop_na(c(sample, path, all_of(variables)))
 
     primary_variable <- model[["primary_variable"]]
     base_level <- model[["base_level"]]
