@@ -133,3 +133,15 @@ views:
               }  
             spec-path: ?input.vega_waterfall
             vega-controls: true
+  go_terms_scatter:
+    dataset: go_enrichment
+    desc: ?f"The y-axis represents the False Discovery Rate (FDR), while the x-axis shows the effect of the GO term for the {wildcards.model} model as determined by goatools.
+      The effect is determined as the average of all the absolute fold changes across all genes in a GO term.
+      Here, absolute means a log2 fold change above 0, or a fold change above 1.
+      Thus, for averaging, a fold change of 0.5 would become 2, a fold change of 0.25 would become 4.
+      After averaging the fold changes, the result is transformed back to the log2 scale for reporting (and for use in the pi values we also report).
+      Each point corresponds to a GO term.
+      Click on a GO term to highlight it in colour.
+      Several GO terms can be selected at the same time by holding down the Shift key."
+    render-plot:
+      spec-path: ?input.scatter
