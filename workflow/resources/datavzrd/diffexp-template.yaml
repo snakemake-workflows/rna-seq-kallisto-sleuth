@@ -39,6 +39,7 @@ datasets:
       link to transcripts:
         column: transcript
         table-row: transcripts/target_id
+        optional: true
     separator: "\t"
 default-view: genes_representative
 views:
