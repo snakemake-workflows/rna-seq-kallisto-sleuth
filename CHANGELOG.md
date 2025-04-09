@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.10.0...v2.11.0) (2025-04-09)
+
+
+### Features
+
+* Add TPM matrix generation and integration into workflow ([#146](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/146)) ([3c6bdac](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/3c6bdac2396b268e102a9f7dd277b4559863e381))
+
 ## [2.10.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.9.0...v2.10.0) (2025-03-19)
 
 
