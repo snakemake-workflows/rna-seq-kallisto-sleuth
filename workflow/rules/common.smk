@@ -314,6 +314,7 @@ def all_input(wildcards):
                 "results/plots/qq/{model}.qq-plots.pdf",
                 "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
                 "results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
+                "results/tables/tpm-matrix/{model}.tpm-matrix.tsv",
                 "results/sleuth/{model}.samples.tsv",
                 "results/datavzrd-reports/diffexp-{model}",
                 "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",

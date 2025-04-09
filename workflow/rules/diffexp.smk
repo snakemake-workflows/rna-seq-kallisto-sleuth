@@ -240,6 +240,21 @@ rule logcount_matrix:
         "../scripts/sleuth-to-matrix.R"
 
 
+rule tpm_matrix:
+    input:
+        "results/sleuth/{model}.rds",
+    output:
+        "results/tables/tpm-matrix/{model}.tpm-matrix.tsv",
+    params:
+        model=get_model,
+    conda:
+        "../envs/sleuth.yaml"
+    log:
+        "logs/tables/tpm-matrix/{model}.tpm-matrix.log",
+    script:
+        "../scripts/sleuth-to-tpm-matrix.R"
+
+
 rule plot_diffexp_heatmap:
     input:
         logcountmatrix_file="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
