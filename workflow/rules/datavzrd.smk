@@ -29,6 +29,7 @@ rule postprocess_diffexp:
     script:
         "../scripts/postprocess_diffexp.py"
 
+
 rule postprocess_tpm_matrix:
     input:
         tpm="results/tables/tpm-matrix/{model}.tpm-matrix.tsv",
@@ -40,7 +41,7 @@ rule postprocess_tpm_matrix:
     params:
         model=get_model,
     log:
-         "logs/tables/tpm-matrix/{model}.tpm-matrix.sort.log",
+        "logs/tables/tpm-matrix/{model}.tpm-matrix.sort.log",
     script:
         "../scripts/postprocess_tpm.py"
 
