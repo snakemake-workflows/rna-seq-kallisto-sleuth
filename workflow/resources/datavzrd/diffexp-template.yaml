@@ -13,6 +13,9 @@ datasets:
       link to log-count matrix:
         column: target_id
         table-row : logcount_matrix/transcript
+      link to tpm matrix:
+        column: target_id
+        table-row: tpm_matrix/transcript
       link to genes representative:
         column: ens_gene
         table-row: genes_representative/ens_gene
@@ -28,6 +31,9 @@ datasets:
       link to log-count matrix:
         column: target_id
         table-row : logcount_matrix/transcript
+      link to tpm matrix:
+        column: target_id
+        table-row: tpm_matrix/transcript
   genes_aggregated:
     path: ?input.genes_aggregated
     offer-excel: ?params.offer_excel
@@ -36,6 +42,15 @@ datasets:
     path: ?input.logcount_matrix
     offer-excel: ?params.offer_excel
     links:  
+      link to transcripts:
+        column: transcript
+        table-row: transcripts/target_id
+        optional: true
+    separator: "\t"
+  tpm_matrix:
+    path: ?input.tpm_matrix
+    offer-excel: ?params.offer_excel
+    links:
       link to transcripts:
         column: transcript
         table-row: transcripts/target_id
@@ -345,3 +360,27 @@ views:
                   - -1
                   - 0
                   - 1
+  tpm_matrix:
+    dataset: tpm_matrix
+    desc: |
+      Transcript expression matrix (transcript × samples) as TPM values. TPMs are extracted from Sleuth’s normalized abundance estimates without batch correction, to preserve comparability across independent runs.
+    page-size: 25
+    render-table:
+      columns:
+        transcript:
+          display-mode: normal
+          link-to-url:
+            Ensembl:
+              url: "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={value}"
+        gene:
+          display-mode: normal
+        ?for sample in params.samples:
+          ?sample:
+            display-mode: normal
+            ellipsis: 0
+            plot:
+              heatmap:
+                scale: symlog
+                range:
+                  - "white"
+                  - "#e6550d"

@@ -30,6 +30,22 @@ rule postprocess_diffexp:
         "../scripts/postprocess_diffexp.py"
 
 
+rule postprocess_tpm_matrix:
+    input:
+        tpm="results/tables/tpm-matrix/{model}.tpm-matrix.tsv",
+        diffexp="results/tables/diffexp/{model}.genes-representative.diffexp_postprocessed.tsv",
+    output:
+        "results/tables/tpm-matrix/{model}.tpm-matrix.sorted.tsv",
+    conda:
+        "../envs/pandas.yaml"
+    params:
+        model=get_model,
+    log:
+        "logs/tables/tpm-matrix/{model}.tpm-matrix.sort.log",
+    script:
+        "../scripts/postprocess_tpm.py"
+
+
 # Postprocessing Logcount Data
 rule postprocess_logcount_matrix:
     input:
@@ -118,6 +134,7 @@ rule diffexp_datavzrd:
         config=workflow.source_path("../resources/datavzrd/diffexp-template.yaml"),
         # optional files required for rendering the given config
         logcount_matrix="results/tables/logcount-matrix/{model}.logcount-matrix_postprocessed.tsv",
+        tpm_matrix="results/tables/tpm-matrix/{model}.tpm-matrix.sorted.tsv",
         transcripts="results/tables/diffexp/{model}.transcripts.diffexp_postprocessed.tsv",
         genes_aggregated="results/tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
         genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp_postprocessed.tsv",
