@@ -45,6 +45,7 @@ datasets:
       link to transcripts:
         column: transcript
         table-row: transcripts/target_id
+        optional: true
     separator: "\t"
   tpm_matrix:
     path: ?input.tpm_matrix
