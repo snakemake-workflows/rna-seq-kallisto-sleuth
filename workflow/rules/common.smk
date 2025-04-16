@@ -104,6 +104,7 @@ def column_missing_or_empty(column_name, dataframe, sample, unit):
         print(dataframe)
         result = pd.isnull(dataframe.loc[(sample, unit), column_name])
         print(result)
+        print(bool(result))
         try:
             return bool(result)
         except ValueError:
