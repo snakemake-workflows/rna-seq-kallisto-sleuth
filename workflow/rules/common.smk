@@ -101,7 +101,9 @@ def get_model(wildcards):
 
 def column_missing_or_empty(column_name, dataframe, sample, unit):
     if column_name in dataframe.columns:
+        print(dataframe)
         result = pd.isnull(dataframe.loc[(sample, unit), column_name])
+        print(result)
         try:
             return bool(result)
         except ValueError:
