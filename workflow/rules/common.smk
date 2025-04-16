@@ -107,7 +107,7 @@ def column_missing_or_empty(column_name, dataframe, sample, unit):
         except ValueError:
             raise ValueError(
                 f"Expected a single value for sample '{sample}', unit '{unit}' "
-                f"in column '{column_name}', but got multiple values."
+                f"in column '{column_name}', but found: {dataframe.loc[(sample, unit), column_name]}."
             )
     else:
         return True
