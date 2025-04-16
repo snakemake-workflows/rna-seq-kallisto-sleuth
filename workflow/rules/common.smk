@@ -9,7 +9,9 @@ from pathlib import Path
 validate(config, schema="../schemas/config.schema.yaml")
 
 samples = pd.read_csv(config["samples"], sep="\t", dtype=str, comment="#").set_index(
-    "sample", drop=False
+    "sample",
+    drop=False,
+    verify_integrity=True,
 )
 samples.index.names = ["sample_id"]
 
@@ -23,7 +25,9 @@ samples = drop_unique_cols(samples)
 validate(samples, schema="../schemas/samples.schema.yaml")
 
 units = pd.read_csv(config["units"], dtype=str, sep="\t", comment="#").set_index(
-    ["sample", "unit"], drop=False
+    ["sample", "unit"],
+    drop=False,
+    verify_integrity=True,
 )
 units.index.names = ["sample_id", "unit_id"]
 units.index = units.index.set_levels(
