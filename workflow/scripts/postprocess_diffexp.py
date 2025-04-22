@@ -3,6 +3,7 @@ sys.stderr = open(snakemake.log[0], "w")
 
 import pandas as pd
 
+import warnings
 
 def process_columns(df):
     """compute confidence interval for every column starting with b_"""
@@ -38,8 +39,12 @@ def sort_rows(df):
     columns_with_prefix = [col for col in df.columns if col.startswith(signed_pi_start)]
 
     if len(columns_with_prefix) != 1:
-        raise ValueError(
-            f"Expected exactly one column starting with '{signed_pi_start}', found {len(columns_with_prefix)}"
+        warning.warn(
+            f"We can only sort by one signed_pi value column, but found {len(columns_with_prefix)}\n"
+            f"respective columns with prefix '{signed_pi_start}': {columns_with_prefix}\n"
+            "This usually occurs, when you have more than two levels in your condition of\n"
+            "interest column.\n"
+            f"We will sort by the first column found: {columns_with_prefix[0]}"
         )
 
     signed_pi_col = columns_with_prefix[0]
