@@ -39,7 +39,7 @@ def sort_rows(df):
     columns_with_prefix = [col for col in df.columns if col.startswith(signed_pi_start)]
 
     if len(columns_with_prefix) != 1:
-        warning.warn(
+        warnings.warn(
             f"We can only sort by one signed_pi value column, but found {len(columns_with_prefix)}\n"
             f"respective columns with prefix '{signed_pi_start}': {columns_with_prefix}\n"
             "This usually occurs, when you have more than two levels in your condition of\n"
