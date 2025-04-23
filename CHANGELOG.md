@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.11.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.10.0...v2.11.0) (2025-04-23)
+
+
+### Features
+
+* Add TPM matrix generation and integration into workflow ([#146](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/146)) ([3c6bdac](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/3c6bdac2396b268e102a9f7dd277b4559863e381))
+
+
+### Bug Fixes
+
+* make postprocess sorting work with more than one signed_pi value column ([#150](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/150)) ([4b3417a](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/4b3417abb8aba5d99df29899d6e500c4eebe512f))
+* use `verify_integrity=True` in pandas `set_index()` for samples and units to check for duplicates ([#149](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/149)) ([9657c75](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/9657c75d559bc41f5fe649ad631c59a50733bc55))
+
 ## [2.10.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.9.0...v2.10.0) (2025-03-19)
 
 
