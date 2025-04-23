@@ -1,3 +1,6 @@
+import sys
+sys.stderr = open(snakemake.log[0], "w", buffering=1)
+
 # import pandas as pd
 from ast import literal_eval as make_tuple
 import polars as pl

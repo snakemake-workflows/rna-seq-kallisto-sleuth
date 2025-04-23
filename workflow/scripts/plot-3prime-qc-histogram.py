@@ -3,7 +3,7 @@ import pandas as pd
 import sys
 import json
 
-sys.stderr = open(snakemake.log[0], "w")
+sys.stderr = open(snakemake.log[0], "w", buffering=1)
 
 # reading the file read length
 f = open(snakemake.input["read_length"])

@@ -2,7 +2,7 @@ import pandas as pd
 import altair as alt
 import sys
 
-sys.stderr = open(snakemake.log[0], "w")
+sys.stderr = open(snakemake.log[0], "w", buffering=1)
 
 
 def plot(df_plot, identifier, effect_x, effect_y, title, selector, color_scheme):
