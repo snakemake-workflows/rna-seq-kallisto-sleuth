@@ -1,7 +1,7 @@
 import sys
 import pandas as pd
 
-sys.stderr = open(snakemake.log[0], "w")
+sys.stderr = open(snakemake.log[0], "w", buffering=1)
 
 # Load input files
 tpm_df = pd.read_csv(snakemake.input["tpm"], sep="\t")
