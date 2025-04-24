@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.1](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.11.0...v2.11.1) (2025-04-24)
+
+
+### Bug Fixes
+
+* Remove model filtering of logcount matrix ([#144](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/144)) ([de347fa](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/de347fa4502ce7b15c62bd3a4fa0f4525f2f86f8))
+
 ## [2.11.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.10.0...v2.11.0) (2025-04-23)
 
 
