@@ -46,23 +46,6 @@ rule postprocess_tpm_matrix:
         "../scripts/postprocess_tpm.py"
 
 
-# Postprocessing Logcount Data
-rule postprocess_logcount_matrix:
-    input:
-        logcount="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
-        diffexp="results/tables/diffexp/{model}.transcripts.diffexp_postprocessed.tsv",
-    output:
-        "results/tables/logcount-matrix/{model}.logcount-matrix_postprocessed.tsv",
-    conda:
-        "../envs/pandas.yaml"
-    params:
-        model=get_model,
-    log:
-        "logs/yte/postprocess_logcount/{model}.log",
-    script:
-        "../scripts/postprocess_logcount.py"
-
-
 rule plot_enrichment_scatter:
     input:
         "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}.tsv",
@@ -133,7 +116,7 @@ rule diffexp_datavzrd:
     input:
         config=workflow.source_path("../resources/datavzrd/diffexp-template.yaml"),
         # optional files required for rendering the given config
-        logcount_matrix="results/tables/logcount-matrix/{model}.logcount-matrix_postprocessed.tsv",
+        logcount_matrix="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
         tpm_matrix="results/tables/tpm-matrix/{model}.tpm-matrix.sorted.tsv",
         transcripts="results/tables/diffexp/{model}.transcripts.diffexp_postprocessed.tsv",
         genes_aggregated="results/tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
