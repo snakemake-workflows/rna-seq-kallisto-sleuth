@@ -23,13 +23,13 @@ rule get_annotation:
         species=config["resources"]["ref"]["species"],
         release=config["resources"]["ref"]["release"],
         build=config["resources"]["ref"]["build"],
-        fmt="gtf",
+        flavor="chr_patch_hapl_scaff",  # optional, e.g. chr_patch_hapl_scaff, see Ensembl FTP.
     log:
         "logs/get-annotation.log",
     cache: "omit-software"
     localrule: True
     wrapper:
-        "0.80.1/bio/reference/ensembl-annotation"
+        "v6.0.1/bio/reference/ensembl-annotation"
 
 
 rule get_transcript_info:
