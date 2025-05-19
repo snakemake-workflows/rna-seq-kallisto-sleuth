@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.2](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.11.1...v2.11.2) (2025-05-19)
+
+
+### Bug Fixes
+
+* make isoformanalyzer annotation match transcriptome reference ([#152](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/152)) ([0320826](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/0320826689848940acffa16a81fac69fd535375a))
+
 ## [2.11.1](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.11.0...v2.11.1) (2025-04-24)
 
 
