@@ -22,7 +22,9 @@ rule spia:
         enrichment_env
     log:
         "logs/tables/pathways/{model}.spia-pathways.log",
-    threads: 38
+    threads: 32
+    resources:
+        mem_mb: 32000
     script:
         "../scripts/spia.R"
 
