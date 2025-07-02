@@ -24,7 +24,7 @@ rule spia:
         "logs/tables/pathways/{model}.spia-pathways.log",
     threads: 32
     resources:
-        mem_mb: 32000
+        mem_mb=32000,
     script:
         "../scripts/spia.R"
 
