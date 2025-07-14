@@ -194,24 +194,8 @@ properties:
     properties:
       kallisto:
         type: string
-      cutadapt-se:
-        type: object
-        properties:
-          adapters:
-            type: string
-          extra:
-            type: string
-      cutadapt-pe:
-        type: object
-        properties:
-          adapters:
-            type: string
-          extra:
-            type: string
     required:
       - kallisto
-      - cutadapt-se
-      - cutadapt-pe
 
 required:
   - samples

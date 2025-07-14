@@ -20,6 +20,12 @@ properties:
   bam_paired:
     type: string
     description: path to paired bam file (leave empty in case of usage of fastq files)
+  fastp_adapters:
+    type: string
+    description: Full `fastp` flags to specify adapters to trim. Leave as empty string (no whitespace) for auto-detection.
+  fastp_extra:
+    type: string
+    description: Extra command-line arguments for `fastp` trimming. Leave empty for useful defaults (see config/README.md for details).
 required:
   - sample
   - unit
