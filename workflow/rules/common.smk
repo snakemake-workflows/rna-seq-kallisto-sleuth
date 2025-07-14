@@ -149,10 +149,10 @@ def get_fastqs(wildcards):
 def get_all_fastqs(wildcards):
     for item in units[["sample", "unit"]].itertuples():
         if is_single_end(item.sample, item.unit):
-            yield f"results/trimmed/{item.sample}-{item.unit}.fastq.gz"
+            yield f"results/trimmed/{item.sample}/{item.sample}-{item.unit}.fastq.gz"
         else:
-            yield f"results/trimmed/{item.sample}-{item.unit}.1.fastq.gz"
-            yield f"results/trimmed/{item.sample}-{item.unit}.2.fastq.gz"
+            yield f"results/trimmed/{item.sample}/{item.sample}-{item.unit}.1.fastq.gz"
+            yield f"results/trimmed/{item.sample}/{item.sample}-{item.unit}.2.fastq.gz"
 
 
 def get_model_samples(wildcards):
