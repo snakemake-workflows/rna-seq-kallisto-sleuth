@@ -21,7 +21,7 @@ rule fastp_se:
             cols="fastp_extra",
             default="--trim_poly_x --poly_x_min_len 7 --trim_poly_g --poly_g_min_len 7 --length_required 33",
         ),
-    threads: 1
+    threads: 4
     wrapper:
         "v7.1.0/bio/fastp"
 
@@ -55,7 +55,7 @@ rule fastp_pe:
             cols="fastp_extra",
             default="--trim_poly_x --poly_x_min_len 7 --trim_poly_g --poly_g_min_len 7 --length_required 33",
         ),
-    threads: 2
+    threads: 8
     wrapper:
         "v7.1.0/bio/fastp"
 
