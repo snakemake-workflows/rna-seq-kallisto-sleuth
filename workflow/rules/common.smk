@@ -213,7 +213,8 @@ def kallisto_quant_input(wildcards):
         return "results/main_transcript_3prime_reads/{sample}/{sample}-{unit}.fastq"
     elif not is_single_end(wildcards.sample, wildcards.unit):
         return expand(
-            "results/trimmed/{{sample}}/{{sample}}-{{unit}}.{group}.fastq.gz", group=[1, 2]
+            "results/trimmed/{{sample}}/{{sample}}-{{unit}}.{group}.fastq.gz",
+            group=[1, 2],
         )
     else:
         return expand("results/trimmed/{sample}/{sample}-{unit}.fastq.gz", **wildcards)

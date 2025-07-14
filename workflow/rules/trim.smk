@@ -1,6 +1,6 @@
 rule fastp_se:
     input:
-        sample=[ get_fastqs ],
+        sample=[get_fastqs],
     output:
         trimmed="results/trimmed/{sample}/{sample}-{unit}.fastq.gz",
         failed="results/trimmed/{sample}/{sample}-{unit}.failed.fastq.gz",
@@ -9,8 +9,18 @@ rule fastp_se:
     log:
         "logs/trimmed/{sample}/{sample}-{unit}.log",
     params:
-        adapters=lookup(within=units, query="sample == '{sample}' & unit =='{unit}'", cols="fastp_adapters", default=""),
-        extra=lookup(within=units, query="sample == '{sample}' & unit =='{unit}'", cols="fastp_extra", default="--trim_poly_x --poly_x_min_len 7 --trim_poly_g --poly_g_min_len 7 --length_required 33"),
+        adapters=lookup(
+            within=units,
+            query="sample == '{sample}' & unit =='{unit}'",
+            cols="fastp_adapters",
+            default="",
+        ),
+        extra=lookup(
+            within=units,
+            query="sample == '{sample}' & unit =='{unit}'",
+            cols="fastp_extra",
+            default="--trim_poly_x --poly_x_min_len 7 --trim_poly_g --poly_g_min_len 7 --length_required 33",
+        ),
     threads: 1
     wrapper:
         "v7.1.0/bio/fastp"
@@ -33,8 +43,18 @@ rule fastp_pe:
     log:
         "logs/trimmed/{sample}/{sample}-{unit}.log",
     params:
-        adapters=lookup(within=units, query="sample == '{sample}' & unit =='{unit}'", cols="fastp_adapters", default="--detect_adapter_for_pe"),
-        extra=lookup(within=units, query="sample == '{sample}' & unit =='{unit}'", cols="fastp_extra", default="--trim_poly_x --poly_x_min_len 7 --trim_poly_g --poly_g_min_len 7 --length_required 33"),
+        adapters=lookup(
+            within=units,
+            query="sample == '{sample}' & unit =='{unit}'",
+            cols="fastp_adapters",
+            default="--detect_adapter_for_pe",
+        ),
+        extra=lookup(
+            within=units,
+            query="sample == '{sample}' & unit =='{unit}'",
+            cols="fastp_extra",
+            default="--trim_poly_x --poly_x_min_len 7 --trim_poly_g --poly_g_min_len 7 --length_required 33",
+        ),
     threads: 2
     wrapper:
         "v7.1.0/bio/fastp"
