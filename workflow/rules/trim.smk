@@ -1,6 +1,6 @@
 rule fastp_se:
     input:
-        sample=[get_fastqs],
+        sample=get_fastqs,
     output:
         trimmed="results/trimmed/{sample}/{sample}-{unit}.fastq.gz",
         failed="results/trimmed/{sample}/{sample}-{unit}.failed.fastq.gz",
