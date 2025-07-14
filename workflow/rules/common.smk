@@ -273,7 +273,7 @@ def all_input(wildcards):
                     "results/datavzrd-reports/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}",
                 ],
                 model=config["diffexp"]["models"],
-                go_ns=["BP", "CC", "MF"]mmed,
+                go_ns=["BP", "CC", "MF"],
                 gene_fdr=str(config["enrichment"]["goatools"]["fdr_genes"]).replace(
                     ".", "-"
                 ),
