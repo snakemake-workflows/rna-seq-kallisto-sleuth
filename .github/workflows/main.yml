@@ -121,7 +121,7 @@ jobs:
           swap-storage: true
       
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Test 3-prime-workflow
         uses: snakemake/snakemake-github-action@v2
