@@ -26,7 +26,7 @@ Missing values can be specified by empty columns or by writing `NA`.
 ### input file options
 
 For each unit, provide **one** out of the following options for input files:
-* The path to two pairead-end FASTQ files in the columns `fq1`, `fq2`.
+* The path to two paired-end FASTQ files in the columns `fq1`, `fq2`.
 * The path to a single-end FASTQ file in the column `fq1`.
   For single-end data, you also need to specify `fragment_len_mean` and `fragment_len_sd`, which should usually be available from your sequencing provider.
 * The path to a single-end BAM file in the column `bam_single`
@@ -49,7 +49,7 @@ If you leave this empty (an empty string, containing no whitespace), the workflo
   These Gs are artifacts in Illumina data from [machines with a one channel or two channel color chemistry](https://github.com/OpenGene/fastp/pull/508#issuecomment-3028078859).
   We currently set this by default, because [the auto-detection for the respective machines is lacking the latest machine types](https://github.com/OpenGene/fastp/pull/508).
   When the above-linked pull request is updated and merged, we can remove this and rely on the auto-detection.
-If you want to specify additional command line options, we recommend always including those paramters in your units.tsv, as well.
+If you want to specify additional command line options, we recommend always including those parameters in your units.tsv, as well.
 
 #### Lexogen 3' QuantSeq adapter trimming
 
@@ -67,7 +67,7 @@ The `fastp` equivalents, including minimal deviations from the recommendations, 
   `fastp` uses the slightly higher `min_overlap` equivalent of `4`, which is currently hard-coded (and not exposed as a command-line argument).
   Because of this, we cannot set the `max_error_rate` to the Illumina error rate of about `0.005`.
 * `-g "r1adapter=AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=20"`: This is not needed any more, as `fastp` searches the read sequence for adapter sequences from the start of the read (see [the `fastp` adapter search code](https://github.com/OpenGene/fastp/blob/723a4293a42f1ca05b93c37db6a157b4235c4dcc/src/adaptertrimmer.cpp#L92)).
-* `--discard-trimmed`: We omit this, as adapter sequence removal from early on in the read will lead to short remaining read sequences being filtered by the `--length_required` argument.
+* `--discard-trimmed`: We omit this, as adapter sequence removal early in the read will leave short remaining read sequences that are subsequently filtered by `--length_required`.
 
 
 ## config.yaml
