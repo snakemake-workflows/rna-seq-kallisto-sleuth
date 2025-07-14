@@ -172,12 +172,12 @@ def get_trimmed(wildcards):
     if not is_single_end(**wildcards):
         # paired-end sample
         return expand(
-            "results/trimmed/{sample}-{unit}.{group}.fastq.gz",
+            "results/trimmed/{sample}/{sample}-{unit}.{group}.fastq.gz",
             group=[1, 2],
             **wildcards,
         )
     # single end sample
-    return expand("results/trimmed/{sample}-{unit}.fastq.gz", **wildcards)
+    return expand("results/trimmed/{sample}/{sample}-{unit}.fastq.gz", **wildcards)
 
 
 def get_bioc_species_name():
@@ -273,7 +273,7 @@ def all_input(wildcards):
                     "results/datavzrd-reports/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}",
                 ],
                 model=config["diffexp"]["models"],
-                go_ns=["BP", "CC", "MF"],
+                go_ns=["BP", "CC", "MF"]mmed,
                 gene_fdr=str(config["enrichment"]["goatools"]["fdr_genes"]).replace(
                     ".", "-"
                 ),
