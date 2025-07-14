@@ -25,7 +25,7 @@ Missing values can be specified by empty columns or by writing `NA`.
 
 ### input file options
 
-For each unit, provide **one** out of the following options for input files:
+For each unit, provide exactly **one** out of the following options for input files:
 * The path to two paired-end FASTQ files in the columns `fq1`, `fq2`.
 * The path to a single-end FASTQ file in the column `fq1`.
   For single-end data, you also need to specify `fragment_len_mean` and `fragment_len_sd`, which should usually be available from your sequencing provider.
@@ -50,6 +50,11 @@ If you leave this empty (an empty string, containing no whitespace), the workflo
   We currently set this by default, because [the auto-detection for the respective machines is lacking the latest machine types](https://github.com/OpenGene/fastp/pull/508).
   When the above-linked pull request is updated and merged, we can remove this and rely on the auto-detection.
 If you want to specify additional command line options, we recommend always including those parameters in your units.tsv, as well.
+Here's the full concatenation for copy-pasting:
+
+```
+--length_required 33 --trim_poly_x --poly_x_min_len 7 --trim_poly_g --poly_g_min_len 7
+```
 
 #### Lexogen 3' QuantSeq adapter trimming
 
