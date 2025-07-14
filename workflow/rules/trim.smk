@@ -5,12 +5,12 @@ rule fastp_se:
         trimmed="results/trimmed/{sample}/{sample}-{unit}.fastq.gz",
         failed="results/trimmed/{sample}/{sample}-{unit}.failed.fastq.gz",
         html="results/trimmed/{sample}/{sample}-{unit}.html",
-        json="results/trimmed/{sample}/{sample}-{unit}.json"
+        json="results/trimmed/{sample}/{sample}-{unit}.json",
     log:
-        "logs/trimmed/{sample}/{sample}-{unit}.log"
+        "logs/trimmed/{sample}/{sample}-{unit}.log",
     params:
-        adapters=lookup(within=units, "sample == '{sample}' & unit =='{unit}'", cols="fastp_adapters", default=""),
-        extra=lookup(within=units, "sample == '{sample}' & unit =='{unit}'", cols="fastp_extra", default="--trim_poly_x --poly_x_min_len 7 --trim_poly_g --poly_g_min_len 7 --length_required 33"),
+        adapters=lookup(within=units, query="sample == '{sample}' & unit =='{unit}'", cols="fastp_adapters", default=""),
+        extra=lookup(within=units, query="sample == '{sample}' & unit =='{unit}'", cols="fastp_extra", default="--trim_poly_x --poly_x_min_len 7 --trim_poly_g --poly_g_min_len 7 --length_required 33"),
     threads: 1
     wrapper:
         "v7.1.0/bio/fastp"
@@ -29,12 +29,12 @@ rule fastp_pe:
         unpaired2="results/trimmed/{sample}/{sample}-{unit}.unpaired.u2.fastq.gz",
         failed="results/trimmed/{sample}/{sample}-{unit}.failed.fastq.gz",
         html="results/trimmed/{sample}/{sample}-{unit}.html",
-        json="results/trimmed/{sample}/{sample}-{unit}.json"
+        json="results/trimmed/{sample}/{sample}-{unit}.json",
     log:
-        "logs/trimmed/{sample}/{sample}-{unit}.log"
+        "logs/trimmed/{sample}/{sample}-{unit}.log",
     params:
-        adapters=lookup(within=units, "sample == '{sample}' & unit =='{unit}'", cols="fastp_adapters", default="--detect_adapter_for_pe"),
-        extra=lookup(within=units, "sample == '{sample}' & unit =='{unit}'", cols="fastp_extra", default="--trim_poly_x --poly_x_min_len 7 --trim_poly_g --poly_g_min_len 7 --length_required 33"),
+        adapters=lookup(within=units, query="sample == '{sample}' & unit =='{unit}'", cols="fastp_adapters", default="--detect_adapter_for_pe"),
+        extra=lookup(within=units, query="sample == '{sample}' & unit =='{unit}'", cols="fastp_extra", default="--trim_poly_x --poly_x_min_len 7 --trim_poly_g --poly_g_min_len 7 --length_required 33"),
     threads: 2
     wrapper:
         "v7.1.0/bio/fastp"
