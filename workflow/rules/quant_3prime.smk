@@ -79,9 +79,9 @@ rule get_main_transcript_fastq:
     input:
         sam="results/mapped_3prime_main_transcript/{sample}/{sample}-{unit}.main_transcript_closest_to_3_prime.sam",
     output:
-        fastq="results/main_transcript_3prime_reads/{sample}-{unit}.fastq",
+        fastq="results/main_transcript_3prime_reads/{sample}/{sample}-{unit}.fastq",
     log:
-        "logs/main_transcript_3prime_reads/{sample}-{unit}.log",
+        "logs/main_transcript_3prime_reads/{sample}/{sample}-{unit}.log",
     conda:
         "../envs/samtools.yaml"
     shell:
