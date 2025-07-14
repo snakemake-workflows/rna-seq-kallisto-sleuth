@@ -39,6 +39,7 @@ Finally, you can provide settings for the adapter trimming with `fastp` (see the
 In the column `fastp_adapters`, you can specify [known adapter sequences to be trimmed off by `fastp`](https://github.com/OpenGene/fastp?tab=readme-ov-file#adapters), including the command-line argument for the trimming.
 For example, specify the following string in this column: `--adapter_sequence=AGATCGGAAGAGCACACGTCTGAACTCCAGTCA --adapter_sequence_r2=AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT`
 If you don't know the adapters used, leave this empty (an empty string, containing no whitespace), and `fastp` will auto-detect the adapters that need to be trimmed.
+If you want to make the auto-detection explicit for paired-end samples, you can also specify `--detect_adapter_for_pe`.
 
 In the column `fastp_extra`, you can specify [further `fastp` command-line settings](https://github.com/OpenGene/fastp?tab=readme-ov-file#all-options).
 If you leave this empty (an empty string, containing no whitespace), the workflow will set its default:
