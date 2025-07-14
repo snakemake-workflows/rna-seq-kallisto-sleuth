@@ -91,7 +91,7 @@ jobs:
         submodules: recursive
 
     - name: Test workflow
-      uses: snakemake/snakemake-github-action@v1
+      uses: snakemake/snakemake-github-action@v2
       with:
         directory: .test
         snakefile: workflow/Snakefile
