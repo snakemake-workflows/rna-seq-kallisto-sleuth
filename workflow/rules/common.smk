@@ -129,7 +129,7 @@ def get_fastqs(wildcards):
     if not column_missing_or_empty(
         "bam_single", units, wildcards.sample, wildcards.unit
     ):
-        return f"results/fastq/{wildcards.sample}-{wildcards.unit}.fq.gz"
+        return [ f"results/fastq/{wildcards.sample}-{wildcards.unit}.fq.gz", ]
     elif not column_missing_or_empty(
         "bam_paired", units, wildcards.sample, wildcards.unit
     ):
@@ -140,7 +140,7 @@ def get_fastqs(wildcards):
             read=["1", "2"],
         )
     elif is_single_end(wildcards.sample, wildcards.unit):
-        return units.loc[(wildcards.sample, wildcards.unit), "fq1"]
+        return [ units.loc[(wildcards.sample, wildcards.unit), "fq1"], ]
     else:
         u = units.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
         return [f"{u.fq1}", f"{u.fq2}"]
