@@ -68,14 +68,14 @@ jobs:
       - linting
       - formatting
     steps:
-      
+
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
           # this might remove tools that are actually needed,
           # if set to "true" but frees about 6 GB
           tool-cache: false
-          
+
           # all of these default to true, but feel free to set to
           # "false" if necessary for your workflow
           android: true
@@ -84,26 +84,26 @@ jobs:
           large-packages: true
           docker-images: false
           swap-storage: true
-      
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: recursive
-      
+
       - name: Test workflow
         uses: snakemake/snakemake-github-action@v2
         with:
           directory: .test
           snakefile: workflow/Snakefile
           args: "--use-conda --show-failed-logs --cores all --conda-cleanup-pkgs cache --all-temp"
-  
+
   run-three-prime-rna-workflow:
     runs-on: ubuntu-latest
     needs:
       - linting
       - formatting
     steps:
-      
+
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
@@ -119,10 +119,10 @@ jobs:
           large-packages: true
           docker-images: false
           swap-storage: true
-      
+
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Test 3-prime-workflow
         uses: snakemake/snakemake-github-action@v2
         with:
