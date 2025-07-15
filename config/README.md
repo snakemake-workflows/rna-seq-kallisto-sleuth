@@ -53,7 +53,7 @@ If you leave this empty (an empty string, containing no whitespace), the workflo
 If you want to specify additional command line options, we recommend always including those parameters in your units.tsv, as well.
 Here's the full concatenation for copy-pasting:
 
-```
+```bash
 --length_required 33 --trim_poly_x --poly_x_min_len 7 --trim_poly_g --poly_g_min_len 7
 ```
 
