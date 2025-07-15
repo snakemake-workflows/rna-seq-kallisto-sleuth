@@ -109,7 +109,6 @@ rule spia_datavzrd:
         "logs/datavzrd-report/spia-{model}/spia-{model}_{database}.log",
     params:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
-        pathway_db=config["enrichment"]["spia"]["pathway_database"],
     wrapper:
         "v5.5.0/utils/datavzrd"
 
@@ -205,9 +204,6 @@ rule meta_compare_datavzrd:
                 method=f"{wildcards.method.capitalize()}: "
             )(wildcards),
         ),
-    params:
-        pathway_db=config["enrichment"]["spia"]["pathway_database"],
-        species=config["resources"]["ref"]["species"],
     log:
         "logs/datavzrd-report/meta_comp_{method}.{meta_comp}.log",
     wrapper:
