@@ -9,7 +9,7 @@ rule spia:
     input:
         samples="results/sleuth/{model}.samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
-        spia_db="resources/spia-db.rds",
+        spia_db="resources/spia-db.{database}.rds",
         common_src=workflow.source_path("../scripts/common.R"),
     output:
         table="results/tables/pathways/{model}.{database}.pathways.tsv",

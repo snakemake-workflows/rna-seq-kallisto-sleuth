@@ -11,7 +11,7 @@ library(snakemake@params[["bioc_species_pkg"]], character.only = TRUE)
 # snakemake@params[["covariate"]]
 source(snakemake@input[["common_src"]])
 
-pw_db <- snakemake@params[["pathway_db"]]
+pw_db <- snakemake@wildcards[["database"]]
 
 db <- pathways(snakemake@params[["species"]], pw_db)
 db <- convertIdentifiers(db, "ENSEMBL")
