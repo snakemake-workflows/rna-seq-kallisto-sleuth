@@ -4,7 +4,15 @@ rule fastp_se:
     output:
         trimmed="results/trimmed/{sample}/{sample}-{unit}.fastq.gz",
         failed="results/trimmed/{sample}/{sample}-{unit}.failed.fastq.gz",
-        html="results/trimmed/{sample}/{sample}-{unit}.html",
+        report(
+            html="results/trimmed/{sample}/{sample}-{unit}.html",
+            caption="../report/fastp.rst",
+            category="quality control",
+            subcategory="fastp",
+            labels={
+                "sample-unit": "{sample}-{unit}",
+            },
+        ),
         json="results/trimmed/{sample}/{sample}-{unit}.json",
     log:
         "logs/trimmed/{sample}/{sample}-{unit}.log",
@@ -38,7 +46,15 @@ rule fastp_pe:
         unpaired1="results/trimmed/{sample}/{sample}-{unit}.unpaired.1.fastq.gz",
         unpaired2="results/trimmed/{sample}/{sample}-{unit}.unpaired.u2.fastq.gz",
         failed="results/trimmed/{sample}/{sample}-{unit}.failed.fastq.gz",
-        html="results/trimmed/{sample}/{sample}-{unit}.html",
+        report(
+            html="results/trimmed/{sample}/{sample}-{unit}.html",
+            caption="../report/fastp.rst",
+            category="quality control",
+            subcategory="fastp",
+            labels={
+                "sample-unit": "{sample}-{unit}",
+            },
+        ),
         json="results/trimmed/{sample}/{sample}-{unit}.json",
     log:
         "logs/trimmed/{sample}/{sample}-{unit}.log",

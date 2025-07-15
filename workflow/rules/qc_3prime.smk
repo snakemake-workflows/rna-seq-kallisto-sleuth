@@ -68,7 +68,7 @@ if is_3prime_experiment and config["experiment"]["3-prime-rna-seq"]["plot-qc"] !
         output:
             full_sample_QC=report(
                 "results/plots/QC/3prime-ind-QC-plot.{ind_transcripts}.html",
-                category="QC",
+                category="quality control",
                 subcategory="global",
                 caption="../report/plot-3prime-QC-histogram.rst",
                 labels={
@@ -113,7 +113,7 @@ else:
         output:
             full_sample_QC=report(
                 "results/plots/QC/3prime-QC-plot.{ind_transcripts}.html",
-                category="QC",
+                category="quality control",
                 caption="../report/plot-3prime-QC-histogram.rst",
                 labels={"QC-plot": "{ind_transcripts}-QC-plot"},
             ),
