@@ -304,7 +304,9 @@ def all_input(wildcards):
                     "results/datavzrd-reports/spia-{model}_{database}/",
                 ],
                 model=lookup(within=config, dpath="diffexp/models"),
-                database=lookup(within=config, dpath="enrichment/spia/pathway_databases"),
+                database=lookup(
+                    within=config, dpath="enrichment/spia/pathway_databases"
+                ),
             )
         )
 
@@ -461,8 +463,7 @@ def all_input(wildcards):
                         dpath="meta_comparisons/comparisons", within=config
                     ),
                     database=lookup(
-                        within=config,
-                        dpath="enrichment/spia/pathway_databases"
+                        within=config, dpath="enrichment/spia/pathway_databases"
                     ),
                 )
             ),
