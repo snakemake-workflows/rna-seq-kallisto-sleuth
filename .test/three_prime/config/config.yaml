@@ -100,9 +100,18 @@ enrichment:
   spia:
     # tool is only run if set to `true`
     activate: true
-    # pathway database to use in SPIA, needs to be available for
-    # the species specified by resources -> ref -> species above
-    pathway_database: "panther"
+    # pathway databases to use in SPIA
+    # The database needs to be available for the species specified by
+    # resources -> ref -> species above, which you can check via the graphite
+    # package function pathwayDatabases():
+    # https://rdrr.io/bioc/graphite/man/pathwayDatabases.html
+    # The actual list is maintained in the code (make sure to select the
+    # correct commit/version of the repository):
+    # https://github.com/sales-lab/graphite/blob/1fa6ebfb41c1cd01f8b6e7f76f45ee76a15a3450/R/fetch.R#L43
+    # Or you can look it up in the graphite documentation PDF (page 6):
+    # https://bioconductor.org/packages/release/bioc/vignettes/graphite/inst/doc/graphite.pdf
+    pathway_databases:
+      - panther
 
 meta_comparisons:
   # comparison is only run if set to `true`

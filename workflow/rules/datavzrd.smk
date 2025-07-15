@@ -65,13 +65,13 @@ rule plot_enrichment_scatter:
 
 rule plot_pathway_scatter:
     input:
-        "results/tables/pathways/{model}.pathways.tsv",
+        "results/tables/pathways/{model}.{database}.pathways.tsv",
     output:
-        "results/plots/pathways/{model}.pathways.tsv_scatter.json",
+        "results/plots/pathways/{model}.{database}.pathways.tsv_scatter.json",
     conda:
         "../envs/pystats.yaml"
     log:
-        "logs/plot_pathway_scatter-{model}/plot_pathway_scatter-{model}.log",
+        "logs/plot_pathway_scatter/{model}.{database}.pathways.tsv_scatter.log",
     params:
         identifier="Name",
         effect_x="total perturbation accumulation",
@@ -88,22 +88,25 @@ rule spia_datavzrd:
         vega_circle=workflow.source_path(
             "../resources/custom_vega_plots/circle_diagram_genes.json"
         ),
-        spia_table="results/tables/pathways/{model}.pathways.tsv",
+        spia_table="results/tables/pathways/{model}.{database}.pathways.tsv",
         vega_waterfall=workflow.source_path(
             "../resources/custom_vega_plots/waterfall_plot_study_items.json"
         ),
-        scatter="results/plots/pathways/{model}.pathways.tsv_scatter.json",
+        scatter="results/plots/pathways/{model}.{database}.pathways.tsv_scatter.json",
     output:
         report(
-            directory("results/datavzrd-reports/spia-{model}"),
+            directory("results/datavzrd-reports/spia-{model}_{database}"),
             htmlindex="index.html",
             caption="../report/spia.rst",
             category="Pathway enrichment",
             patterns=["index.html"],
-            labels={"model": "{model}"},
+            labels={
+                "model": "{model}",
+                "database": "{database}",
+            },
         ),
     log:
-        "logs/datavzrd-report/spia-{model}/spia-{model}.log",
+        "logs/datavzrd-report/spia-{model}/spia-{model}_{database}.log",
     params:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
         pathway_db=config["enrichment"]["spia"]["pathway_database"],

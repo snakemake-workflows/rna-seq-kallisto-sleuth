@@ -12,16 +12,15 @@ rule spia:
         spia_db="resources/spia-db.rds",
         common_src=workflow.source_path("../scripts/common.R"),
     output:
-        table="results/tables/pathways/{model}.pathways.tsv",
-        plots="results/plots/pathways/{model}.spia-perturbation-plots.pdf",
+        table="results/tables/pathways/{model}.{database}.pathways.tsv",
+        plots="results/plots/pathways/{model}.{database}.spia-perturbation-plots.pdf",
     params:
         bioc_species_pkg=bioc_species_pkg,
-        pathway_db=config["enrichment"]["spia"]["pathway_database"],
-        covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
+        covariate=lookup(within=config, dpath="diffexp/models/{model}/primary_variable"),
     conda:
         enrichment_env
     log:
-        "logs/tables/pathways/{model}.spia-pathways.log",
+        "logs/tables/pathways/{model}.{database}.spia-pathways.log",
     threads: 32
     resources:
         mem_mb=32000,

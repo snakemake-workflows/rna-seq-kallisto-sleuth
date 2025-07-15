@@ -57,17 +57,17 @@ rule meta_compare_enrichment:
 rule meta_compare_pathways:
     input:
         expand(
-            "results/tables/pathways/{model}.pathways.tsv",
+            "results/tables/pathways/{model}.{database}.pathways.tsv",
             model=lookup(
                 dpath="meta_comparisons/comparisons/{meta_comp}/items/*",
                 within=config,
             ),
         ),
     output:
-        "results/tables/pathways/meta_compare_{meta_comp}.tsv",
-        "results/meta_comparison/pathways/{meta_comp}.json",
+        "results/tables/pathways/meta_compare_{meta_comp}_{database}.tsv",
+        "results/meta_comparison/pathways/{meta_comp}_{database}.json",
     log:
-        "logs/meta_compare_pathways/{meta_comp}.log",
+        "logs/meta_compare_pathways/{meta_comp}_{database}.log",
     params:
         labels=lookup(
             dpath="meta_comparisons/comparisons/{meta_comp}/items",
