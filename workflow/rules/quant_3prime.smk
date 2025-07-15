@@ -16,9 +16,9 @@ rule bwa_mem:
         reads=get_trimmed,
         idx=multiext("resources/transcriptome", ".amb", ".ann", ".bwt", ".pac", ".sa"),
     output:
-        "results/mapped_mem/{sample}-{unit}.namesorted.bam",
+        "results/mapped_mem/{sample}/{sample}-{unit}.namesorted.bam",
     log:
-        "logs/bwa_mem/{sample}-{unit}.log",
+        "logs/bwa_mem/{sample}/{sample}-{unit}.log",
     params:
         extra=r"-R '@RG\tID:{sample}\tSM:{sample}'",
         sorting="samtools",  # Can be 'none', 'samtools' or 'picard'.
@@ -31,14 +31,14 @@ rule bwa_mem:
 
 rule get_only_main_transcript_reads_closest_to_3_prime:
     input:
-        bam="results/mapped_mem/{sample}-{unit}.namesorted.bam",
+        bam="results/mapped_mem/{sample}/{sample}-{unit}.namesorted.bam",
         annotation="resources/transcripts_annotation.main_transcript_strand_length.tsv",
     output:
         sam=temp(
-            "results/mapped_3prime_main_transcript/{sample}-{unit}.main_transcript_closest_to_3_prime.sam"
+            "results/mapped_3prime_main_transcript/{sample}/{sample}-{unit}.main_transcript_closest_to_3_prime.sam"
         ),
     log:
-        "logs/mapped_3prime_bam/{sample}-{unit}.mapped.pos.log",
+        "logs/mapped_3prime_bam/{sample}/{sample}-{unit}.mapped.pos.log",
     conda:
         "../envs/samtools.yaml"
     shell:
@@ -77,11 +77,11 @@ rule get_only_main_transcript_reads_closest_to_3_prime:
 
 rule get_main_transcript_fastq:
     input:
-        sam="results/mapped_3prime_main_transcript/{sample}-{unit}.main_transcript_closest_to_3_prime.sam",
+        sam="results/mapped_3prime_main_transcript/{sample}/{sample}-{unit}.main_transcript_closest_to_3_prime.sam",
     output:
-        fastq="results/main_transcript_3prime_reads/{sample}-{unit}.fastq",
+        fastq="results/main_transcript_3prime_reads/{sample}/{sample}-{unit}.fastq",
     log:
-        "logs/main_transcript_3prime_reads/{sample}-{unit}.log",
+        "logs/main_transcript_3prime_reads/{sample}/{sample}-{unit}.log",
     conda:
         "../envs/samtools.yaml"
     shell:

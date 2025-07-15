@@ -59,28 +59,28 @@ rule sleuth_diffexp:
         mean_var_plot=report(
             "results/plots/mean-var/{model}.mean-variance-plot.pdf",
             caption="../report/plot-mean-var.rst",
-            category="QC",
+            category="quality control",
             subcategory="per-model",
             labels={"model": "{model}", "plot": "mean-variance"},
         ),
         volcano_plots=report(
             "results/plots/volcano/{model}.volcano-plots.pdf",
             caption="../report/plot-volcano.rst",
-            category="QC",
+            category="quality control",
             subcategory="per-model",
             labels={"model": "{model}", "plot": "volcano-plot"},
         ),
         ma_plots=report(
             "results/plots/ma/{model}.ma-plots.pdf",
             caption="../report/plot-ma.rst",
-            category="QC",
+            category="quality control",
             subcategory="per-model",
             labels={"model": "{model}", "plot": "ma-plot"},
         ),
         qq_plots=report(
             "results/plots/qq/{model}.qq-plots.pdf",
             caption="../report/plot-qq.rst",
-            category="QC",
+            category="quality control",
             subcategory="per-model",
             labels={"model": "{model}", "plot": "qq-plot"},
         ),
@@ -208,7 +208,7 @@ rule plot_diffexp_pval_hist:
         report(
             "results/plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf",
             caption="../report/plot-pval-hist.rst",
-            category="QC",
+            category="quality control",
             labels={
                 "model": "{model}",
                 "level": "{level}",
@@ -283,7 +283,7 @@ rule plot_group_density:
         report(
             "results/plots/group_density/{model}.group_density.pdf",
             caption="../report/plot-group-density.rst",
-            category="QC",
+            category="quality control",
             labels={"model": "{model}-group_density"},
         ),
     conda:
@@ -301,7 +301,7 @@ rule plot_scatter:
         report(
             "results/plots/scatter/{model}.scatter.pdf",
             caption="../report/plot-scatter.rst",
-            category="QC",
+            category="quality control",
             labels={"model": "{model}-scatter-plot"},
         ),
     # params:
@@ -321,7 +321,7 @@ rule plot_fragment_length_dist:
         report(
             "results/plots/fld/{sample}-{unit}.fragment-length-dist.pdf",
             caption="../report/plot-fld.rst",
-            category="QC",
+            category="quality control",
             subcategory="per-sample",
             labels={"sample": "{sample}-{unit}", "plot": "fragment lengths"},
         ),
@@ -340,7 +340,7 @@ rule plot_vars:
         report(
             "results/plots/variance/{model}.transcripts.plot_vars.pdf",
             caption="../report/plot-vars.rst",
-            category="QC",
+            category="quality control",
             labels={"model": "{model}-transcripts-plot-vars"},
         ),
     params:

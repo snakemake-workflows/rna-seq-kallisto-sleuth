@@ -129,7 +129,9 @@ def get_fastqs(wildcards):
     if not column_missing_or_empty(
         "bam_single", units, wildcards.sample, wildcards.unit
     ):
-        return f"results/fastq/{wildcards.sample}-{wildcards.unit}.fq.gz"
+        return [
+            f"results/fastq/{wildcards.sample}-{wildcards.unit}.fq.gz",
+        ]
     elif not column_missing_or_empty(
         "bam_paired", units, wildcards.sample, wildcards.unit
     ):
@@ -140,7 +142,9 @@ def get_fastqs(wildcards):
             read=["1", "2"],
         )
     elif is_single_end(wildcards.sample, wildcards.unit):
-        return units.loc[(wildcards.sample, wildcards.unit), "fq1"]
+        return [
+            units.loc[(wildcards.sample, wildcards.unit), "fq1"],
+        ]
     else:
         u = units.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
         return [f"{u.fq1}", f"{u.fq2}"]
@@ -149,10 +153,10 @@ def get_fastqs(wildcards):
 def get_all_fastqs(wildcards):
     for item in units[["sample", "unit"]].itertuples():
         if is_single_end(item.sample, item.unit):
-            yield f"results/trimmed/{item.sample}-{item.unit}.fastq.gz"
+            yield f"results/trimmed/{item.sample}/{item.sample}-{item.unit}.fastq.gz"
         else:
-            yield f"results/trimmed/{item.sample}-{item.unit}.1.fastq.gz"
-            yield f"results/trimmed/{item.sample}-{item.unit}.2.fastq.gz"
+            yield f"results/trimmed/{item.sample}/{item.sample}-{item.unit}.1.fastq.gz"
+            yield f"results/trimmed/{item.sample}/{item.sample}-{item.unit}.2.fastq.gz"
 
 
 def get_model_samples(wildcards):
@@ -172,12 +176,12 @@ def get_trimmed(wildcards):
     if not is_single_end(**wildcards):
         # paired-end sample
         return expand(
-            "results/trimmed/{sample}-{unit}.{group}.fastq.gz",
+            "results/trimmed/{sample}/{sample}-{unit}.{group}.fastq.gz",
             group=[1, 2],
             **wildcards,
         )
     # single end sample
-    return expand("results/trimmed/{sample}-{unit}.fastq.gz", **wildcards)
+    return expand("results/trimmed/{sample}/{sample}-{unit}.fastq.gz", **wildcards)
 
 
 def get_bioc_species_name():
@@ -210,13 +214,14 @@ enrichment_env = render_enrichment_env()
 
 def kallisto_quant_input(wildcards):
     if is_3prime_experiment:
-        return "results/main_transcript_3prime_reads/{sample}-{unit}.fastq"
+        return "results/main_transcript_3prime_reads/{sample}/{sample}-{unit}.fastq"
     elif not is_single_end(wildcards.sample, wildcards.unit):
         return expand(
-            "results/trimmed/{{sample}}-{{unit}}.{group}.fastq.gz", group=[1, 2]
+            "results/trimmed/{{sample}}/{{sample}}-{{unit}}.{group}.fastq.gz",
+            group=[1, 2],
         )
     else:
-        return expand("results/trimmed/{sample}-{unit}.fastq.gz", **wildcards)
+        return expand("results/trimmed/{sample}/{sample}-{unit}.fastq.gz", **wildcards)
 
 
 def kallisto_params(wildcards, input):
