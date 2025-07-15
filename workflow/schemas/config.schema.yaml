@@ -162,10 +162,12 @@ properties:
         properties:
           activate:
             type: boolean
-          pathway_database:
-            type: string
+          pathway_databases:
+            type: array
+            items:
+              type: string
         required:
-          - pathway_database
+          - pathway_databases
 
   bootstrap_plots:
     type: object

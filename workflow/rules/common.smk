@@ -305,10 +305,13 @@ def all_input(wildcards):
         wanted_input.extend(
             expand(
                 [
-                    "results/tables/pathways/{model}.pathways.tsv",
-                    "results/datavzrd-reports/spia-{model}/",
+                    "results/tables/pathways/{model}.{database}.pathways.tsv",
+                    "results/datavzrd-reports/spia-{model}_{database}/",
                 ],
-                model=config["diffexp"]["models"],
+                model=lookup(within=config, dpath="diffexp/models"),
+                database=lookup(
+                    within=config, dpath="enrichment/spia/pathway_databases"
+                ),
             )
         )
 
@@ -450,9 +453,22 @@ def all_input(wildcards):
             directory(
                 expand(
                     "results/datavzrd-reports/{report_type}_meta_comparison_{meta_comp}",
-                    report_type=["go_terms", "diffexp", "pathways"],
+                    report_type=["go_terms", "diffexp"],
                     meta_comp=lookup(
                         dpath="meta_comparisons/comparisons", within=config
+                    ),
+                )
+            ),
+        )
+        wanted_input.extend(
+            directory(
+                expand(
+                    "results/datavzrd-reports/pathways_meta_comparison_{meta_comp}_{database}",
+                    meta_comp=lookup(
+                        dpath="meta_comparisons/comparisons", within=config
+                    ),
+                    database=lookup(
+                        within=config, dpath="enrichment/spia/pathway_databases"
                     ),
                 )
             ),

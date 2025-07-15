@@ -21,9 +21,9 @@ views:
           display-mode: normal
           link-to-url: 
             pathway:
-              ?if params.pathway_db == "reactome":
+              ?if wildcards.database == "reactome":
                 url: "http://reactome.org/PathwayBrowser/#/{pathway id}"
-              ?elif params.pathway_db == "panther":
+              ?elif wildcards.database == "panther":
                 url: "https://www.pantherdb.org/pathway/pathwayDiagram.jsp?catAccession={pathway id}"
               # we should add all the pathway databases that bioconductor-graphite enables (see its `pathwayDatabases()` function)
               ?else: # not sure what a good fallback would be here
