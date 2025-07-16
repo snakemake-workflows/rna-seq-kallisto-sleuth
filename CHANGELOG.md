@@ -6,11 +6,11 @@
 ### ⚠ BREAKING CHANGES
 
 * allow to run spia on multiple pathway databases (separately) ([#157](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/157))
+* switch to fastp for trimming ([#155](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/155)) ([f359daf](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/f359daf1ca92c515607fc292944b69d957c6ed3e))
 
 ### Features
 
 * allow to run spia on multiple pathway databases (separately) ([#157](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/157)) ([57479fa](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/57479fa593d58c6a5fb2e6e73bc9da8664fc80cc))
-* switch to fastp for trimming ([#155](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/155)) ([f359daf](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/f359daf1ca92c515607fc292944b69d957c6ed3e))
 
 
 ### Bug Fixes
