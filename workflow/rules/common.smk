@@ -46,6 +46,7 @@ wildcard_constraints:
     sample="|".join(samples.index),
     unit="|".join(units["unit"]),
     model="|".join(list(config["diffexp"].get("models", [])) + ["all"]),
+    gene_set_file="|".join(lookup(within=config, dpath="enrichment/fgsea/gene_set_files")),
 
 
 ####### helpers ###########
