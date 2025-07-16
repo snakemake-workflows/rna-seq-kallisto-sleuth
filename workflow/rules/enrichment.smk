@@ -35,35 +35,37 @@ rule fgsea:
     input:
         samples="results/sleuth/{model}.samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
-        gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"],
+        gene_sets=lookup(
+            within=config, dpath="enrichment/fgsea/gene_set_files/{gene_set_file}"
+        ),
         common_src=workflow.source_path("../scripts/common.R"),
     output:
         enrichment=report(
-            "results/tables/fgsea/{model}.all-gene-sets.tsv",
+            "results/tables/fgsea/{model}.{gene_set_file}.all-gene-sets.tsv",
             caption="../report/fgsea-table-all.rst",
             category="Gene set enrichment analysis",
             labels={"model": "{model}"},
         ),
         rank_ties=report(
-            "results/tables/fgsea/{model}.rank-ties.tsv",
+            "results/tables/fgsea/{model}.{gene_set_file}.rank-ties.tsv",
             caption="../report/fgsea-rank-ties.rst",
             category="Gene set enrichment analysis",
             labels={"model": "{model}"},
         ),
         significant=report(
-            "results/tables/fgsea/{model}.sig-gene-sets.tsv",
+            "results/tables/fgsea/{model}.{gene_set_file}.sig-gene-sets.tsv",
             caption="../report/fgsea-table-significant.rst",
             category="Gene set enrichment analysis",
             labels={"model": "{model}"},
         ),
         plot=report(
-            "results/plots/fgsea/{model}.table-plot.pdf",
+            "results/plots/fgsea/{model}.{gene_set_file}.table-plot.pdf",
             caption="../report/fgsea-table-plot.rst",
             category="Gene set enrichment analysis",
             labels={"model": "{model}"},
         ),
         plot_collapsed=report(
-            "results/plots/fgsea/{model}.collapsed_pathways.table-plot.pdf",
+            "results/plots/fgsea/{model}.{gene_set_file}.collapsed_pathways.table-plot.pdf",
             caption="../report/fgsea-collapsed-table-plot.rst",
             category="Gene set enrichment analysis",
             labels={"model": "{model}"},
@@ -77,7 +79,7 @@ rule fgsea:
     conda:
         enrichment_env
     log:
-        "logs/tables/fgsea/{model}.gene-set-enrichment.log",
+        "logs/tables/fgsea/{model}.{gene_set_file}.gene-set-enrichment.log",
     threads: 25
     script:
         "../scripts/fgsea.R"
@@ -87,12 +89,14 @@ rule fgsea_plot_gene_sets:
     input:
         samples="results/sleuth/{model}.samples.tsv",
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
-        gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"],
-        sig_gene_sets="results/tables/fgsea/{model}.sig-gene-sets.tsv",
+        gene_sets=lookup(
+            within=config, dpath="enrichment/fgsea/gene_set_files/{gene_set_file}"
+        ),
+        sig_gene_sets="results/tables/fgsea/{model}.{gene_set_file}.sig-gene-sets.tsv",
         common_src=workflow.source_path("../scripts/common.R"),
     output:
         report(
-            directory("results/plots/fgsea/{model}"),
+            directory("results/plots/fgsea/{model}.{gene_set_file}"),
             patterns=["{model}.{gene_set}.gene-set-plot.pdf"],
             caption="../report/plot-fgsea-gene-set.rst",
             category="Gene set enrichment analysis",
@@ -104,7 +108,7 @@ rule fgsea_plot_gene_sets:
     conda:
         enrichment_env
     log:
-        "logs/plots/fgsea/{model}.plot_fgsea_gene_set.log",
+        "logs/plots/fgsea/{model}.{gene_set_file}.plot_fgsea_gene_set.log",
     script:
         "../scripts/plot-fgsea-gene-sets.R"
 
