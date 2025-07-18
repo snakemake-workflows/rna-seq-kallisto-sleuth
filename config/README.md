@@ -34,7 +34,11 @@ For each unit, provide exactly **one** out of the following options for input fi
 
 ### adapter trimming and read filtering
 
-Finally, you can provide settings for the adapter trimming with `fastp` (see the [`fastp` documentation](https://github.com/OpenGene/fastp)):
+Finally, you can provide settings for the adapter trimming with `fastp` (see the [`fastp` documentation](https://github.com/OpenGene/fastp)) via the `units.tsv` columns `fastp_adapters` and `fastp_extra`.
+However, if you leave those two columns empty (no whitespace!), `fastp` will auto-detect adapters and the workflow will set sensible defaults for trimming of RNA-seq data.
+If you use this automatic inference, make sure to double-check the `Detected read[12] adapter:` entries in the resulting `fastp` HTML report.
+This is part of the final `snakemake` report of the workflow, or can be found in the sample-specific folders under `results/trimmed/`, once a sample has been processed this far.
+If the auto-detection didn't work at all (empty `Detected read[12] adapter:` entries), or the `Occurrences` in the `Adapters` section are lower than you would expect, please ensure that you find out which adapters were used and configure the adapter trimming manually:
 
 In the column `fastp_adapters`, you can specify [known adapter sequences to be trimmed off by `fastp`](https://github.com/OpenGene/fastp?tab=readme-ov-file#adapters), including the command-line argument for the trimming.
 For example, specify the following string in this column: `--adapter_sequence=AGATCGGAAGAGCACACGTCTGAACTCCAGTCA --adapter_sequence_r2=AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT`
