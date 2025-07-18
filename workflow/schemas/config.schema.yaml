@@ -147,14 +147,14 @@ properties:
         properties:
           activate:
             type: boolean
-          gene_set_files:
-            type: object
+          gene_sets_file:
+            type: string
           fdr_gene_set:
             type: number
           eps:
             type: number
         required:
-          - gene_set_files
+          - gene_sets_file
           - fdr_gene_set
           - eps
       spia:

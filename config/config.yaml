@@ -93,12 +93,8 @@ enrichment:
   fgsea:
     # tool is only run if set to `true`
     activate: false
-    # If activated, you need to provide one or multiple GMT files with gene
-    # sets of interest. Please provide them as key-value pairs, where keys are
-    # arbitrary labels and values are file paths.
-    gene_set_files:
-      dummy: resources/gene_sets/dummy.gmt
-      # example_additional_set: resources/gene_sets/additional.gmt
+    # if activated, you need to provide a GMT file with gene sets of interest
+    gene_sets_file: "resources/gene_sets/dummy.gmt"
     fdr_gene_set: 0.05
     # minimum achievable p-value  (equivalent to the reciprocal of the number of permutations, see fgsea docs)
     eps: 1.0e-50

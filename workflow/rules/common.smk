@@ -46,9 +46,6 @@ wildcard_constraints:
     sample="|".join(samples.index),
     unit="|".join(units["unit"]),
     model="|".join(list(config["diffexp"].get("models", [])) + ["all"]),
-    gene_set_file="|".join(
-        lookup(within=config, dpath="enrichment/fgsea/gene_set_files")
-    ),
 
 
 ####### helpers ###########
@@ -295,15 +292,12 @@ def all_input(wildcards):
         wanted_input.extend(
             expand(
                 [
-                    "results/tables/fgsea/{model}.{gene_set_file}.all-gene-sets.tsv",
-                    "results/tables/fgsea/{model}.{gene_set_file}.sig-gene-sets.tsv",
-                    "results/plots/fgsea/{model}.{gene_set_file}.table-plot.pdf",
-                    "results/plots/fgsea/{model}.{gene_set_file}",
+                    "results/tables/fgsea/{model}.all-gene-sets.tsv",
+                    "results/tables/fgsea/{model}.sig-gene-sets.tsv",
+                    "results/plots/fgsea/{model}.table-plot.pdf",
+                    "results/plots/fgsea/{model}",
                 ],
                 model=config["diffexp"]["models"],
-                gene_set_file=lookup(
-                    within=config, dpath="enrichment/fgsea/gene_set_files"
-                ),
             )
         )
     # request spia if 'activated' in config.yaml
