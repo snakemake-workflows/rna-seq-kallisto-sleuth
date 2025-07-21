@@ -91,6 +91,11 @@ enrichment:
     fdr_genes: 0.05
     fdr_go_terms: 0.05
   fgsea:
+    # If activated, you need to provide a GMT file with gene sets of interest.
+    # A GMT file can contain multiple gene sets. So if you want to test for
+    # enrichment in multiple sets of gene sets, please merge your gene sets
+    # into one GMT file and provide this here. Don't forget to document your
+    # gene set sources and to cite them upon publication.
     gene_sets_file: "ngs-test-data/ref/dummy.gmt"
     # tool is only run if set to `true`
     activate: true
