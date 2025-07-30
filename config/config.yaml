@@ -153,12 +153,6 @@ plot_vars:
   # significance level used for plot_vars() plots
   sig_level: 0.1
 
-report:
-  # make this `true`, to get excel files for download in the snakemake
-  # report, BUT: this can drastically increase the runtime of datavzrd report
-  # generation, especially on larger cohorts
-  offer_excel: false
-
 params:
   # for kallisto parameters, see the kallisto manual:
   # https://pachterlab.github.io/kallisto/manual
