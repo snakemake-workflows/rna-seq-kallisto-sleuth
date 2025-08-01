@@ -227,7 +227,7 @@ meta_comparisons:
         # Define the two underlying models for the comparison. The models must
         # be defined under `diffexp: models:` above and items must be of the
         # form <arbitrary label for plot-axis>: <existing diffexp model from config> 
-        treatead_vs_untreated: treated_vs_untreated
+        treated_vs_untreated: treated_vs_untreated
         Y: model_Y
       # Define label for datavzrd report
       label: treated_vs_untreated compared to other_model
