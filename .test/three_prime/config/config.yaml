@@ -12,9 +12,9 @@ experiment:
     # (iii) quantify only the expression of the MANE (or canonical) transcripts
     # with kallisto, with the reads known to map to their 3' end.
     activate: true
-    # Specify vendor of the used protocol. Currently, only lexogene is supported.
+    # Specify vendor of the used protocol. Currently, only lexogen is supported.
     vendor: lexogen
-    # this allows to plot QC of aligned read postion for specific transcripts (or 'all' transcripts)
+    # this allows to plot QC of aligned read position for specific transcripts (or 'all' transcripts)
     plot-qc: all
 
 resources:
@@ -107,7 +107,7 @@ diffexp:
     # should set `base_level: b` below. This way, the model name in the final
     # snakemake report will be easily interpretable.
     model_X:
-      # full model 
+      # full model
       # Specify the full model with all columns of interest from your sample
       # sheet, including those for batch effects (which you also specify
       # below in the reduced model). This uses the R formula syntax:
@@ -220,12 +220,12 @@ meta_comparisons:
   activate: false
   # Define here the comparisons under interest
   comparisons:
-    # Define any name for comparison. You can add as many comparisions as you want
+    # Define any name for comparison. You can add as many comparisons as you want
     treated_vs_untreated_against_other_model:
       items:
         # Define the two underlying models for the comparison. The models must
         # be defined under `diffexp: models:` above and items must be of the
-        # form <arbitrary label for plot-axis>: <existing diffexp model from config> 
+        # form <arbitrary label for plot-axis>: <existing diffexp model from config>
         treatead_vs_untreated: treated_vs_untreated
         Y: model_Y
       # Define label for datavzrd report

@@ -5,7 +5,7 @@ To configure this workflow, modify the following files to reflect your dataset a
 * `config/units.tsv`: (sequencing) units sheet with raw data paths
 * `config/config.yaml`: general workflow configuration and differential expression model setup
 
-For the `samples.tsv` and `units.tsv`, we explain the expected colummns right here, in this `README.md` file.
+For the `samples.tsv` and `units.tsv`, we explain the expected columns right here, in this `README.md` file.
 For the `config.yaml` file, all entries are explained in detail in its comments.
 
 
