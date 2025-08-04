@@ -5,6 +5,9 @@ To configure this workflow, modify the following files to reflect your dataset a
 * `config/units.tsv`: (sequencing) units sheet with raw data paths
 * `config/config.yaml`: general workflow configuration and differential expression model setup
 
+For the `samples.tsv` and `units.tsv`, we explain the expected columns right here, in this `README.md` file.
+For the `config.yaml` file, all entries are explained in detail in its comments.
+
 
 ## samples sheet
 
@@ -83,41 +86,5 @@ The `fastp` equivalents, including minimal deviations from the recommendations, 
 ## config.yaml
 
 This file contains the general workflow configuration and the setup for the differential expression analysis performed by sleuth.
-Configurable options should be explained in the comments above the respective entry or right here in this `config/README.md` section.
+Configurable options should be explained in the comments above the respective entry, so the easiest way to set it up for your workflow is to carefully read through the `config/config.yaml` file and adjust it to your needs.
 If something is unclear, don't hesitate to [file an issue in the `rna-seq-kallisto-sleuth` GitHub repository](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/new/choose).
-
-### differential expression model setup
-
-The core functionality of this workflow is provided by the software [`sleuth`](https://pachterlab.github.io/sleuth/about).
-You can use it to test for differential expression of genes or transcripts between two or more subgroups of samples.
-
-#### main sleuth model
-
-The main idea of sleuth's internal model, is to test a `full:` model (containing (a) variable(s) of interest AND batch effects) against a `reduced:` model (containing ONLY the batch effects).
-So these are the most important entries to set up under any model that you specify via `diffexp: models:`.
-If you don't know any batch effects, the `reduced:` model will have to be `~1`.
-Otherwise it will be the tilde followed by an addition of the names of any columns that contain batch effects, for example: `reduced: ~batch_effect_1 + batch_effect_2`.
-The full model than additionally includes variables of interest, so fore example: `full: ~variable_of_interest + batch_effect_1 + batch_effect_2`.
-
-#### sleuth effect sizes
-
-Effect size estimates are calculated as so-called beta-values by `sleuth`.
-For binary comparisons (your variable of interest has two factor levels), they resemble a log2 fold change.
-To know which variable of interest to use for the effect size calculation, you need to provide its column name as the `primary_variable:`.
-And for sleuth to know what level of that variable of interest to use as the base level, specify the respective entry as the `base_level:`.
-
-### preprocessing `params`
-
-For **transcript quantification**, `kallisto` is used.
-For details regarding its command line arguments, see the [`kallisto` documentation](https://pachterlab.github.io/kallisto/manual).
-
-#### Lexogen 3' QuantSeq data analysis
-
-For Lexogen 3' QuantSeq data analysis, please set `experiment: 3-prime-rna-seq: activate: true` in the `config/config.yaml` file.
-For more information information on Lexogen QuantSeq 3' sequencing, see: https://www.lexogen.com/quantseq-3mrna-sequencing/
-
-### meta comparisons
-Meta comparisons allow for comparing two full models against each other.
-The axes represent the log2-fold changes (beta-scores) for the two models, with each point representing a gene. 
-Points on the diagonal indicate no difference between the comparisons, while deviations from the diagonal suggest differences in gene expression between the treatments.
-For more details see the comments in the `config.yaml`.

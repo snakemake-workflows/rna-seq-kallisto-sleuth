@@ -1,163 +1,92 @@
 samples: config/samples.tsv
 units: config/units.tsv
 
+##########################################################
+#  FOR A COMMENTED VERSION OF THIS CONFIGURATION FILE,   #
+#  PLEASE SEE THE MAIN `config/config.yaml` FILE         #
+##########################################################
+
 experiment:
-  # If set to `true`, this option allows the workflow to analyse 3-prime RNA seq data obtained from Quantseq protocol by Lexogen.
-  # For more information https://www.lexogen.com/quantseq-3mrna-sequencing/
   3-prime-rna-seq:
     activate: false
-    # Specify vendor of the used protocol. Currently, only lexogene is supported.
     vendor: lexogen
-    # this allows to plot QC of aligned read postion for specific transcripts (or 'all' transcripts)
     plot-qc: all
 
 resources:
   ref:
-    # ensembl species name
     species: homo_sapiens
-    # ensembl release version
-    release: "113"
-    # genome build
+    release: "114"
     build: GRCh38
-    # pfam release to use for annotation of domains in differential splicing analysis
-    pfam: "33.0"
-    # Choose strategy for selecting representative transcripts for each gene.
-    # Possible values:
-    #   - canonical (use the canonical transcript from ensembl, only works for human at the moment)
-    #   - mostsignificant (use the most significant transcript)
-    #   - path/to/any/file.txt (a path to a file with ensembl transcript IDs to use;
-    #     the user has to ensure that there is only one ID per gene given)
+    pfam: "37.0"
     representative_transcripts: canonical
   ontology:
-    # gene ontology to download, used e.g. in goatools
-    gene_ontology: "http://current.geneontology.org/ontology/go-basic.obo"
+    gene_ontology: "https://release.geneontology.org/2025-07-22/ontology/go-basic.obo"
 
 pca:
-  # If set to true, samples with NA values in the specified covariate column will be removed for PCA computation;
   exclude_nas: false
   labels:
-    # columns of sample sheet to use for PCA
     - condition
 
 scatter:
-  # for use as diagnostic plots
-  # all samples are compared in pairs to assess their correlation
-  # scatter plots are only created if parameter 'activate' is set to 'true'
   activate: true
 
 diffexp:
-  # samples to exclude (e.g. outliers due to technical problems)
   exclude:
-  # model for sleuth differential expression analysis
   models:
     model_X:
       full: ~condition + batch_effect
       reduced: ~batch_effect
-      # Covariate / sample sheet column that shall be used for fold
-      # change/effect size based downstream analyses.
       primary_variable: condition
-      # base level of the primary variable (this should be one of the entries
-      # in the primary_variable sample sheet column and will be considered as
-      # denominator in the fold change/effect size estimation).
       base_level: untreated
-  # significance level to use for volcano, ma- and qq-plots
   sig-level:
     volcano-plot: 0.05
     ma-plot: 0.05
     qq-plot: 0.05
-  # Optional (comment in to use): provide a list of genes that shall be shown in a heatmap
-  # and for which bootstrap plots (see below) shall be created.  
   genes_of_interest:
     activate: true
     genelist: "resources/gene_list.tsv"
 
 diffsplice:
   activate: false
-  # codingCutoff parameter of isoformSwitchAnalyzer, see
-  # https://rdrr.io/bioc/IsoformSwitchAnalyzeR/man/analyzeCPAT.html
   coding_cutoff: 0.725
-  # Should be set to true when using de-novo assembled transcripts.
   remove_noncoding_orfs: false
-  # False discovery rate to control for.
   fdr: 1.0
-  # Minimum size of differential isoform usage effect
-  # (see dIFcutoff, https://rdrr.io/github/kvittingseerup/IsoformSwitchAnalyzeR/man/IsoformSwitchTestDEXSeq.html)
-  min_effect_size: 0.0
+  min_effect_size: 0.1
 
 enrichment:
   goatools:
-    # tool is only run if set to `true`
     activate: true
     fdr_genes: 0.05
     fdr_go_terms: 0.05
   fgsea:
-    # If activated, you need to provide a GMT file with gene sets of interest.
-    # A GMT file can contain multiple gene sets. So if you want to test for
-    # enrichment in multiple sets of gene sets, please merge your gene sets
-    # into one GMT file and provide this here. Don't forget to document your
-    # gene set sources and to cite them upon publication.
-    gene_sets_file: "ngs-test-data/ref/dummy.gmt"
-    # tool is only run if set to `true`
     activate: true
-    # if activated, you need to provide a GMT file with gene sets of interest
+    gene_sets_file: "ngs-test-data/ref/dummy.gmt"
     fdr_gene_set: 0.05
     eps: 0.0001
   spia:
-    # tool is only run if set to `true`
     activate: true
-    # pathway databases to use in SPIA
-    # The database needs to be available for the species specified by
-    # resources -> ref -> species above, which you can check via the graphite
-    # package function pathwayDatabases():
-    # https://rdrr.io/bioc/graphite/man/pathwayDatabases.html
-    # The actual list is maintained in the code (make sure to select the
-    # correct commit/version of the repository):
-    # https://github.com/sales-lab/graphite/blob/1fa6ebfb41c1cd01f8b6e7f76f45ee76a15a3450/R/fetch.R#L43
-    # Or you can look it up in the graphite documentation PDF (page 6):
-    # https://bioconductor.org/packages/release/bioc/vignettes/graphite/inst/doc/graphite.pdf
     pathway_databases:
       - panther
 
 meta_comparisons:
-  # comparison is only run if set to `true`
   activate: false
-  # Define here the comparisons under interest
   comparisons:
-    # Define any name for comparison. You can add as many comparisions as you want
-    model_X_vs_model_Y:
+    treated_vs_untreated_against_other_model:
       items:
-        # Define the two underlying models for the comparison. The models must be defined in the diffexp/models in the config
-        # items must be of form <arbitrary label>: <existing diffexp model from config> 
-        X: model_X
+        treated_vs_untreated: treated_vs_untreated
         Y: model_Y
-      # Define label for datavzrd report
-      label: model X vs. model Y
+      label: treated_vs_untreated compared to other_model
 
 report:
-  # make this `true`, to get excel files for download in the snakemake
-  # report, BUT: this can drastically increase the runtime of datavzrd report
-  # generation, especially on larger cohorts
   offer_excel: true
 
 bootstrap_plots:
-  # desired false discovery rate for bootstrap plots, i.e. a lower FDR will result in fewer boxplots generated
   FDR: 0.01
-  # maximum number of bootstrap plots to generate, i.e. top n discoveries to plot
   top_n: 3
   color_by: condition
-  # for now, this will plot the sleuth-normalised kallisto count estimations with kallisto
-  # for all the transcripts of the respective genes
 
 plot_vars:
-  # significance level used for plot_vars() plots
   sig_level: 0.1
 
 params:
-  # for kallisto parameters, see the kallisto manual:
-  # https://pachterlab.github.io/kallisto/manual
-  # reasoning behind parameters:
-  # * `-b 100`: Doing 100 bootstrap samples was used by the tool authors
-  #   [when originally introducing the feature](https://github.com/pachterlab/kallisto/issues/11#issuecomment-74346385).
-  #   If you want to decrease this for larger datasets, there paper and
-  #   [a reply on GitHub suggest a value of `-b 30`](https://github.com/pachterlab/kallisto/issues/353#issuecomment-1215742328).
   kallisto: "-b 30"
