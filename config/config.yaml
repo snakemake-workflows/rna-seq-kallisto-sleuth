@@ -55,7 +55,7 @@ resources:
     # For debugging file downloads, you can browse the FTP download server:
     # https://ftp.ebi.ac.uk/pub/databases/Pfam/releases/
     pfam: "37.0"
-    # reptresentative transcripts:
+    # representative transcripts:
     # Strategy for selecting a representative transcript for each gene.
     # kallisto quantifies expression on the transcript level. For datasets
     # that cover the full length of transcripts, sleuth will statistically
@@ -147,7 +147,7 @@ diffexp:
 diffsplice:
   # isoformSwitchAnalyzer
   # Activating this only makes sense if you expect to have information
-  # for full transcript isoforms available. For example, if you data was
+  # for full transcript isoforms available. For example, if your data was
   # generated with a 3' RNA sequencing protocol, reads will only cover the end
   # of transcripts, and will mostly quantify just the last exon of a gene.
   activate: false
@@ -275,6 +275,6 @@ params:
   # reasoning behind parameters:
   # * `-b 100`: Doing 100 bootstrap samples was used by the tool authors
   #   [when originally introducing the feature](https://github.com/pachterlab/kallisto/issues/11#issuecomment-74346385).
-  #   If you want to decrease this for larger datasets, there paper and
+  #   If you want to decrease this for larger datasets, their paper and
   #   [a reply on GitHub suggest a value of `-b 30`](https://github.com/pachterlab/kallisto/issues/353#issuecomment-1215742328).
   kallisto: "-b 100"
