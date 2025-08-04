@@ -55,7 +55,8 @@ resources:
     # For debugging file downloads, you can browse the FTP download server:
     # https://ftp.ebi.ac.uk/pub/databases/Pfam/releases/
     pfam: "37.0"
-    # strategy for selecting a representative transcript for each gene:
+    # reptresentative transcripts:
+    # Strategy for selecting a representative transcript for each gene.
     # kallisto quantifies expression on the transcript level. For datasets
     # that cover the full length of transcripts, sleuth will statistically
     # aggregate to the gene level based on the p-values of all the transcript
@@ -83,14 +84,14 @@ pca:
     - condition
 
 scatter:
-  # diagnostic all-vs-all pairwise scatter plots
+  # diagnostic all-vs-all pairwise scatter plots:
   # All sample combinations are plotted, to assess their pairwise correlation.
   # Scatter plots are only created if parameter 'activate' is set to 'true'.
   activate: false
 
 diffexp:
-  # samples to exclude from differential expression modeling (for example,
-  # outliers due to technical problems)
+  # Samples to exclude from differential expression modeling (for example,
+  # outliers due to technical problems).
   exclude:
   # model for sleuth differential expression analysis
   # For an introduction to sleuth, see its online manual:
@@ -101,22 +102,22 @@ diffexp:
   # specify at least one such contrast, but you can also specify multiple
   # models.
   models:
-    # arbitrary model name
+    # arbitrary model name:
     # Make this descriptive and make sure the description matches up with the
     # base_level you specify below. If you choose a name like `a_vs_b`, you
     # should set `base_level: b` below. This way, the model name in the final
     # snakemake report will be easily interpretable.
     treated_vs_untreated:
-      # full model
+      # full model:
       # Specify the full model with all columns of interest from your sample
       # sheet, including those for batch effects (which you also specify
       # below in the reduced model). This uses the R formula syntax:
       # https://stat.ethz.ch/R-manual/R-devel/library/stats/html/formula.html
       full: ~condition + batch_effect
-      # reduced model
+      # reduced model:
       # Specify a model of only batch effect columns from the sample sheet.
       # If you don't know about any batch effects, specify `~1` here, to model
-      # only the intersect. Batch effects cannot have levels that are only
+      # only the intercept. Batch effects cannot have levels that are only
       # represented in one treatment group / condition.
       reduced: ~batch_effect
       # Effect size estimates are calculated as so-called beta-values by `sleuth`.
@@ -134,7 +135,7 @@ diffexp:
     volcano-plot: 0.05
     ma-plot: 0.05
     qq-plot: 0.05
-  # produce heatmap and bootstrap plots for a set of genes
+  # heatmap and bootstrap plots for given set of genes:
   # If you want a heatmap and bootstrap plots for a particular set of genes,
   # you can set `activate: true` and provide a genelist file. In this file,
   # list all your HGNC gene symbols of interest in one line, separated by
@@ -233,6 +234,7 @@ meta_comparisons:
       label: treated_vs_untreated compared to other_model
 
 report:
+  # [deprecated] (will be removed in the next major release)
   # make this `true`, to get excel files for download in the snakemake report
   # BUT: you always get a CSV export option by default, which is a format that
   # you can also open in a spreadsheet software. And setting this to `true`
