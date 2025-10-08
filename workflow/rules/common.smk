@@ -334,7 +334,7 @@ def all_input(wildcards):
                 ],
                 model=config["diffexp"]["models"],
                 gene_list=lookup(
-                    within=config, dpath="diffexp/gene_of_interest/gene_lists"
+                    within=config, dpath="diffexp/genes_of_interest/gene_lists"
                 ),
                 mode=["predefined"],
             )
