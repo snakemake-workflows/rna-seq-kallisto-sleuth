@@ -100,10 +100,13 @@ properties:
         properties:
           activate: 
             type: boolean
-          genelist:
-            type: string
+          gene_lists:
+            type: object
+            patternProperties:
+              "^.+$":
+                type: string
         required:
-          - genelist
+          - gene_lists
     required:
       - models
       - genes_of_interest

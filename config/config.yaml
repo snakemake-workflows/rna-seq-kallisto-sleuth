@@ -136,13 +136,19 @@ diffexp:
     ma-plot: 0.05
     qq-plot: 0.05
   # heatmap and bootstrap plots for given set of genes:
-  # If you want a heatmap and bootstrap plots for a particular set of genes,
-  # you can set `activate: true` and provide a genelist file. In this file,
-  # list all your HGNC gene symbols of interest in one line, separated by
-  # tabulators (tabs).
+  # If you want a heatmap and bootstrap plots for particular sets of genes,
+  # you can set `activate: true` and provide one or more gene list files. In
+  # those files, list all your HGNC gene symbols of interest in one line,
+  # separated by tabulators (tabs). The workflow will generate one heatmap
+  # plot per file, and a bootstrap plot for each of the genes contained in
+  # any of the provided files.
   genes_of_interest:
     activate: false
-    genelist: "config/gene_list.tsv"
+    gene_lists:
+      # use a descriptive gene list name, as this will be used as an infix in
+      # the filename of the resulting heatmap plot
+      gene_list_1: "config/gene_list.tsv"
+
 
 diffsplice:
   # isoformSwitchAnalyzer

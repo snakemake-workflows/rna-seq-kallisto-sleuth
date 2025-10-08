@@ -20,11 +20,19 @@ top_genes <- results %>%
 
 
 if (snakemake@params[["genes"]]$activate == TRUE) {
-    gene_table <- read.csv(snakemake@params[["genes"]]$genelist,
-        sep = "\t")
-    names(gene_table) <- c("ext_gene")
-    genes_of_interest <- tibble(gene_table) %>%
-        distinct(ext_gene)
+  genes = c()
+  for (gene_list in unname(snakemake@params[["gene_lists"]])) {
+    new_genes <- read_tsv(
+      gene_list,
+      col_names = FALSE
+    )
+    genes <- union(genes, new_genes |> unlist() |> unname())
+  }
+  genes_of_interest <- enframe(
+    genes,
+    name = NULL,
+    value = "ext_gene"
+  )
 } else {
     # "genes" is null, if the list provided in config.yaml is empty
     genes_of_interest <- tibble(ext_gene = character())

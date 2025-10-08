@@ -242,15 +242,6 @@ def kallisto_params(wildcards, input):
     return extra
 
 
-def input_genelist(predef_genelist):
-    if config["diffexp"]["genes_of_interest"]["activate"] == True:
-        predef_genelist = config["diffexp"]["genes_of_interest"]["genelist"]
-    else:
-        predef_genelist = []
-
-    return predef_genelist
-
-
 def all_input(wildcards):
     """
     Function defining all requested inputs for the rule all (below).
@@ -339,9 +330,10 @@ def all_input(wildcards):
         wanted_input.extend(
             expand(
                 [
-                    "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
+                    "results/plots/diffexp-heatmap/{model}.{gene_list}.diffexp-heatmap.{mode}.pdf",
                 ],
                 model=config["diffexp"]["models"],
+                gene_list=lookup(within=config, dpath("diffexp/gene_of_interest/gene_lists")),
                 mode=["predefined"],
             )
         )

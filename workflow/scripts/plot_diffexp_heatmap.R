@@ -30,7 +30,7 @@ if (snakemake@wildcards[["mode"]] == "topn") {
 } else if (snakemake@wildcards[["mode"]] == "predefined") {
     # Adding gene list to the variable
     predefine_genelist <-
-        read.table(snakemake@input[["predef_genelist"]],
+        read.table(snakemake@input[["predef_gene_list"]],
             sep = "\t"
         )
     selectedgenes <-

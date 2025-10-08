@@ -44,7 +44,9 @@ diffexp:
     qq-plot: 0.05
   genes_of_interest:
     activate: true
-    genelist: "resources/gene_list.tsv"
+    gene_lists:
+      gene_list_1: "resources/gene_list.tsv"
+      gene_list_2: "resources/gene_list.tsv"
 
 diffsplice:
   activate: false

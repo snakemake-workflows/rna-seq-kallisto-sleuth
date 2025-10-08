@@ -146,7 +146,7 @@ rule plot_bootstrap:
         color_by=config["bootstrap_plots"]["color_by"],
         fdr=config["bootstrap_plots"]["FDR"],
         top_n=config["bootstrap_plots"]["top_n"],
-        genes=config["diffexp"]["genes_of_interest"],
+        gene_lists=lookup(within=config, dpath="diffexp/genes_of_interest/gene_lists"),
     log:
         "logs/plots/bootstrap/{model}/{model}.plot_bootstrap.log",
     script:
@@ -258,18 +258,21 @@ rule tpm_matrix:
 rule plot_diffexp_heatmap:
     input:
         logcountmatrix_file="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
-        predef_genelist=input_genelist,
+        predef_gene_list=lookup(within=config, dpath="diffexp/genes_of_interest/gene_lists/{gene_list}"),
     output:
         diffexp_heatmap=report(
-            "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
+            "results/plots/diffexp-heatmap/{model}.{gene_list}.diffexp-heatmap.{mode}.pdf",
             caption="../report/plot-heatmap.rst",
             category="Heatmaps",
-            labels={"model": "{model}-{mode}"},
+            labels={
+                "model": "{model}-{mode}",
+                "gene list": "{gene_list}",
+            },
         ),
     params:
         model=get_model,
     log:
-        "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.log",
+        "logs/plots/diffexp-heatmap/{model}.{gene_list}.diffexp-heatmap.{mode}.log",
     conda:
         "../envs/heatmap.yaml"
     script:
