@@ -333,7 +333,7 @@ def all_input(wildcards):
                     "results/plots/diffexp-heatmap/{model}.{gene_list}.diffexp-heatmap.{mode}.pdf",
                 ],
                 model=config["diffexp"]["models"],
-                gene_list=lookup(within=config, dpath("diffexp/gene_of_interest/gene_lists")),
+                gene_list=lookup(within=config, dpath="diffexp/gene_of_interest/gene_lists"),
                 mode=["predefined"],
             )
         )
