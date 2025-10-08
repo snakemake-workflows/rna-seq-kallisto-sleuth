@@ -258,7 +258,9 @@ rule tpm_matrix:
 rule plot_diffexp_heatmap:
     input:
         logcountmatrix_file="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
-        predef_gene_list=lookup(within=config, dpath="diffexp/genes_of_interest/gene_lists/{gene_list}"),
+        predef_gene_list=lookup(
+            within=config, dpath="diffexp/genes_of_interest/gene_lists/{gene_list}"
+        ),
     output:
         diffexp_heatmap=report(
             "results/plots/diffexp-heatmap/{model}.{gene_list}.diffexp-heatmap.{mode}.pdf",
