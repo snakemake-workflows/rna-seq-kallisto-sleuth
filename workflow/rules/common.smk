@@ -320,23 +320,22 @@ def all_input(wildcards):
                 "results/tables/tpm-matrix/{model}.tpm-matrix.tsv",
                 "results/sleuth/{model}.samples.tsv",
                 "results/datavzrd-reports/diffexp-{model}",
-                "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
+                "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{gene_list}.pdf",
             ],
             model=config["diffexp"]["models"],
-            mode=["topn"],
+            gene_list=["topn"],
         )
     )
     if config["diffexp"]["genes_of_interest"]["activate"]:
         wanted_input.extend(
             expand(
                 [
-                    "results/plots/diffexp-heatmap/{model}.{gene_list}.diffexp-heatmap.{mode}.pdf",
+                    "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{gene_list}.pdf",
                 ],
                 model=config["diffexp"]["models"],
                 gene_list=lookup(
                     within=config, dpath="diffexp/genes_of_interest/gene_lists"
                 ),
-                mode=["predefined"],
             )
         )
 

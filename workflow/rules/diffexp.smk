@@ -263,18 +263,18 @@ rule plot_diffexp_heatmap:
         ),
     output:
         diffexp_heatmap=report(
-            "results/plots/diffexp-heatmap/{model}.{gene_list}.diffexp-heatmap.{mode}.pdf",
+            "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{gene_list}.pdf",
             caption="../report/plot-heatmap.rst",
             category="Heatmaps",
             labels={
-                "model": "{model}-{mode}",
+                "model": "{model}",
                 "gene list": "{gene_list}",
             },
         ),
     params:
         model=get_model,
     log:
-        "logs/plots/diffexp-heatmap/{model}.{gene_list}.diffexp-heatmap.{mode}.log",
+        "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.{gene_list}.log",
     conda:
         "../envs/heatmap.yaml"
     script:
