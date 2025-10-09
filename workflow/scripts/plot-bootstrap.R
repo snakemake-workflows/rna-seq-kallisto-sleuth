@@ -20,7 +20,7 @@ top_genes <- results %>%
 
 
 if (snakemake@params[["genes_of_interest"]][["activate"]] == TRUE) {
-  genes = c()
+  genes = character()
   for (gene_list in unname(snakemake@params[["genes_of_interest"]][["gene_lists"]])) {
     new_genes <- read_tsv(
       gene_list,
