@@ -94,8 +94,11 @@ scatter:
 
 diffexp:
   # Samples to exclude from differential expression modeling (for example,
-  # outliers due to technical problems).
+  # outliers due to technical problems). List their `sample_name` column
+  # entry in the form of a YAML list.
   exclude:
+  # - sample_X
+  # - sample_Y
   # model for sleuth differential expression analysis
   # For an introduction to sleuth, see its online manual:
   # https://pachterlab.github.io/sleuth/about
