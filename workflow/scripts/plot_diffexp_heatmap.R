@@ -12,7 +12,7 @@ sleuth_file <- read.csv(snakemake@input[["logcountmatrix_file"]],
 )
 # Check the config file if it contains pre-defined gene list
 
-if (snakemake@wildcards[["mode"]] == "topn") {
+if (snakemake@wildcards[["gene_list"]] == "topn") {
     # Replacing the rownames with transcript Id and gene name
     rownames(sleuth_file) <- paste(
         sleuth_file$transcript,
@@ -27,7 +27,7 @@ if (snakemake@wildcards[["mode"]] == "topn") {
     selectedgenes <- sleuth_file[row.names(sleuth_file)
     %in% names(vargenes[order(vargenes, decreasing = TRUE)][1:50]), ]
     # If the config file contains pre-defined gene list
-} else if (snakemake@wildcards[["mode"]] == "predefined") {
+} else {
     # Adding gene list to the variable
     predefine_genelist <-
         read.table(snakemake@input[["predef_gene_list"]],
