@@ -19,9 +19,9 @@ top_genes <- results %>%
    distinct(ext_gene)
 
 
-if (snakemake@params[["genes"]]$activate == TRUE) {
+if (snakemake@params[["genes_of_interest"]][["activate"]] == TRUE) {
   genes = c()
-  for (gene_list in unname(snakemake@params[["gene_lists"]])) {
+  for (gene_list in unname(snakemake@params[["genes_of_interest"]][["gene_lists"]])) {
     new_genes <- read_tsv(
       gene_list,
       col_names = FALSE

@@ -146,7 +146,7 @@ rule plot_bootstrap:
         color_by=config["bootstrap_plots"]["color_by"],
         fdr=config["bootstrap_plots"]["FDR"],
         top_n=config["bootstrap_plots"]["top_n"],
-        gene_lists=lookup(within=config, dpath="diffexp/genes_of_interest/gene_lists"),
+        genes_of_interest=lookup(within=config, dpath="diffexp/genes_of_interest"),
     log:
         "logs/plots/bootstrap/{model}/{model}.plot_bootstrap.log",
     script:
