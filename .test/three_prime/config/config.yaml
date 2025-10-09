@@ -32,6 +32,7 @@ scatter:
 
 diffexp:
   exclude:
+    - SRR8309099_2
   models:
     model_X:
       full: ~condition
