@@ -34,8 +34,8 @@ if (snakemake@params[["genes_of_interest"]][["activate"]] == TRUE) {
     value = "ext_gene"
   )
 } else {
-    # "genes" is null, if the list provided in config.yaml is empty
-    genes_of_interest <- tibble(ext_gene = character())
+  # Create empty tibble when genes_of_interest is not activated
+  genes_of_interest <- tibble(ext_gene = character())
 }
 genes <- full_join(top_genes, genes_of_interest, by = "ext_gene") %>%
     add_row(ext_gene = "Custom") %>%
