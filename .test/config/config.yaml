@@ -46,7 +46,7 @@ diffexp:
     activate: true
     gene_lists:
       gene_list_1: "resources/gene_list.tsv"
-      gene_list_2: "resources/gene_list.tsv"
+      gene_list_2: "resources/gene_list_2.tsv"
 
 diffsplice:
   activate: false
@@ -83,7 +83,7 @@ report:
   offer_excel: true
 
 bootstrap_plots:
-  FDR: 0.01
+  FDR: 0.5
   top_n: 3
   color_by: condition
 
