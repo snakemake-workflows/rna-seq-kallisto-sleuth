@@ -141,13 +141,12 @@ diffexp:
     volcano-plot: 0.05
     ma-plot: 0.05
     qq-plot: 0.05
-  # heatmap and bootstrap plots for given set of genes:
+  # heatmap and bootstrap plots for given sets of genes:
   # If you want a heatmap and bootstrap plots for particular sets of genes,
   # you can set `activate: true` and provide one or more gene list files. In
-  # those files, list all your HGNC gene symbols of interest in one line,
-  # separated by tabulators (tabs). The workflow will generate one heatmap
-  # plot per file, and a bootstrap plot for each of the genes contained in
-  # any of the provided files.
+  # those files, list all your HGNC gene symbols of interest, one gene per line.
+  # The workflow will generate one heatmap plot per gene set file, and a
+  # bootstrap plot for each of the genes contained in any of the provided files.
   genes_of_interest:
     activate: false
     gene_lists:
