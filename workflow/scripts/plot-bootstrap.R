@@ -51,7 +51,7 @@ transcripts_of_interest <- inner_join(
     pull(target_id)
 
 
-if (length(transcripts_of_interest > 0)) {
+if (length(transcripts_of_interest) > 0) {
     for (transcript in transcripts_of_interest) {
         gene = transcripts |> filter(target_id == transcript) |> pull(ext_gene)
         plot_bootstrap(
