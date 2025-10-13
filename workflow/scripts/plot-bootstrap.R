@@ -61,7 +61,7 @@ if (length(transcripts_of_interest) > 0) {
             units = "est_counts"
         )
         ggsave(
-            file = str_c(
+            filename = str_c(
                 snakemake@output[[1]],
                 "/",
                 gene,
