@@ -150,7 +150,7 @@ diffexp:
   genes_of_interest:
     activate: false
     gene_lists:
-      # use a descriptive gene list name, as this will be used as an infix in
+      # use a descriptive gene list name, as this will be part of
       # the filename of the resulting heatmap plot
       gene_list_1: "config/gene_list.tsv"
 
