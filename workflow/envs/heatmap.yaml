@@ -3,6 +3,5 @@ channels:
   - bioconda
   - nodefaults
 dependencies:
-  - r-pheatmap =1.0.12
-  - r-dplyr =1.0.9
-  - r-tidyr =1.2.0
+  - r-tidyverse =2.0
+  - r-ggalign =1.1
