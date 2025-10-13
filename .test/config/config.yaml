@@ -15,9 +15,9 @@ experiment:
 resources:
   ref:
     species: homo_sapiens
-    release: "114"
+    release: "115"
     build: GRCh38
-    pfam: "37.0"
+    pfam: "37.1"
     representative_transcripts: canonical
   ontology:
     gene_ontology: "https://release.geneontology.org/2025-07-22/ontology/go-basic.obo"
