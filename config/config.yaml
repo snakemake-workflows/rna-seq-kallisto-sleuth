@@ -24,8 +24,8 @@ resources:
     # For a quick check, see the Ensembl species list:
     # https://www.ensembl.org/info/about/species.html
     # For full valid species names, consult the respective table for the release
-    # you specify, for example for ‘114’ this is at:
-    # https://ftp.ensembl.org/pub/release-114/species_EnsemblVertebrates.txt
+    # you specify, for example for ‘115’ this is at:
+    # https://ftp.ensembl.org/pub/release-115/species_EnsemblVertebrates.txt
     # And to browse available downloads in more detail, see the FTP server:
     # https://ftp.ensembl.org/pub/
     species: homo_sapiens
@@ -47,7 +47,7 @@ resources:
     # "GRCh38.p12" down to "GRCh38". If in doubt, navigate to the respective
     # cdna folder on the FTP server, and look for the correct build in the
     # file names there. For example "GRCh38" in:
-    # https://ftp.ensembl.org/pub/release-114/fasta/homo_sapiens/cdna/
+    # https://ftp.ensembl.org/pub/release-115/fasta/homo_sapiens/cdna/
     build: GRCh38
     # pfam release:
     # This is used for annotation of domains in differential splicing analysis.
