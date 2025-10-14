@@ -42,7 +42,7 @@ resources:
     release: "115"
     # genome build:
     # Usually, this should just be the main build listed in:
-    # https://ftp.ensembl.org/pub/release-114/species_EnsemblVertebrates.txt
+    # https://ftp.ensembl.org/pub/release-115/species_EnsemblVertebrates.txt
     # For example, for homo_sapiens, you strip the assembly column entry
     # "GRCh38.p12" down to "GRCh38". If in doubt, navigate to the respective
     # cdna folder on the FTP server, and look for the correct build in the
