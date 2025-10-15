@@ -83,7 +83,7 @@ report:
   offer_excel: true
 
 bootstrap_plots:
-  FDR: 0.5
+  FDR: 0.5 # Intentionally high for testing.
   top_n: 3
   color_by: condition
 
