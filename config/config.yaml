@@ -24,27 +24,30 @@ resources:
     # For a quick check, see the Ensembl species list:
     # https://www.ensembl.org/info/about/species.html
     # For full valid species names, consult the respective table for the release
-    # you specify, for example for ‘114’ this is at:
-    # https://ftp.ensembl.org/pub/release-114/species_EnsemblVertebrates.txt
+    # you specify, for example for ‘115’ this is at:
+    # https://ftp.ensembl.org/pub/release-115/species_EnsemblVertebrates.txt
     # And to browse available downloads in more detail, see the FTP server:
     # https://ftp.ensembl.org/pub/
     species: homo_sapiens
     # ensembl release version:
     # Update this to the latest working version, when you first set up a new
-    # analysis on a dataset. Later, it only makes sense to update (or downgrade)
-    # the release versions if either (a) the version you are using consistently
-    # fails to download (some Ensembl release versions are just broken) or
-    # (b) you know that a newer version will include changes that will fix some
-    # error or adds transcripts that will be relevant to your analysis.
-    release: "114"
+    # analysis on a dataset. You can usually find the latest release in the
+    # Ensembl blog, by looking at the latest posts of the release category:
+    # https://www.ensembl.info/category/01-release/
+    # Later, it only makes sense to update (or downgrade) the release versions
+    # if either (a) the version you are using consistently fails to download
+    # (some Ensembl release versions are just broken) or (b) you know that a
+    # newer version will include changes that will fix some error or adds
+    # transcripts that will be relevant to your analysis.
+    release: "115"
     # genome build:
     # Usually, this should just be the main build listed in:
-    # https://ftp.ensembl.org/pub/release-114/species_EnsemblVertebrates.txt
+    # https://ftp.ensembl.org/pub/release-115/species_EnsemblVertebrates.txt
     # For example, for homo_sapiens, you strip the assembly column entry
     # "GRCh38.p12" down to "GRCh38". If in doubt, navigate to the respective
     # cdna folder on the FTP server, and look for the correct build in the
     # file names there. For example "GRCh38" in:
-    # https://ftp.ensembl.org/pub/release-114/fasta/homo_sapiens/cdna/
+    # https://ftp.ensembl.org/pub/release-115/fasta/homo_sapiens/cdna/
     build: GRCh38
     # pfam release:
     # This is used for annotation of domains in differential splicing analysis.
@@ -54,7 +57,7 @@ resources:
     # https://xfam.wordpress.com/
     # For debugging file downloads, you can browse the FTP download server:
     # https://ftp.ebi.ac.uk/pub/databases/Pfam/releases/
-    pfam: "37.0"
+    pfam: "37.1"
     # representative transcripts:
     # Strategy for selecting a representative transcript for each gene.
     # kallisto quantifies expression on the transcript level. For datasets
@@ -91,8 +94,11 @@ scatter:
 
 diffexp:
   # Samples to exclude from differential expression modeling (for example,
-  # outliers due to technical problems).
+  # outliers due to technical problems). List their `sample_name` column
+  # entry in the form of a YAML list.
   exclude:
+  # - sample_X
+  # - sample_Y
   # model for sleuth differential expression analysis
   # For an introduction to sleuth, see its online manual:
   # https://pachterlab.github.io/sleuth/about
@@ -135,14 +141,19 @@ diffexp:
     volcano-plot: 0.05
     ma-plot: 0.05
     qq-plot: 0.05
-  # heatmap and bootstrap plots for given set of genes:
-  # If you want a heatmap and bootstrap plots for a particular set of genes,
-  # you can set `activate: true` and provide a genelist file. In this file,
-  # list all your HGNC gene symbols of interest in one line, separated by
-  # tabulators (tabs).
+  # heatmap and bootstrap plots for given sets of genes:
+  # If you want a heatmap and bootstrap plots for particular sets of genes,
+  # you can set `activate: true` and provide one or more gene list files. In
+  # those files, list all your HGNC gene symbols of interest, one gene per line.
+  # The workflow will generate one heatmap plot per gene set file, and a
+  # bootstrap plot for each of the genes contained in any of the provided files.
   genes_of_interest:
     activate: false
-    genelist: "config/gene_list.tsv"
+    gene_lists:
+      # Use a descriptive gene list name, as this will be part of
+      # the filename of the resulting heatmap plot.
+      gene_list_1: "config/gene_list.tsv"
+
 
 diffsplice:
   # isoformSwitchAnalyzer

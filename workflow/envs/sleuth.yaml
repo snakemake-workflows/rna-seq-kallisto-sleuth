@@ -8,5 +8,5 @@ dependencies:
   - r-pheatmap =1.0.12
   - r-tidyverse =2.0
   - r-ggpubr =0.6
-  - r-base =4
+  - r-base >=4.1
   - bioconductor-limma =3.56

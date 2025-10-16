@@ -242,15 +242,6 @@ def kallisto_params(wildcards, input):
     return extra
 
 
-def input_genelist(predef_genelist):
-    if config["diffexp"]["genes_of_interest"]["activate"] == True:
-        predef_genelist = config["diffexp"]["genes_of_interest"]["genelist"]
-    else:
-        predef_genelist = []
-
-    return predef_genelist
-
-
 def all_input(wildcards):
     """
     Function defining all requested inputs for the rule all (below).
@@ -329,20 +320,22 @@ def all_input(wildcards):
                 "results/tables/tpm-matrix/{model}.tpm-matrix.tsv",
                 "results/sleuth/{model}.samples.tsv",
                 "results/datavzrd-reports/diffexp-{model}",
-                "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
+                "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{gene_list}.pdf",
             ],
             model=config["diffexp"]["models"],
-            mode=["topn"],
+            gene_list=["topn"],
         )
     )
     if config["diffexp"]["genes_of_interest"]["activate"]:
         wanted_input.extend(
             expand(
                 [
-                    "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
+                    "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{gene_list}.pdf",
                 ],
                 model=config["diffexp"]["models"],
-                mode=["predefined"],
+                gene_list=lookup(
+                    within=config, dpath="diffexp/genes_of_interest/gene_lists"
+                ),
             )
         )
 

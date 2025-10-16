@@ -15,9 +15,9 @@ experiment:
 resources:
   ref:
     species: homo_sapiens
-    release: "114"
+    release: "115"
     build: GRCh38
-    pfam: "37.0"
+    pfam: "37.1"
     representative_transcripts: canonical
   ontology:
     gene_ontology: "https://release.geneontology.org/2025-07-22/ontology/go-basic.obo"
@@ -44,7 +44,9 @@ diffexp:
     qq-plot: 0.05
   genes_of_interest:
     activate: true
-    genelist: "resources/gene_list.tsv"
+    gene_lists:
+      gene_list_1: "resources/gene_list.tsv"
+      gene_list_2: "resources/gene_list_2.tsv"
 
 diffsplice:
   activate: false
@@ -81,7 +83,7 @@ report:
   offer_excel: true
 
 bootstrap_plots:
-  FDR: 0.01
+  FDR: 0.5 # Intentionally high for testing.
   top_n: 3
   color_by: condition
 
