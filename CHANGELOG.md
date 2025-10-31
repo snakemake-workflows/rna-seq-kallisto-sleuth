@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.0.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v3.0.0...v4.0.0) (2025-10-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* allow for multiple gene_lists ([#164](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/164))
+
+### Features
+
+* allow for multiple gene_lists ([#164](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/164)) ([fc18199](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/fc1819924fec35a7dbcb66625391baeb773f929e))
+
+
+### Bug Fixes
+
+* pathway meta comparison database wildcard parsing in input ([#166](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/166)) ([37df153](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/37df153856759db0ca58fc803c671302bb4388a1))
+
 ## [3.0.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.11.2...v3.0.0) (2025-07-15)
 
 
