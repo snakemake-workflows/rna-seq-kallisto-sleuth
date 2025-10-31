@@ -57,7 +57,7 @@ rule meta_compare_enrichment:
 rule meta_compare_pathways:
     input:
         expand(
-            "results/tables/pathways/{model}.{database}.pathways.tsv",
+            "results/tables/pathways/{model}.{{database}}.pathways.tsv",
             model=lookup(
                 dpath="meta_comparisons/comparisons/{meta_comp}/items/*",
                 within=config,
