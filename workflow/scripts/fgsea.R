@@ -2,6 +2,8 @@ log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")
 
+rlang::global_entrace()
+
 library("fgsea")
 library(snakemake@params[["bioc_species_pkg"]], character.only = TRUE)
 # avoid this error: https://github.com/ctlab/fgsea/issues/98
@@ -42,9 +44,6 @@ rank_ties <- enframe(ranked_genes) %>%
                filter(dup == TRUE) %>%
                dplyr::select(ext_gene = name, !!signed_pi := value)
 write_tsv(rank_ties, snakemake@output[["rank_ties"]])
-
-print(gene_sets)
-print(ranked_genes)
 
 fgsea_res <- fgsea(pathways = gene_sets,
                     stats = ranked_genes,
