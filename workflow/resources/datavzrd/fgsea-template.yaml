@@ -1,0 +1,140 @@
+---
+name: fgsea report table
+datasets:
+  model_X.all-gene-sets:
+    path: ".test/three_prime/results/tables/fgsea/model_X.all-gene-sets.tsv"
+    separator: "\t"
+    headers: 1
+    offer-excel: false
+max-in-memory-rows: 20000
+views:
+  model_X.all-gene-sets:
+    hidden: false
+    dataset: model_X.all-gene-sets
+    page-size: 20
+    render-table:
+      columns:
+        ES:
+          optional: false
+          precision: 2
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              clamp: false
+              color-scheme: ""
+              range:
+                - white
+                - blue
+              aux-domain-columns: ~
+          plot-view-legend: false
+        pval:
+          optional: false
+          precision: 2
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              clamp: false
+              color-scheme: ""
+              range:
+                - white
+                - blue
+              aux-domain-columns: ~
+          plot-view-legend: false
+        log2err:
+          optional: false
+          precision: 2
+          display-mode: normal
+          plot-view-legend: false
+        size:
+          optional: false
+          precision: 2
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              clamp: false
+              color-scheme: ""
+              range:
+                - white
+                - blue
+              aux-domain-columns: ~
+          plot-view-legend: false
+        leading_edge_entrez_id:
+          optional: false
+          precision: 2
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: ordinal
+              clamp: false
+              color-scheme: category20
+              range: []
+              aux-domain-columns: ~
+          plot-view-legend: false
+        NES:
+          optional: false
+          precision: 2
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              clamp: false
+              color-scheme: ""
+              range:
+                - white
+                - blue
+              aux-domain-columns: ~
+          plot-view-legend: false
+        leading_edge_ens_gene:
+          optional: false
+          precision: 2
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: ordinal
+              clamp: false
+              color-scheme: category20
+              range: []
+              aux-domain-columns: ~
+          plot-view-legend: false
+        padj:
+          optional: false
+          precision: 2
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              clamp: false
+              color-scheme: ""
+              range:
+                - white
+                - blue
+              aux-domain-columns: ~
+          plot-view-legend: false
+        pathway:
+          optional: false
+          precision: 2
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: ordinal
+              clamp: false
+              color-scheme: category20
+              range: []
+              aux-domain-columns: ~
+          plot-view-legend: false
+        leadingEdge:
+          optional: false
+          precision: 2
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: ordinal
+              clamp: false
+              color-scheme: category20
+              range: []
+              aux-domain-columns: ~
+          plot-view-legend: false
+webview-controls: false
