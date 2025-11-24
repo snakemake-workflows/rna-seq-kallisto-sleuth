@@ -129,7 +129,7 @@ rule plot_top_go_terms:
     log:
         "logs/yte/plot_top_go_terms/{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     script:
-        "../scripts/plot_top_go_terms.py"
+        "../scripts/plot-top-go-terms.py"
 
 
 ## gene ontology term enrichment analysis

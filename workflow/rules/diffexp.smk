@@ -269,7 +269,7 @@ rule plot_top_genes_heatmap:
     conda:
         "../envs/heatmap.yaml"
     script:
-        "../scripts/plot_top_genes_diffexp_heatmap.R"
+        "../scripts/plot-top-genes-diffexp-heatmap.R"
 
 
 rule plot_group_density:
