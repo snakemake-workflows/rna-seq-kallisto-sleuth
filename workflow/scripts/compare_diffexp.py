@@ -4,7 +4,7 @@ import polars.selectors as cs
 import altair as alt
 import sys
 
-sys.stderr = open(snakemake.log[0], "w")
+sys.stderr = open(snakemake.log[0], "w", buffering=1)
 
 diffexp_x = pl.from_pandas(pyreadr.read_r(snakemake.input[0])[None]).lazy()
 diffexp_y = pl.from_pandas(pyreadr.read_r(snakemake.input[1])[None]).lazy()

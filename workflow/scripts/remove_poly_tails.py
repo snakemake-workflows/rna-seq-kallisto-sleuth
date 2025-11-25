@@ -3,7 +3,7 @@ import re
 from Bio import SeqIO
 from Bio.Seq import Seq
 
-sys.stderr = open(snakemake.log[0], "w")
+sys.stderr = open(snakemake.log[0], "w", buffering=1)
 
 with open(snakemake.output[0], "w") as transcript_clean_cdna_fasta:
     for seq_record in SeqIO.parse(snakemake.input["ref_fasta"], "fasta"):

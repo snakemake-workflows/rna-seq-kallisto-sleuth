@@ -3,7 +3,7 @@ import polars.selectors as cs
 import altair as alt
 import sys
 
-sys.stderr = open(snakemake.log[0], "w")
+sys.stderr = open(snakemake.log[0], "w", buffering=1)
 
 diffexp_x = pl.read_csv(snakemake.input[0], separator="\t").lazy()
 diffexp_y = pl.read_csv(snakemake.input[1], separator="\t").lazy()

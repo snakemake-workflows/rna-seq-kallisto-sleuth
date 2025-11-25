@@ -8,7 +8,7 @@ from scipy.stats import gaussian_kde
 from scipy import stats
 import sys
 import json
-sys.stderr = open(snakemake.log[0], "w")
+sys.stderr = open(snakemake.log[0], "w", buffering=1)
 transcript_ids = snakemake.params["each_transcript"]
 
 samples = snakemake.params["samples"]

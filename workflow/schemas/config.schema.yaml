@@ -1,4 +1,4 @@
-$schema: "http://json-schema.org/draft-04/schema#"
+$schema: "https://json-schema.org/draft/2020-12/schema"
 
 description: snakemake configuration file
 
@@ -100,10 +100,13 @@ properties:
         properties:
           activate: 
             type: boolean
-          genelist:
-            type: string
+          gene_lists:
+            type: object
+            patternProperties:
+              "^.+$":
+                type: string
         required:
-          - genelist
+          - gene_lists
     required:
       - models
       - genes_of_interest
@@ -162,10 +165,12 @@ properties:
         properties:
           activate:
             type: boolean
-          pathway_database:
-            type: string
+          pathway_databases:
+            type: array
+            items:
+              type: string
         required:
-          - pathway_database
+          - pathway_databases
 
   bootstrap_plots:
     type: object
@@ -194,24 +199,8 @@ properties:
     properties:
       kallisto:
         type: string
-      cutadapt-se:
-        type: object
-        properties:
-          adapters:
-            type: string
-          extra:
-            type: string
-      cutadapt-pe:
-        type: object
-        properties:
-          adapters:
-            type: string
-          extra:
-            type: string
     required:
       - kallisto
-      - cutadapt-se
-      - cutadapt-pe
 
 required:
   - samples

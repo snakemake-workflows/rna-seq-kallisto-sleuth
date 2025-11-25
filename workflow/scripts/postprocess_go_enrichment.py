@@ -1,3 +1,6 @@
+import sys
+sys.stderr = open(snakemake.log[0], "w", buffering=1)
+
 # import pandas as pd
 from ast import literal_eval as make_tuple
 import polars as pl
@@ -16,8 +19,8 @@ def extract_study_items(value):
         data = []
         for gene_value in gene_values:
             parts = gene_value.split(":")
-            gene = parts[0]
-            val = float(parts[1])
+            gene = parts[-2]
+            val = float(parts[-1])
             data.append({"gene": gene, "value": val})
         return data
     else:
@@ -25,7 +28,8 @@ def extract_study_items(value):
 
 
 def calculate_sums(parsed_terms):
-    return sum(abs(item["value"]) for item in parsed_terms)
+    number_of_genes=len(parsed_terms)
+    return sum(2**abs(item["value"]) for item in parsed_terms)/number_of_genes
 
 
 # Load data
@@ -64,6 +68,7 @@ if not df_merged.is_empty():
         [
             pl.col("study_items")
             .map_elements(lambda x: calculate_sums(extract_study_items(x)))
+            .log(base=2)
             .alias("effect")
         ]
     )

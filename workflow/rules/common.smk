@@ -9,7 +9,9 @@ from pathlib import Path
 validate(config, schema="../schemas/config.schema.yaml")
 
 samples = pd.read_csv(config["samples"], sep="\t", dtype=str, comment="#").set_index(
-    "sample", drop=False
+    "sample",
+    drop=False,
+    verify_integrity=True,
 )
 samples.index.names = ["sample_id"]
 
@@ -23,7 +25,9 @@ samples = drop_unique_cols(samples)
 validate(samples, schema="../schemas/samples.schema.yaml")
 
 units = pd.read_csv(config["units"], dtype=str, sep="\t", comment="#").set_index(
-    ["sample", "unit"], drop=False
+    ["sample", "unit"],
+    drop=False,
+    verify_integrity=True,
 )
 units.index.names = ["sample_id", "unit_id"]
 units.index = units.index.set_levels(
@@ -101,7 +105,14 @@ def get_model(wildcards):
 
 def column_missing_or_empty(column_name, dataframe, sample, unit):
     if column_name in dataframe.columns:
-        return pd.isnull(dataframe.loc[(sample, unit), column_name])
+        result = pd.isnull(dataframe.loc[(sample, unit), column_name])
+        try:
+            return bool(result)
+        except ValueError:
+            raise ValueError(
+                f"Expected a single value for sample '{sample}', unit '{unit}' "
+                f"in column '{column_name}', but got multiple values."
+            )
     else:
         return True
 
@@ -118,7 +129,9 @@ def get_fastqs(wildcards):
     if not column_missing_or_empty(
         "bam_single", units, wildcards.sample, wildcards.unit
     ):
-        return f"results/fastq/{wildcards.sample}-{wildcards.unit}.fq.gz"
+        return [
+            f"results/fastq/{wildcards.sample}-{wildcards.unit}.fq.gz",
+        ]
     elif not column_missing_or_empty(
         "bam_paired", units, wildcards.sample, wildcards.unit
     ):
@@ -129,7 +142,9 @@ def get_fastqs(wildcards):
             read=["1", "2"],
         )
     elif is_single_end(wildcards.sample, wildcards.unit):
-        return units.loc[(wildcards.sample, wildcards.unit), "fq1"]
+        return [
+            units.loc[(wildcards.sample, wildcards.unit), "fq1"],
+        ]
     else:
         u = units.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
         return [f"{u.fq1}", f"{u.fq2}"]
@@ -138,10 +153,10 @@ def get_fastqs(wildcards):
 def get_all_fastqs(wildcards):
     for item in units[["sample", "unit"]].itertuples():
         if is_single_end(item.sample, item.unit):
-            yield f"results/trimmed/{item.sample}-{item.unit}.fastq.gz"
+            yield f"results/trimmed/{item.sample}/{item.sample}-{item.unit}.fastq.gz"
         else:
-            yield f"results/trimmed/{item.sample}-{item.unit}.1.fastq.gz"
-            yield f"results/trimmed/{item.sample}-{item.unit}.2.fastq.gz"
+            yield f"results/trimmed/{item.sample}/{item.sample}-{item.unit}.1.fastq.gz"
+            yield f"results/trimmed/{item.sample}/{item.sample}-{item.unit}.2.fastq.gz"
 
 
 def get_model_samples(wildcards):
@@ -161,12 +176,12 @@ def get_trimmed(wildcards):
     if not is_single_end(**wildcards):
         # paired-end sample
         return expand(
-            "results/trimmed/{sample}-{unit}.{group}.fastq.gz",
+            "results/trimmed/{sample}/{sample}-{unit}.{group}.fastq.gz",
             group=[1, 2],
             **wildcards,
         )
     # single end sample
-    return expand("results/trimmed/{sample}-{unit}.fastq.gz", **wildcards)
+    return expand("results/trimmed/{sample}/{sample}-{unit}.fastq.gz", **wildcards)
 
 
 def get_bioc_species_name():
@@ -199,13 +214,14 @@ enrichment_env = render_enrichment_env()
 
 def kallisto_quant_input(wildcards):
     if is_3prime_experiment:
-        return "results/main_transcript_3prime_reads/{sample}-{unit}.fastq"
+        return "results/main_transcript_3prime_reads/{sample}/{sample}-{unit}.fastq"
     elif not is_single_end(wildcards.sample, wildcards.unit):
         return expand(
-            "results/trimmed/{{sample}}-{{unit}}.{group}.fastq.gz", group=[1, 2]
+            "results/trimmed/{{sample}}/{{sample}}-{{unit}}.{group}.fastq.gz",
+            group=[1, 2],
         )
     else:
-        return expand("results/trimmed/{sample}-{unit}.fastq.gz", **wildcards)
+        return expand("results/trimmed/{sample}/{sample}-{unit}.fastq.gz", **wildcards)
 
 
 def kallisto_params(wildcards, input):
@@ -224,15 +240,6 @@ def kallisto_params(wildcards, input):
     else:
         extra += " --fusion"
     return extra
-
-
-def input_genelist(predef_genelist):
-    if config["diffexp"]["genes_of_interest"]["activate"] == True:
-        predef_genelist = config["diffexp"]["genes_of_interest"]["genelist"]
-    else:
-        predef_genelist = []
-
-    return predef_genelist
 
 
 def all_input(wildcards):
@@ -289,10 +296,13 @@ def all_input(wildcards):
         wanted_input.extend(
             expand(
                 [
-                    "results/tables/pathways/{model}.pathways.tsv",
-                    "results/datavzrd-reports/spia-{model}/",
+                    "results/tables/pathways/{model}.{database}.pathways.tsv",
+                    "results/datavzrd-reports/spia-{model}_{database}/",
                 ],
-                model=config["diffexp"]["models"],
+                model=lookup(within=config, dpath="diffexp/models"),
+                database=lookup(
+                    within=config, dpath="enrichment/spia/pathway_databases"
+                ),
             )
         )
     if config["plot_best_results"]["activate"]:
@@ -322,22 +332,25 @@ def all_input(wildcards):
                 "results/plots/qq/{model}.qq-plots.pdf",
                 "results/tables/diffexp/{model}.transcripts.diffexp.tsv",
                 "results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
+                "results/tables/tpm-matrix/{model}.tpm-matrix.tsv",
                 "results/sleuth/{model}.samples.tsv",
                 "results/datavzrd-reports/diffexp-{model}",
-                "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
+                "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{gene_list}.pdf",
             ],
             model=config["diffexp"]["models"],
-            mode=["topn"],
+            gene_list=["topn"],
         )
     )
     if config["diffexp"]["genes_of_interest"]["activate"]:
         wanted_input.extend(
             expand(
                 [
-                    "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
+                    "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{gene_list}.pdf",
                 ],
                 model=config["diffexp"]["models"],
-                mode=["predefined"],
+                gene_list=lookup(
+                    within=config, dpath="diffexp/genes_of_interest/gene_lists"
+                ),
             )
         )
 
@@ -377,7 +390,7 @@ def all_input(wildcards):
             [
                 "results/plots/pc-variance/{covariate}.pc-variance-plot.pdf",
                 "results/plots/loadings/{covariate}.loadings-plot.pdf",
-                "results/plots/pca/{covariate}.pca.pdf",
+                "results/plots/pca/{covariate}.pca.html",
             ],
             covariate=samples.columns[samples.columns != "sample"],
         )
@@ -448,9 +461,22 @@ def all_input(wildcards):
             directory(
                 expand(
                     "results/datavzrd-reports/{report_type}_meta_comparison_{meta_comp}",
-                    report_type=["go_terms", "diffexp", "pathways"],
+                    report_type=["go_terms", "diffexp"],
                     meta_comp=lookup(
                         dpath="meta_comparisons/comparisons", within=config
+                    ),
+                )
+            ),
+        )
+        wanted_input.extend(
+            directory(
+                expand(
+                    "results/datavzrd-reports/pathways_meta_comparison_{meta_comp}_{database}",
+                    meta_comp=lookup(
+                        dpath="meta_comparisons/comparisons", within=config
+                    ),
+                    database=lookup(
+                        within=config, dpath="enrichment/spia/pathway_databases"
                     ),
                 )
             ),

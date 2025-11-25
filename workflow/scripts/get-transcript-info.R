@@ -90,7 +90,7 @@ wanted_attributes <- c(
 
 
 three_prime_attributes <- c(
-  "ensembl_transcript_id_version",
+  use_if_available("ensembl_transcript_id_version", available_attributes),
   "chromosome_name",
   "transcript_length",
   "strand"
@@ -172,7 +172,7 @@ other_annotations <- all_annotations |>
   # for non-3-prime kallisto-sleuth input
   filter(!str_detect(chromosome_name, "patch|PATCH")) |>
   select(-c(chromosome_name, sleuth_attributes)) |>
-  rename(transcript = ensembl_transcript_id_version) |>
+  rename(any_of(c(transcript = "ensembl_transcript_id_version"))) |>
   mutate(
     strand = case_match(
         strand,

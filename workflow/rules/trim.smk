@@ -1,34 +1,79 @@
-rule cutadapt_pe:
+rule fastp_se:
     input:
-        get_fastqs,
+        sample=get_fastqs,
     output:
-        fastq1="results/trimmed/{sample}-{unit}.1.fastq.gz",
-        fastq2="results/trimmed/{sample}-{unit}.2.fastq.gz",
-        qc="results/trimmed/{sample}-{unit}.qc.txt",
-    threads: 8
-    params:
-        adapters=config["params"]["cutadapt-pe"]["adapters"],
-        extra=config["params"]["cutadapt-pe"]["extra"],
+        trimmed="results/trimmed/{sample}/{sample}-{unit}.fastq.gz",
+        failed="results/trimmed/{sample}/{sample}-{unit}.failed.fastq.gz",
+        html=report(
+            "results/trimmed/{sample}/{sample}-{unit}.html",
+            caption="../report/fastp.rst",
+            category="quality control",
+            subcategory="fastp",
+            labels={
+                "sample-unit": "{sample}-{unit}",
+            },
+        ),
+        json="results/trimmed/{sample}/{sample}-{unit}.json",
     log:
-        "logs/cutadapt/{sample}-{unit}.log",
+        "logs/trimmed/{sample}/{sample}-{unit}.log",
+    params:
+        adapters=lookup(
+            within=units,
+            query="sample == '{sample}' & unit == '{unit}'",
+            cols="fastp_adapters",
+            default="",
+        ),
+        extra=lookup(
+            within=units,
+            query="sample == '{sample}' & unit == '{unit}'",
+            cols="fastp_extra",
+            default="--trim_poly_x --poly_x_min_len 7 --trim_poly_g --poly_g_min_len 7 --length_required 33",
+        ),
+    threads: 4
     wrapper:
-        "v2.6.0/bio/cutadapt/pe"
+        "v7.1.0/bio/fastp"
 
 
-rule cutadapt:
+rule fastp_pe:
     input:
-        get_fastqs,
+        sample=get_fastqs,
     output:
-        fastq="results/trimmed/{sample}-{unit}.fastq.gz",
-        qc="results/trimmed/{sample}-{unit}.qc.txt",
-    threads: 8
-    params:
-        adapters=config["params"]["cutadapt-se"]["adapters"],
-        extra=config["params"]["cutadapt-se"]["extra"],
+        trimmed=[
+            "results/trimmed/{sample}/{sample}-{unit}.1.fastq.gz",
+            "results/trimmed/{sample}/{sample}-{unit}.2.fastq.gz",
+        ],
+        # Unpaired reads separately
+        unpaired1="results/trimmed/{sample}/{sample}-{unit}.unpaired.1.fastq.gz",
+        unpaired2="results/trimmed/{sample}/{sample}-{unit}.unpaired.u2.fastq.gz",
+        failed="results/trimmed/{sample}/{sample}-{unit}.failed.fastq.gz",
+        html=report(
+            "results/trimmed/{sample}/{sample}-{unit}.html",
+            caption="../report/fastp.rst",
+            category="quality control",
+            subcategory="fastp",
+            labels={
+                "sample-unit": "{sample}-{unit}",
+            },
+        ),
+        json="results/trimmed/{sample}/{sample}-{unit}.json",
     log:
-        "results/logs/cutadapt/{sample}-{unit}.log",
+        "logs/trimmed/{sample}/{sample}-{unit}.log",
+    params:
+        adapters=lookup(
+            within=units,
+            query="sample == '{sample}' & unit == '{unit}'",
+            cols="fastp_adapters",
+            default="--detect_adapter_for_pe",
+        ),
+        extra=lookup(
+            within=units,
+            query="sample == '{sample}' & unit == '{unit}'",
+            cols="fastp_extra",
+            default="--trim_poly_x --poly_x_min_len 7 --trim_poly_g --poly_g_min_len 7 --length_required 33",
+        ),
+    threads: 8
     wrapper:
-        "v2.6.0/bio/cutadapt/se"
+        "v7.1.0/bio/fastp"
 
 
 rule max_read_length:

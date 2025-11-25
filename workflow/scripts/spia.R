@@ -10,7 +10,7 @@ library(snakemake@params[["bioc_species_pkg"]], character.only = TRUE)
 # snakemake@input[["samples"]] and snakemake@params[["covariate"]]
 source(snakemake@input[["common_src"]])
 
-pw_db <- snakemake@params[["pathway_db"]]
+pw_db <- snakemake@wildcards[["database"]]
 db <- readRDS(snakemake@input[["spia_db"]])
 
 org_db_name <- snakemake@params[["bioc_species_pkg"]]

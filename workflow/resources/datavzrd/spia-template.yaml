@@ -21,9 +21,9 @@ views:
           display-mode: normal
           link-to-url: 
             pathway:
-              ?if params.pathway_db == "reactome":
+              ?if wildcards.database == "reactome":
                 url: "http://reactome.org/PathwayBrowser/#/{pathway id}"
-              ?elif params.pathway_db == "panther":
+              ?elif wildcards.database == "panther":
                 url: "https://www.pantherdb.org/pathway/pathwayDiagram.jsp?catAccession={pathway id}"
               # we should add all the pathway databases that bioconductor-graphite enables (see its `pathwayDatabases()` function)
               ?else: # not sure what a good fallback would be here
@@ -119,3 +119,12 @@ views:
               }  
             spec-path: ?input.vega_waterfall
             vega-controls: true
+  pathways_scatter:
+    dataset: spia_table
+    desc: ?f"The y-axis represents the False Discovery Rate (FDR), while the x-axis shows the total pertubation accumulation effect of the pathway that SPIA determined for the {wildcards.model} model. 
+      Each point corresponds to a pathway.
+      Click on a pathway to highlight it in colour. 
+      Several pathways can be selected at the same time by holding down the Shift key."
+    render-plot:
+      spec-path: ?input.scatter
+

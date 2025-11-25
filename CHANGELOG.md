@@ -1,5 +1,81 @@
 # Changelog
 
+## [3.0.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.11.2...v3.0.0) (2025-07-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* allow to run spia on multiple pathway databases (separately) ([#157](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/157))
+* switch to fastp for trimming ([#155](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/155)) ([f359daf](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/f359daf1ca92c515607fc292944b69d957c6ed3e))
+
+### Features
+
+* allow to run spia on multiple pathway databases (separately) ([#157](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/157)) ([57479fa](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/57479fa593d58c6a5fb2e6e73bc9da8664fc80cc))
+
+
+### Bug Fixes
+
+* set spia mem_mb to 32G and threads to 32 ([#154](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/154)) ([9964ecf](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/9964ecf6535a84c25de9e39de20c094b7f9a1de4))
+
+## [2.11.2](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.11.1...v2.11.2) (2025-05-19)
+
+
+### Bug Fixes
+
+* make isoformanalyzer annotation match transcriptome reference ([#152](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/152)) ([0320826](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/0320826689848940acffa16a81fac69fd535375a))
+
+## [2.11.1](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.11.0...v2.11.1) (2025-04-24)
+
+
+### Bug Fixes
+
+* Remove model filtering of logcount matrix ([#144](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/144)) ([de347fa](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/de347fa4502ce7b15c62bd3a4fa0f4525f2f86f8))
+
+## [2.11.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.10.0...v2.11.0) (2025-04-23)
+
+
+### Features
+
+* Add TPM matrix generation and integration into workflow ([#146](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/146)) ([3c6bdac](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/3c6bdac2396b268e102a9f7dd277b4559863e381))
+
+
+### Bug Fixes
+
+* make postprocess sorting work with more than one signed_pi value column ([#150](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/150)) ([4b3417a](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/4b3417abb8aba5d99df29899d6e500c4eebe512f))
+* use `verify_integrity=True` in pandas `set_index()` for samples and units to check for duplicates ([#149](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/149)) ([9657c75](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/9657c75d559bc41f5fe649ad631c59a50733bc55))
+
+## [2.10.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.9.0...v2.10.0) (2025-03-19)
+
+
+### Features
+
+* Enrichment and pathway scatter-plots ([#136](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/136)) ([29684af](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/29684af31dfe7fb6fb05ed1b0fa52a2f356c8091))
+
+
+### Bug Fixes
+
+* move summing of go-term fold changes out of log-space ([#141](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/141)) ([66bed4a](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/66bed4af4fc061a4ec6ff5aacfea0dd1a826bfa1))
+
+## [2.9.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.8.4...v2.9.0) (2025-03-11)
+
+
+### Features
+
+* Make PCA plots interactive and switch to HTML format ([#137](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/137)) ([d0e6e78](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/d0e6e785d0b2518f11efcf3d18a44a53bb578035))
+
+
+### Bug Fixes
+
+* add support for drosophila melanogaster and other non-standard species ([#142](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/142)) ([dedfdf7](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/dedfdf714c28c22d58546eb369536957768e378c))
+* Improve error handling for missing or empty column values in dataframe with duplicate definitions ([#138](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/138)) ([7f3d590](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/7f3d59000897b5831ed56cb064789d21b95b8935))
+
+## [2.8.4](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.8.3...v2.8.4) (2024-12-18)
+
+
+### Bug Fixes
+
+* handle NA values correctly in meta compare pathways ([#134](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/134)) ([71778df](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/71778dfacc9f662ba64916fb9a99b6107912f05f))
+
 ## [2.8.3](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v2.8.2...v2.8.3) (2024-12-11)
 
 

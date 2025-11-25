@@ -1,5 +1,5 @@
 import sys
-sys.stderr = open(snakemake.log[0], "w")
+sys.stderr = open(snakemake.log[0], "w", buffering=1)
 
 samples_ = snakemake.params.units[["sample", "unit"]].merge(snakemake.params.samples, on="sample")
 samples_["sample"] = samples_.apply(

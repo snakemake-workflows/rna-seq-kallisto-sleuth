@@ -59,28 +59,28 @@ rule sleuth_diffexp:
         mean_var_plot=report(
             "results/plots/mean-var/{model}.mean-variance-plot.pdf",
             caption="../report/plot-mean-var.rst",
-            category="QC",
+            category="quality control",
             subcategory="per-model",
             labels={"model": "{model}", "plot": "mean-variance"},
         ),
         volcano_plots=report(
             "results/plots/volcano/{model}.volcano-plots.pdf",
             caption="../report/plot-volcano.rst",
-            category="QC",
+            category="quality control",
             subcategory="per-model",
             labels={"model": "{model}", "plot": "volcano-plot"},
         ),
         ma_plots=report(
             "results/plots/ma/{model}.ma-plots.pdf",
             caption="../report/plot-ma.rst",
-            category="QC",
+            category="quality control",
             subcategory="per-model",
             labels={"model": "{model}", "plot": "ma-plot"},
         ),
         qq_plots=report(
             "results/plots/qq/{model}.qq-plots.pdf",
             caption="../report/plot-qq.rst",
-            category="QC",
+            category="quality control",
             subcategory="per-model",
             labels={"model": "{model}", "plot": "qq-plot"},
         ),
@@ -146,23 +146,19 @@ rule plot_bootstrap:
         color_by=config["bootstrap_plots"]["color_by"],
         fdr=config["bootstrap_plots"]["FDR"],
         top_n=config["bootstrap_plots"]["top_n"],
-        genes=config["diffexp"]["genes_of_interest"],
+        genes_of_interest=lookup(within=config, dpath="diffexp/genes_of_interest"),
     log:
         "logs/plots/bootstrap/{model}/{model}.plot_bootstrap.log",
     script:
         "../scripts/plot-bootstrap.R"
 
 
-rule plot_pca:
+rule prepare_pca:
     input:
         rds="results/sleuth/all.rds",
     output:
-        pca=report(
-            "results/plots/pca/{covariate}.pca.pdf",
-            caption="../report/plot-pca.rst",
-            category="PCA",
-            labels={"covariate": "{covariate}", "plot": "pca"},
-        ),
+        # Write tsv instead of plot in order to create interactive plot with python since we did not find a good way to do it with R
+        pca="results/plots/pca/{covariate}.pca.tsv",
         pc_var=report(
             "results/plots/pc-variance/{covariate}.pc-variance-plot.pdf",
             caption="../report/plot-pc-variance.rst",
@@ -180,9 +176,29 @@ rule plot_pca:
     params:
         exclude_nas=config["pca"].get("exclude_nas", False),
     log:
-        "logs/plots/pca/{covariate}.plot_pca.log",
+        "logs/plots/pca/{covariate}.prepare_pca.log",
     script:
-        "../scripts/plot-pca.R"
+        "../scripts/prepare-pca.R"
+
+
+rule plot_pca:
+    input:
+        pca="results/plots/pca/{covariate}.pca.tsv",
+    output:
+        pca=report(
+            "results/plots/pca/{covariate}.pca.html",
+            caption="../report/plot-pca.rst",
+            category="PCA",
+            labels={"covariate": "{covariate}", "plot": "pca"},
+        ),
+    conda:
+        "../envs/pystats.yaml"
+    log:
+        "logs/plots/pca/{covariate}.plot_pca.log",
+    params:
+        color_by=lambda wildcards: wildcards.covariate,
+    script:
+        "../scripts/plot-pca.py"
 
 
 rule plot_diffexp_pval_hist:
@@ -192,7 +208,7 @@ rule plot_diffexp_pval_hist:
         report(
             "results/plots/diffexp/{model}.{level}.diffexp-pval-hist.pdf",
             caption="../report/plot-pval-hist.rst",
-            category="QC",
+            category="quality control",
             labels={
                 "model": "{model}",
                 "level": "{level}",
@@ -224,21 +240,45 @@ rule logcount_matrix:
         "../scripts/sleuth-to-matrix.R"
 
 
+rule tpm_matrix:
+    input:
+        "results/sleuth/{model}.rds",
+    output:
+        "results/tables/tpm-matrix/{model}.tpm-matrix.tsv",
+    params:
+        model=get_model,
+    conda:
+        "../envs/sleuth.yaml"
+    log:
+        "logs/tables/tpm-matrix/{model}.tpm-matrix.log",
+    script:
+        "../scripts/sleuth-to-tpm-matrix.R"
+
+
 rule plot_diffexp_heatmap:
     input:
         logcountmatrix_file="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
-        predef_genelist=input_genelist,
+        # default provides a dummy file path for the "topn" case (a file path
+        # that is always valid, but never loaded)
+        predef_gene_list=lookup(
+            within=config,
+            dpath="diffexp/genes_of_interest/gene_lists/{gene_list}",
+            default=lookup(within=config, dpath="samples"),
+        ),
     output:
         diffexp_heatmap=report(
-            "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.pdf",
+            "results/plots/diffexp-heatmap/{model}.diffexp-heatmap.{gene_list}.pdf",
             caption="../report/plot-heatmap.rst",
             category="Heatmaps",
-            labels={"model": "{model}-{mode}"},
+            labels={
+                "model": "{model}",
+                "gene list": "{gene_list}",
+            },
         ),
     params:
         model=get_model,
     log:
-        "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.{mode}.log",
+        "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.{gene_list}.log",
     conda:
         "../envs/heatmap.yaml"
     script:
@@ -279,7 +319,7 @@ rule plot_group_density:
         report(
             "results/plots/group_density/{model}.group_density.pdf",
             caption="../report/plot-group-density.rst",
-            category="QC",
+            category="quality control",
             labels={"model": "{model}-group_density"},
         ),
     conda:
@@ -297,7 +337,7 @@ rule plot_scatter:
         report(
             "results/plots/scatter/{model}.scatter.pdf",
             caption="../report/plot-scatter.rst",
-            category="QC",
+            category="quality control",
             labels={"model": "{model}-scatter-plot"},
         ),
     # params:
@@ -317,7 +357,7 @@ rule plot_fragment_length_dist:
         report(
             "results/plots/fld/{sample}-{unit}.fragment-length-dist.pdf",
             caption="../report/plot-fld.rst",
-            category="QC",
+            category="quality control",
             subcategory="per-sample",
             labels={"sample": "{sample}-{unit}", "plot": "fragment lengths"},
         ),
@@ -336,7 +376,7 @@ rule plot_vars:
         report(
             "results/plots/variance/{model}.transcripts.plot_vars.pdf",
             caption="../report/plot-vars.rst",
-            category="QC",
+            category="quality control",
             labels={"model": "{model}-transcripts-plot-vars"},
         ),
     params:

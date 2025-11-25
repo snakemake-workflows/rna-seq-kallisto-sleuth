@@ -2,7 +2,7 @@ import sys
 import pandas as pd
 from Bio import SeqIO
 
-sys.stderr = open(snakemake.log[0], "w")
+sys.stderr = open(snakemake.log[0], "w", buffering=1)
 
 with open(snakemake.output[0], "w") as transcript_clean_cdna_fasta:
     all_transcripts = pd.read_csv(

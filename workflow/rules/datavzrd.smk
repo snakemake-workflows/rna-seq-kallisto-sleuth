@@ -30,21 +30,54 @@ rule postprocess_diffexp:
         "../scripts/postprocess_diffexp.py"
 
 
-# Postprocessing Logcount Data
-rule postprocess_logcount_matrix:
+rule postprocess_tpm_matrix:
     input:
-        logcount="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
-        diffexp="results/tables/diffexp/{model}.transcripts.diffexp_postprocessed.tsv",
+        tpm="results/tables/tpm-matrix/{model}.tpm-matrix.tsv",
+        diffexp="results/tables/diffexp/{model}.genes-representative.diffexp_postprocessed.tsv",
     output:
-        "results/tables/logcount-matrix/{model}.logcount-matrix_postprocessed.tsv",
+        "results/tables/tpm-matrix/{model}.tpm-matrix.sorted.tsv",
     conda:
         "../envs/pandas.yaml"
     params:
         model=get_model,
     log:
-        "logs/yte/postprocess_logcount/{model}.log",
+        "logs/tables/tpm-matrix/{model}.tpm-matrix.sort.log",
     script:
-        "../scripts/postprocess_logcount.py"
+        "../scripts/postprocess_tpm.py"
+
+
+rule plot_enrichment_scatter:
+    input:
+        "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}.tsv",
+    output:
+        "results/plots/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}_scatter.json",
+    conda:
+        "../envs/pystats.yaml"
+    params:
+        identifier="term",
+        effect_x="effect",
+        effect_y="p_fdr_bh",
+    log:
+        "logs/plot_enrichment_scatter-{model}/plot_enrichment_scatter-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
+    script:
+        "../scripts/plot_enrichment_pathway_scatter.py"
+
+
+rule plot_pathway_scatter:
+    input:
+        "results/tables/pathways/{model}.{database}.pathways.tsv",
+    output:
+        "results/plots/pathways/{model}.{database}.pathways.tsv_scatter.json",
+    conda:
+        "../envs/pystats.yaml"
+    log:
+        "logs/plot_pathway_scatter/{model}.{database}.pathways.tsv_scatter.log",
+    params:
+        identifier="Name",
+        effect_x="total perturbation accumulation",
+        effect_y="Combined FDR",
+    script:
+        "../scripts/plot_enrichment_pathway_scatter.py"
 
 
 # Generating SPIA Datavzrd Report
@@ -55,24 +88,27 @@ rule spia_datavzrd:
         vega_circle=workflow.source_path(
             "../resources/custom_vega_plots/circle_diagram_genes.json"
         ),
-        spia_table="results/tables/pathways/{model}.pathways.tsv",
+        spia_table="results/tables/pathways/{model}.{database}.pathways.tsv",
         vega_waterfall=workflow.source_path(
             "../resources/custom_vega_plots/waterfall_plot_study_items.json"
         ),
+        scatter="results/plots/pathways/{model}.{database}.pathways.tsv_scatter.json",
     output:
         report(
-            directory("results/datavzrd-reports/spia-{model}"),
+            directory("results/datavzrd-reports/spia-{model}_{database}"),
             htmlindex="index.html",
             caption="../report/spia.rst",
             category="Pathway enrichment",
             patterns=["index.html"],
-            labels={"model": "{model}"},
+            labels={
+                "model": "{model}",
+                "database": "{database}",
+            },
         ),
     log:
-        "logs/datavzrd-report/spia-{model}/spia-{model}.log",
+        "logs/datavzrd-report/spia-{model}/spia-{model}_{database}.log",
     params:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
-        pathway_db=config["enrichment"]["spia"]["pathway_database"],
     wrapper:
         "v5.5.0/utils/datavzrd"
 
@@ -82,7 +118,8 @@ rule diffexp_datavzrd:
     input:
         config=workflow.source_path("../resources/datavzrd/diffexp-template.yaml"),
         # optional files required for rendering the given config
-        logcount_matrix="results/tables/logcount-matrix/{model}.logcount-matrix_postprocessed.tsv",
+        logcount_matrix="results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
+        tpm_matrix="results/tables/tpm-matrix/{model}.tpm-matrix.sorted.tsv",
         transcripts="results/tables/diffexp/{model}.transcripts.diffexp_postprocessed.tsv",
         genes_aggregated="results/tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
         genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp_postprocessed.tsv",
@@ -121,6 +158,7 @@ rule go_enrichment_datavzrd:
             "../resources/custom_vega_plots/waterfall_plot_study_items.json"
         ),
         enrichment="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}.tsv",
+        scatter="results/plots/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}_scatter.json",
     output:
         report(
             directory(
@@ -166,9 +204,6 @@ rule meta_compare_datavzrd:
                 method=f"{wildcards.method.capitalize()}: "
             )(wildcards),
         ),
-    params:
-        pathway_db=config["enrichment"]["spia"]["pathway_database"],
-        species=config["resources"]["ref"]["species"],
     log:
         "logs/datavzrd-report/meta_comp_{method}.{meta_comp}.log",
     wrapper:
