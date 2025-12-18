@@ -287,6 +287,7 @@ def all_input(wildcards):
                     "results/tables/fgsea/{model}.sig-gene-sets.tsv",
                     "results/plots/fgsea/{model}.table-plot.pdf",
                     "results/plots/fgsea/{model}",
+                    "results/datavzrd-reports/fgsea_{model}/",
                 ],
                 model=config["diffexp"]["models"],
             )

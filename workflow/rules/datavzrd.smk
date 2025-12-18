@@ -155,7 +155,7 @@ rule fgsea_datavzrd:
     output:
         report(
             directory(
-                "results/datavzrd-reports/{model}.fgsea"
+                "results/datavzrd-reports/fgsea_{model}"
             ),
             htmlindex="index.html",
             caption="../report/fgsea_table.rst",
