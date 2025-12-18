@@ -27,7 +27,7 @@ rule get_annotation:
             "chr_patch_hapl_scaff"
             if lookup(within=config, dpath="resources/ref/species") == "homo_sapiens"
             else ""
-        ),  # optional, e.g. chr_patch_hapl_scaff, see Ensembl FTP.
+        ),
     log:
         "logs/get-annotation.log",
     cache: "omit-software"
