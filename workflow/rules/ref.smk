@@ -23,7 +23,7 @@ rule get_annotation:
         species=config["resources"]["ref"]["species"],
         release=config["resources"]["ref"]["release"],
         build=config["resources"]["ref"]["build"],
-        flavor="chr_patch_hapl_scaff",  # optional, e.g. chr_patch_hapl_scaff, see Ensembl FTP.
+        flavor="chr_patch_hapl_scaff" if lookup(within=config, dpath="resource/ref/species") == "homo_sapiens" else "",  # optional, e.g. chr_patch_hapl_scaff, see Ensembl FTP.
     log:
         "logs/get-annotation.log",
     cache: "omit-software"
