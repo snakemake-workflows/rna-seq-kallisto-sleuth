@@ -1,43 +1,9 @@
-# Example workflow
+# Example workflow from the paper (for single cell)
 # https://github.com/pachterlab/LSRRSRLFKOTWMWMP_2024/blob/main/lr_kallisto_example.ipynb
 # Paper
 # https://pubmed.ncbi.nlm.nih.gov/39071335/
-# Issue
+# Issue (for bulk)
 # https://github.com/pachterlab/kallisto/issues/456
-
-# --long options in the manual https://pachterlab.github.io/kallisto/manual -> -x bulk —long
-# kallisto index will need run with -k 63.
-# What would be the steps in order to generate the transcript-compatibility-counts-file required by quant-tcc -> The necessary files can all be generated from bustools count in bustools." So the commands would be kallisto bus, bustools sort, bustools correct (optional), bustools count, kallisto quant-tcc
-
-
-#
-# gffread -F -w GCA_000001405.15_GRCh38_no_alt_analysis_set_gencode_v45.fasta \
-#    -g GCA_000001405.15_GRCh38_no_alt_analysis_set.fna \
-#    gencode.v45.annotation.gtf
-
-# kallisto index -k 63 -t 10 -i gencode_v45 GCA_000001405.15_GRCh38_no_alt_analysis_set_gencode_v45.fasta
-
-# Running lr-kallisto:
-
-# kallisto bus -t 8 --long --threshold 0.8 -x bulk -i gencode_v45 \
-#   -o kallisto_out fullLength.and.rescued.fastq
-
-# bustools sort -t 8 kallisto_out/output.bus \
-#  -o kallisto_out/sorted.bus
-
-# bustools count kallisto_out/sorted.bus \
-#  -t kallisto_out/transcripts.txt \
-#  -e kallisto_out/matrix.ec \
-#  -g kallisto_out/gencode_v45_tx2g.tsv \
-#  -o kallisto_out/count --cm -m
-
-# kallisto quant-tcc -t 8 \
-# 	--long -p ONT -f kallisto_out/flens.txt \
-# 	-i kallisto_index/gencode_v45 \
-# 	-e kallisto_out/count.ec.txt \
-# 	-o kallisto_out/quant-tcc \
-# 	--matrix-to-files \
-# 	kallisto_out/count.mtx
 
 
 rule kallisto_long_index:
@@ -66,6 +32,9 @@ rule kallisto_long_bus:
         index="results/kallisto_long_cdna/transcripts.cdna.long.idx",
     output:
         bus_file="results/kallisto_long_cdna/{sample}-{unit}/output.bus",
+        transcript="results/kallisto_long_cdna/{sample}-{unit}/transcripts.txt",
+        flens="results/kallisto_long_cdna/{sample}-{unit}/flens.txt",
+        matrix="results/kallisto_long_cdna/{sample}-{unit}/matrix.ec",
     log:
         "logs/kallisto_long_cdna/bus/{sample}-{unit}.log",
     params:
@@ -74,7 +43,6 @@ rule kallisto_long_bus:
     conda:
         "../envs/kallisto.yaml"
     shell:
-        # Why -x? This is not single-cell?
         """
         kallisto bus --threshold 0.8 --long -x bulk -t {threads} -i {input.index} \
         -o $(dirname {output.bus_file}) {input.fastq} 2> {log}
@@ -102,35 +70,37 @@ rule bustools_count:
     input:
         sorted_bus_file="results/kallisto_long_cdna/{sample}-{unit}/sorted.bus",
         transcripts="results/kallisto_long_cdna/{sample}-{unit}/transcripts.txt",
-    output:
-        count_prefix="results/kallisto_long_cdna/{sample}-{unit}/count",
         matrix_ec="results/kallisto_long_cdna/{sample}-{unit}/matrix.ec",
-        tx2g="results/kallisto_long_cdna/{sample}-{unit}/tx2g.tsv",
+        # Should I have a file for mapping transcripts to genes?
+        transcript_info="resources/transcripts_annotation.results.tsv",
+        # tx2g="results/kallisto_long_cdna/{sample}-{unit}/tx2g.tsv",
+    output:
+        count_prefix="results/kallisto_long_cdna/{sample}-{unit}/count.ec.txt",
+        count_mtx="results/kallisto_long_cdna/{sample}-{unit}/count.mtx",
     log:
         "logs/kallisto_long_cdna/bustools_count/{sample}-{unit}.log",
     threads: 5
     conda:
         "../envs/bustools.yaml"
+    params:
+        prefix="results/kallisto_long_cdna/{sample}-{unit}/count",
     shell:
         """
         bustools count {input.sorted_bus_file} \
         -t {input.transcripts} \
-        -e {output.matrix_ec} \
-        -g {output.tx2g} \
-        -o {output.count_prefix} --cm -m 2> {log}
+        -e {input.matrix_ec} \
+        -g {input.transcript_info} \
+        -o {params.prefix} --cm -m 2> {log}
         """
 
 
 # Was ist ${output}/count.mtx
 rule kallisto_long_quant_tcc:
     input:
-        # I have no equivalence classes file so I hope they can be taken from the index?
-        # count_ec="results/kallisto_long_cdna/{sample}-{unit}/count.ec.txt",
-        # -e {input.count_ec} \
+        count_ec="results/kallisto_long_cdna/{sample}-{unit}/count.ec.txt",
+        count_mtx="results/kallisto_long_cdna/{sample}-{unit}/count.mtx",
         index="results/kallisto_long_cdna/transcripts.cdna.long.idx",
-        # I have no fragment-file, so I do not perform normalization? Or should I use the fragement-length from the config?
-        # flens="results/kallisto_long_cdna/{sample}-{unit}/flens.txt",
-        # -f {input.flens}
+        flens="results/kallisto_long_cdna/{sample}-{unit}/flens.txt",
     output:
         quant_folder=directory("results/kallisto_long_cdna/{sample}-{unit}/quant-tcc"),
     log:
@@ -138,10 +108,14 @@ rule kallisto_long_quant_tcc:
     threads: 5
     conda:
         "../envs/kallisto.yaml"
+    params:
+        platform=config["sequencing_platform"],
     shell:
         """
-        kallisto quant-tcc -t {threads} --long --platform ONT  \
+        kallisto quant-tcc -t {threads} --long --platform {params.platform}  \
+        -e {input.count_ec} \
+        -f {input.flens} \
         -i {input.index} \
-        -o $(dirname {output.quant_folder}) \
-        --matrix-to-files 2> {log}
+        -o {output.quant_folder} \
+        --matrix-to-files {input.count_mtx} 2> {log}
         """

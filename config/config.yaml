@@ -289,3 +289,12 @@ params:
   #   If you want to decrease this for larger datasets, their paper and
   #   [a reply on GitHub suggest a value of `-b 30`](https://github.com/pachterlab/kallisto/issues/353#issuecomment-1215742328).
   kallisto: "-b 100"
+
+
+# specify the platform the data was generated on
+# this is used to set appropriate parameters for kallisto
+# possible values are:
+#   - Illumina
+#   - ONT
+#   - PacBio
+sequencing_platform: ONT

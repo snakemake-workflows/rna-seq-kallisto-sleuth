@@ -37,6 +37,7 @@ rule get_transcript_info:
         multiext(
             "resources/transcripts_annotation",
             ".results.rds",
+            ".results.tsv",
             ".main_transcript_strand_length.tsv",
         ),
     params:

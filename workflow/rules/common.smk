@@ -83,6 +83,12 @@ def check_config():
 
 check_config()
 
+is_long_read_sequencing = (
+    True
+    if config.get("sequencing_platform", "").lower() in ["ont", "pacbio"]
+    else False
+)
+
 
 def get_meta_compare_labels(method=""):
     def _get_labels(wildcards):

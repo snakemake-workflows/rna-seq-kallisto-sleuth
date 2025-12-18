@@ -166,6 +166,10 @@ write_rds(
   file = snakemake@output[[1]],
   compress = "gz"
 )
+write_tsv(
+  t2g,
+  file = snakemake@output[[2]],
+)
 
 other_annotations <- all_annotations |>
   # TODO: determine why this filtering is done, and if this should also happen
@@ -204,5 +208,5 @@ if ("transcript_mane_select" %in% colnames(other_annotations)) {
 
 write_tsv(
   other_annotations,
-  snakemake@output[[2]]
+  snakemake@output[[3]]
 )
