@@ -90,7 +90,7 @@ rule bustools_count:
         -t {input.transcripts} \
         -e {input.matrix_ec} \
         -g {input.transcript_info} \
-        -o {params.prefix} --cm -m 2> {log}
+        -o $(dirname {params.prefix})/count --cm -m 2> {log}
         """
 
 
