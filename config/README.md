@@ -1,13 +1,13 @@
 # General settings
 
 To configure this workflow, modify the following files to reflect your dataset and differential expression analysis model:
+
 * `config/samples.tsv`: samples sheet with covariates and conditions
 * `config/units.tsv`: (sequencing) units sheet with raw data paths
 * `config/config.yaml`: general workflow configuration and differential expression model setup
 
 For the `samples.tsv` and `units.tsv`, we explain the expected columns right here, in this `README.md` file.
 For the `config.yaml` file, all entries are explained in detail in its comments.
-
 
 ## samples sheet
 
@@ -20,7 +20,6 @@ These columns can then be used in the `diffexp: models:` specification section i
 
 Missing values can be specified by empty columns or by writing `NA`.
 
-
 ## units sheet
 
 For each sample, add one or more sequencing unit lines (runs, lanes or replicates) to the unit sheet in `config/units.tsv`.
@@ -29,9 +28,10 @@ Missing values can be specified by empty columns or by writing `NA`.
 ### input file options
 
 For each unit, provide exactly **one** out of the following options for input files:
+
 * The path to two paired-end FASTQ files in the columns `fq1`, `fq2`.
 * The path to a single-end FASTQ file in the column `fq1`.
-  For single-end data, you also need to specify `fragment_len_mean` and `fragment_len_sd`, which should usually be available from your sequencing provider.
+  For short-read single-end data, you also need to specify `fragment_len_mean` and `fragment_len_sd`, which should usually be available from your sequencing provider. If you use long-read sequencing technologies this is not needed and you can leave the column empty.
 * The path to a single-end BAM file in the column `bam_single`
 * The path to a paired-end BAM file in the column `bam_paired`
 
@@ -50,6 +50,7 @@ If you want to make the auto-detection explicit for paired-end samples, you can 
 
 In the column `fastp_extra`, you can specify [further `fastp` command-line settings](https://github.com/OpenGene/fastp?tab=readme-ov-file#all-options).
 If you leave this empty (an empty string, containing no whitespace), the workflow will set its default:
+
 * [`--length_required 33`](https://github.com/OpenGene/fastp?tab=readme-ov-file#length-filter): This length filtering ensures that the resulting reads are all usable with the recommended k-mer size of `30` for `kallisto` quantification.
 * [`--trim_poly_x --poly_x_min_len 7`](https://github.com/OpenGene/fastp?tab=readme-ov-file#polyx-tail-trimming): This poly-X trimming removes polyA tails if they are 7 nucleotides or longer.
   It is run after adapter trimming.
@@ -69,6 +70,7 @@ Here's the full concatenation for copy-pasting:
 For this data, adapter trimming should automatically work as expected with the use of `fastp`.
 The above-listed defaults are equivalent to an adaptation of the [Lexogen read preprocessing recommendations for 3' FWD QuantSeq data with `cutadapt`](https://faqs.lexogen.com/faq/what-sequences-should-be-trimmed).
 The `fastp` equivalents, including minimal deviations from the recommendations, are motivated as follows:
+
 * `-m`: In cutadapt, this is the short version of `--minimum-length`. The `fastp` equivalent is `--length_required`. In addition, we increase the minimum length to a default of 33 that makes more sense for kallisto quantification.
 * `-O`: Here, `fastp` doesn't have an equivalent option, so we currently have to live with the suboptimal default of `4`. This is greater than the `min_overlap=3` used here; but smaller than the value of `7`, a threshold that we have found avoids removing randomly matching sequences when combined with the typical Illumina `max_error_rate=0.005`.
 * `-a "polyA=A{20}"`: This can be replaced by with `fastp`'s dedicated option for `--trim_poly_x` tail removal ([which is run after adapter trimming](https://github.com/OpenGene/fastp?tab=readme-ov-file#global-trimming)).
@@ -81,7 +83,6 @@ The `fastp` equivalents, including minimal deviations from the recommendations, 
   Because of this, we cannot set the `max_error_rate` to the Illumina error rate of about `0.005`.
 * `-g "r1adapter=AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC;min_overlap=20"`: This is not needed any more, as `fastp` searches the read sequence for adapter sequences from the start of the read (see [the `fastp` adapter search code](https://github.com/OpenGene/fastp/blob/723a4293a42f1ca05b93c37db6a157b4235c4dcc/src/adaptertrimmer.cpp#L92)).
 * `--discard-trimmed`: We omit this, as adapter sequence removal early in the read will leave short remaining read sequences that are subsequently filtered by `--length_required`.
-
 
 ## config.yaml
 

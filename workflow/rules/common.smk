@@ -232,7 +232,7 @@ def kallisto_quant_input(wildcards):
 
 def kallisto_params(wildcards, input):
     extra = config["params"]["kallisto"]
-    if len(input.fastq) == 1 or is_3prime_experiment:
+    if (len(input.fastq) == 1 or is_3prime_experiment) and not is_long_read_sequencing:
         unit = units.loc[(wildcards.sample, wildcards.unit)]
         if unit.fragment_len_mean == "" or unit.fragment_len_sd == "":
             raise ValueError(
