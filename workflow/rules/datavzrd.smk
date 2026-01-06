@@ -154,9 +154,7 @@ rule fgsea_datavzrd:
         fgsea="results/tables/fgsea/{model}.all-gene-sets.tsv",
     output:
         report(
-            directory(
-                "results/datavzrd-reports/fgsea_{model}"
-            ),
+            directory("results/datavzrd-reports/fgsea_{model}"),
             htmlindex="index.html",
             caption="../report/fgsea_table.rst",
             category="gene set enrichment",
@@ -172,7 +170,6 @@ rule fgsea_datavzrd:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
     wrapper:
         "v7.9.1/utils/datavzrd"
-
 
 
 # Generating GO Enrichment Datavzrd Report
