@@ -1,6 +1,3 @@
-# See this issue for reference:
-# https://github.com/pachterlab/kallisto/issues/456#issuecomment-2336335167
-
 rule kallisto_long_index:
     input:
         fasta=(
