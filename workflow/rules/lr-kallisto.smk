@@ -68,8 +68,13 @@ rule bustools_count:
         matrix_ec="results/kallisto_long_cdna/{sample}-{unit}/matrix.ec",
         transcript_info="resources/transcripts_annotation.results.tsv",
     output:
-        # We only need this file for computation with default-storage-provider
-        tmp_file=temp("results/kallisto_long_cdna/{sample}-{unit}/count"),
+        # Bustools `count` normally only requires a directory for the `-o` option,
+        # where it will create multiple output files (e.g., count.ec.txt, count.mtx). 
+        # Normally, we could use {params.prefix} for this.
+        # However, because Snakemake's default-storage-provider can change the actual
+        # output paths dynamically, we need to explicitly define the expected output path
+        # as an output too, to ensure Snakemake can track them properly.
+        tmp_file="results/kallisto_long_cdna/{sample}-{unit}/count",
         count_prefix="results/kallisto_long_cdna/{sample}-{unit}/count.ec.txt",
         count_mtx="results/kallisto_long_cdna/{sample}-{unit}/count.mtx",
     log:
