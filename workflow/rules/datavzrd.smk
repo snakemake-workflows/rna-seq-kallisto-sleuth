@@ -144,7 +144,7 @@ rule diffexp_datavzrd:
             wildcards.model
         ]["primary_variable"],
     wrapper:
-        "v5.5.0/utils/datavzrd"
+        "v9.0.0/utils/datavzrd"
 
 
 # Generating GO Enrichment Datavzrd Report
