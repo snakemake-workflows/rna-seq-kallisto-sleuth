@@ -71,10 +71,10 @@ rule bustools_count:
         sorted_bus_file="results/kallisto_long_cdna/{sample}-{unit}/sorted.bus",
         transcripts="results/kallisto_long_cdna/{sample}-{unit}/transcripts.txt",
         matrix_ec="results/kallisto_long_cdna/{sample}-{unit}/matrix.ec",
-        # Should I have a file for mapping transcripts to genes?
         transcript_info="resources/transcripts_annotation.results.tsv",
-        # tx2g="results/kallisto_long_cdna/{sample}-{unit}/tx2g.tsv",
     output:
+        # We only need this file for computation with default-storage-provider
+        tmp_file=temp("results/kallisto_long_cdna/{sample}-{unit}/count"),
         count_prefix="results/kallisto_long_cdna/{sample}-{unit}/count.ec.txt",
         count_mtx="results/kallisto_long_cdna/{sample}-{unit}/count.mtx",
     log:
@@ -90,11 +90,11 @@ rule bustools_count:
         -t {input.transcripts} \
         -e {input.matrix_ec} \
         -g {input.transcript_info} \
-        -o $(dirname {params.prefix})/count --cm -m 2> {log}
+        -o {output.tmp_file} --cm -m 2> {log}
+        touch {output.tmp_file}
         """
 
 
-# Was ist ${output}/count.mtx
 rule kallisto_long_quant_tcc:
     input:
         count_ec="results/kallisto_long_cdna/{sample}-{unit}/count.ec.txt",
@@ -112,10 +112,11 @@ rule kallisto_long_quant_tcc:
         platform=config["sequencing_platform"],
     shell:
         """
-        kallisto quant-tcc -t {threads} --long --platform {params.platform}  \
+        kallisto quant-tcc -t {threads} -b 3 --long --platform {params.platform}  \
         -e {input.count_ec} \
         -f {input.flens} \
         -i {input.index} \
         -o {output.quant_folder} \
-        --matrix-to-files {input.count_mtx} 2> {log}
+        --matrix-to-files {input.count_mtx} 2> {log} 
+        cp {output.quant_folder}/abundance_1.h5 {output.quant_folder}/abundance.h5
         """
