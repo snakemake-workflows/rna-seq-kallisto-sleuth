@@ -1,10 +1,5 @@
-# Example workflow from the paper (for single cell)
-# https://github.com/pachterlab/LSRRSRLFKOTWMWMP_2024/blob/main/lr_kallisto_example.ipynb
-# Paper
-# https://pubmed.ncbi.nlm.nih.gov/39071335/
-# Issue (for bulk)
-# https://github.com/pachterlab/kallisto/issues/456
-
+# See this issue for reference:
+# https://github.com/pachterlab/kallisto/issues/456#issuecomment-2336335167
 
 rule kallisto_long_index:
     input:
@@ -44,7 +39,7 @@ rule kallisto_long_bus:
         "../envs/kallisto.yaml"
     shell:
         """
-        kallisto bus --threshold 0.8 --long -x bulk -t {threads} -i {input.index} \
+        kallisto bus --long -x bulk -t {threads} -i {input.index} \
         -o $(dirname {output.bus_file}) {input.fastq} 2> {log}
         """
 
@@ -109,7 +104,7 @@ rule kallisto_long_quant_tcc:
     conda:
         "../envs/kallisto.yaml"
     params:
-        platform=config["sequencing_platform"],
+        platform=config["params"].get("long_read_platform", "ONT"),
     shell:
         """
         kallisto quant-tcc -t {threads} -b 3 --long --platform {params.platform}  \

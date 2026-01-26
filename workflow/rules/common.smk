@@ -85,7 +85,7 @@ check_config()
 
 is_long_read_sequencing = (
     True
-    if config.get("sequencing_platform", "").lower() in ["ont", "pacbio"]
+    if config["params"].get("rna_seq_type", "") == "long_read"
     else False
 )
 
