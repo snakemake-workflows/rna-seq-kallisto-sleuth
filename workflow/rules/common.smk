@@ -84,9 +84,7 @@ def check_config():
 check_config()
 
 is_long_read_sequencing = (
-    True
-    if config["params"].get("rna_seq_type", "") == "long_read"
-    else False
+    True if config["params"].get("rna_seq_type", "") == "long_read" else False
 )
 
 
