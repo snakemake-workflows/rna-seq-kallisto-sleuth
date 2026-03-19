@@ -199,6 +199,17 @@ properties:
     properties:
       kallisto:
         type: string
+      rna_seq_type:
+        type: string
+        enum:
+          - short_read
+          - long_read
+        default: short_read 
+      long_read_platform:
+        type: string
+        enum:
+          - ONT
+          - PacBio
     required:
       - kallisto
 

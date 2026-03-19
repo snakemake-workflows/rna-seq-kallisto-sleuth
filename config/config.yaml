@@ -289,3 +289,7 @@ params:
   #   If you want to decrease this for larger datasets, their paper and
   #   [a reply on GitHub suggest a value of `-b 30`](https://github.com/pachterlab/kallisto/issues/353#issuecomment-1215742328).
   kallisto: "-b 100"
+  # Specify whether the input data represents short-read or long-read bulk RNA-sequencing. Single-cell RNA-seq is currently not supported. Valid options are "short_read" and "long_read".
+  rna_seq_type: short_read  
+  # only required if rna_seq_type == long_read, possible values are "ONT"  or "PacBio"
+  long_read_platform: ONT

@@ -1,11 +1,17 @@
-if is_3prime_experiment:
+if is_long_read_sequencing:
     kallisto_output = expand(
-        "results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples()
+        "results/kallisto_long_cdna/{unit.sample}-{unit.unit}/quant-tcc",
+        unit=units.itertuples(),
     )
 else:
-    kallisto_output = expand(
-        "results/kallisto_cdna/{unit.sample}-{unit.unit}", unit=units.itertuples()
-    )
+    if is_3prime_experiment:
+        kallisto_output = expand(
+            "results/kallisto_3prime/{unit.sample}-{unit.unit}", unit=units.itertuples()
+        )
+    else:
+        kallisto_output = expand(
+            "results/kallisto_cdna/{unit.sample}-{unit.unit}", unit=units.itertuples()
+        )
 
 
 rule compose_sample_sheet:

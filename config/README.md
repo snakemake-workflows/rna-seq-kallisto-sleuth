@@ -31,7 +31,7 @@ Missing values can be specified by empty columns or by writing `NA`.
 For each unit, provide exactly **one** out of the following options for input files:
 * The path to two paired-end FASTQ files in the columns `fq1`, `fq2`.
 * The path to a single-end FASTQ file in the column `fq1`.
-  For single-end data, you also need to specify `fragment_len_mean` and `fragment_len_sd`, which should usually be available from your sequencing provider.
+  For short-read single-end data, you also need to specify `fragment_len_mean` and `fragment_len_sd`, which should usually be available from your sequencing provider. If you use long-read sequencing technologies this is not needed and you can leave the column empty.
 * The path to a single-end BAM file in the column `bam_single`
 * The path to a paired-end BAM file in the column `bam_paired`
 
