@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v4.0.0...v4.1.0) (2026-03-19)
+
+
+### Features
+
+* lr-kallisto ([#170](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/170)) ([e5db265](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/e5db26552708ebcaff29574c04e0a22db1e2a155))
+
 ## [4.0.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v3.0.0...v4.0.0) (2025-10-31)
 
 
