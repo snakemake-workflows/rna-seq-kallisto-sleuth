@@ -1,0 +1,95 @@
+
+__use_yte__: true
+
+name: fgsea report table
+datasets:
+  gene_set_enrichment:
+    path: ?input.fgsea
+    separator: "\t"
+    headers: 1
+    offer-excel: ?params.offer_excel
+max-in-memory-rows: 20000
+views:
+  gene_set_enrichment:
+    hidden: false
+    dataset: gene_set_enrichment
+    page-size: 25
+    render-table:
+      columns:
+        pathway:
+          label: gene set
+          optional: false
+          display-mode: normal
+          plot-view-legend: false
+        size:
+          label: number of genes
+          optional: false
+          precision: 0
+          display-mode: normal
+          plot:
+            heatmap:
+              scale: linear
+              clamp: false
+              color-scheme: blues
+              aux-domain-columns: ~
+          plot-view-legend: false
+        padj:
+          display-mode: hidden
+        NES:
+          label: enrichment
+          display-mode: normal
+          spell:
+            url: "https://raw.githubusercontent.com/datavzrd/datavzrd-spells/8af3330798a978dc4f336eff4da31f8a43616b10/visualization/effect-size-and-significance-bubble/spell.yaml"
+            with:
+              effect_significance: "padj"
+              effect_size: "NES"
+              effect_size_domain_min: 2
+              effect_size_domain_mid: 0
+              effect_size_domain_max: -2
+              effect_size_color_scheme: "spectral"
+          plot-view-legend: false
+        ES:
+          optional: false
+          precision: 2
+          display-mode: detail
+          plot:
+            heatmap:
+              domain-mid: 0
+              scale: "linear"
+              range:
+                - "#4288b5"
+                - "#fbf8b0"
+                - "#d13c4b"
+          plot-view-legend: false
+        pval:
+          optional: false
+          precision: 2
+          display-mode: detail
+          plot:
+            heatmap:
+              scale: linear
+              clamp: false
+              color-scheme: ""
+              range:
+                - blue
+                - white
+              aux-domain-columns: ~
+          plot-view-legend: false
+        log2err:
+          optional: false
+          precision: 2
+          display-mode: hidden
+          plot-view-legend: false
+        leadingEdge:
+          optional: false
+          display-mode: detail
+          plot-view-legend: false
+        leading_edge_entrez_id:
+          optional: false
+          display-mode: detail
+          plot-view-legend: false
+        leading_edge_ens_gene:
+          optional: false
+          display-mode: detail
+          plot-view-legend: false
+webview-controls: false
