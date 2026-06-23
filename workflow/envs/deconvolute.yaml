@@ -1,0 +1,10 @@
+channels:
+  - bioconda
+  - condaforge 
+  - nodefaults 
+dependencies:
+  - r-tidyverse
+  # bioconductor-biomaRt ## here I have to check what I already get from previous steps 
+  - bioconductor-xcell2
+  - bioconductor-complexheatmap
+  - r-seriation
