@@ -2,14 +2,14 @@
 ## rows equal zero are removed and the normalized counts are log2(x + 3) 
 ## transformed
 
-rule deconvolute_input_matrix:
+rule deconvolution:
     input:
-        "results/sleuth/null_model.rds",
-    output:
         gene_counts = "results/tables/deconvolute/input_matrix.tsv",
+    output:
+        
     conda:
-        "workflow/envs/sleuth.yaml" # use renamed file 
+        "workflow/envs/deconvolute.yaml"
     log:
-        "logs/tables/deconvolute/input_matrix.log",
+        "logs/tables/deconvolute/input_matrix.log", # no idea yet
     script:
-        "workflow/scripts/deconvolute-input-matrix.R"
+        "workflow/scripts/deconvolute.R"
