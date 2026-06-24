@@ -4,7 +4,7 @@
 
 rule deconvolute_input_matrix:
     input:
-        "results/sleuth/null_model.rds",
+        rds = "results/sleuth/null_model.rds",
     output:
         gene_counts = "results/tables/deconvolute/input_matrix.tsv",
     conda:
