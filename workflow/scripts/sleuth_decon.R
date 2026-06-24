@@ -9,7 +9,7 @@ library(tidyverse)
   # - bioconductor-complexheatmap
   # - r-seriation
 
-so <- sleuth_load(snakemake@input[[1]])
+so <- sleuth_load(snakemake@input[["rds"]])
 
 # transcript-level, sleuth-normalized, pre-log counts
 # rows = target_id (transcript), columns = sample

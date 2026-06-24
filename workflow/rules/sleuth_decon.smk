@@ -8,8 +8,8 @@ rule deconvolute_input_matrix:
     output:
         gene_counts = "results/tables/deconvolute/input_matrix.tsv",
     conda:
-        "workflow/envs/sleuth_decon.yaml"
+        "../envs/sleuth.yaml"
     log:
         "logs/tables/deconvolute/input_matrix.log",
     script:
-        "workflow/scripts/deconvolute-input-matrix.R"
+        "../scripts/sleuth_decon.R"
