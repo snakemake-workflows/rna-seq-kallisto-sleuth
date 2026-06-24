@@ -1,6 +1,6 @@
 channels:
-  - bioconda
-  - condaforge 
+  - conda-forge
+  - bioconda 
   - nodefaults 
 dependencies:
   - r-tidyverse
