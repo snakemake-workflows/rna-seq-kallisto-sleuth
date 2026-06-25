@@ -133,15 +133,16 @@ rule get_spia_db:
     script:
         "../scripts/get-spia-db.R"
 
-rule get_decon_ref_human:
+rule get_decon_references:
     localrule: True
     cache: True
     output:
-        expand("resources/xcell2/human/{ext}",
-               ext=config["resources"]["xcell2"]["human"])
+        expand("resources/xcell2/{species}/{ext}",
+               species=["human", "mouse"],
+               ext=lambda wc: config["resources"]["xcell2"][wc.species])
     params:
         outdir="resources/xcell2/human/",
-        base_url="https://github.com/AlmogAngel/xCell2/raw/main/reference_data/"
+        base_url="https://github.com/AlmogAngel/xCell2/tree/master/reference_data/"
     log:
         "logs/xcell2/get_decon_ref_human.log"
     shell:
