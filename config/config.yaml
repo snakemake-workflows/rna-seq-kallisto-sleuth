@@ -76,6 +76,22 @@ resources:
     # Available release dates can be found here:
     # https://release.geneontology.org/index.html
     gene_ontology: "https://release.geneontology.org/2025-07-22/ontology/go-basic.obo"
+  xcell2:
+    # download of cell type reference data sets for deconvolution analysis carried out by xcell2
+    human:
+      - LM22.xCell2Ref.rda
+      - BlueprintEncode.xCell2Ref.rda
+      - ImmuneCompendium.xCell2Ref.rda
+      - TabulaSapiensBlood.xCell2Ref.rda
+      - TMECompendium.xCell2Ref.rda
+      - PanCancer.xCell2Ref.rda    
+    mouse:
+      - MouseRNAseqData.xCell2Ref.rda
+      - ImmGenData.xCell2Ref.rda
+      - TabulaMurisBlood.xCell2Ref.rda
+        
+
+
 
 pca:
   # If set to true, samples with NA (or empty) values in the specified covariate

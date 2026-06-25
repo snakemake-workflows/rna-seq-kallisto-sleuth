@@ -132,3 +132,23 @@ rule get_spia_db:
     cache: True
     script:
         "../scripts/get-spia-db.R"
+
+rule get_decon_ref_human:
+    localrule: True
+    cache: True
+    output:
+        expand("resources/xcell2/human/{ext}",
+               ext=config["resources"]["xcell2"]["human"])
+    params:
+        outdir="resources/xcell2/human/",
+        base_url="https://github.com/AlmogAngel/xCell2/raw/main/reference_data/"
+    log:
+        "logs/xcell2/get_decon_ref_human.log"
+    shell:
+        """
+        mkdir -p {params.outdir}
+        for f in {output}; do
+            fname=$(basename $f)
+            curl -fsSL {params.base_url}$fname -o $f
+        done 2> {log}
+        """
