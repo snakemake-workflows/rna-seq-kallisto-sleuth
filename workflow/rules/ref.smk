@@ -137,7 +137,7 @@ rule get_spia_db:
 def xcell2_all_files(config):
     files = []
     for species in ["human", "mouse"]:
-        for ext in config["resources"]["xcell2"][species]:
+        for ext in config["xcell2"][species]:
             files.append(f"resources/xcell2/{species}/{ext}")
     return files
 
