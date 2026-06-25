@@ -143,7 +143,6 @@ def xcell2_all_files(config):
 
 rule get_decon_references:
     localrule: True
-    cache: True
     output:
         xcell2_all_files(config)
     params:
