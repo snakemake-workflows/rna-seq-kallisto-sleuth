@@ -133,22 +133,27 @@ rule get_spia_db:
     script:
         "../scripts/get-spia-db.R"
 
+
+def xcell2_all_files(config):
+    files = []
+    for species in ["human", "mouse"]:
+        for ext in config["resources"]["xcell2"][species]:
+            files.append(f"resources/xcell2/{species}/{ext}")
+    return files
+
 rule get_decon_references:
     localrule: True
     cache: True
     output:
-        expand("resources/xcell2/{species}/{ext}",
-               species=["human", "mouse"],
-               ext=lambda wc: config["resources"]["xcell2"][wc.species])
+        xcell2_all_files(config)
     params:
-        outdir="resources/xcell2/human/",
         base_url="https://github.com/AlmogAngel/xCell2/tree/master/reference_data/"
     log:
         "logs/xcell2/get_decon_ref_human.log"
     shell:
         """
-        mkdir -p {params.outdir}
         for f in {output}; do
+            mkdir -p $(dirname $f)
             fname=$(basename $f)
             curl -fsSL {params.base_url}$fname -o $f
         done 2> {log}
