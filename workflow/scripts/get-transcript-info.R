@@ -25,7 +25,7 @@ while (class(mart)[[1]] != "Mart") {
         biomart = "ENSEMBL_MART_ENSEMBL",
         dataset = str_c(snakemake@params[["species"]], "_gene_ensembl"),
         version = snakemake@params[["version"]],
-        mirror = mart
+        mirror = "may2025.archive.ensembl.org"
       )
     },
     error = function(e) {
