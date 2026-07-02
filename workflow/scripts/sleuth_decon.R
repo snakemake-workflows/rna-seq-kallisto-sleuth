@@ -17,18 +17,18 @@ norm_counts <- sleuth_to_matrix(so, "obs_norm", "est_counts")
 
 # map transcripts -> genes using the sleuth object's own target_mapping,
 target_mapping <- so$target_mapping %>%
-  dplyr::select(target_id, ens_gene) %>%
-  drop_na(ens_gene)
+  dplyr::select(target_id, ext_gene) %>%
+  drop_na(ext_gene)
 
 gene_counts <- as.data.frame(norm_counts) %>%
   rownames_to_column(var = "target_id") %>%
   inner_join(target_mapping, by = "target_id") %>%
   dplyr::select(-target_id) %>%
-  group_by(ens_gene) %>%
+  group_by(ext_gene) %>%
   summarise(across(everything(), sum), .groups = "drop")
 
 # drop genes that are all-zero across every sample
-sample_cols <- setdiff(colnames(gene_counts), "ens_gene")
+sample_cols <- setdiff(colnames(gene_counts), "ext_gene")
 nonzero_mask <- rowSums(gene_counts[, sample_cols, drop = FALSE]) > 0
 gene_counts <- gene_counts[nonzero_mask, ]
 
@@ -37,7 +37,3 @@ gene_counts <- gene_counts[nonzero_mask, ]
 gene_counts[, sample_cols] <- log2(gene_counts[, sample_cols] + 3)
 
 write_tsv(gene_counts, snakemake@output[["gene_counts"]])
-
-### now I have to get the gene names used in the ref sets 
-### here the ref set can be down loaded 
-### https://github.com/AlmogAngel/xCell2/tree/master/data
