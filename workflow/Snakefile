@@ -28,7 +28,7 @@ include: "rules/enrichment.smk"
 include: "rules/datavzrd.smk"
 include: "rules/bam.smk"
 include: "rules/meta_comparisons.smk"
-include: "rules/deconvolute_input_matrix"
+include: "rules/sleuth_decon.smk"
 include: "rules/deconvolute.smk"
 
 
