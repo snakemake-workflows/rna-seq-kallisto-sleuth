@@ -15,8 +15,8 @@ library(seriation)
 data_matrix_2 <- read_tsv(snakemake@input[["gene_counts"]], header = TRUE)
 
 data_input <- data_matrix_2 %>% 
-  column_to_rownames(var = "hgnc_symbol") %>% 
-  dplyr::select(all_of(contains("rna_")))
+  column_to_rownames(var = "ext_gene") %>% 
+  dplyr::select(!c("ext_gen"))       # possible to use config file to make selection?
 
 get_refs <- function(a){
   readRDS(paste0(path_data, "ref_data_sets/", ref_sets[a])) 
