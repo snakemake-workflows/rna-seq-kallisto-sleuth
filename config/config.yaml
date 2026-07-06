@@ -78,14 +78,14 @@ resources:
     gene_ontology: "https://release.geneontology.org/2025-07-22/ontology/go-basic.obo"
   xcell2:
     # download of cell type reference data sets for deconvolution analysis carried out by xcell2
-    human:
+    homo_sapiens:
       - LM22.xCell2Ref.rda
       - BlueprintEncode.xCell2Ref.rda
       - ImmuneCompendium.xCell2Ref.rda
       - TabulaSapiensBlood.xCell2Ref.rda
       - TMECompendium.xCell2Ref.rda
       - PanCancer.xCell2Ref.rda    
-    mouse:
+    mus_musculus:
       - MouseRNAseqData.xCell2Ref.rda
       - ImmGenData.xCell2Ref.rda
       - TabulaMurisBlood.xCell2Ref.rda

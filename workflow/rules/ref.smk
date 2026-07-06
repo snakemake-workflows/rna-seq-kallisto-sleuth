@@ -136,9 +136,9 @@ rule get_spia_db:
 
 def xcell2_all_files(config):
     files = []
-    for species in ["human", "mouse"]:
-        for ext in config["xcell2"][species]:
-            files.append(f"resources/xcell2/{species}/{ext}")
+    species = config["resources"]["ref"]["species"]
+    for ext in config["xcell2"][species]:
+        files.append(f"resources/xcell2/{species}/{ext}")
     return files
 
 rule get_decon_references:
@@ -148,7 +148,7 @@ rule get_decon_references:
     params:
         base_url="https://github.com/AlmogAngel/xCell2/tree/master/data/"
     log:
-        "logs/xcell2/get_decon_ref_human.log"
+        "logs/xcell2/get_decon_ref.log"
     shell:
         """
         for f in {output}; do
