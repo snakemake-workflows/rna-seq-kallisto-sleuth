@@ -12,6 +12,6 @@ rule deconvolution:
     conda:
         "../envs/deconvolute.yaml"
     log:
-        "logs/tables/deconvolute/input_matrix.log", # no idea yet
+        f"logs/tables/deconvolute/{{ref_set}}.log"
     script:
         "../scripts/deconvolute.R"
