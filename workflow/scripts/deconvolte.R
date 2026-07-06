@@ -1,81 +1,91 @@
 log <- file(snakemake@log[[1]], open = "wt")
-sink(log)
+sink(log, type = "output")
 sink(log, type = "message")
 
-
+# libs to use
 library(tidyverse)
-#library(biomaRt)
 library(xCell2)
 library(parallel)
 library(ComplexHeatmap)
 library(seriation)
 
-#### deconvolution starts here
-### checking for duplicates
-data_matrix_2 <- read_tsv(snakemake@input[["gene_counts"]], header = TRUE)
+# ---- inputs from Snakemake ----
+gene_counts_path <- snakemake@input[["gene_counts"]]
+ref_path         <- snakemake@input[["ref"]]
+ref_set_name     <- gsub("\\..*", "", basename(ref_path))
 
-data_input <- data_matrix_2 %>% 
-  column_to_rownames(var = "ext_gene") %>% 
-  dplyr::select(!c("ext_gen"))       # possible to use config file to make selection?
+# ---- getting data from nullmatrix > sleuth_decon ----
+data_matrix <- read_tsv(gene_counts_path, header = TRUE)
 
-get_refs <- function(a){
-  readRDS(paste0(path_data, "ref_data_sets/", ref_sets[a])) 
+# checking for duplicates ! keep an eye on output in generell there should be no duplicated gene
+dupes <- data_matrix[duplicated(data_matrix$ext_gene), ]
+if (nrow(dupes) > 0) {
+  message("Duplicated ext_gene entries found:")
+  message(paste(dupes$ext_gene, collapse = ", "))
 }
-ref_sets <- list.files(paste0(path_data,"ref_data_sets/"))
-ref_set_lst <- lapply(1:length(ref_sets), get_refs)
-names(ref_set_lst) <- ref_sets
 
-get_decode <- function(a){
-  tryCatch({
-    xcell2_pan_res <-
-      xCell2::xCell2Analysis(
-        mix = data_input,
-        xcell2object = ref_set_lst[[a]],
-        minSharedGenes = shared_genes[a]
-        )
-    },
-    error = function(e) {
-      # instant if function(a) throws an error
-      message("NOT WORKING!")
-      message(conditionMessage(e))
-      return(NA) # returns NAs to generate an output 
-    })
-}
-shared_genes <- c(0.8, 0.9, 0.9, 0.9, 0.65, 0.9)
-tst <- lapply(1:length(ref_set_lst), get_decode)
-names(tst) <- ref_sets
+data_input <- data_matrix %>%
+  column_to_rownames(var = "ext_gene")
+
+# ---- load the .rda reference set (replaces get_refs/readRDS) ----
+loaded_name <- load(ref_path)          # load() returns the object name(s) created
+ref_obj     <- get(loaded_name[1])     # retrieve generically, whatever it's called
+
+# ---- core decon logic (was: get_decode) ----
+gene_ls_ref  <- ref_obj@genes_used
+genes_shared <- intersect(gene_ls_ref, data_matrix$ext_gene)
+input_shared <- length(genes_shared) / length(gene_ls_ref)
+input_shared <- floor(input_shared * 20) / 20
+
+message(paste(ref_set_name, input_shared, sep = ": "))
+
+xcell2_res <- tryCatch(
+  {
+    xCell2::xCell2Analysis(
+      mix = data_input,
+      xcell2object = ref_obj,
+      minSharedGenes = input_shared
+    )
+  },
+  error = function(e) {
+    message("NOT WORKING!")
+    message(conditionMessage(e))
+    NA
+  }
+)
+
+# ---- heatmap (module 3, already built by you — plug in your existing call) ----
+pdf(snakemake@output[[1]])
+pheatmap::pheatmap(xcell2_res)   # <- swap for your actual heatmap code
+dev.off()
+
+sink(type = "message")
+sink(type = "output")
 
 
 ### plotting convoluted matrices 
-all_heatmaps <- function(a){
-  tst_plt <- t(tst[[a]]) %>% 
-    scale 
+decon_heatmap <- xcell2_res %>% 
+  scale
+decon_clean <- decon_heatmap[, !colSums(is.na(decon_heatmap))]
+### calculating sample and gene deistribution by seriate   
+col_dis    <- dist(decon_clean, method = "euclidean")
+col_clst   <- hclust(col_dis, method = "ward.D2")
+col_seriat <- reorder(col_clst, col_dis, method = "OLO")
   
-  tst_plt <-  tst_plt[, !colSums(is.na(tst_plt))]
-  
-  col_dis    <- dist(tst_plt, method = "euclidean")
-  col_clst   <- hclust(col_dis, method = "ward.D2")
-  col_seriat <- reorder(col_clst, col_dis, method = "OLO")
-  
-  row_dis    <- dist(t(tst_plt), method = "euclidean")
-  row_clst   <- hclust(row_dis, method = "ward.D2")
-  row_seriat <- reorder(row_clst, row_dis, method = "OLO")
-  
-  Heatmap(t(tst_plt),
-          cluster_columns = as.dendrogram(col_seriat),
-          cluster_rows    = as.dendrogram(row_seriat)
-  )
-}
+row_dis    <- dist(t(decon_clean), method = "euclidean")
+row_clst   <- hclust(row_dis, method = "ward.D2")
+row_seriat <- reorder(row_clst, row_dis, method = "OLO")
 
-all_plts <- lapply(1:6, all_heatmaps)
+tiff(paste0("decon_heatmap_", paste0(names(ref_set_lst)[i]), ".tif"), res = 150,
+pointsize = 10, units = "mm", compression = "lzw", width = 150, height = 200)
+print(
+    Heatmap(
+      t(decon_clean),
+      cluster_columns = as.dendrogram(col_seriat),
+      cluster_rows    = as.dendrogram(row_seriat)
+      )
+      )
+dev.off()
 
-for (i in 1:6) {
-  tiff(paste0("decon_heatmap_", paste0(names(ref_set_lst)[i]), ".tif"), res = 150, 
-       pointsize = 10, units = "mm", compression = "lzw", width = 150, height = 200)
-  print(
-    all_plts[[i]]
-  )
-  dev.off()
-  
-}
-
+sink(type = "message")
+sink(type = "output")
