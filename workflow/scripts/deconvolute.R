@@ -15,7 +15,7 @@ ref_path         <- snakemake@input[["ref"]]
 ref_set_name     <- gsub("\\..*", "", basename(ref_path))
 
 # ---- getting data from nullmatrix > sleuth_decon ----
-data_matrix <- read_tsv(gene_counts_path, header = TRUE)
+data_matrix <- read_tsv(gene_counts_path)
 
 # checking for duplicates ! keep an eye on output in generell there should be no duplicated gene
 dupes <- data_matrix[duplicated(data_matrix$ext_gene), ]
