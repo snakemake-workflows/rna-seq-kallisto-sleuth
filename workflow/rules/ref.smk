@@ -146,7 +146,7 @@ rule get_decon_references:
     output:
         xcell2_all_files(config)
     params:
-        base_url="https://github.com/AlmogAngel/xCell2/blob/master/data/"
+        base_url="https://raw.githubusercontent.com/AlmogAngel/xCell2/master/data/"
     log:
         "logs/xcell2/get_decon_ref.log"
     shell:
