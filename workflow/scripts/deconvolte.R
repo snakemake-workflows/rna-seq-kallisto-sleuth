@@ -54,15 +54,6 @@ xcell2_res <- tryCatch(
   }
 )
 
-# ---- heatmap (module 3, already built by you — plug in your existing call) ----
-pdf(snakemake@output[[1]])
-pheatmap::pheatmap(xcell2_res)   # <- swap for your actual heatmap code
-dev.off()
-
-sink(type = "message")
-sink(type = "output")
-
-
 ### plotting convoluted matrices 
 decon_heatmap <- xcell2_res %>% 
   scale
@@ -76,8 +67,20 @@ row_dis    <- dist(t(decon_clean), method = "euclidean")
 row_clst   <- hclust(row_dis, method = "ward.D2")
 row_seriat <- reorder(row_clst, row_dis, method = "OLO")
 
-tiff(paste0("decon_heatmap_", paste0(names(ref_set_lst)[i]), ".tif"), res = 150,
-pointsize = 10, units = "mm", compression = "lzw", width = 150, height = 200)
+### setting dimensions
+n_rows <- nrow(decon_clean)
+n_cols <- ncol(decon_clean)
+
+### scaling factor 
+row_height <- 8
+col_width  <- 5
+
+plot_height <- max(10, n_rows * row_height)
+plot_width  <- max(6,  n_cols * col_width)
+
+
+tiff(snakemake@output[[1]], res = 150, pointsize = 10, units = "mm",
+ compression = "lzw", width = plot_width, height = plot_height)
 print(
     Heatmap(
       t(decon_clean),
