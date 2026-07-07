@@ -90,6 +90,8 @@ resources:
       - MouseRNAseqData.xCell2Ref.rda
       - ImmGenData.xCell2Ref.rda
       - TabulaMurisBlood.xCell2Ref.rda
+  singscore:
+  activate: false
         
 
 
