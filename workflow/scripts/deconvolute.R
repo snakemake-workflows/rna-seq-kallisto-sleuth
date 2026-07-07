@@ -61,13 +61,21 @@ decon_heatmap <- xcell2_res %>%
   scale
 decon_clean <- decon_heatmap[, !colSums(is.na(decon_heatmap))]
 ### calculating sample and gene deistribution by seriate   
-col_dis    <- dist(decon_clean, method = "euclidean")
+col_dis    <- dist(t(decon_clean), method = "euclidean")
 col_clst   <- hclust(col_dis, method = "ward.D2")
 col_seriat <- reorder(col_clst, col_dis, method = "OLO")
   
-row_dis    <- dist(t(decon_clean), method = "euclidean")
+row_dis    <- dist(decon_clean, method = "euclidean")
 row_clst   <- hclust(row_dis, method = "ward.D2")
 row_seriat <- reorder(row_clst, row_dis, method = "OLO")
+
+### plotting and layout of heatmap 
+ht <- Heatmap(
+      decon_clean,
+      cluster_columns = as.dendrogram(col_seriat),
+      cluster_rows    = as.dendrogram(row_seriat),
+      row_names_max_width = unit(200, "mm")
+)
 
 ### setting dimensions
 n_rows <- nrow(decon_clean)
@@ -84,12 +92,10 @@ plot_width  <- max(6,  n_cols * col_width)
 tiff(snakemake@output[[1]], res = 150, pointsize = 10, units = "mm",
  compression = "lzw", width = plot_width, height = plot_height)
 print(
-    Heatmap(
-      t(decon_clean),
-      cluster_columns = as.dendrogram(col_seriat),
-      cluster_rows    = as.dendrogram(row_seriat)
-      )
-      )
+  draw(ht,
+  heatmap_legend_side = "left",
+  align_heatmap_legend = "heatmap_top")
+)
 dev.off()
 
 sink(type = "message")
