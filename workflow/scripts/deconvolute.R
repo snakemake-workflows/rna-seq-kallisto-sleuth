@@ -80,8 +80,8 @@ ht <- Heatmap(
 )
 
 ### setting dimensions
-n_rows <- nrow(decon_clean)
-n_cols <- ncol(decon_clean)
+n_cols <- nrow(decon_clean)
+n_rows <- ncol(decon_clean)
 
 ### scaling factor 
 row_height <- 8
