@@ -2,7 +2,7 @@
 ## normalized log2(x + 3) transformed counts produced by the rule sleuth_decon
 
 species = config["resources"]["ref"]["species"]
-ref_set, = glob_wildcards(f"resources/xcell2/{species}/{{ref_set}}.xCell2Ref.rda")
+REF_SETS, = glob_wildcards(f"resources/xcell2/{species}/{{ref_set}}.xCell2Ref.rda")
 
 rule deconvolution:
     input:
