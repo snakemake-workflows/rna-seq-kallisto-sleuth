@@ -58,20 +58,22 @@ xcell2_res <- tryCatch(
 
 ### plotting convoluted matrices 
 decon_heatmap <- xcell2_res %>% 
-  scale
+t() %>%
+scale
+
 decon_clean <- decon_heatmap[, !colSums(is.na(decon_heatmap))]
 ### calculating sample and gene deistribution by seriate   
-col_dis    <- dist(t(decon_clean), method = "euclidean")
+col_dis    <- dist(decon_clean, method = "euclidean")
 col_clst   <- hclust(col_dis, method = "ward.D2")
 col_seriat <- reorder(col_clst, col_dis, method = "OLO")
   
-row_dis    <- dist(decon_clean, method = "euclidean")
+row_dis    <- dist(t(decon_clean), method = "euclidean")
 row_clst   <- hclust(row_dis, method = "ward.D2")
 row_seriat <- reorder(row_clst, row_dis, method = "OLO")
 
 ### plotting and layout of heatmap 
 ht <- Heatmap(
-      decon_clean,
+      t(decon_clean),
       cluster_columns = as.dendrogram(col_seriat),
       cluster_rows    = as.dendrogram(row_seriat),
       row_names_max_width = unit(200, "mm")
