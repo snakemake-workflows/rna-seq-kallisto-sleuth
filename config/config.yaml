@@ -77,6 +77,7 @@ resources:
     # https://release.geneontology.org/index.html
     gene_ontology: "https://release.geneontology.org/2025-07-22/ontology/go-basic.obo"
   xcell2:
+  activate: false
     # download of cell type reference data sets for deconvolution analysis carried out by xcell2
     homo_sapiens:
       - LM22.xCell2Ref.rda

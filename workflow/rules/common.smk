@@ -470,4 +470,18 @@ def all_input(wildcards):
                 )
             ),
         )
+    # xcell2 deconvolution reference downloads
+    if config["xcell2"]["activate"]:
+        wanted_input.extend(
+            xcell2_all_files(config)
+        )
+
+    # xcell2 deconvolution heatmaps
+    if config["xcell2"]["activate"]:
+        wanted_input.extend(
+            expand(
+                "results/tables/deconvolute/plots/heatmap/{ref_set}.tiff",
+                ref_set=REF_SETS,
+            )
+        )
     return wanted_input
