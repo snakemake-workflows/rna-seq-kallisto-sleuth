@@ -470,18 +470,21 @@ def all_input(wildcards):
                 )
             ),
         )
-    # xcell2 deconvolution reference downloads
-    if config["xcell2"]["activate"]:
-        wanted_input.extend(
-            xcell2_all_files(config)
-        )
-
     # xcell2 deconvolution heatmaps
-    if config["xcell2"]["activate"]:
+    if config["deconvolution"]["xcell2"]["activate"]:
         wanted_input.extend(
             expand(
-                "results/tables/deconvolute/plots/heatmap/{ref_set}.tiff",
-                ref_set=REF_SETS,
+                "results/plots/deconvolute/{celltype_reference}.heatmap.tiff",
+                celltype_reference=lookup(within=config, dpath="deconvolution/xcell2/celltype_references"),
             )
         )
+    # singscore calculation
+    if config["enrichment"]["singscore"]["activate"]:
+        wanted_input.extend(
+            expand(
+                "results/plots/singscore/{gene_set_group}.tiff",
+                gene_set_group=lookup(within=config, dpath="deconvolution/xcell2/celltype_references"), GENE_SET_GROUPS,
+            )
+        ) 
     return wanted_input
+
