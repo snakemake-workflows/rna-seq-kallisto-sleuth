@@ -483,7 +483,7 @@ def all_input(wildcards):
         wanted_input.extend(
             expand(
                 "results/plots/singscore/{gene_set_group}.tiff",
-                gene_set_group=lookup(within=config, dpath="deconvolution/xcell2/celltype_references"), GENE_SET_GROUPS,
+                gene_set_group=lookup(within=config, dpath="singscore/gene_sets"),
             )
         ) 
     return wanted_input
