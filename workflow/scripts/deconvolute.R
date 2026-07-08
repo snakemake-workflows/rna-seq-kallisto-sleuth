@@ -91,7 +91,7 @@ plot_height <- max(10, n_rows * row_height)
 plot_width  <- max(6,  n_cols * col_width)
 
 
-tiff(snakemake@output[[1]], res = 150, pointsize = 10, units = "mm",
+tiff(snakemake@output[["heatmap"]], res = 150, pointsize = 10, units = "mm",
  compression = "lzw", width = plot_width, height = plot_height)
 print(
   draw(ht,
