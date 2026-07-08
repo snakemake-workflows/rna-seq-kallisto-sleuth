@@ -144,16 +144,12 @@ def xcell2_all_files(config):
 rule get_decon_references:
     localrule: True
     output:
-        xcell2_all_files(config)
+        rda="resources/celltype_references/{celltype_reference}.xCell2Ref.rda"
     params:
         base_url="https://raw.githubusercontent.com/AlmogAngel/xCell2/master/data/"
     log:
-        "logs/xcell2/get_decon_ref.log"
+        "logs/xcell2/{celltype_reference}.get_decon_ref.log"
     shell:
         """
-        for f in {output}; do
-            mkdir -p $(dirname $f)
-            fname=$(basename $f)
-            curl -fsSL {params.base_url}$fname -o $f
-        done 2> {log}
+        curl -fsSL {params.base_url}/{wildcards.celltype_reference}.xCell2Ref.rda -o  {output.rda} >{log} 2>&1
         """
