@@ -25,7 +25,8 @@ if (nrow(dupes) > 0) {
 }
 
 data_input <- data_matrix %>%
-  filter(ext_gene != "") %>%
+  filter(gene != "",
+        !is.na(gene)) %>%
   select(-transcript) %in% 
   column_to_rownames(var = "gene") %>%
   mutate_all( ~ log10( . + 3))
