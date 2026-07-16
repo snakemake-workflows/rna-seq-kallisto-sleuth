@@ -11,10 +11,13 @@ library(seriation)
 
 # ---- inputs from Snakemake ----
 gene_counts_path <- snakemake@input[["gene_counts"]]
+transcript_index <- snakemake@input[["transcript_ref"]]
 ref_path         <- snakemake@input[["ref"]]
 ref_set_name     <- gsub("\\..*", "", basename(ref_path))
 
 # ---- getting data from nullmatrix > sleuth_decon ----
+trans_mane  <- read_tsv(transcript_index) %in%
+    filter(canonical == "TRUE")
 data_matrix <- read_tsv(gene_counts_path)
 
 # checking for duplicates ! keep an eye on output in generell there should be no duplicated gene
@@ -25,8 +28,8 @@ if (nrow(dupes) > 0) {
 }
 
 data_input <- data_matrix %>%
-  filter(gene != "",
-        !is.na(gene)) %>%
+  mutate(transcript = gsub("\\..*", "", transcript)) %>%
+  filter(transcript %in% trans_mane$target_id) %>%
   select(-transcript) %in% 
   column_to_rownames(var = "gene") %>%
   mutate_all( ~ log10( . + 3))
