@@ -48,7 +48,10 @@ xcell2_res <- xCell2::xCell2Analysis(
 )
 
 ### export of convoluted matrices as table
-write_tsv(xcell2_res, snakemake@output[["decon_scores"]])
+xcell_xprt <- as_tibble(xcell2_res) |>
+  rownames_to_column(var = "cell_types")
+
+write_tsv(xcell_xprt, snakemake@output[["decon_scores"]])
 
 ### plotting convoluted matrices 
 decon_heatmap <- xcell2_res %>% 
