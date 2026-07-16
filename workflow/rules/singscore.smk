@@ -11,6 +11,6 @@ rule singscore:
     conda:
         "../envs/singscore.yaml"
     log:
-        "logs/singscore_{gene_set_group}.log"
+        "logs/singscore_{model}.{gene_set_group}.log"
     script:
         "../scripts/singscore.R"
