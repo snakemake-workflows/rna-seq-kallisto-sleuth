@@ -483,7 +483,7 @@ def all_input(wildcards):
     if config["enrichment"]["singscore"]["activate"]:
         wanted_input.extend(
             expand(
-                "results/plots/singscore/{gene_set_group}.tiff",
+                "results/plots/singscore/{gene_set_group}/file.tiff",
                 gene_set_group=lookup(within=config, dpath="enrichment/singscore/gene_sets/{gene_set_group}/file"),
                 model=lookup(within=config, dpath="enrichment/singscore/gene_sets/{gene_set_group}/file"),
             )
