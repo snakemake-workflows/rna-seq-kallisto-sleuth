@@ -25,8 +25,9 @@ if (nrow(dupes) > 0) {
 }
 
 data_input <- data_matrix %>%
-filter(ext_gene != "") %>%
-column_to_rownames(var = "ext_gene")
+  filter(ext_gene != "") %>%
+  column_to_rownames(var = "ext_gene") %>%
+  mutate_all( ~ log10( . + 3))
 
 
 # ---- load the .rda reference set (replaces get_refs/readRDS) ----

@@ -474,8 +474,9 @@ def all_input(wildcards):
     if config["deconvolution"]["xcell2"]["activate"]:
         wanted_input.extend(
             expand(
-                "results/plots/deconvolute/{celltype_reference}.heatmap.tiff",
+                "results/plots/deconvolute/{celltype_reference}.{model}.heatmap.tiff",
                 celltype_reference=lookup(within=config, dpath="deconvolution/xcell2/celltype_references"),
+                model=lookup(within=config, dpath="deconvolution/xcell2/models"),
             )
         )
     # singscore calculation

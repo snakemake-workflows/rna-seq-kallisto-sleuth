@@ -245,6 +245,9 @@ deconvolution:
 # literaur link 
   xcell2:
     activate: false
+    # choose one of the models defined under diffexp - ??? multiple models are possible ???
+    models:
+      - treated_vs_untreated
     # download of cell type reference data sets for deconvolution analysis carried out by xcell2
     # available references can be found here: https://raw.githubusercontent.com/AlmogAngel/xCell2/master/data/
     # homo_sapiens:
