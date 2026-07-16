@@ -17,14 +17,13 @@ rule deconvolute_input_matrix:
 ## this rule is used to make deconvolution calculation based on the  
 ## normalized log2(x + 3) transformed counts produced by the rule sleuth_decon
 
-REF_SETS, = glob_wildcards(f"resources/xcell2/{species}/{{ref_set}}.xCell2Ref.rda")
-
 rule deconvolution:
     input:
         gene_counts="results/tables/deconvolute/input_matrix.tsv",
         ref="resources/celltype_references/{celltype_reference}.xCell2Ref.rda",
     output:
         heatmap="results/plots/deconvolute/{celltype_reference}.heatmap.tiff",
+        decon_scores="results/tables/deconvolute/{celltype_reference}.decon_scores.tsv",
     conda:
         "../envs/deconvolute.yaml"
     log:

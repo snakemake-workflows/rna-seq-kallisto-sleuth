@@ -41,20 +41,14 @@ input_shared <- floor(input_shared * 20) / 20
 
 message(paste(ref_set_name, input_shared, sep = ": "))
 
-xcell2_res <- tryCatch(
-  {
-    xCell2::xCell2Analysis(
-      mix = data_input,
-      xcell2object = ref_obj,
-      minSharedGenes = input_shared
-    )
-  },
-  error = function(e) {
-    message("NOT WORKING!")
-    message(conditionMessage(e))
-    NA
-  }
+xcell2_res <- xCell2::xCell2Analysis(
+  mix = data_input,
+  xcell2object = ref_obj,
+  minSharedGenes = input_shared
 )
+
+### export of convoluted matrices as table
+write_tsv(xcell2_res, snakemake@output[["decon_scores"]])
 
 ### plotting convoluted matrices 
 decon_heatmap <- xcell2_res %>% 
