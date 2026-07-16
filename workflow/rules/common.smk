@@ -481,12 +481,13 @@ def all_input(wildcards):
         )
     # singscore calculation
     if config["enrichment"]["singscore"]["activate"]:
-    wanted_input.extend(
-        expand(
-            "results/plots/singscore/{gene_set_group}.tiff",
-            gene_set_group=list(
-                lookup(within=config, dpath="enrichment/singscore/gene_sets").keys()
-            ),
+        wanted_input.extend(
+            expand(
+                "results/plots/singscore/{gene_set_group}.tiff",
+                gene_set_group=list(
+                    lookup(within=config, dpath="enrichment/singscore/gene_sets").keys()
+                    ),
+            )
         )
-    )
+    
     return wanted_input
