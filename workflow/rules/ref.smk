@@ -133,14 +133,6 @@ rule get_spia_db:
     script:
         "../scripts/get-spia-db.R"
 
-
-def xcell2_all_files(config):
-    files = []
-    species = config["resources"]["ref"]["species"]
-    for ext in config["xcell2"][species]:
-        files.append(f"resources/xcell2/{species}/{ext}")
-    return files
-
 rule get_decon_references:
     localrule: True
     output:
