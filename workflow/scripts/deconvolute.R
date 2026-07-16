@@ -18,7 +18,10 @@ ref_set_name     <- gsub("\\..*", "", basename(ref_path))
 # ---- getting data from nullmatrix > sleuth_decon ----
 trans_mane  <- read_tsv(transcript_index) %>%
     filter(canonical == "TRUE")
-data_matrix <- read_tsv(gene_counts_path)
+data_matrix <- read_tsv(gene_counts_path) %>%
+  mutate(transcript = gsub("\\..*", "", transcript)) %>%
+  filter(transcript %in% trans_mane$target_id)
+
 
 # checking for duplicates ! keep an eye on output in generell there should be no duplicated gene
 dupes <- data_matrix[duplicated(data_matrix$gene), ]
@@ -28,8 +31,6 @@ if (nrow(dupes) > 0) {
 }
 
 data_input <- data_matrix %>%
-  mutate(transcript = gsub("\\..*", "", transcript)) %>%
-  filter(transcript %in% trans_mane$target_id) %>%
   select(-transcript) %>% 
   column_to_rownames(var = "gene") %>%
   mutate_all( ~ log10( . + 3))
