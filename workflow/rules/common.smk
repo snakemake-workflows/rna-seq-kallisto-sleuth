@@ -484,7 +484,7 @@ def all_input(wildcards):
         wanted_input.extend(
             expand(
                 "results/plots/singscore/{gene_set_group}.tiff",
-                gene_set_group=lookup(within=config, dpath="singscore/gene_sets"),
+                gene_set_group=lookup(within=config, dpath="enrichment/singscore/gene_sets/{gene_set_group}/file"),
                 model=lookup(within=config, dpath="enrichment/singscore/gene_sets/{gene_set_group}/file"),
             )
         ) 
