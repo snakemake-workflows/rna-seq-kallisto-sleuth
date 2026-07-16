@@ -18,15 +18,16 @@ ref_set_name     <- gsub("\\..*", "", basename(ref_path))
 data_matrix <- read_tsv(gene_counts_path)
 
 # checking for duplicates ! keep an eye on output in generell there should be no duplicated gene
-dupes <- data_matrix[duplicated(data_matrix$ext_gene), ]
+dupes <- data_matrix[duplicated(data_matrix$gene), ]
 if (nrow(dupes) > 0) {
-  message("Duplicated ext_gene entries found:")
-  message(paste(dupes$ext_gene, collapse = ", "))
+  message("Duplicated gene entries found:")
+  message(paste(dupes$gene, collapse = ", "))
 }
 
 data_input <- data_matrix %>%
   filter(ext_gene != "") %>%
-  column_to_rownames(var = "ext_gene") %>%
+  select(-transcript) %in% 
+  column_to_rownames(var = "gene") %>%
   mutate_all( ~ log10( . + 3))
 
 
@@ -36,7 +37,7 @@ ref_obj     <- get(loaded_name[1])     # retrieve generically, whatever it's cal
 
 # ---- core decon logic (was: get_decode) ----
 gene_ls_ref  <- ref_obj@genes_used
-genes_shared <- intersect(gene_ls_ref, data_matrix$ext_gene)
+genes_shared <- intersect(gene_ls_ref, data_matrix$gene)
 input_shared <- length(genes_shared) / length(gene_ls_ref)
 input_shared <- floor(input_shared * 20) / 20
 
