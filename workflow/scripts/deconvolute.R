@@ -48,8 +48,7 @@ xcell2_res <- xCell2::xCell2Analysis(
 )
 
 ### export of convoluted matrices as table
-xcell_xprt <- as_tibble(xcell2_res) |>
-  rownames_to_column(var = "cell_types")
+xcell_xprt <- as_tibble(xcell2_res, rownames = "cell_type")
 
 write_tsv(xcell_xprt, snakemake@output[["decon_scores"]])
 
