@@ -12,6 +12,7 @@ library(ComplexHeatmap)
 xpr_data  <- read_tsv(snakemake@input[["gene_counts"]])
 smpl_data <- read_tsv(snakemake@input[["samples"]])
 gene_sets <- getGmt(snakemake@input[["gene_sets"]])
+transcript_index <- read_tsv(snakemake@input[["transcript_ref"]])
 
 #### definition of gene set groups for the analysis 
 group <- snakemake@wildcards[["gene_set_group"]]
@@ -29,9 +30,21 @@ color_aes <- snakemake@params[["color_aes"]]
 shape_aes <- snakemake@params[["shape_aes"]]
 
 #### calculation of singscore 
-xpr_matrix <- xpr_data %>%
-  column_to_rownames(var = "gene_ext") %>%
+#### get only mane transcripts 
+trans_mane  <- read_tsv(transcript_index) %>%
+  filter(canonical == "TRUE",
+  !is.na(ext_gene))
+
+xpr_matrix <- read_tsv(xpr_data) %>%
+  mutate(transcript = sub("\\..*", "", transcript),
+         row_flt = rowSums(across(where(is.numeric)))) %>%
+  arrange(desc(row_flt)) %>%
+  filter(transcript %in% trans_mane$target_id) %>%
+  distinct(gene, .keep_all = TRUE) %>%
+  column_to_rownames(var = "gene") %>%
+  select(-c("transcript", "row_flt")) %>%
   as.matrix()
+
 data_ranked      <- rankGenes(xpr_matrix)
 
 singscore_output <- if (!is.null(down_set)) {

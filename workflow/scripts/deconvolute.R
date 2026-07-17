@@ -25,6 +25,7 @@ data_matrix <- read_tsv(gene_counts_path) %>%
          row_flt = rowSums(across(where(is.numeric)))) %>%
   arrange(desc(row_flt)) %>%
   filter(transcript %in% trans_mane$target_id) %>%
+  select(-row_flt) %>%
   distinct(gene, .keep_all = TRUE)
 
 # checking for duplicates ! keep an eye on output in generell there should be no duplicated gene
