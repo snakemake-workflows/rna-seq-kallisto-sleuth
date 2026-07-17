@@ -9,9 +9,9 @@ library(ComplexHeatmap)
 
 
 #### get data for calculation 
-xpr_data  <- snakemake@input[["gene_counts"]])
-smpl_data <- snakemake@input[["samples"]])
-gene_set  <- snakemake@input[["gene_sets"]])
+xpr_data  <- read_tsv(snakemake@input[["gene_counts"]])
+smpl_data <- read_tsv(snakemake@input[["samples"]])
+gene_set  <- read_tsv(snakemake@input[["gene_sets"]])
 transcript_index <- read_tsv(snakemake@input[["transcript_ref"]])
 
 group <- snakemake@wildcards[["gene_set_group"]]
