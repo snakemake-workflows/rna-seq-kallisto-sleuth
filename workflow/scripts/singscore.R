@@ -9,21 +9,12 @@ library(ComplexHeatmap)
 
 
 #### get data for calculation 
-xpr_data  <- read_tsv(snakemake@input[["gene_counts"]])
-smpl_data <- read_tsv(snakemake@input[["samples"]])
-gene_sets <- getGmt(snakemake@input[["gene_sets"]])
+xpr_data  <- snakemake@input[["gene_counts"]])
+smpl_data <- snakemake@input[["samples"]])
+gene_set  <- snakemake@input[["gene_sets"]])
 transcript_index <- read_tsv(snakemake@input[["transcript_ref"]])
 
-#### definition of gene set groups for the analysis 
 group <- snakemake@wildcards[["gene_set_group"]]
-group_cfg <- snakemake@config[["singscore"]][["gene_sets"]][[group]]
-
-up_name   <- group_cfg[["upregulated_gene_set"]]
-down_name <- group_cfg[["downregulated_gene_set"]]
-
-up_set   <- gene_sets[[up_name]]
-down_set <- if (!is.null(down_name)) gene_sets[[down_name]] else NULL
-
 
 #### definition of aes for the plot 
 color_aes <- snakemake@params[["color_aes"]]
@@ -31,21 +22,32 @@ shape_aes <- snakemake@params[["shape_aes"]]
 
 #### calculation of singscore 
 #### get only mane transcripts 
-trans_mane  <- read_tsv(transcript_index) %>%
+trans_mane  <- transcript_index %>%
   filter(canonical == "TRUE",
-  !is.na(ext_gene))
+         !is.na(ens_gene))
 
-xpr_matrix <- read_tsv(xpr_data) %>%
+xpr_matrix <- xpr_data %>%
   mutate(transcript = sub("\\..*", "", transcript),
          row_flt = rowSums(across(where(is.numeric)))) %>%
   arrange(desc(row_flt)) %>%
   filter(transcript %in% trans_mane$target_id) %>%
-  distinct(gene, .keep_all = TRUE) %>%
-  column_to_rownames(var = "gene") %>%
-  select(-c("transcript", "row_flt")) %>%
+  mutate(ens_gene = trans_mane$ens_gene[match(transcript, trans_mane$target_id)]) %>%
+  distinct(ens_gene, .keep_all = TRUE) %>%
+  column_to_rownames(var = "ens_gene") %>%
+  dplyr::select(-c("transcript", "row_flt", "gene")) %>%
   as.matrix()
 
 data_ranked      <- rankGenes(xpr_matrix)
+
+
+#### get genesets 
+all_sets <- names(gene_set)
+
+up_set   <- all_sets[grepl("up", all_sets, ignore.case = TRUE)]
+up_set   <- gene_set[[up_set]]
+
+down_set <- all_sets[grepl("down", all_sets, ignore.case = TRUE)]
+down_set <- gene_set[[down_set]]
 
 singscore_output <- if (!is.null(down_set)) {
   simpleScore(data_ranked, upSet = up_set, downSet = down_set)
@@ -56,6 +58,7 @@ singscore_output <- if (!is.null(down_set)) {
 score_df <- data.frame(
   sample = colnames(xpr_matrix),
   score  = singscore_output$TotalScore) %>%
+  mutate(sample = sub("t-.*", "t", sample)) %>%
   left_join(smpl_data, by = "sample") %>%
   distinct(sample, .keep_all = TRUE) %>%
   arrange(score)
@@ -76,8 +79,8 @@ tiff(
 )
 
 ggplot(score_df, aes(x = sample, y = score,
-                      color = .data[[color_aes]],
-                      shape = .data[[shape_aes]])) +
+                     color = .data[[color_aes]],
+                     shape = .data[[shape_aes]])) +
   geom_point(size = 12 / .pt) +
   scale_x_discrete(limits = score_df$sample) +
   labs(
@@ -89,7 +92,7 @@ ggplot(score_df, aes(x = sample, y = score,
     axis.line             = element_line(color = "#000000", linewidth = 1),
     axis.title.x          = element_blank(),
     axis.text.x           = element_text(angle = 270, hjust = .5, vjust = .5,
-                                          size = 36 / .pt, color = "#000000"),
+                                         size = 36 / .pt, color = "#000000"),
     axis.title.y          = element_text(hjust = .5, vjust = .5, size = 52 / .pt),
     axis.text.y            = element_text(size = 36 / .pt, color = "#000000"),
     legend.title           = element_blank(),
@@ -101,5 +104,3 @@ dev.off()
 
 sink(type = "message")
 sink(type = "output")
-
-
