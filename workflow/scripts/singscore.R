@@ -44,15 +44,12 @@ data_ranked      <- rankGenes(xpr_matrix)
 all_sets <- names(gene_set)
 
 up_set   <- all_sets[grepl("up", all_sets, ignore.case = TRUE)]
-up_set   <- gene_set[[up_set]]
-
 down_set <- all_sets[grepl("down", all_sets, ignore.case = TRUE)]
-down_set <- gene_set[[down_set]]
 
 singscore_output <- if (!is.null(down_set)) {
-  simpleScore(data_ranked, upSet = up_set, downSet = down_set)
+  simpleScore(data_ranked, upSet = gene_set[[up_set]], downSet = gene_set[[down_set]])
 } else {
-  simpleScore(data_ranked, upSet = up_set)
+  simpleScore(data_ranked, upSet = gene_set[[up_set]])
 }
 
 score_df <- data.frame(
