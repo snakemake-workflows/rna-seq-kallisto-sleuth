@@ -160,6 +160,18 @@ properties:
           - gene_sets_file
           - fdr_gene_set
           - eps
+      singscore:
+        type: object
+        properties:
+          activate:
+            type: boolean
+          gene_sets:
+            type: object
+            patternProperties:
+              "^.+$":
+                type: string
+        required:
+          - gene_sets
       spia:
         type: object
         properties:
@@ -171,6 +183,22 @@ properties:
               type: string
         required:
           - pathway_databases
+
+  deconvolution:
+    type: object
+    properties:
+      activate:
+        type: boolean
+      models:
+        type: array
+        items:
+          type: string
+      celltype_references:
+        type: array
+        items:
+          type: string
+    required:
+      - activate
 
   bootstrap_plots:
     type: object
@@ -220,4 +248,5 @@ required:
   - pca
   - diffexp
   - enrichment
+  - deconvolution
   - params
