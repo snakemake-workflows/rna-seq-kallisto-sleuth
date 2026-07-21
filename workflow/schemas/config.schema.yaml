@@ -166,7 +166,7 @@ properties:
           activate:
             type: boolean
           gene_sets:
-            type: array
+            type: object
             patternProperties:
               "^.+$":
                 type: object
