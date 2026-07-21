@@ -1,5 +1,5 @@
-## this rule is used to get a expression matrix on gene-level in which all 
-## rows equal zero are removed and the normalized counts are log2(x + 3) 
+## this rule is used to get a expression matrix on gene-level in which all
+## rows equal zero are removed and the normalized counts are log2(x + 3)
 ## transformed
 
 # rule deconvolute_input_matrix:
@@ -13,21 +13,22 @@
 #         "logs/tables/deconvolute/input_matrix.log",
 #     script:
 #         "../scripts/sleuth_decon.R"
-        
-## this rule is used to make deconvolution calculation based on the  
+
+## this rule is used to make deconvolution calculation based on the
 ## normalized log2(x + 3) transformed counts produced by the rule sleuth_decon
+
 
 rule deconvolution:
     input:
         gene_counts="results/tables/tpm-matrix/{model}.tpm-matrix.sorted.tsv",
         ref="resources/celltype_references/{celltype_reference}.xCell2Ref.rda",
-        transcript_ref="resources/transcripts_annotation.results.tsv"
+        transcript_ref="resources/transcripts_annotation.results.tsv",
     output:
         heatmap="results/plots/deconvolute/{celltype_reference}.{model}.heatmap.tiff",
         decon_scores="results/tables/deconvolute/{celltype_reference}.{model}.decon_scores.tsv",
+    log:
+        "logs/tables/deconvolute/{celltype_reference}.{model}.log",
     conda:
         "../envs/deconvolute.yaml"
-    log:
-        "logs/tables/deconvolute/{celltype_reference}.{model}.log"
     script:
         "../scripts/deconvolute.R"

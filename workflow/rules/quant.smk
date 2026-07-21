@@ -22,8 +22,8 @@ rule kallisto_quant:
         kallisto_folder=directory("results/kallisto_cdna/{sample}-{unit}"),
     log:
         "logs/kallisto_cdna/quant/{sample}-{unit}.log",
+    threads: 5
     params:
         extra=kallisto_params,
-    threads: 5
     wrapper:
         "v1.23.1/bio/kallisto/quant"

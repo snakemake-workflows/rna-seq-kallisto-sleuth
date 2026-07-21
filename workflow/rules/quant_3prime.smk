@@ -19,12 +19,12 @@ rule bwa_mem:
         "results/mapped_mem/{sample}/{sample}-{unit}.namesorted.bam",
     log:
         "logs/bwa_mem/{sample}/{sample}-{unit}.log",
+    threads: 8
     params:
         extra=r"-R '@RG\tID:{sample}\tSM:{sample}'",
         sorting="samtools",  # Can be 'none', 'samtools' or 'picard'.
         sort_order="queryname",  # Can be 'queryname' or 'coordinate'.
         sort_extra="",  # Extra args for samtools/picard.
-    threads: 8
     wrapper:
         "v1.17.2/bio/bwa/mem"
 
@@ -108,9 +108,9 @@ rule kallisto_3prime_quant:
         kallisto_folder=directory("results/kallisto_3prime/{sample}-{unit}"),
     log:
         "logs/kallisto_3prime/quant/{sample}-{unit}.log",
+    threads: 5
     params:
         extra=kallisto_params,
-    threads: 5
     wrapper:
         "v1.23.1/bio/kallisto/quant"
 
@@ -137,8 +137,8 @@ rule kallisto_samtools_index:
         ),
     log:
         "logs/QC/{sample}-{unit}.sorted.index.log",
+    threads: 4  # This value - 1 will be sent to -@
     params:
         extra="",  # optional params string
-    threads: 4  # This value - 1 will be sent to -@
     wrapper:
         "v1.18.3/bio/samtools/index"

@@ -475,7 +475,9 @@ def all_input(wildcards):
         wanted_input.extend(
             expand(
                 "results/plots/deconvolute/{celltype_reference}.{model}.heatmap.tiff",
-                celltype_reference=lookup(within=config, dpath="deconvolution/xcell2/celltype_references"),
+                celltype_reference=lookup(
+                    within=config, dpath="deconvolution/xcell2/celltype_references"
+                ),
                 model=lookup(within=config, dpath="deconvolution/xcell2/models"),
             )
         )
@@ -487,8 +489,8 @@ def all_input(wildcards):
                 model=config["diffexp"]["models"],
                 gene_set_group=list(
                     lookup(within=config, dpath="enrichment/singscore/gene_sets").keys()
-                    ),
+                ),
             )
         )
-    
+
     return wanted_input
