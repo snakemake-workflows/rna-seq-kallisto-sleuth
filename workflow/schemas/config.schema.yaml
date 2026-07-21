@@ -166,10 +166,21 @@ properties:
           activate:
             type: boolean
           gene_sets:
-            type: object
+            type: array
             patternProperties:
               "^.+$":
-                type: string
+                type: object
+                properties:
+                  file:
+                    type: string
+                  upregulated_gene_set:
+                    type: string
+                  downregulated_gene_set:
+                    type: string
+                  plot_color_by:
+                    type: string
+                  plot_shape_by:
+                    type: string
         required:
           - gene_sets
       spia:
