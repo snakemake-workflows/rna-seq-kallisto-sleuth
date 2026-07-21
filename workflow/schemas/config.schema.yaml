@@ -198,18 +198,23 @@ properties:
   deconvolution:
     type: object
     properties:
-      activate:
-        type: boolean
-      models:
-        type: array
-        items:
-          type: string
-      celltype_references:
-        type: array
-        items:
-          type: string
+      xcell2:
+        type: object
+        properties:
+          activate:
+            type: boolean
+          models:
+            type: array
+            items:
+              type: string
+          celltype_references:
+            type: array
+            items:
+              type: string
+        required:
+          - activate
     required:
-      - activate
+      - xcell2
 
   bootstrap_plots:
     type: object
