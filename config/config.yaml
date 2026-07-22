@@ -244,9 +244,9 @@ enrichment:
       - kegg
 
 deconvolution:
-# The deconvolution based on the xcell2 R-package: Quelle
-# literaur link 
-  xcell2:
+    # The deconvolution with xcell2 use the following R-package: https://bioconductor.org/packages/release/bioc/html/xCell2.html
+    # For citation please refer to Angel A, Aran D, et al. "xCell 2.0: robust algorithm for cell type proportion estimation predicts response to immune checkpoint blockade." Genome Biology, 2025. (doi: 10.1186/s13059-025-03784-3)
+    xcell2:
     activate: false
     # choose one of the models defined under diffexp - ??? multiple models are possible ???
     models:
