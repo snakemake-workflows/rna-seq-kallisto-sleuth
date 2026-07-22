@@ -205,14 +205,17 @@ enrichment:
     # minimum achievable p-value  (equivalent to the reciprocal of the number of permutations, see fgsea docs)
     eps: 1.0e-50
   singscore:
-    # enter description here 
+    # Singscore calcutlation based on the following articles:
+    # Foroutan M, Bhuva D, Lyu R, Horan K, Cursons J, Davis M (2018). "Single sample scoring of molecular phenotypes." BMC Bioinformatics, 19(1), 404. doi:10.1186/s12859-018-2435-4
+    # Bhuva D, Cursons J, Davis M (2020). "Stable gene expression for normalisation and single-sample scoring." Nucleic Acids Research, 48(19), e113. doi:10.1093/nar/gkaa802
+    # the R-package can be found at https://bioconductor.org/packages/release/bioc/html/singscore.html for more details of the source code refer to https://github.com/DavisLaboratory/singscore
     activate: false
-    # If activated, you need to provide a GMT file with gene sets of interest.
+    # If activated, you need to provide a GMT file with gene sets of interest. If your gmt file of intrest contains only one gene list the downregulated_gene_set is set to an empty string ("")
     gene_sets:
-      BAP1:
+      dummy:
         file: "config/gene_sets/dummy.gmt"
-        upregulated_gene_set: "bap1_up" 
-        downregulated_gene_set: "bap1_down" 
+        upregulated_gene_set: "dummy_up" 
+        downregulated_gene_set: "dummy_down" 
         plot_color_by: "colname_sample_sheet"
         plot_shape_by: "colname_sample_sheet"
       # any_other_gene_set:
