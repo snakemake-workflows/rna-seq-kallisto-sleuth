@@ -13,6 +13,14 @@ rule singscore:
     conda:
         "../envs/singscore.yaml"
     params:
+        up_set=lookup(
+            within=config, 
+            dpath="enrichment/singscore/gene_sets/{gene_set_group}/upregulated_gene_set",
+            ),
+        down_set=lookup(
+            within=config, 
+            dpath="enrichment/singscore/gene_sets/{gene_set_group}/downregulated_gene_set",
+            ),
         color_aes=lookup(
             within=config,
             dpath="enrichment/singscore/gene_sets/{gene_set_group}/plot_color_by",

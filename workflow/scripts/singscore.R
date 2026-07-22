@@ -21,20 +21,14 @@ color_aes <- snakemake@params[["color_aes"]]
 shape_aes <- snakemake@params[["shape_aes"]]
 
 #### calculation of singscore 
-#### get only mane transcripts 
-trans_mane  <- transcript_index %>%
-  filter(canonical == "TRUE",
-         !is.na(ens_gene))
-
-xpr_matrix <- xpr_data %>%
-  mutate(transcript = sub("\\..*", "", transcript),
-         row_flt = rowSums(across(where(is.numeric)))) %>%
-  arrange(desc(row_flt)) %>%
-  filter(transcript %in% trans_mane$target_id) %>%
-  mutate(ens_gene = trans_mane$ens_gene[match(transcript, trans_mane$target_id)]) %>%
-  distinct(ens_gene, .keep_all = TRUE) %>%
-  column_to_rownames(var = "ens_gene") %>%
-  dplyr::select(-c("transcript", "row_flt", "gene")) %>%
+#### summarize transcripts to gene_symbol 
+xpr_matrix <- xpr_data |> 
+  group_by(gene) |> 
+  summarize(
+    across(where(is.numeric), sum)) |> 
+  ungroup() |> 
+  filter(!is.na(gene)) |> 
+  column_to_rownames(var = "gene") |> 
   as.matrix()
 
 data_ranked      <- rankGenes(xpr_matrix)
@@ -43,10 +37,10 @@ data_ranked      <- rankGenes(xpr_matrix)
 #### get genesets 
 all_sets <- names(gene_set)
 
-up_set   <- all_sets[grepl("up", all_sets, ignore.case = TRUE)]
-down_set <- all_sets[grepl("down", all_sets, ignore.case = TRUE)]
+up_set   <- snakemake@params[["up_set"]]
+down_set <- snakemake@params[["down_set"]]
 
-singscore_output <- if (!is.null(down_set)) {
+singscore_output <- if (down_set == "") {
   simpleScore(data_ranked, upSet = gene_set[[up_set]], downSet = gene_set[[down_set]])
 } else {
   simpleScore(data_ranked, upSet = gene_set[[up_set]])
