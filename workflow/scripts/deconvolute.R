@@ -31,7 +31,6 @@ if (nrow(dupes) > 0) {
 }
 
 data_input <- data_matrix %>%
-  select(-transcript) %>% 
   column_to_rownames(var = "gene") %>%
   mutate_all( ~ log10( . + 3))
 
