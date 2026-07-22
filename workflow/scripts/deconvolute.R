@@ -16,15 +16,12 @@ ref_path         <- snakemake@input[["ref"]]
 ref_set_name     <- gsub("\\..*", "", basename(ref_path))
 
 # ---- getting data from sleuth model and collapse transcripts to gene symbol and removing non expressed genes ----
-data_matrix <- read_tsv("/home/stl/Desktop/null_model.tpm-matrix.sorted.tsv") %>%
+data_matrix <- read_tsv(gene_counts_path) %>%
   group_by(gene) |> 
   summarize(
     across(where(is.numeric), sum)) |> 
   ungroup() |> 
-  mutate(row_sum = rowSums(across(where(is.numeric)))) %>%
-  filter(row_sum > 0,
-         !is.na(gene)) %>%
-  dplyr::select(-row_sum)
+  filter(!is.na(gene))
 
 # checking for duplicates ! keep an eye on output in generell there should be no duplicated gene
 dupes <- data_matrix[duplicated(data_matrix$gene), ]
