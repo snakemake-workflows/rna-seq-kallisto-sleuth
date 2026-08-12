@@ -15,7 +15,7 @@ experiment:
 resources:
   ref:
     species: homo_sapiens
-    release: "115"
+    release: "114"
     build: GRCh38
     pfam: "37.1"
     representative_transcripts: canonical
