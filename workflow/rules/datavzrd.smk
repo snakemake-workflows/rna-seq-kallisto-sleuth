@@ -168,6 +168,7 @@ rule fgsea_datavzrd:
         "logs/datavzrd-report/fgsea_{model}/fgsea_table_{model}.log",
     params:
         offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
+        nperms=lookup(within=config, dpath="report/offer_excel", default=False),
     wrapper:
         "v7.9.1/utils/datavzrd"
 
