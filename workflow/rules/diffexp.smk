@@ -23,11 +23,11 @@ rule compose_sample_sheet:
         "results/sleuth/{model}.samples.tsv",
     log:
         "logs/{model}.compose-sample-sheet.log",
+    group:
+        "sleuth-init"
     params:
         units=units,
         samples=samples,
-    group:
-        "sleuth-init"
     script:
         "../scripts/compose-sample-sheet.py"
 
@@ -40,20 +40,20 @@ rule sleuth_init:
     output:
         sleuth_object="results/sleuth/{model,[^.]+}.rds",
         designmatrix="results/sleuth/{model}.designmatrix.rds",
-    params:
-        species=get_bioc_species_name(),
-        model=get_model,
-        exclude=config["diffexp"].get("exclude", None),
-    conda:
-        "../envs/sleuth.yaml"
     log:
         "logs/sleuth/{model}.init.log",
     group:
         "sleuth-init"
+    conda:
+        "../envs/sleuth.yaml"
     threads: 6
     resources:
         # based on: https://github.com/pachterlab/sleuth/issues/139#issuecomment-331157007
         mem_mb=lambda wc, threads: threads * 8000,
+    params:
+        species=get_bioc_species_name(),
+        model=get_model,
+        exclude=config["diffexp"].get("exclude", None),
     script:
         "../scripts/sleuth-init.R"
 
@@ -100,6 +100,10 @@ rule sleuth_diffexp:
         transcripts="results/tables/diffexp/{model}.transcripts.diffexp.tsv",
         genes_aggregated="results/tables/diffexp/{model}.genes-aggregated.diffexp.tsv",
         genes_representative="results/tables/diffexp/{model}.genes-representative.diffexp.tsv",
+    log:
+        "logs/sleuth/{model}.diffexp.log",
+    conda:
+        "../envs/sleuth.yaml"
     params:
         model=get_model,
         sig_level_volcano=config["diffexp"]["sig-level"]["volcano-plot"],
@@ -108,10 +112,6 @@ rule sleuth_diffexp:
         representative_transcripts=config["resources"]["ref"][
             "representative_transcripts"
         ],
-    conda:
-        "../envs/sleuth.yaml"
-    log:
-        "logs/sleuth/{model}.diffexp.log",
     script:
         "../scripts/sleuth-diffexp.R"
 
@@ -126,10 +126,10 @@ rule ihw_fdr_control:
         trends="results/plots/ihw/{level}/{model}.{level}.plot-trends.pdf",
         decision="results/plots/ihw/{level}/{model}.{level}.plot-decision.pdf",
         adj_pvals="results/plots/ihw/{level}/{model}.{level}.plot-adj-pvals.pdf",
-    conda:
-        "../envs/ihw.yaml"
     log:
         "logs/tables/ihw/{model}.{level}.ihw.log",
+    conda:
+        "../envs/ihw.yaml"
     script:
         "../scripts/ihw-fdr-control.R"
 
@@ -146,6 +146,8 @@ rule plot_bootstrap:
             category="Expression Plots",
             labels={"model": "{gene}-{transcript}-{model}"},
         ),
+    log:
+        "logs/plots/bootstrap/{model}/{model}.plot_bootstrap.log",
     conda:
         "../envs/sleuth.yaml"
     params:
@@ -153,8 +155,6 @@ rule plot_bootstrap:
         fdr=config["bootstrap_plots"]["FDR"],
         top_n=config["bootstrap_plots"]["top_n"],
         genes_of_interest=lookup(within=config, dpath="diffexp/genes_of_interest"),
-    log:
-        "logs/plots/bootstrap/{model}/{model}.plot_bootstrap.log",
     script:
         "../scripts/plot-bootstrap.R"
 
@@ -177,12 +177,12 @@ rule prepare_pca:
             category="PCA",
             labels={"covariate": "{covariate}", "plot": "loadings-plot"},
         ),
+    log:
+        "logs/plots/pca/{covariate}.prepare_pca.log",
     conda:
         "../envs/sleuth.yaml"
     params:
         exclude_nas=config["pca"].get("exclude_nas", False),
-    log:
-        "logs/plots/pca/{covariate}.prepare_pca.log",
     script:
         "../scripts/prepare-pca.R"
 
@@ -197,10 +197,10 @@ rule plot_pca:
             category="PCA",
             labels={"covariate": "{covariate}", "plot": "pca"},
         ),
-    conda:
-        "../envs/pystats.yaml"
     log:
         "logs/plots/pca/{covariate}.plot_pca.log",
+    conda:
+        "../envs/pystats.yaml"
     params:
         color_by=lambda wildcards: wildcards.covariate,
     script:
@@ -221,12 +221,12 @@ rule plot_diffexp_pval_hist:
                 "plot": "diffexp-pval-hist",
             },
         ),
-    params:
-        model=get_model,
-    conda:
-        "../envs/sleuth.yaml"
     log:
         "logs/plots/diffexp/{model}.{level}.diffexp-pval-hist.log",
+    conda:
+        "../envs/sleuth.yaml"
+    params:
+        model=get_model,
     script:
         "../scripts/plot-diffexp-pval-hist.R"
 
@@ -236,12 +236,12 @@ rule logcount_matrix:
         "results/sleuth/{model}.rds",
     output:
         "results/tables/logcount-matrix/{model}.logcount-matrix.tsv",
-    params:
-        model=get_model,
-    conda:
-        "../envs/sleuth.yaml"
     log:
         "logs/tables/logcount-matrix/{model}.logcount-matrix.log",
+    conda:
+        "../envs/sleuth.yaml"
+    params:
+        model=get_model,
     script:
         "../scripts/sleuth-to-matrix.R"
 
@@ -251,12 +251,12 @@ rule tpm_matrix:
         "results/sleuth/{model}.rds",
     output:
         "results/tables/tpm-matrix/{model}.tpm-matrix.tsv",
-    params:
-        model=get_model,
-    conda:
-        "../envs/sleuth.yaml"
     log:
         "logs/tables/tpm-matrix/{model}.tpm-matrix.log",
+    conda:
+        "../envs/sleuth.yaml"
+    params:
+        model=get_model,
     script:
         "../scripts/sleuth-to-tpm-matrix.R"
 
@@ -281,12 +281,12 @@ rule plot_diffexp_heatmap:
                 "gene list": "{gene_list}",
             },
         ),
-    params:
-        model=get_model,
     log:
         "logs/plots/diffexp-heatmap/{model}.diffexp-heatmap.{gene_list}.log",
     conda:
         "../envs/heatmap.yaml"
+    params:
+        model=get_model,
     script:
         "../scripts/plot_diffexp_heatmap.R"
 
@@ -301,10 +301,10 @@ rule plot_group_density:
             category="quality control",
             labels={"model": "{model}-group_density"},
         ),
-    conda:
-        "../envs/sleuth.yaml"
     log:
         "logs/plots/group_density/{model}.group_density.log",
+    conda:
+        "../envs/sleuth.yaml"
     script:
         "../scripts/plot-group-density.R"
 
@@ -319,12 +319,12 @@ rule plot_scatter:
             category="quality control",
             labels={"model": "{model}-scatter-plot"},
         ),
+    log:
+        "logs/plots/scatter/{model}.scatter.log",
     # params:
     #     covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"]
     conda:
         "../envs/sleuth.yaml"
-    log:
-        "logs/plots/scatter/{model}.scatter.log",
     script:
         "../scripts/plot-scatter.R"
 
@@ -340,10 +340,10 @@ rule plot_fragment_length_dist:
             subcategory="per-sample",
             labels={"sample": "{sample}-{unit}", "plot": "fragment lengths"},
         ),
-    conda:
-        "../envs/sleuth.yaml"
     log:
         "logs/plots/fld/{sample}-{unit}.fragment-length-dist.log",
+    conda:
+        "../envs/sleuth.yaml"
     script:
         "../scripts/plot-fld.R"
 
@@ -358,13 +358,13 @@ rule plot_vars:
             category="quality control",
             labels={"model": "{model}-transcripts-plot-vars"},
         ),
+    log:
+        "logs/plots/variance/{model}.plot_vars.log",
+    conda:
+        "../envs/sleuth.yaml"
     params:
         model=get_model,
         sig_level=config["plot_vars"]["sig_level"],
-    conda:
-        "../envs/sleuth.yaml"
-    log:
-        "logs/plots/variance/{model}.plot_vars.log",
     script:
         "../scripts/plot-variances.R"
 
@@ -375,15 +375,15 @@ rule vega_volcano_plot:
         spec=workflow.source_path("../../resources/vega_volcano_plot.json"),
     output:
         json="results/plots/interactive/volcano/{model}.vl.json",
+    log:
+        "logs/vega-plots/volcano/{model}.log",
+    conda:
+        "../envs/vega.yaml"
     params:
         model=get_model,
         sig_level_volcano=config["diffexp"]["sig-level"]["volcano-plot"],
         primary_variable=lambda wc: config["diffexp"]["models"][wc.model][
             "primary_variable"
         ],
-    log:
-        "logs/vega-plots/volcano/{model}.log",
-    conda:
-        "../envs/vega.yaml"
     script:
         "../scripts/vega_plot_volcano.py"

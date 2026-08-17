@@ -14,6 +14,8 @@ rule init_isoform_switch:
         "logs/diffsplice/{model}.init.log",
     conda:
         "../envs/isoform-switch-analyzer.yaml"
+    resources:
+        mem_mb=lambda wc, input: 3 * input.size_mb,
     params:
         model=get_model,
         samples=[
@@ -23,8 +25,6 @@ rule init_isoform_switch:
         seq_dir=lambda _, output: os.path.dirname(output.seqs[0]),
         min_effect_size=config["diffsplice"]["min_effect_size"],
         fdr=config["diffsplice"]["fdr"],
-    resources:
-        mem_mb=lambda wc, input: 3 * input.size_mb,
     script:
         "../scripts/isoform-switch-analysis-init.R"
 
@@ -37,13 +37,13 @@ rule calculate_protein_domains:
         pfam_hmm="resources/pfam/Pfam-A.hmm",
     output:
         "results/diffsplice/{model}.pfam",
-    params:
-        pfam_dir=lambda wildcards, input: os.path.dirname(input.pfam[0]),
     log:
         "logs/diffsplice/{model}.pfam.log",
     conda:
         "../envs/pfam.yaml"
     threads: 2
+    params:
+        pfam_dir=lambda wildcards, input: os.path.dirname(input.pfam[0]),
     shell:
         "pfam_scan.pl -fasta {input.fasta} -dir {params.pfam_dir} > {output} 2> {log}"
 
@@ -55,10 +55,10 @@ rule calculate_coding_potential:
         hexamers="resources/cpat.hexamers.tsv",
     output:
         "results/diffsplice/{model}.cpat.tsv",
-    conda:
-        "../envs/cpat.yaml"
     log:
         "logs/diffsplice/{model}.cpat.log",
+    conda:
+        "../envs/cpat.yaml"
     shell:
         "cpat.py -g {input.fasta} -d {input.cpat_model} -x {input.hexamers} -o {output} 2> {log}"
 
@@ -92,13 +92,13 @@ rule annotate_isoform_switch:
         ),
     log:
         "logs/diffsplice/{model}.annotate.log",
+    conda:
+        "../envs/isoform-switch-analyzer.yaml"
     params:
         coding_cutoff=config["diffsplice"]["coding_cutoff"],
         remove_noncoding_orfs=config["diffsplice"]["remove_noncoding_orfs"],
         plotdir=lambda _, output: os.path.dirname(output.plots_with),
         min_effect_size=config["diffsplice"]["min_effect_size"],
         fdr=config["diffsplice"]["fdr"],
-    conda:
-        "../envs/isoform-switch-analyzer.yaml"
     script:
         "../scripts/isoform-switch-analysis-annotate.R"

@@ -10,9 +10,9 @@ rule bam_paired_to_fastq:
         "results/fastq/{sample}-{unit}.2.fq.gz",
     log:
         "logs/fastq/{sample}-{unit}.separate.log",
+    threads: 3
     params:
         fastq="-n",
-    threads: 3
     wrapper:
         "v3.12.2/bio/samtools/fastq/separate"
 

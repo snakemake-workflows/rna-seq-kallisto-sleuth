@@ -65,10 +65,28 @@ enrichment:
     gene_sets_file: "ngs-test-data/ref/dummy.gmt"
     fdr_gene_set: 0.05
     eps: 0.0001
+  singscore:
+    activate: false
+    gene_sets:
+      BAP1:
+        file: "config/gene_sets/dummy.gmt"
+        upregulated_gene_set: "bap1_up" 
+        downregulated_gene_set: "bap1_down" 
+        plot_color_by: "colname_sample_sheet"
+        plot_shape_by: "colname_sample_sheet"
   spia:
     activate: true
     pathway_databases:
       - panther
+
+deconvolution:
+  xcell2:
+    activate: true
+    models:
+      - model_X
+    celltype_references:
+      - LM22
+      - BlueprintEncode
 
 meta_comparisons:
   activate: false

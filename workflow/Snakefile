@@ -28,6 +28,8 @@ include: "rules/enrichment.smk"
 include: "rules/datavzrd.smk"
 include: "rules/bam.smk"
 include: "rules/meta_comparisons.smk"
+include: "rules/deconvolute.smk"
+include: "rules/singscore.smk"
 
 
 rule all:

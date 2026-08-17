@@ -470,4 +470,27 @@ def all_input(wildcards):
                 )
             ),
         )
+    # xcell2 deconvolution heatmaps
+    if config["deconvolution"]["xcell2"]["activate"]:
+        wanted_input.extend(
+            expand(
+                "results/plots/deconvolute/{celltype_reference}.{model}.heatmap.tiff",
+                celltype_reference=lookup(
+                    within=config, dpath="deconvolution/xcell2/celltype_references"
+                ),
+                model=lookup(within=config, dpath="deconvolution/xcell2/models"),
+            )
+        )
+    # singscore calculation
+    if config["enrichment"]["singscore"]["activate"]:
+        wanted_input.extend(
+            expand(
+                "results/plots/singscore/{model}.{gene_set_group}.tiff",
+                model=config["diffexp"]["models"],
+                gene_set_group=list(
+                    lookup(within=config, dpath="enrichment/singscore/gene_sets").keys()
+                ),
+            )
+        )
+
     return wanted_input

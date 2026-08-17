@@ -5,10 +5,10 @@ rule postprocess_go_enrichment:
         significant_terms="results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.sig_terms.tsv",
     output:
         "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}.tsv",
-    conda:
-        "../envs/polars.yaml"
     log:
         "logs/yte/postprocess_go_enrichment/{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
+    conda:
+        "../envs/polars.yaml"
     script:
         "../scripts/postprocess_go_enrichment.py"
 
@@ -20,12 +20,12 @@ rule postprocess_diffexp:
         genes_representative="results/tables/diffexp/{model}.{level}.diffexp.tsv",
     output:
         "results/tables/diffexp/{model}.{level}.diffexp_postprocessed.tsv",
+    log:
+        "logs/yte/postprocess_diffexp/{model}/{level}.log",
     conda:
         "../envs/pandas.yaml"
     params:
         model=get_model,
-    log:
-        "logs/yte/postprocess_diffexp/{model}/{level}.log",
     script:
         "../scripts/postprocess_diffexp.py"
 
@@ -36,12 +36,12 @@ rule postprocess_tpm_matrix:
         diffexp="results/tables/diffexp/{model}.genes-representative.diffexp_postprocessed.tsv",
     output:
         "results/tables/tpm-matrix/{model}.tpm-matrix.sorted.tsv",
+    log:
+        "logs/tables/tpm-matrix/{model}.tpm-matrix.sort.log",
     conda:
         "../envs/pandas.yaml"
     params:
         model=get_model,
-    log:
-        "logs/tables/tpm-matrix/{model}.tpm-matrix.sort.log",
     script:
         "../scripts/postprocess_tpm.py"
 
@@ -51,14 +51,14 @@ rule plot_enrichment_scatter:
         "results/tables/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}.tsv",
     output:
         "results/plots/go_terms/{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_sig_study_fdr_{go_term_fdr}_scatter.json",
+    log:
+        "logs/plot_enrichment_scatter-{model}/plot_enrichment_scatter-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     conda:
         "../envs/pystats.yaml"
     params:
         identifier="term",
         effect_x="effect",
         effect_y="p_fdr_bh",
-    log:
-        "logs/plot_enrichment_scatter-{model}/plot_enrichment_scatter-{model}_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     script:
         "../scripts/plot_enrichment_pathway_scatter.py"
 
@@ -68,10 +68,10 @@ rule plot_pathway_scatter:
         "results/tables/pathways/{model}.{database}.pathways.tsv",
     output:
         "results/plots/pathways/{model}.{database}.pathways.tsv_scatter.json",
-    conda:
-        "../envs/pystats.yaml"
     log:
         "logs/plot_pathway_scatter/{model}.{database}.pathways.tsv_scatter.log",
+    conda:
+        "../envs/pystats.yaml"
     params:
         identifier="Name",
         effect_x="total perturbation accumulation",
@@ -227,9 +227,9 @@ rule inputs_datavzrd:
                 "input": "{input}",
             },
         ),
-    params:
-        offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
     log:
         "logs/datavzrd-report/{input}_datavzrd.log",
+    params:
+        offer_excel=lookup(within=config, dpath="report/offer_excel", default=False),
     wrapper:
         "v5.5.0/utils/datavzrd"

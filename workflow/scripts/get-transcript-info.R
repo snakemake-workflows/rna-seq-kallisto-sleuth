@@ -8,55 +8,77 @@ library("tidyverse")
 # useful error messages upon aborting
 library("cli")
 
-# this variable holds a mirror name until
-# useEnsembl succeeds ("www" is last, because
-# of very frequent "Internal Server Error"s)
-mart <- "useast"
-rounds <- 0
-while (class(mart)[[1]] != "Mart") {
-  mart <- tryCatch(
-    {
-      # done here, because error function does not
-      # modify outer scope variables, I tried
-      if (mart == "www") rounds <- rounds + 1
-      # equivalent to useMart, but you can choose
-      # the mirror instead of specifying a host
-      biomaRt::useEnsembl(
-        biomart = "ENSEMBL_MART_ENSEMBL",
-        dataset = str_c(snakemake@params[["species"]], "_gene_ensembl"),
-        version = snakemake@params[["version"]],
-        mirror = mart
-      )
-    },
-    error = function(e) {
-      # change or make configurable if you want more or
-      # less rounds of tries of all the mirrors
-      if (rounds >= 3) {
-        cli_abort(
-          str_c(
-            "Have tried all 4 available Ensembl biomaRt mirrors ",
-            rounds,
-            " times. You might have a connection problem, or no mirror is responsive.\n",
-            "The last error message was:\n",
-            message(e)
-          )
-        )
-      }
-      # hop to next mirror
-      mart <- switch(mart,
-        useast = "uswest",
-        uswest = "asia",
-        asia = "www",
-        www = {
-          # wait before starting another round through the mirrors,
-          # hoping that intermittent problems disappear
-          Sys.sleep(30)
-          "useast"
-        }
-      )
-    }
-  )
-}
+# As ensembl has undergone extensive changes the get-transcript-info
+# is now set to the look up the stable archive URL for the requested version
+# Static lookup, because of unstable site during Ensembl's platform migration in 2026
+
+assignInNamespace(
+  ".listEnsemblArchives",
+  function(https = TRUE, httr_config = list()) {
+    data.frame(
+      name = "dummy", date = "dummy",
+      url = "https://nonmatching.invalid",
+      version = "0", current_release = "*",
+      stringsAsFactors = FALSE
+    )
+  },
+  ns = "biomaRt"
+)
+
+mart <- biomaRt::useMart(
+  biomart = "ENSEMBL_MART_ENSEMBL",
+  dataset = "hsapiens_gene_ensembl",
+  host    = "https://may2025.archive.ensembl.org"
+)
+
+# archive_hosts <- c(
+#   "116" = "https://jun2026.archive.ensembl.org",
+#   "115" = "https://sep2025.archive.ensembl.org",
+#   "114" = "https://may2025.archive.ensembl.org",
+#   "113" = "https://oct2024.archive.ensembl.org",
+#   "112" = "https://may2024.archive.ensembl.org",
+#   "111" = "https://jan2024.archive.ensembl.org",
+#   "110" = "https://jul2023.archive.ensembl.org",
+#   "109" = "https://feb2023.archive.ensembl.org",
+#   "108" = "https://oct2022.archive.ensembl.org",
+#   "107" = "https://jul2022.archive.ensembl.org"
+# )
+
+# requested_version <- as.character(snakemake@params[["version"]])
+# host_url <- archive_hosts[[requested_version]]
+
+# if (is.null(host_url)) {
+#   cli_abort(str_c(
+#     "No archive host configured for Ensembl version ", requested_version,
+#     ". Known versions: ", str_c(names(archive_hosts), collapse = ", ")
+#   ))
+# }
+
+# rounds <- 0
+# mart <- NULL
+# while (is.null(mart) || class(mart)[[1]] != "Mart") {
+#   mart <- tryCatch(
+#     {
+#       rounds <- rounds + 1
+#       biomaRt::useEnsembl(
+#         biomart = "ENSEMBL_MART_ENSEMBL",
+#         dataset = str_c(snakemake@params[["species"]], "_gene_ensembl"),
+#         host    = host_url
+#       )
+#     },
+#     error = function(e) {
+#       if (rounds >= 3) {
+#         cli_abort(str_c(
+#           "Failed to connect to the Ensembl ", requested_version,
+#           " archive (", host_url, ") after ", rounds, " tries. Last error:\n",
+#           conditionMessage(e)
+#         ))
+#       }
+#       Sys.sleep(30)
+#       NULL
+#     }
+#   )
+# }
 
 three_prime_activated <- snakemake@params[["three_prime_activated"]]
 

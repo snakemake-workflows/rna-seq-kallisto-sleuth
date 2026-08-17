@@ -1,0 +1,10 @@
+channels:
+  - conda-forge
+  - bioconda
+  - nodefaults
+
+dependencies:
+  - r-tidyverse
+  - bioconductor-singscore
+  - bioconductor-gseabase
+  - bioconductor-complexheatmap

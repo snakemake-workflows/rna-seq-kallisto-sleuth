@@ -65,10 +65,27 @@ enrichment:
     gene_sets_file: "config/gene_sets.gmt"
     fdr_gene_set: 0.05
     eps: 0.0001
+  singscore:
+    activate: true
+    gene_sets:
+      BAP1:
+        file: "config/gene_sets.gmt"
+        upregulated_gene_set: "UROSEVIC_RESPONSE_TO_IMIQUIMOD" 
+        downregulated_gene_set: "KEGG_PROTEASOME" 
+        plot_color_by: "condition"
+        plot_shape_by: "condition"
   spia:
     activate: true
     pathway_databases:
       - panther
+
+deconvolution:
+  xcell2:
+    activate: true
+    models:
+      - model_X
+    celltype_references:
+      - LM22
 
 meta_comparisons:
   activate: false

@@ -23,13 +23,13 @@ rule get_selected_transcripts_aligned_read_bins:
         rev_allsamp_hist_fil=temp(
             "results/QC/{sample}/{sample}-{unit}.{ind_transcripts}.aligned-rev-fil-read-bins.txt"
         ),
-    params:
-        each_transcript="{ind_transcripts}",
-        samples="{sample}-{unit}",
     log:
         "logs/QC/{sample}-{unit}.{ind_transcripts}.aligned-read-bins.log",
     conda:
         "../envs/QC.yaml"
+    params:
+        each_transcript="{ind_transcripts}",
+        samples="{sample}-{unit}",
     script:
         "../scripts/get-sample-hist-bins.py"
 
@@ -76,12 +76,12 @@ if is_3prime_experiment and config["experiment"]["3-prime-rna-seq"]["plot-qc"] !
                     "subset": "{ind_transcripts}",
                 },
             ),
-        params:
-            each_transcript="{ind_transcripts}",
         log:
             "logs/QC/3prime-QC-plot.{ind_transcripts}.log",
         conda:
             "../envs/QC.yaml"
+        params:
+            each_transcript="{ind_transcripts}",
         script:
             "../scripts/plot-3prime-qc-histogram.py"
 
@@ -117,11 +117,11 @@ else:
                 caption="../report/plot-3prime-QC-histogram.rst",
                 labels={"QC-plot": "{ind_transcripts}-QC-plot"},
             ),
-        params:
-            each_transcript="{ind_transcripts}",
         log:
             "logs/QC/3prime-QC-plot.{ind_transcripts}.log",
         conda:
             "../envs/QC.yaml"
+        params:
+            each_transcript="{ind_transcripts}",
         script:
             "../scripts/plot-3prime-qc-histogram.py"

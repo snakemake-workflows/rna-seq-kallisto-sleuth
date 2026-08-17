@@ -204,6 +204,26 @@ enrichment:
     fdr_gene_set: 0.05
     # minimum achievable p-value  (equivalent to the reciprocal of the number of permutations, see fgsea docs)
     eps: 1.0e-50
+  singscore:
+    # Singscore calcutlation based on the following articles:
+    # Foroutan M, Bhuva D, Lyu R, Horan K, Cursons J, Davis M (2018). "Single sample scoring of molecular phenotypes." BMC Bioinformatics, 19(1), 404. doi:10.1186/s12859-018-2435-4
+    # Bhuva D, Cursons J, Davis M (2020). "Stable gene expression for normalisation and single-sample scoring." Nucleic Acids Research, 48(19), e113. doi:10.1093/nar/gkaa802
+    # the R-package can be found at https://bioconductor.org/packages/release/bioc/html/singscore.html for more details of the source code refer to https://github.com/DavisLaboratory/singscore
+    activate: false
+    # If activated, you need to provide a GMT file with gene sets of interest. If your gmt file of intrest contains only one gene list the downregulated_gene_set is set to an empty string ("")
+    gene_sets:
+      dummy:
+        file: "config/gene_sets/dummy.gmt"
+        upregulated_gene_set: "dummy_up" 
+        downregulated_gene_set: "dummy_down" 
+        plot_color_by: "colname_sample_sheet"
+        plot_shape_by: "colname_sample_sheet"
+      # any_other_gene_set:
+      #   file: "config/gene_sets/dummy.gmt"
+      #   upregulated_gene_set: "bap1_up" 
+      #   downregulated_gene_set: "bap1_down" 
+      #   plot_color_by: "colname_sample_sheet"
+      #   plot_shape_by: "colname_sample_sheet"
   spia:
     # signaling pathway impact analysis (SPIA)
     # If `activate: true`, the workflow will perform SPIA with spia:
@@ -222,6 +242,35 @@ enrichment:
     pathway_databases:
       - reactome
       - kegg
+
+deconvolution:
+    # The deconvolution with xcell2 use the following R-package: https://bioconductor.org/packages/release/bioc/html/xCell2.html
+    # For citation please refer to Angel A, Aran D, et al. "xCell 2.0: robust algorithm for cell type proportion estimation predicts response to immune checkpoint blockade." Genome Biology, 2025. (doi: 10.1186/s13059-025-03784-3)
+    xcell2:
+    activate: false
+    # choose one of the models defined under diffexp - ??? multiple models are possible ???
+    models:
+      - treated_vs_untreated
+    # download of cell type reference data sets for deconvolution analysis carried out by xcell2
+    # available references can be found here: https://raw.githubusercontent.com/AlmogAngel/xCell2/master/data/
+    # homo_sapiens:
+    #   - LM22:https://raw.githubusercontent.com/AlmogAngel/xCell2/master/data/LM22.xCell2Ref.rda
+    #   - BlueprintEncode:https://raw.githubusercontent.com/AlmogAngel/xCell2/master/data/BlueprintEncode.xCell2Ref.rda
+    #   - ImmuneCompendium:https://raw.githubusercontent.com/AlmogAngel/xCell2/master/data/ImmuneCompendium.xCell2Ref.rda
+    #   - TabulaSapiensBlood:https://raw.githubusercontent.com/AlmogAngel/xCell2/master/data/TabulaSapiensBlood.xCell2Ref.rda
+    #   - TMECompendium:https://raw.githubusercontent.com/AlmogAngel/xCell2/master/data/TMECompendium.xCell2Ref.rda
+    #   - PanCancer:https://raw.githubusercontent.com/AlmogAngel/xCell2/master/data/PanCancer.xCell2Ref.rda    
+    # mus_musculus:
+    #   - MouseRNAseqData:https://raw.githubusercontent.com/AlmogAngel/xCell2/master/data/MouseRNAseqData.xCell2Ref.rda
+    #   - ImmGenData:https://raw.githubusercontent.com/AlmogAngel/xCell2/master/data/ImmGenData.xCell2Ref.rda
+    #   - TabulaMurisBlood:https://raw.githubusercontent.com/AlmogAngel/xCell2/master/data/TabulaMurisBlood.xCell2Ref.rda
+    # If you have build your own reference set with xcell2 before, the rda file must be placed here:
+    # "resources/celltype_references/{celltype_reference}.xCell2Ref.rda",
+    celltype_references:
+      - LM22
+      - BlueprintEncode
+    
+    
 
 # Meta comparisons allow for comparing two full models against each other.
 # The axes in the comparison plots represent the effect sizes (beta-scores)

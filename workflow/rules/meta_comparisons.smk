@@ -12,13 +12,13 @@ rule meta_compare_diffexp:
         "results/meta_comparison/diffexp/{meta_comp}.json",
     log:
         "logs/meta_compare_diffexp/{meta_comp}.log",
+    conda:
+        "../envs/pystats.yaml"
     params:
         labels=lookup(
             dpath="meta_comparisons/comparisons/{meta_comp}/items",
             within=config,
         ),
-    conda:
-        "../envs/pystats.yaml"
     script:
         "../scripts/compare_diffexp.py"
 
@@ -43,13 +43,13 @@ rule meta_compare_enrichment:
         "results/meta_comparison/go_terms/{meta_comp}.json",
     log:
         "logs/meta_compare_enrichment/{meta_comp}.log",
+    conda:
+        "../envs/pystats.yaml"
     params:
         labels=lookup(
             dpath="meta_comparisons/comparisons/{meta_comp}/items",
             within=config,
         ),
-    conda:
-        "../envs/pystats.yaml"
     script:
         "../scripts/compare_enrichment.py"
 
@@ -68,12 +68,12 @@ rule meta_compare_pathways:
         "results/meta_comparison/pathways/{meta_comp}_{database}.json",
     log:
         "logs/meta_compare_pathways/{meta_comp}_{database}.log",
+    conda:
+        "../envs/pystats.yaml"
     params:
         labels=lookup(
             dpath="meta_comparisons/comparisons/{meta_comp}/items",
             within=config,
         ),
-    conda:
-        "../envs/pystats.yaml"
     script:
         "../scripts/compare_pathways.py"

@@ -9,12 +9,12 @@ rule kallisto_long_index:
         index="results/kallisto_long_cdna/transcripts.cdna.long.idx",
     log:
         "logs/kallisto_long_cdna/index.cdna.log",
-    threads: 10
     conda:
         "../envs/kallisto.yaml"
+    threads: 10
     shell:
         """
-        kallisto index -k 63 -t {threads} -i {output.index} {input.fasta} > {log} 2>&1
+        kallisto index -k 63 -t {threads} -i {output.index} {input.fasta} >{log} 2>&1
         """
 
 
@@ -29,15 +29,15 @@ rule kallisto_long_bus:
         matrix="results/kallisto_long_cdna/{sample}-{unit}/matrix.ec",
     log:
         "logs/kallisto_long_cdna/bus/{sample}-{unit}.log",
-    params:
-        extra=kallisto_params,
-    threads: 5
     conda:
         "../envs/kallisto.yaml"
+    threads: 5
+    params:
+        extra=kallisto_params,
     shell:
         """
         kallisto bus --long -x bulk -t {threads} -i {input.index} \
-        -o $(dirname {output.bus_file}) {input.fastq} 2> {log}
+            -o $(dirname {output.bus_file}) {input.fastq} 2>{log}
         """
 
 
@@ -48,13 +48,13 @@ rule bustools_sort:
         sorted_bus_file="results/kallisto_long_cdna/{sample}-{unit}/sorted.bus",
     log:
         "logs/kallisto_long_cdna/bustools_sort/{sample}-{unit}.log",
-    threads: 5
     conda:
         "../envs/bustools.yaml"
+    threads: 5
     shell:
         """
         bustools sort -t {threads} {input.bus_file} \
-        -o {output.sorted_bus_file} 2> {log}
+            -o {output.sorted_bus_file} 2>{log}
         """
 
 
@@ -76,18 +76,18 @@ rule bustools_count:
         count_mtx="results/kallisto_long_cdna/{sample}-{unit}/count.mtx",
     log:
         "logs/kallisto_long_cdna/bustools_count/{sample}-{unit}.log",
-    threads: 5
     conda:
         "../envs/bustools.yaml"
+    threads: 5
     params:
         prefix="results/kallisto_long_cdna/{sample}-{unit}/count",
     shell:
         """
         bustools count {input.sorted_bus_file} \
-        -t {input.transcripts} \
-        -e {input.matrix_ec} \
-        -g {input.transcript_info} \
-        -o {output.tmp_file} --cm -m 2> {log}
+            -t {input.transcripts} \
+            -e {input.matrix_ec} \
+            -g {input.transcript_info} \
+            -o {output.tmp_file} --cm -m 2>{log}
         touch {output.tmp_file}
         """
 
@@ -102,18 +102,18 @@ rule kallisto_long_quant_tcc:
         quant_folder=directory("results/kallisto_long_cdna/{sample}-{unit}/quant-tcc"),
     log:
         "logs/kallisto_long_cdna/quant_tcc/{sample}-{unit}.log",
-    threads: 5
     conda:
         "../envs/kallisto.yaml"
+    threads: 5
     params:
         platform=config["params"].get("long_read_platform", "ONT"),
     shell:
         """
-        kallisto quant-tcc -t {threads} -b 3 --long --platform {params.platform}  \
-        -e {input.count_ec} \
-        -f {input.flens} \
-        -i {input.index} \
-        -o {output.quant_folder} \
-        --matrix-to-files {input.count_mtx} 2> {log} 
+        kallisto quant-tcc -t {threads} -b 3 --long --platform {params.platform} \
+            -e {input.count_ec} \
+            -f {input.flens} \
+            -i {input.index} \
+            -o {output.quant_folder} \
+            --matrix-to-files {input.count_mtx} 2>{log}
         cp {output.quant_folder}/abundance_1.h5 {output.quant_folder}/abundance.h5
         """

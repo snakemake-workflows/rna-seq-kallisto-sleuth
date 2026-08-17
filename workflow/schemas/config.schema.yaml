@@ -160,6 +160,29 @@ properties:
           - gene_sets_file
           - fdr_gene_set
           - eps
+      singscore:
+        type: object
+        properties:
+          activate:
+            type: boolean
+          gene_sets:
+            type: object
+            patternProperties:
+              "^.+$":
+                type: object
+                properties:
+                  file:
+                    type: string
+                  upregulated_gene_set:
+                    type: string
+                  downregulated_gene_set:
+                    type: string
+                  plot_color_by:
+                    type: string
+                  plot_shape_by:
+                    type: string
+        required:
+          - gene_sets
       spia:
         type: object
         properties:
@@ -171,6 +194,27 @@ properties:
               type: string
         required:
           - pathway_databases
+
+  deconvolution:
+    type: object
+    properties:
+      xcell2:
+        type: object
+        properties:
+          activate:
+            type: boolean
+          models:
+            type: array
+            items:
+              type: string
+          celltype_references:
+            type: array
+            items:
+              type: string
+        required:
+          - activate
+    required:
+      - xcell2
 
   bootstrap_plots:
     type: object
@@ -220,4 +264,5 @@ required:
   - pca
   - diffexp
   - enrichment
+  - deconvolution
   - params

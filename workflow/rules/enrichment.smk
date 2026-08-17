@@ -1,6 +1,5 @@
 from pathlib import Path
 
-
 # topology- and interaction-aware pathway enrichment analysis
 
 
@@ -14,16 +13,16 @@ rule spia:
     output:
         table="results/tables/pathways/{model}.{database}.pathways.tsv",
         plots="results/plots/pathways/{model}.{database}.spia-perturbation-plots.pdf",
-    params:
-        bioc_species_pkg=bioc_species_pkg,
-        covariate=lookup(within=config, dpath="diffexp/models/{model}/primary_variable"),
-    conda:
-        enrichment_env
     log:
         "logs/tables/pathways/{model}.{database}.spia-pathways.log",
+    conda:
+        enrichment_env
     threads: 32
     resources:
         mem_mb=32000,
+    params:
+        bioc_species_pkg=bioc_species_pkg,
+        covariate=lookup(within=config, dpath="diffexp/models/{model}/primary_variable"),
     script:
         "../scripts/spia.R"
 
@@ -68,17 +67,17 @@ rule fgsea:
             category="Gene set enrichment analysis",
             labels={"model": "{model}"},
         ),
+    log:
+        "logs/tables/fgsea/{model}.gene-set-enrichment.log",
+    conda:
+        enrichment_env
+    threads: 25
     params:
         bioc_species_pkg=bioc_species_pkg,
         model=get_model,
         gene_set_fdr=config["enrichment"]["fgsea"]["fdr_gene_set"],
         eps=config["enrichment"]["fgsea"]["eps"],
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
-    conda:
-        enrichment_env
-    log:
-        "logs/tables/fgsea/{model}.gene-set-enrichment.log",
-    threads: 25
     script:
         "../scripts/fgsea.R"
 
@@ -98,13 +97,13 @@ rule fgsea_plot_gene_sets:
             category="Gene set enrichment analysis",
             labels={"model": "{model}"},
         ),
+    log:
+        "logs/plots/fgsea/{model}.plot_fgsea_gene_set.log",
+    conda:
+        enrichment_env
     params:
         model=get_model,
         covariate=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
-    conda:
-        enrichment_env
-    log:
-        "logs/plots/fgsea/{model}.plot_fgsea_gene_set.log",
     script:
         "../scripts/plot-fgsea-gene-sets.R"
 
@@ -117,12 +116,12 @@ rule ens_gene_to_go:
         common_src=workflow.source_path("../scripts/common.R"),
     output:
         "resources/ontology/ens_gene_to_go.tsv",
-    params:
-        bioc_species_pkg=bioc_species_pkg,
-    conda:
-        enrichment_env
     log:
         "logs/resources/ens_gene_to_go.log",
+    conda:
+        enrichment_env
+    params:
+        bioc_species_pkg=bioc_species_pkg,
     script:
         "../scripts/ens_gene_to_go.R"
 
@@ -130,12 +129,12 @@ rule ens_gene_to_go:
 rule download_go_obo:
     output:
         "resources/ontology/gene_ontology.obo",
-    params:
-        download=config["resources"]["ontology"]["gene_ontology"],
-    conda:
-        "../envs/curl.yaml"
     log:
         "logs/resources/curl.download_go_obo.log",
+    conda:
+        "../envs/curl.yaml"
+    params:
+        download=config["resources"]["ontology"]["gene_ontology"],
     shell:
         "( curl --silent -o {output} {params.download} ) 2> {log}"
 
@@ -152,14 +151,14 @@ rule goatools_go_enrichment:
             "results/plots/go_terms/{{model}}.go_term_enrichment_{ns}.gene_fdr_{{gene_fdr}}.go_term_fdr_{{go_term_fdr}}.pdf",
             ns=["BP", "CC", "MF"],
         ),
+    log:
+        "logs/goatools/tables_and_plots.{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
+    conda:
+        "../envs/goatools.yaml"
     params:
         species=get_bioc_species_name(),
         model=lambda w: config["diffexp"]["models"][w.model]["primary_variable"],
         gene_fdr=lambda wc: wc.gene_fdr.replace("-", "."),
         go_term_fdr=lambda wc: wc.go_term_fdr.replace("-", "."),
-    conda:
-        "../envs/goatools.yaml"
-    log:
-        "logs/goatools/tables_and_plots.{model}.go_term_enrichment.gene_fdr_{gene_fdr}.go_term_fdr_{go_term_fdr}.log",
     script:
         "../scripts/goatools-go-enrichment-analysis.py"
