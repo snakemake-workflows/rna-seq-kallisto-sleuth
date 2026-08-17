@@ -8,52 +8,43 @@ library("tidyverse")
 # useful error messages upon aborting
 library("cli")
 
-# this variable holds a mirror name until
-# useEnsembl succeeds ("www" is last, because
-# of very frequent "Internal Server Error"s)
-mart <- "useast"
+# As ensembl has undergone extensive changes the get-transcript-info 
+# is now set to the look up the stable archive URL for the requested version
+archives <- biomaRt::listEnsemblArchives()
+requested_version <- as.character(snakemake@params[["version"]])
+
+host_url <- archives$url[archives$version == requested_version]
+
+if (length(host_url) == 0) {
+  cli_abort(str_c(
+    "Ensembl version ", requested_version,
+    " was not found in listEnsemblArchives(). ",
+    "Available versions: ", str_c(archives$version, collapse = ", ")
+  ))
+}
+
 rounds <- 0
-while (class(mart)[[1]] != "Mart") {
+mart <- NULL
+while (is.null(mart) || class(mart)[[1]] != "Mart") {
   mart <- tryCatch(
     {
-      # done here, because error function does not
-      # modify outer scope variables, I tried
-      if (mart == "www") rounds <- rounds + 1
-      # equivalent to useMart, but you can choose
-      # the mirror instead of specifying a host
+      rounds <- rounds + 1
       biomaRt::useEnsembl(
         biomart = "ENSEMBL_MART_ENSEMBL",
         dataset = str_c(snakemake@params[["species"]], "_gene_ensembl"),
-        version = snakemake@params[["version"]],
-        mirror = mart
+        host    = host_url
       )
     },
     error = function(e) {
-      # change or make configurable if you want more or
-      # less rounds of tries of all the mirrors
       if (rounds >= 3) {
-        cli_abort(
-          str_c(
-            "Have tried all 4 available Ensembl biomaRt mirrors ",
-            rounds,
-            " times. You might have a connection problem, or no mirror is responsive.\n",
-            "The last error message was:\n",
-            message(e)
-          )
-        )
+        cli_abort(str_c(
+          "Failed to connect to the Ensembl ", requested_version,
+          " archive (", host_url, ") after ", rounds, " tries. The last error was:\n",
+          conditionMessage(e)
+        ))
       }
-      # hop to next mirror
-      mart <- switch(mart,
-        useast = "uswest",
-        uswest = "asia",
-        asia = "www",
-        www = {
-          # wait before starting another round through the mirrors,
-          # hoping that intermittent problems disappear
-          Sys.sleep(30)
-          "useast"
-        }
-      )
+      Sys.sleep(30)
+      NULL
     }
   )
 }
