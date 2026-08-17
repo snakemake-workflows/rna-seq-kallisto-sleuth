@@ -27,11 +27,10 @@ archive_hosts <- c(
 requested_version <- as.character(snakemake@params[["version"]])
 host_url <- archive_hosts[[requested_version]]
 
-if (length(host_url) == 0) {
+if (is.null(host_url)) {
   cli_abort(str_c(
-    "Ensembl version ", requested_version,
-    " was not found in listEnsemblArchives(). ",
-    "Available versions: ", str_c(archives$version, collapse = ", ")
+    "No archive host configured for Ensembl version ", requested_version,
+    ". Known versions: ", str_c(names(archive_hosts), collapse = ", ")
   ))
 }
 
@@ -51,7 +50,7 @@ while (is.null(mart) || class(mart)[[1]] != "Mart") {
       if (rounds >= 3) {
         cli_abort(str_c(
           "Failed to connect to the Ensembl ", requested_version,
-          " archive (", host_url, ") after ", rounds, " tries. The last error was:\n",
+          " archive (", host_url, ") after ", rounds, " tries. Last error:\n",
           conditionMessage(e)
         ))
       }
