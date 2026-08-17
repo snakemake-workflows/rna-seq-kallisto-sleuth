@@ -8,12 +8,24 @@ library("tidyverse")
 # useful error messages upon aborting
 library("cli")
 
-# As ensembl has undergone extensive changes the get-transcript-info 
+# As ensembl has undergone extensive changes the get-transcript-info
 # is now set to the look up the stable archive URL for the requested version
-archives <- biomaRt::listEnsemblArchives()
-requested_version <- as.character(snakemake@params[["version"]])
+# Static lookup, because of unstable site during Ensembl's platform migration in 2026
+archive_hosts <- c(
+  "116" = "https://jun2026.archive.ensembl.org",
+  "115" = "https://sep2025.archive.ensembl.org",
+  "114" = "https://may2025.archive.ensembl.org",
+  "113" = "https://oct2024.archive.ensembl.org",
+  "112" = "https://may2024.archive.ensembl.org",
+  "111" = "https://jan2024.archive.ensembl.org",
+  "110" = "https://jul2023.archive.ensembl.org",
+  "109" = "https://feb2023.archive.ensembl.org",
+  "108" = "https://oct2022.archive.ensembl.org",
+  "107" = "https://jul2022.archive.ensembl.org"
+)
 
-host_url <- archives$url[archives$version == requested_version]
+requested_version <- as.character(snakemake@params[["version"]])
+host_url <- archive_hosts[[requested_version]]
 
 if (length(host_url) == 0) {
   cli_abort(str_c(
