@@ -93,7 +93,7 @@ if goea_results_all:
     )
     go_terms["study_items"] = go_terms["study_items"].str.join(",")
     go_terms["study_items"] = go_terms.study_items.str.replace(
-        "\w+(?=,|$)", lambda m: ensembl_id_to_symbol.get(m.group(0))
+        r"\w+(?=,|$)", lambda m: ensembl_id_to_symbol.get(m.group(0)), regex=True
     )
     go_terms.to_csv(snakemake.output.enrichment, sep="\t", index=False)
 else:
@@ -166,7 +166,7 @@ if goea_results_sig:
         ","
     )
     go_sig_terms_sorted["study_items"] = go_sig_terms_sorted.study_items.str.replace(
-        "\w+(?=,|$)", lambda m: ensembl_id_to_symbol.get(m.group(0))
+        r"\w+(?=,|$)", lambda m: ensembl_id_to_symbol.get(m.group(0)), regex=True
     )
     # Append fold change values to gene names
     gene_to_fold_change = dict(
