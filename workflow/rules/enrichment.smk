@@ -38,36 +38,11 @@ rule fgsea:
         gene_sets=config["enrichment"]["fgsea"]["gene_sets_file"],
         common_src=workflow.source_path("../scripts/common.R"),
     output:
-        enrichment=report(
-            "results/tables/fgsea/{model}.all-gene-sets.tsv",
-            caption="../report/fgsea-table-all.rst",
-            category="Gene set enrichment analysis",
-            labels={"model": "{model}"},
-        ),
-        rank_ties=report(
-            "results/tables/fgsea/{model}.rank-ties.tsv",
-            caption="../report/fgsea-rank-ties.rst",
-            category="Gene set enrichment analysis",
-            labels={"model": "{model}"},
-        ),
-        significant=report(
-            "results/tables/fgsea/{model}.sig-gene-sets.tsv",
-            caption="../report/fgsea-table-significant.rst",
-            category="Gene set enrichment analysis",
-            labels={"model": "{model}"},
-        ),
-        plot=report(
-            "results/plots/fgsea/{model}.table-plot.pdf",
-            caption="../report/fgsea-table-plot.rst",
-            category="Gene set enrichment analysis",
-            labels={"model": "{model}"},
-        ),
-        plot_collapsed=report(
-            "results/plots/fgsea/{model}.collapsed_pathways.table-plot.pdf",
-            caption="../report/fgsea-collapsed-table-plot.rst",
-            category="Gene set enrichment analysis",
-            labels={"model": "{model}"},
-        ),
+        enrichment="results/tables/fgsea/{model}.all-gene-sets.tsv",
+        rank_ties="results/tables/fgsea/{model}.rank-ties.tsv",
+        significant="results/tables/fgsea/{model}.sig-gene-sets.tsv",
+        plot="results/plots/fgsea/{model}.table-plot.pdf",
+        plot_collapsed="results/plots/fgsea/{model}.collapsed_pathways.table-plot.pdf",
     params:
         bioc_species_pkg=bioc_species_pkg,
         model=get_model,
