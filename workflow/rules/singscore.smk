@@ -7,7 +7,9 @@ rule singscore:
         ),
         transcript_ref="resources/transcripts_annotation.results.tsv",
     output:
-        "results/plots/singscore/{model}.{gene_set_group}.tiff",
+        singscore_plt="results/plots/singscore/{model}.{gene_set_group}.tiff",
+        singscore_tbl="results/tables/sigscore/{model}.{gene_set_group}.tsv",
+        
     log:
         "logs/singscore_{model}.{gene_set_group}.log",
     conda:

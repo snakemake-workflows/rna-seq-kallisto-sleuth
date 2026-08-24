@@ -25,7 +25,7 @@ shape_aes <- snakemake@params[["shape_aes"]]
 xpr_matrix <- xpr_data |> 
   group_by(gene) |> 
   summarize(
-    across(where(is.numeric), sum)) |> 
+    across(where(is.numeric), sum)) |>
   ungroup() |> 
   filter(!is.na(gene)) |> 
   column_to_rownames(var = "gene") |> 
@@ -48,11 +48,13 @@ singscore_output <- if (down_set == "") {
 
 score_df <- data.frame(
   sample = colnames(xpr_matrix),
-  score  = singscore_output$TotalScore) %>%
-  mutate(sample = sub("t-.*", "t", sample)) %>%
-  left_join(smpl_data, by = "sample") %>%
-  distinct(sample, .keep_all = TRUE) %>%
+  score  = singscore_output$TotalScore) |>
+  mutate(sample = sub("t-.*", "t", sample)) |>
+  left_join(smpl_data, by = "sample") |>
+  distinct(sample, .keep_all = TRUE) |>
   arrange(score)
+
+write_tsv(score_df, snakemake@output[[singscore_tbl]])
 
 # ---- plot, sized dynamically to the number of samples ----
 n_samples   <- nrow(score_df)
@@ -60,7 +62,7 @@ plot_width  <- max(6, n_samples * 0.15)
 plot_height <- 4
 
 tiff(
-  filename    = snakemake@output[[1]],
+  filename    = snakemake@output[[singscore_plt]],
   res         = 150,
   compression = "lzw",
   units       = "in",
