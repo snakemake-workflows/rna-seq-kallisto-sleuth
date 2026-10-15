@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.1](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v4.1.0...v4.1.1) (2026-10-15)
+
+
+### Bug Fixes
+
+* use latest bioconductor-biomart 2.68 ([#177](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/issues/177)) ([48870f4](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/commit/48870f410416102c68814274762bd2e20dc8581e))
+
 ## [4.1.0](https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth/compare/v4.0.0...v4.1.0) (2026-08-17)
 
 
